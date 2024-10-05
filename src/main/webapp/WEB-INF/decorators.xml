@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<decorators defaultdir="/decorators">
+	<encludes>
+		<pattern>/api*</pattern>
+	</encludes>
+	
+	<decorator name="admin" page="admin.jsp"> <!-- .jsp là master layout -->
+		<pattern>/admin*</pattern>
+	</decorator>
+	
+	<decorator name="web" page="web.jsp">
+		<pattern>/*</pattern>
+	</decorator>
+
+	<decorator name="login" page="web.jsp">
+		<pattern>/dang-nhap</pattern>
+	</decorator>
+</decorators>
