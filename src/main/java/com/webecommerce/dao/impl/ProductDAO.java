@@ -1,10 +1,7 @@
 package com.webecommerce.dao.impl;
 
 import com.webecommerce.dao.IProductDAO;
-import com.webecommerce.entity.Product;
 import com.webecommerce.utils.DBUtil;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
