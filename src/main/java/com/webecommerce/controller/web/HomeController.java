@@ -12,11 +12,11 @@ import java.io.IOException;
 
 @WebServlet(urlPatterns = {"/trang-chu"})
 public class HomeController extends HttpServlet {
-//    private ProductDAO productDAO = new ProductDAO();
+    private ProductDAO productDAO = new ProductDAO();
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //Test kết nối với db
-//        Product product = new Product("quan jean", "rach");
-//        productDAO.insert(product);
+        Product product = new Product("quan jean", "rach");
+        productDAO.insert(product);
         request.getRequestDispatcher("/views/web/home.jsp").forward(request,response);
     }
 }
