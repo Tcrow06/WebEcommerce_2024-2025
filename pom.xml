@@ -20,11 +20,12 @@
   </properties>
   <dependencies>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>5.9.3</version>
       <scope>test</scope>
     </dependency>
+
 
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -59,6 +60,8 @@
       <groupId>org.jboss.weld.servlet</groupId>
       <artifactId>weld-servlet</artifactId>
       <version>${weld.servlet.version}</version>
+<!--      <version>1.1.0.Final</version>-->
+
     </dependency>
 
     <dependency>
@@ -77,6 +80,21 @@
       <artifactId>slf4j-api</artifactId>
       <version>1.7.36</version>
     </dependency>
+<<<<<<< HEAD
+=======
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <version>2.19.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.zaxxer</groupId>
+      <artifactId>HikariCP</artifactId>
+      <version>5.0.1</version>
+    </dependency>
+
+>>>>>>> d3d311bcfefda3c8bda621abc375e1e6c164f76e
   </dependencies>
   <build>
     <finalName>FashionWebEcommerce</finalName>
