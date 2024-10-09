@@ -15,8 +15,8 @@
     <mysql.version>8.0.30</mysql.version>
     <weld.servlet.version>2.4.8.Final</weld.servlet.version>
 
-    <maven.compiler.source>21</maven.compiler.source>
-    <maven.compiler.target>21</maven.compiler.target>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
   </properties>
   <dependencies>
     <dependency>
