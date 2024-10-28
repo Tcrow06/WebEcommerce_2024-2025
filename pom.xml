@@ -80,8 +80,7 @@
       <artifactId>slf4j-api</artifactId>
       <version>1.7.36</version>
     </dependency>
-<<<<<<< HEAD
-=======
+
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-slf4j-impl</artifactId>
@@ -94,7 +93,6 @@
       <version>5.0.1</version>
     </dependency>
 
->>>>>>> d3d311bcfefda3c8bda621abc375e1e6c164f76e
   </dependencies>
   <build>
     <finalName>FashionWebEcommerce</finalName>

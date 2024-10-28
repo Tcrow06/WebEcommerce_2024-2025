@@ -1,239 +1,153 @@
 <%@include file="/common/taglib.jsp"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<section id="cart_items">
+<!-- Breadcrumb Section Begin -->
+<section class="breadcrumb-option">
     <div class="container">
-        <div class="breadcrumbs">
-            <ol class="breadcrumb">
-                <li><a href="#">Home</a></li>
-                <li class="active">Check out</li>
-            </ol>
-        </div><!--/breadcrums-->
-
-        <div class="step-one">
-            <h2 class="heading">Step1</h2>
-        </div>
-        <div class="checkout-options">
-            <h3>New User</h3>
-            <p>Checkout options</p>
-            <ul class="nav">
-                <li>
-                    <label><input type="checkbox"> Register Account</label>
-                </li>
-                <li>
-                    <label><input type="checkbox"> Guest Checkout</label>
-                </li>
-                <li>
-                    <a href=""><i class="fa fa-times"></i>Cancel</a>
-                </li>
-            </ul>
-        </div><!--/checkout-options-->
-
-        <div class="register-req">
-            <p>Please use Register And Checkout to easily get access to your order history, or use Checkout as Guest</p>
-        </div><!--/register-req-->
-
-        <div class="shopper-informations">
-            <div class="row">
-                <div class="col-sm-3">
-                    <div class="shopper-info">
-                        <p>Shopper Information</p>
-                        <form>
-                            <input type="text" placeholder="Display Name">
-                            <input type="text" placeholder="User Name">
-                            <input type="password" placeholder="Password">
-                            <input type="password" placeholder="Confirm password">
-                        </form>
-                        <a class="btn btn-primary" href="">Get Quotes</a>
-                        <a class="btn btn-primary" href="">Continue</a>
-                    </div>
-                </div>
-                <div class="col-sm-5 clearfix">
-                    <div class="bill-to">
-                        <p>Bill To</p>
-                        <div class="form-one">
-                            <form>
-                                <input type="text" placeholder="Company Name">
-                                <input type="text" placeholder="Email*">
-                                <input type="text" placeholder="Title">
-                                <input type="text" placeholder="First Name *">
-                                <input type="text" placeholder="Middle Name">
-                                <input type="text" placeholder="Last Name *">
-                                <input type="text" placeholder="Address 1 *">
-                                <input type="text" placeholder="Address 2">
-                            </form>
-                        </div>
-                        <div class="form-two">
-                            <form>
-                                <input type="text" placeholder="Zip / Postal Code *">
-                                <select>
-                                    <option>-- Country --</option>
-                                    <option>United States</option>
-                                    <option>Bangladesh</option>
-                                    <option>UK</option>
-                                    <option>India</option>
-                                    <option>Pakistan</option>
-                                    <option>Ucrane</option>
-                                    <option>Canada</option>
-                                    <option>Dubai</option>
-                                </select>
-                                <select>
-                                    <option>-- State / Province / Region --</option>
-                                    <option>United States</option>
-                                    <option>Bangladesh</option>
-                                    <option>UK</option>
-                                    <option>India</option>
-                                    <option>Pakistan</option>
-                                    <option>Ucrane</option>
-                                    <option>Canada</option>
-                                    <option>Dubai</option>
-                                </select>
-                                <input type="password" placeholder="Confirm password">
-                                <input type="text" placeholder="Phone *">
-                                <input type="text" placeholder="Mobile Phone">
-                                <input type="text" placeholder="Fax">
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="order-message">
-                        <p>Shipping Order</p>
-                        <textarea name="message"  placeholder="Notes about your order, Special Notes for Delivery" rows="16"></textarea>
-                        <label><input type="checkbox"> Shipping to bill address</label>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb__text">
+                    <h4>Check Out</h4>
+                    <div class="breadcrumb__links">
+                        <a href="<c:url value="/trang-chu"/>">Home</a>
+                        <a href="<c:url value="/san-pham"/>">Shop</a>
+                        <span>Check Out</span>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="review-payment">
-            <h2>Review & Payment</h2>
-        </div>
+    </div>
+</section>
+<!-- Breadcrumb Section End -->
 
-        <div class="table-responsive cart_info">
-            <table class="table table-condensed">
-                <thead>
-                <tr class="cart_menu">
-                    <td class="image">Item</td>
-                    <td class="description"></td>
-                    <td class="price">Price</td>
-                    <td class="quantity">Quantity</td>
-                    <td class="total">Total</td>
-                    <td></td>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td class="cart_product">
-                        <a href=""><img src="images/cart/one.png" alt=""></a>
-                    </td>
-                    <td class="cart_description">
-                        <h4><a href="">Colorblock Scuba</a></h4>
-                        <p>Web ID: 1089772</p>
-                    </td>
-                    <td class="cart_price">
-                        <p>$59</p>
-                    </td>
-                    <td class="cart_quantity">
-                        <div class="cart_quantity_button">
-                            <a class="cart_quantity_up" href=""> + </a>
-                            <input class="cart_quantity_input" type="text" name="quantity" value="1" autocomplete="off" size="2">
-                            <a class="cart_quantity_down" href=""> - </a>
+<!-- Checkout Section Begin -->
+<section class="checkout spad">
+    <div class="container">
+        <div class="checkout__form">
+            <form action="#">
+                <div class="row">
+                    <div class="col-lg-8 col-md-6">
+                        <h6 class="coupon__code"><span class="icon_tag_alt"></span> Have a coupon? <a href="#">Click
+                            here</a> to enter your code</h6>
+                        <h6 class="checkout__title">Billing Details</h6>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="checkout__input">
+                                    <p>Fist Name<span>*</span></p>
+                                    <input type="text">
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="checkout__input">
+                                    <p>Last Name<span>*</span></p>
+                                    <input type="text">
+                                </div>
+                            </div>
                         </div>
-                    </td>
-                    <td class="cart_total">
-                        <p class="cart_total_price">$59</p>
-                    </td>
-                    <td class="cart_delete">
-                        <a class="cart_quantity_delete" href=""><i class="fa fa-times"></i></a>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td class="cart_product">
-                        <a href=""><img src="images/cart/two.png" alt=""></a>
-                    </td>
-                    <td class="cart_description">
-                        <h4><a href="">Colorblock Scuba</a></h4>
-                        <p>Web ID: 1089772</p>
-                    </td>
-                    <td class="cart_price">
-                        <p>$59</p>
-                    </td>
-                    <td class="cart_quantity">
-                        <div class="cart_quantity_button">
-                            <a class="cart_quantity_up" href=""> + </a>
-                            <input class="cart_quantity_input" type="text" name="quantity" value="1" autocomplete="off" size="2">
-                            <a class="cart_quantity_down" href=""> - </a>
+                        <div class="checkout__input">
+                            <p>Country<span>*</span></p>
+                            <input type="text">
                         </div>
-                    </td>
-                    <td class="cart_total">
-                        <p class="cart_total_price">$59</p>
-                    </td>
-                    <td class="cart_delete">
-                        <a class="cart_quantity_delete" href=""><i class="fa fa-times"></i></a>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="cart_product">
-                        <a href=""><img src="images/cart/three.png" alt=""></a>
-                    </td>
-                    <td class="cart_description">
-                        <h4><a href="">Colorblock Scuba</a></h4>
-                        <p>Web ID: 1089772</p>
-                    </td>
-                    <td class="cart_price">
-                        <p>$59</p>
-                    </td>
-                    <td class="cart_quantity">
-                        <div class="cart_quantity_button">
-                            <a class="cart_quantity_up" href=""> + </a>
-                            <input class="cart_quantity_input" type="text" name="quantity" value="1" autocomplete="off" size="2">
-                            <a class="cart_quantity_down" href=""> - </a>
+                        <div class="checkout__input">
+                            <p>Address<span>*</span></p>
+                            <input type="text" placeholder="Street Address" class="checkout__input__add">
+                            <input type="text" placeholder="Apartment, suite, unite ect (optinal)">
                         </div>
-                    </td>
-                    <td class="cart_total">
-                        <p class="cart_total_price">$59</p>
-                    </td>
-                    <td class="cart_delete">
-                        <a class="cart_quantity_delete" href=""><i class="fa fa-times"></i></a>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="4">&nbsp;</td>
-                    <td colspan="2">
-                        <table class="table table-condensed total-result">
-                            <tr>
-                                <td>Cart Sub Total</td>
-                                <td>$59</td>
-                            </tr>
-                            <tr>
-                                <td>Exo Tax</td>
-                                <td>$2</td>
-                            </tr>
-                            <tr class="shipping-cost">
-                                <td>Shipping Cost</td>
-                                <td>Free</td>
-                            </tr>
-                            <tr>
-                                <td>Total</td>
-                                <td><span>$61</span></td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="payment-options">
-					<span>
-						<label><input type="checkbox"> Direct Bank Transfer</label>
-					</span>
-            <span>
-						<label><input type="checkbox"> Check Payment</label>
-					</span>
-            <span>
-						<label><input type="checkbox"> Paypal</label>
-					</span>
+                        <div class="checkout__input">
+                            <p>Town/City<span>*</span></p>
+                            <input type="text">
+                        </div>
+                        <div class="checkout__input">
+                            <p>Country/State<span>*</span></p>
+                            <input type="text">
+                        </div>
+                        <div class="checkout__input">
+                            <p>Postcode / ZIP<span>*</span></p>
+                            <input type="text">
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="checkout__input">
+                                    <p>Phone<span>*</span></p>
+                                    <input type="text">
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="checkout__input">
+                                    <p>Email<span>*</span></p>
+                                    <input type="text">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="checkout__input__checkbox">
+                            <label for="acc">
+                                Create an account?
+                                <input type="checkbox" id="acc">
+                                <span class="checkmark"></span>
+                            </label>
+                            <p>Create an account by entering the information below. If you are a returning customer
+                                please login at the top of the page</p>
+                        </div>
+                        <div class="checkout__input">
+                            <p>Account Password<span>*</span></p>
+                            <input type="text">
+                        </div>
+                        <div class="checkout__input__checkbox">
+                            <label for="diff-acc">
+                                Note about your order, e.g, special noe for delivery
+                                <input type="checkbox" id="diff-acc">
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+                        <div class="checkout__input">
+                            <p>Order notes<span>*</span></p>
+                            <input type="text"
+                                   placeholder="Notes about your order, e.g. special notes for delivery.">
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="checkout__order">
+                            <h4 class="order__title">Your order</h4>
+                            <div class="checkout__order__products">Product <span>Total</span></div>
+                            <ul class="checkout__total__products">
+                                <li>01. Vanilla salted caramel <span>$ 300.0</span></li>
+                                <li>02. German chocolate <span>$ 170.0</span></li>
+                                <li>03. Sweet autumn <span>$ 170.0</span></li>
+                                <li>04. Cluten free mini dozen <span>$ 110.0</span></li>
+                            </ul>
+                            <ul class="checkout__total__all">
+                                <li>Subtotal <span>$750.99</span></li>
+                                <li>Total <span>$750.99</span></li>
+                            </ul>
+                            <div class="checkout__input__checkbox">
+                                <label for="acc-or">
+                                    Create an account?
+                                    <input type="checkbox" id="acc-or">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div>
+                            <p>Lorem ipsum dolor sit amet, consectetur adip elit, sed do eiusmod tempor incididunt
+                                ut labore et dolore magna aliqua.</p>
+                            <div class="checkout__input__checkbox">
+                                <label for="payment">
+                                    Check Payment
+                                    <input type="checkbox" id="payment">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div>
+                            <div class="checkout__input__checkbox">
+                                <label for="paypal">
+                                    Paypal
+                                    <input type="checkbox" id="paypal">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div>
+                            <button type="submit" class="site-btn">PLACE ORDER</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
-</section> <!--/#cart_items-->
+</section>
+<!-- Checkout Section End -->

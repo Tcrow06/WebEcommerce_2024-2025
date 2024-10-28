@@ -10,10 +10,11 @@ import java.io.IOException;
 @WebServlet(urlPatterns = {"/san-pham"})
 public class ProductController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if(request.getParameter("action").equals("chi-tiet-san-pham")) {
-            request.getRequestDispatcher("/views/web/product-detail.jsp").forward(request,response);
+        String action = request.getParameter("action");
+        if ("ten-san-pham-o-day".equals(action)) {
+            request.getRequestDispatcher("/views/web/product-detail.jsp").forward(request, response);
         } else {
-            request.getRequestDispatcher("/views/web/product-list.jsp").forward(request,response);
+            request.getRequestDispatcher("/views/web/product-list.jsp").forward(request, response);
         }
     }
 }

@@ -1,182 +1,155 @@
 <%@include file="/common/taglib.jsp"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<section id="cart_items">
-  <div class="container">
-    <div class="breadcrumbs">
-      <ol class="breadcrumb">
-        <li><a href="#">Home</a></li>
-        <li class="active">Shopping Cart</li>
-      </ol>
-    </div>
-    <div class="table-responsive cart_info">
-      <table class="table table-condensed">
-        <thead>
-        <tr class="cart_menu">
-          <td class="image">Item</td>
-          <td class="description"></td>
-          <td class="price">Price</td>
-          <td class="quantity">Quantity</td>
-          <td class="total">Total</td>
-          <td></td>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-          <td class="cart_product">
-            <a href=""><img src="images/cart/one.png" alt=""></a>
-          </td>
-          <td class="cart_description">
-            <h4><a href="">Colorblock Scuba</a></h4>
-            <p>Web ID: 1089772</p>
-          </td>
-          <td class="cart_price">
-            <p>$59</p>
-          </td>
-          <td class="cart_quantity">
-            <div class="cart_quantity_button">
-              <a class="cart_quantity_up" href=""> + </a>
-              <input class="cart_quantity_input" type="text" name="quantity" value="1" autocomplete="off" size="2">
-              <a class="cart_quantity_down" href=""> - </a>
+<!-- Breadcrumb Section Begin -->
+<section class="breadcrumb-option">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb__text">
+                    <h4>Shopping Cart</h4>
+                    <div class="breadcrumb__links">
+                        <a href="<c:url value="/trang-chu"/>">Home</a>
+                        <a href="<c:url value="/san-pham"/>">Shop</a>
+                        <span>Shopping Cart</span>
+                    </div>
+                </div>
             </div>
-          </td>
-          <td class="cart_total">
-            <p class="cart_total_price">$59</p>
-          </td>
-          <td class="cart_delete">
-            <a class="cart_quantity_delete" href=""><i class="fa fa-times"></i></a>
-          </td>
-        </tr>
-
-        <tr>
-          <td class="cart_product">
-            <a href=""><img src="images/cart/two.png" alt=""></a>
-          </td>
-          <td class="cart_description">
-            <h4><a href="">Colorblock Scuba</a></h4>
-            <p>Web ID: 1089772</p>
-          </td>
-          <td class="cart_price">
-            <p>$59</p>
-          </td>
-          <td class="cart_quantity">
-            <div class="cart_quantity_button">
-              <a class="cart_quantity_up" href=""> + </a>
-              <input class="cart_quantity_input" type="text" name="quantity" value="1" autocomplete="off" size="2">
-              <a class="cart_quantity_down" href=""> - </a>
-            </div>
-          </td>
-          <td class="cart_total">
-            <p class="cart_total_price">$59</p>
-          </td>
-          <td class="cart_delete">
-            <a class="cart_quantity_delete" href=""><i class="fa fa-times"></i></a>
-          </td>
-        </tr>
-        <tr>
-          <td class="cart_product">
-            <a href=""><img src="images/cart/three.png" alt=""></a>
-          </td>
-          <td class="cart_description">
-            <h4><a href="">Colorblock Scuba</a></h4>
-            <p>Web ID: 1089772</p>
-          </td>
-          <td class="cart_price">
-            <p>$59</p>
-          </td>
-          <td class="cart_quantity">
-            <div class="cart_quantity_button">
-              <a class="cart_quantity_up" href=""> + </a>
-              <input class="cart_quantity_input" type="text" name="quantity" value="1" autocomplete="off" size="2">
-              <a class="cart_quantity_down" href=""> - </a>
-            </div>
-          </td>
-          <td class="cart_total">
-            <p class="cart_total_price">$59</p>
-          </td>
-          <td class="cart_delete">
-            <a class="cart_quantity_delete" href=""><i class="fa fa-times"></i></a>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</section> <!--/#cart_items-->
-
-<section id="do_action">
-  <div class="container">
-    <div class="heading">
-      <h3>What would you like to do next?</h3>
-      <p>Choose if you have a discount code or reward points you want to use or would like to estimate your delivery cost.</p>
-    </div>
-    <div class="row">
-      <div class="col-sm-6">
-        <div class="chose_area">
-          <ul class="user_option">
-            <li>
-              <input type="checkbox">
-              <label>Use Coupon Code</label>
-            </li>
-            <li>
-              <input type="checkbox">
-              <label>Use Gift Voucher</label>
-            </li>
-            <li>
-              <input type="checkbox">
-              <label>Estimate Shipping & Taxes</label>
-            </li>
-          </ul>
-          <ul class="user_info">
-            <li class="single_field">
-              <label>Country:</label>
-              <select>
-                <option>United States</option>
-                <option>Bangladesh</option>
-                <option>UK</option>
-                <option>India</option>
-                <option>Pakistan</option>
-                <option>Ucrane</option>
-                <option>Canada</option>
-                <option>Dubai</option>
-              </select>
-
-            </li>
-            <li class="single_field">
-              <label>Region / State:</label>
-              <select>
-                <option>Select</option>
-                <option>Dhaka</option>
-                <option>London</option>
-                <option>Dillih</option>
-                <option>Lahore</option>
-                <option>Alaska</option>
-                <option>Canada</option>
-                <option>Dubai</option>
-              </select>
-
-            </li>
-            <li class="single_field zip-field">
-              <label>Zip Code:</label>
-              <input type="text">
-            </li>
-          </ul>
-          <a class="btn btn-default update" href="">Get Quotes</a>
-          <a class="btn btn-default check_out" href="">Continue</a>
         </div>
-      </div>
-      <div class="col-sm-6">
-        <div class="total_area">
-          <ul>
-            <li>Cart Sub Total <span>$59</span></li>
-            <li>Eco Tax <span>$2</span></li>
-            <li>Shipping Cost <span>Free</span></li>
-            <li>Total <span>$61</span></li>
-          </ul>
-          <a class="btn btn-default update" href="">Update</a>
-          <a class="btn btn-default check_out" href="">Check Out</a>
-        </div>
-      </div>
     </div>
-  </div>
-</section><!--/#do_action-->
+</section>
+<!-- Breadcrumb Section End -->
+
+<!-- Shopping Cart Section Begin -->
+<section class="shopping-cart spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="shopping__cart__table">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td class="product__cart__item">
+                                <div class="product__cart__item__pic">
+                                    <img src="<c:url value="/static/img/shopping-cart/cart-1.jpg"/>" alt="">
+                                </div>
+                                <div class="product__cart__item__text">
+                                    <h6>T-shirt Contrast Pocket</h6>
+                                    <h5>$98.49</h5>
+                                </div>
+                            </td>
+                            <td class="quantity__item">
+                                <div class="quantity">
+                                    <div class="pro-qty-2">
+                                        <input type="text" value="1">
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="cart__price">$ 30.00</td>
+                            <td class="cart__close"><i class="fa fa-close"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="product__cart__item">
+                                <div class="product__cart__item__pic">
+                                    <img src="<c:url value="/static/img/shopping-cart/cart-2.jpg"/>" alt="">
+                                </div>
+                                <div class="product__cart__item__text">
+                                    <h6>Diagonal Textured Cap</h6>
+                                    <h5>$98.49</h5>
+                                </div>
+                            </td>
+                            <td class="quantity__item">
+                                <div class="quantity">
+                                    <div class="pro-qty-2">
+                                        <input type="text" value="1">
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="cart__price">$ 32.50</td>
+                            <td class="cart__close"><i class="fa fa-close"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="product__cart__item">
+                                <div class="product__cart__item__pic">
+                                    <img src="<c:url value="/static/img/shopping-cart/cart-3.jpg"/>" alt="">
+                                </div>
+                                <div class="product__cart__item__text">
+                                    <h6>Basic Flowing Scarf</h6>
+                                    <h5>$98.49</h5>
+                                </div>
+                            </td>
+                            <td class="quantity__item">
+                                <div class="quantity">
+                                    <div class="pro-qty-2">
+                                        <input type="text" value="1">
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="cart__price">$ 47.00</td>
+                            <td class="cart__close"><i class="fa fa-close"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="product__cart__item">
+                                <div class="product__cart__item__pic">
+                                    <img src="<c:url value="/static/img/shopping-cart/cart-4.jpg"/>" alt="">
+                                </div>
+                                <div class="product__cart__item__text">
+                                    <h6>Basic Flowing Scarf</h6>
+                                    <h5>$98.49</h5>
+                                </div>
+                            </td>
+                            <td class="quantity__item">
+                                <div class="quantity">
+                                    <div class="pro-qty-2">
+                                        <input type="text" value="1">
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="cart__price">$ 30.00</td>
+                            <td class="cart__close"><i class="fa fa-close"></i></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="continue__btn">
+                            <a href="#">Continue Shopping</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="continue__btn update__btn">
+                            <a href="#"><i class="fa fa-spinner"></i> Update cart</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="cart__discount">
+                    <h6>Discount codes</h6>
+                    <form action="#">
+                        <input type="text" placeholder="Coupon code">
+                        <button type="submit">Apply</button>
+                    </form>
+                </div>
+                <div class="cart__total">
+                    <h6>Cart total</h6>
+                    <ul>
+                        <li>Subtotal <span>$ 169.50</span></li>
+                        <li>Total <span>$ 169.50</span></li>
+                    </ul>
+                    <a href="#" class="primary-btn">Proceed to checkout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Shopping Cart Section End -->

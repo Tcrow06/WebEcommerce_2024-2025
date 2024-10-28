@@ -1,119 +1,97 @@
-<%@include file="/common/taglib.jsp"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-
-<header id="header"><!--header-->
-    <div class="header_top"><!--header_top-->
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="contactinfo">
-                        <ul class="nav nav-pills">
-                            <li><a href="#"><i class="fa fa-phone"></i> +2 95 01 88 821</a></li>
-                            <li><a href="#"><i class="fa fa-envelope"></i> info@domain.com</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="social-icons pull-right">
-                        <ul class="nav navbar-nav">
-                            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                            <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
-                            <li><a href="#"><i class="fa fa-dribbble"></i></a></li>
-                            <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+<!-- Offcanvas Menu Begin -->
+<div class="offcanvas-menu-overlay"></div>
+<div class="offcanvas-menu-wrapper">
+    <div class="offcanvas__option">
+        <div class="offcanvas__links">
+            <a href="#">Sign in</a>
+            <a href="#">FAQs</a>
         </div>
-    </div><!--/header_top-->
+        <div class="offcanvas__top__hover">
+            <span>Usd <i class="arrow_carrot-down"></i></span>
+            <ul>
+                <li>USD</li>
+                <li>EUR</li>
+                <li>USD</li>
+            </ul>
+        </div>
+    </div>
+    <div class="offcanvas__nav__option">
+        <a href="#" class="search-switch"><img src="<c:url value="/static/img/icon/search.png"/>" alt=""></a>
+        <a href="#"><img src="<c:url value="/static/img/icon/heart.png"/>" alt=""></a>
+        <a href="#"><img src="<c:url value="/static/img/icon/cart.png"/>" alt=""> <span>0</span></a>
+        <div class="price">$0.00</div>
+    </div>
+    <div id="mobile-menu-wrap"></div>
+    <div class="offcanvas__text">
+        <p>Free shipping, 30-day return or refund guarantee.</p>
+    </div>
+</div>
+<!-- Offcanvas Menu End -->
 
-    <div class="header-middle"><!--header-middle-->
+<!-- Header Section Begin -->
+<header class="header">
+    <div class="header__top">
         <div class="container">
             <div class="row">
-                <div class="col-sm-4">
-                    <div class="logo pull-left">
-                        <a href="index.html"><img src="images/home/logo.png" alt="" /></a>
+                <div class="col-lg-6 col-md-7">
+                    <div class="header__top__left">
+                        <p>Free shipping, 30-day return or refund guarantee.</p>
                     </div>
-                    <div class="btn-group pull-right">
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle usa" data-toggle="dropdown">
-                                USA
-                                <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a href="#">Canada</a></li>
-                                <li><a href="#">UK</a></li>
-                            </ul>
+                </div>
+                <div class="col-lg-6 col-md-5">
+                    <div class="header__top__right">
+                        <div class="header__top__links">
+                            <a href="#">Sign in</a>
+                            <a href="#">FAQs</a>
                         </div>
-
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle usa" data-toggle="dropdown">
-                                DOLLAR
-                                <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a href="#">Canadian Dollar</a></li>
-                                <li><a href="#">Pound</a></li>
+                        <div class="header__top__hover">
+                            <span>Usd <i class="arrow_carrot-down"></i></span>
+                            <ul>
+                                <li>USD</li>
+                                <li>EUR</li>
+                                <li>USD</li>
                             </ul>
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-8">
-                    <div class="shop-menu pull-right">
-                        <ul class="nav navbar-nav">
-                            <li><a href="#"><i class="fa fa-user"></i> Account</a></li>
-                            <li><a href="#"><i class="fa fa-star"></i> Wishlist</a></li>
-                            <li><a href="checkout.html"><i class="fa fa-crosshairs"></i> Checkout</a></li>
-                            <li><a href="cart.html"><i class="fa fa-shopping-cart"></i> Cart</a></li>
-                            <li><a href="<c:url value="/dang-nhap"/> "><i class="fa fa-lock"></i> Login</a></li>
-                        </ul>
-                    </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-3">
+                <div class="header__logo">
+                    <a href="<c:url value="/trang-chu"/>"><img src="<c:url value="/static/img/logo.png"/>" alt=""></a>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6">
+                <nav class="header__menu mobile-menu">
+                    <ul>
+                        <li class="active"><a href="<c:url value="/trang-chu"/>">Home</a></li>
+                        <li><a href="<c:url value="/san-pham"/>">Shop</a></li>
+                        <li><a href="#">Pages</a>
+                            <ul class="dropdown">
+                                <li><a href="<c:url value="/ve-chung-toi"/>">About Us</a></li>
+                                <li><a href="<c:url value="/san-pham?action=ten-san-pham-o-day"/>">Shop Details</a></li>
+                                <li><a href="<c:url value="/gio-hang"/>">Shopping Cart</a></li>
+                                <li><a href="<c:url value="/thanh-toan"/>">Check Out</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="<c:url value="/blog"/>">Blog</a></li>
+                        <li><a href="./contact.html">Contacts</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="header__nav__option">
+                    <a href="#" class="search-switch"><img src="<c:url value="/static/img/icon/search.png"/>" alt=""></a>
+                    <a href="#"><img src="<c:url value="/static/img/icon/heart.png"/>" alt=""></a>
+                    <a href="#"><img src="<c:url value="/static/img/icon/cart.png"/>" alt=""> <span>0</span></a>
+                    <div class="price">$0.00</div>
                 </div>
             </div>
         </div>
-    </div><!--/header-middle-->
-
-    <div class="header-bottom"><!--header-bottom-->
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-9">
-                    <div class="navbar-header">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
-                    </div>
-                    <div class="mainmenu pull-left">
-                        <ul class="nav navbar-nav collapse navbar-collapse">
-                            <li><a href="index.html" class="active">Home</a></li>
-                            <li class="dropdown"><a href="#">Shop<i class="fa fa-angle-down"></i></a>
-                                <ul role="menu" class="sub-menu">
-                                    <li><a href="<c:url value="/san-pham?action=danh-sach"/> ">Products</a></li>
-                                    <li><a href="<c:url value="/san-pham?action=chi-tiet-san-pham"/> ">Product Details</a></li>
-                                    <li><a href="<c:url value="/thanh-toan"/>">Checkout</a></li>
-                                    <li><a href="<c:url value="/gio-hang"/>">Cart</a></li>
-                                </ul>
-                            </li>
-                            <li class="dropdown"><a href="#">Blog<i class="fa fa-angle-down"></i></a>
-                                <ul role="menu" class="sub-menu">
-                                    <li><a href="blog.html">Blog List</a></li>
-                                    <li><a href="blog-single.html">Blog Single</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="404.html">404</a></li>
-                            <li><a href="contact-us.html">Contact</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="search_box pull-right">
-                        <input type="text" placeholder="Search"/>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div><!--/header-bottom-->
-</header><!--/header-->
+        <div class="canvas__open"><i class="fa fa-bars"></i></div>
+    </div>
+</header>
+<!-- Header Section End -->
