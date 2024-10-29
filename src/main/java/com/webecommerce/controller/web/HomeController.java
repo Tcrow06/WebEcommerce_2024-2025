@@ -17,7 +17,7 @@ public class HomeController extends HttpServlet {
     private IProductService productService;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // productService.getAllProducts();
+        productService.getAllProducts();
         request.getRequestDispatcher("/views/web/home.jsp").forward(request,response);
     }
 }

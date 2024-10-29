@@ -1,4 +1,6 @@
-package com.webecommerce.entity;
+package com.webecommerce.entity.discount;
+
+import com.webecommerce.entity.product.ProductEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;

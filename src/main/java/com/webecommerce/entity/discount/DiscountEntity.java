@@ -1,4 +1,4 @@
-package com.webecommerce.entity;
+package com.webecommerce.entity.discount;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

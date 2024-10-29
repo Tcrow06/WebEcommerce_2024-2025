@@ -1,6 +1,7 @@
-package com.webecommerce.entity;
+package com.webecommerce.entity.product;
 
 import com.webecommerce.constant.EnumProductStatus;
+import com.webecommerce.entity.discount.ProductDiscountEntity;
 
 import javax.persistence.*;
 import java.util.ArrayList;

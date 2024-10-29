@@ -1,6 +1,7 @@
-package com.webecommerce.entity;
+package com.webecommerce.entity.product;
 
 import com.webecommerce.constant.EnumProductStatus;
+import com.webecommerce.entity.order.OrderDetailEntity;
 
 import javax.persistence.*;
 
@@ -32,6 +33,26 @@ public class ProductVariantEntity {
     // Mỗi một biến thể chỉ thuộc về một sản phẩm
     @ManyToOne
     private ProductEntity product;
+
+    // Mỗi một biến thể chỉ thuộc về một order (là duy nhất)
+    @ManyToOne
+    private OrderDetailEntity orderDetail;
+
+    public ProductEntity getProduct() {
+        return product;
+    }
+
+    public void setProduct(ProductEntity product) {
+        this.product = product;
+    }
+
+    public OrderDetailEntity getOrderDetail() {
+        return orderDetail;
+    }
+
+    public void setOrderDetail(OrderDetailEntity orderDetail) {
+        this.orderDetail = orderDetail;
+    }
 
     public ProductEntity getProductEntity() {
         return product;

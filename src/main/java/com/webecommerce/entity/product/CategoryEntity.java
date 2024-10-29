@@ -1,4 +1,4 @@
-package com.webecommerce.entity;
+package com.webecommerce.entity.product;
 
 import javax.persistence.*;
 import java.util.ArrayList;

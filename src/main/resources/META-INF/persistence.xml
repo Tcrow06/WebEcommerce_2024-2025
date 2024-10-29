@@ -2,16 +2,21 @@
              version="2.2">
     <persistence-unit name="ecommerce" transaction-type="RESOURCE_LOCAL">
 
-        <class>com.webecommerce.entity.ProductEntity</class>
-        <class>com.webecommerce.entity.ProductVariantEntity</class>
-        <class>com.webecommerce.entity.CategoryEntity</class>
-        <class>com.webecommerce.entity.BillDiscountEntity</class>
-        <class>com.webecommerce.entity.CustomerDiscountEntity</class>
-        <class>com.webecommerce.entity.ProductDiscountEntity</class>
+        <class>com.webecommerce.entity.product.ProductEntity</class>
+        <class>com.webecommerce.entity.product.ProductVariantEntity</class>
+        <class>com.webecommerce.entity.product.CategoryEntity</class>
+        <class>com.webecommerce.entity.discount.BillDiscountEntity</class>
+        <class>com.webecommerce.entity.discount.ProductDiscountEntity</class>
+
+        <class>com.webecommerce.entity.order.OrderDetailEntity</class>
+        <class>com.webecommerce.entity.order.OrderEntity</class>
+        <class>com.webecommerce.entity.order.OrderInfoEntity</class>
+        <class>com.webecommerce.entity.order.OrderStatusEntity</class>
+        <class>com.webecommerce.entity.order.ReturnOrderEntity</class>
 
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect" />
-            <property name="hibernate.hbm2ddl.auto" value="update" />
+            <property name="hibernate.hbm2ddl.auto" value="create" />
             <property name="hibernate.show_sql" value="true" />
             <property name="hibernate.format_sql" value="true"/>
             <property name="hibernate.use_sql_comments" value="true"/>

@@ -1,9 +1,9 @@
 package com.webecommerce.service;
 
-import com.webecommerce.entity.ProductEntity;
+import com.webecommerce.entity.product.ProductEntity;
 
 import java.util.List;
 
 public interface IProductService {
-    // List<ProductEntity> getAllProducts();
+    List<ProductEntity> getAllProducts();
 }
