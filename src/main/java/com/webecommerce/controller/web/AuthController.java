@@ -8,8 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebServlet(urlPatterns = {"/dang-nhap", "/dang-ky"})
-public class LoginController extends HttpServlet {
+public class AuthController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("/views/web/login.jsp").forward(request,response);
+        request.getRequestDispatcher("/views/auth/signing.jsp").forward(request,response);
     }
 }
