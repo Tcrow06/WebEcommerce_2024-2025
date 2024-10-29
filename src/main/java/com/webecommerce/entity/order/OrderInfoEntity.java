@@ -8,7 +8,7 @@ public class OrderInfoEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Long id;
 
     @Column(name = "recipient")
     private String recipient;
@@ -30,11 +30,11 @@ public class OrderInfoEntity {
         this.order = order;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

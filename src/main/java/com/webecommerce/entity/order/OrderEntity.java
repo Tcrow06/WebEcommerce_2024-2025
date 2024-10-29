@@ -10,7 +10,7 @@ public class OrderEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Long id;
 
     @Column(name = "base_amount")
     private double baseAmount;
@@ -49,11 +49,11 @@ public class OrderEntity {
         this.orderStatuses = orderStatuses;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
