@@ -24,6 +24,14 @@ public class OrderStatusEntity {
     @ManyToOne
     private OrderEntity order;
 
+    public OrderEntity getOrder() {
+        return order;
+    }
+
+    public void setOrder(OrderEntity order) {
+        this.order = order;
+    }
+
     public Long getId() {
         return id;
     }

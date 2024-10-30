@@ -1,5 +1,6 @@
 package com.webecommerce.entity.discount;
 
+import com.webecommerce.entity.order.OrderEntity;
 import com.webecommerce.entity.product.ProductEntity;
 
 import javax.persistence.Entity;
@@ -12,6 +13,19 @@ public class ProductDiscountEntity extends DiscountEntity {
 
     @ManyToOne
     private ProductEntity product;
+
+    @ManyToOne
+    private OrderEntity order;
+
+    @Override
+    public OrderEntity getOrder() {
+        return order;
+    }
+
+    @Override
+    public void setOrder(OrderEntity order) {
+        this.order = order;
+    }
 
     public ProductEntity getProduct() {
         return product;

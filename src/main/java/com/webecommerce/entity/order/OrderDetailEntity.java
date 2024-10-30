@@ -13,9 +13,6 @@ public class OrderDetailEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "end_price")
-    private double endPrice;
-
     @Column(name = "quantity")
     private int quantity;
 
@@ -61,14 +58,6 @@ public class OrderDetailEntity {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
-    }
-
-    public double getEndPrice() {
-        return endPrice;
-    }
-
-    public void setEndPrice(double endPrice) {
-        this.endPrice = endPrice;
     }
 
     public Long getId() {

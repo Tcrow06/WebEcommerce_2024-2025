@@ -1,5 +1,7 @@
 package com.webecommerce.entity.discount;
 
+import com.webecommerce.entity.order.OrderEntity;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -26,6 +28,17 @@ public abstract class DiscountEntity {
 
     @Column(name = "minimum_purchase_quantity")
     private int minimumPurchaseQuantity;
+
+    @ManyToOne
+    private OrderEntity order;
+
+    public OrderEntity getOrder() {
+        return order;
+    }
+
+    public void setOrder(OrderEntity order) {
+        this.order = order;
+    }
 
     public Long getId() {
         return id;

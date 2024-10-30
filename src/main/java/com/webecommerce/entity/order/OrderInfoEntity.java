@@ -1,5 +1,7 @@
 package com.webecommerce.entity.order;
 
+import com.webecommerce.entity.other.AddressEntity;
+
 import javax.persistence.*;
 
 @Entity
@@ -16,11 +18,14 @@ public class OrderInfoEntity {
     @Column(name = "phone")
     private String phone;
 
-    @Column(name = "address")
-    private String address;
+    // 1 - 1 với address
+    @OneToOne
+    @JoinColumn(name = "address")
+    private AddressEntity address;
 
     @OneToOne(mappedBy = "orderInfo")
     private OrderEntity order;
+
 
     public OrderEntity getOrder() {
         return order;
@@ -54,11 +59,11 @@ public class OrderInfoEntity {
         this.phone = phone;
     }
 
-    public String getAddress() {
+    public AddressEntity getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(AddressEntity address) {
         this.address = address;
     }
 }
