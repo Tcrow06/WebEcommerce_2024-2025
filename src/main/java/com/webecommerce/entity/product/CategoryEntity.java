@@ -17,8 +17,7 @@ public class CategoryEntity {
     @Column(name = "name")
     private String name;
 
-    // Danh sách các sản phẩm của thể loại
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "category")
     private List<ProductEntity> products = new ArrayList<>();
 
     public List<ProductEntity> getProducts() {

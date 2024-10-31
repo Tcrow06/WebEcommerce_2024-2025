@@ -23,7 +23,6 @@ public class AddressEntity {
     @Column(name = "city")
     private String city;
 
-    // Mỗi address thuộc về 1 order info
     @OneToOne(mappedBy = "address")
     private OrderInfoEntity orderInfo;
 

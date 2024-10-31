@@ -1,6 +1,7 @@
 package com.webecommerce.entity.order;
 
 import com.webecommerce.entity.other.AddressEntity;
+import com.webecommerce.entity.people.CustomerEntity;
 
 import javax.persistence.*;
 
@@ -18,14 +19,16 @@ public class OrderInfoEntity {
     @Column(name = "phone")
     private String phone;
 
-    // 1 - 1 với address
-    @OneToOne
-    @JoinColumn(name = "address")
-    private AddressEntity address;
-
     @OneToOne(mappedBy = "orderInfo")
     private OrderEntity order;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id", referencedColumnName = "id")
+    private AddressEntity address;
+
+    @ManyToOne
+    @JoinColumn(name = "customer_id", nullable = false)
+    private CustomerEntity customer;
 
     public OrderEntity getOrder() {
         return order;
@@ -33,6 +36,22 @@ public class OrderInfoEntity {
 
     public void setOrder(OrderEntity order) {
         this.order = order;
+    }
+
+    public AddressEntity getAddress() {
+        return address;
+    }
+
+    public void setAddress(AddressEntity address) {
+        this.address = address;
+    }
+
+    public CustomerEntity getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(CustomerEntity customer) {
+        this.customer = customer;
     }
 
     public Long getId() {
@@ -57,13 +76,5 @@ public class OrderInfoEntity {
 
     public void setPhone(String phone) {
         this.phone = phone;
-    }
-
-    public AddressEntity getAddress() {
-        return address;
-    }
-
-    public void setAddress(AddressEntity address) {
-        this.address = address;
     }
 }

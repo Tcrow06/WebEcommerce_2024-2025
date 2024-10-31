@@ -20,8 +20,8 @@ public class OrderStatusEntity {
     @Column(name = "status")
     private EnumOrderStatus status;
 
-    // Mỗi một trạng thái tại một thời điểm chỉ là của riêng một order nào đó
     @ManyToOne
+    @JoinColumn(name = "order_id", nullable = false)
     private OrderEntity order;
 
     public OrderEntity getOrder() {

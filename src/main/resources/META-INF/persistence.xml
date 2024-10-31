@@ -2,9 +2,9 @@
              version="2.2">
     <persistence-unit name="ecommerce" transaction-type="RESOURCE_LOCAL">
 
-        <class>com.webecommerce.entity.product.ProductEntity</class>
-        <class>com.webecommerce.entity.product.ProductVariantEntity</class>
-        <class>com.webecommerce.entity.product.CategoryEntity</class>
+        <class>com.webecommerce.entity.cart.CartItemEntity</class>
+        <class>com.webecommerce.entity.cart.CartEntity</class>
+
         <class>com.webecommerce.entity.discount.BillDiscountEntity</class>
         <class>com.webecommerce.entity.discount.ProductDiscountEntity</class>
 
@@ -15,6 +15,23 @@
         <class>com.webecommerce.entity.order.ReturnOrderEntity</class>
 
         <class>com.webecommerce.entity.other.AddressEntity</class>
+        <class>com.webecommerce.entity.other.SocialAccountEntity</class>
+        <class>com.webecommerce.entity.other.AccountEntity</class>
+        <class>com.webecommerce.entity.other.MessageEntity</class>
+        <class>com.webecommerce.entity.other.NotificationEntity</class>
+        <class>com.webecommerce.entity.other.SearchHistoryEntity</class>
+
+        <class>com.webecommerce.entity.product.ProductEntity</class>
+        <class>com.webecommerce.entity.product.ProductVariantEntity</class>
+        <class>com.webecommerce.entity.product.CategoryEntity</class>
+
+        <class>com.webecommerce.entity.review.ProductReviewEntity</class>
+        <class>com.webecommerce.entity.review.ReviewFeedbackEntity</class>
+
+        <class>com.webecommerce.entity.people.CustomerEntity</class>
+        <class>com.webecommerce.entity.people.OwnerEntity</class>
+
+
 
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect" />

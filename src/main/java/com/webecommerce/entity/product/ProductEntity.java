@@ -32,25 +32,15 @@ public class ProductEntity {
     @Column(name = "description")
     private String description;
 
-    // Danh sách các biến thể của sản phẩm
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    private List<ProductVariantEntity> productVariants = new ArrayList<>();
-
-    // Danh sách các product_discount của sản phẩm này
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    private List<ProductDiscountEntity> productDiscounts = new ArrayList<>();
-
-    // Mỗi một sản phẩm chỉ thuộc một loại
     @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
     private CategoryEntity category;
 
-    public List<ProductVariantEntity> getProductVariants() {
-        return productVariants;
-    }
+    @OneToMany(mappedBy = "product")
+    private List<ProductVariantEntity> productVariants = new ArrayList<>();
 
-    public void setProductVariants(List<ProductVariantEntity> productVariants) {
-        this.productVariants = productVariants;
-    }
+    @OneToMany(mappedBy = "product")
+    private List<ProductDiscountEntity> productDiscounts = new ArrayList<>();
 
     public CategoryEntity getCategory() {
         return category;
@@ -58,6 +48,14 @@ public class ProductEntity {
 
     public void setCategory(CategoryEntity category) {
         this.category = category;
+    }
+
+    public List<ProductVariantEntity> getProductVariants() {
+        return productVariants;
+    }
+
+    public void setProductVariants(List<ProductVariantEntity> productVariants) {
+        this.productVariants = productVariants;
     }
 
     public List<ProductDiscountEntity> getProductDiscounts() {

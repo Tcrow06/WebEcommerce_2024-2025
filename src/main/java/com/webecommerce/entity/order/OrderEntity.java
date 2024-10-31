@@ -2,9 +2,9 @@ package com.webecommerce.entity.order;
 
 import com.webecommerce.entity.discount.BillDiscountEntity;
 import com.webecommerce.entity.discount.ProductDiscountEntity;
+import com.webecommerce.entity.people.CustomerEntity;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Table(name = "[order]")
@@ -18,26 +18,26 @@ public class OrderEntity {
     @Column(name = "shipping_fee")
     private double shippingFee;
 
-    @OneToOne
-    @JoinColumn(name = "order_info_id")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "bill_discount_id", referencedColumnName = "id")
+    private BillDiscountEntity billDiscount;
+
+    @OneToMany(mappedBy = "order")
+    private List<ProductDiscountEntity> productDiscounts;
+
+    @OneToMany(mappedBy = "order")
+    private List<OrderStatusEntity> orderStatuses;
+
+    @OneToMany(mappedBy = "order")
+    private List<OrderDetailEntity> orderDetails;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_info_id", referencedColumnName = "id")
     private OrderInfoEntity orderInfo;
 
-    // Danh sách các chi tiết order
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<OrderDetailEntity> orderDetails = new ArrayList<>();
-
-    // Danh sách status của order này
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<OrderStatusEntity> orderStatuses = new ArrayList<>();
-
-    // Danh sách các vouher
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<ProductDiscountEntity> productDiscounts = new ArrayList<>();
-
-    // Mỗi order sẽ được 1 cái bill discount
-    @OneToOne
-    @JoinColumn(name = "bill_discount")
-    private BillDiscountEntity billDiscount;
+    @ManyToOne
+    @JoinColumn(name = "customer_id", nullable = false)
+    private CustomerEntity customer;
 
     public BillDiscountEntity getBillDiscount() {
         return billDiscount;
@@ -55,12 +55,12 @@ public class OrderEntity {
         this.productDiscounts = productDiscounts;
     }
 
-    public OrderInfoEntity getOrderInfo() {
-        return orderInfo;
+    public List<OrderStatusEntity> getOrderStatuses() {
+        return orderStatuses;
     }
 
-    public void setOrderInfo(OrderInfoEntity orderInfo) {
-        this.orderInfo = orderInfo;
+    public void setOrderStatuses(List<OrderStatusEntity> orderStatuses) {
+        this.orderStatuses = orderStatuses;
     }
 
     public List<OrderDetailEntity> getOrderDetails() {
@@ -71,12 +71,20 @@ public class OrderEntity {
         this.orderDetails = orderDetails;
     }
 
-    public List<OrderStatusEntity> getOrderStatuses() {
-        return orderStatuses;
+    public OrderInfoEntity getOrderInfo() {
+        return orderInfo;
     }
 
-    public void setOrderStatuses(List<OrderStatusEntity> orderStatuses) {
-        this.orderStatuses = orderStatuses;
+    public void setOrderInfo(OrderInfoEntity orderInfo) {
+        this.orderInfo = orderInfo;
+    }
+
+    public CustomerEntity getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(CustomerEntity customer) {
+        this.customer = customer;
     }
 
     public Long getId() {

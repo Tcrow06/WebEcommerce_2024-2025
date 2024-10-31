@@ -1,6 +1,7 @@
 package com.webecommerce.entity.order;
 
 import com.webecommerce.entity.product.ProductVariantEntity;
+import com.webecommerce.entity.review.ProductReviewEntity;
 
 import javax.persistence.*;
 import java.util.List;
@@ -16,17 +17,18 @@ public class OrderDetailEntity {
     @Column(name = "quantity")
     private int quantity;
 
-    // Danh sách các product variant của mỗi order detail
-    @OneToMany(mappedBy = "orderDetail", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "orderDetail")
     private List<ProductVariantEntity> productVariants;
 
-    // Mỗi order detail thuộc về một order duy nhất
-    @ManyToOne
-    private OrderEntity order;
-
-    // Mỗi order detail trả được 1 lần
     @OneToOne(mappedBy = "orderDetail")
     private ReturnOrderEntity returnOrder;
+
+    @ManyToOne
+    @JoinColumn(name = "order_id", nullable = false)
+    private OrderEntity order;
+
+    @OneToMany(mappedBy = "orderDetail")
+    private List<ProductReviewEntity> productReviews;
 
     public List<ProductVariantEntity> getProductVariants() {
         return productVariants;
@@ -34,6 +36,14 @@ public class OrderDetailEntity {
 
     public void setProductVariants(List<ProductVariantEntity> productVariants) {
         this.productVariants = productVariants;
+    }
+
+    public ReturnOrderEntity getReturnOrder() {
+        return returnOrder;
+    }
+
+    public void setReturnOrder(ReturnOrderEntity returnOrder) {
+        this.returnOrder = returnOrder;
     }
 
     public OrderEntity getOrder() {
@@ -44,12 +54,12 @@ public class OrderDetailEntity {
         this.order = order;
     }
 
-    public ReturnOrderEntity getReturnOrder() {
-        return returnOrder;
+    public List<ProductReviewEntity> getProductReviews() {
+        return productReviews;
     }
 
-    public void setReturnOrder(ReturnOrderEntity returnOrder) {
-        this.returnOrder = returnOrder;
+    public void setProductReviews(List<ProductReviewEntity> productReviews) {
+        this.productReviews = productReviews;
     }
 
     public int getQuantity() {

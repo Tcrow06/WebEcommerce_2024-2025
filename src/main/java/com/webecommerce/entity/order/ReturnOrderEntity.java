@@ -20,9 +20,8 @@ public class ReturnOrderEntity {
     @Column(name = "status")
     private int status;
 
-    // Mỗi return order là của một order detail
-    @OneToOne
-    @JoinColumn(name = "order_detail_id")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_detail_id", referencedColumnName = "id")
     private OrderDetailEntity orderDetail;
 
     public OrderDetailEntity getOrderDetail() {

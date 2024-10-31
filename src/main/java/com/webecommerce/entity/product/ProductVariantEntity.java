@@ -1,9 +1,13 @@
 package com.webecommerce.entity.product;
 
 import com.webecommerce.constant.EnumProductStatus;
+import com.webecommerce.entity.cart.CartItemEntity;
 import com.webecommerce.entity.order.OrderDetailEntity;
+import com.webecommerce.entity.review.ProductReviewEntity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "product_variant")
@@ -30,13 +34,20 @@ public class ProductVariantEntity {
     @Column(name = "quantity")
     private int quantity;
 
-    // Mỗi một biến thể chỉ thuộc về một sản phẩm
     @ManyToOne
+    @JoinColumn(name = "product_id", nullable = false)
     private ProductEntity product;
 
-    // Mỗi một biến thể chỉ thuộc về một order (là duy nhất)
     @ManyToOne
+    @JoinColumn(name = "order_detail_id")
     private OrderDetailEntity orderDetail;
+
+    @ManyToOne
+    @JoinColumn(name = "cart_item_id")
+    private CartItemEntity cartItem;
+
+    @OneToMany(mappedBy = "productVariant")
+    private List<ProductReviewEntity> productReviews = new ArrayList<>();
 
     public ProductEntity getProduct() {
         return product;
@@ -54,12 +65,20 @@ public class ProductVariantEntity {
         this.orderDetail = orderDetail;
     }
 
-    public ProductEntity getProductEntity() {
-        return product;
+    public CartItemEntity getCartItem() {
+        return cartItem;
     }
 
-    public void setProductEntity(ProductEntity product) {
-        this.product = product;
+    public void setCartItem(CartItemEntity cartItem) {
+        this.cartItem = cartItem;
+    }
+
+    public List<ProductReviewEntity> getProductReviews() {
+        return productReviews;
+    }
+
+    public void setProductReviews(List<ProductReviewEntity> productReviews) {
+        this.productReviews = productReviews;
     }
 
     public Long getId() {
