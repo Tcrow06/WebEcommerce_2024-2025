@@ -6,6 +6,6 @@
 </head>
 <body>
 <dec:body/>
-
+<script src="<c:url value='/static/web/js/token/refreshToken.js'/> "></script>
 </body>
 </html>

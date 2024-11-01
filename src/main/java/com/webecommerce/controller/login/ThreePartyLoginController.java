@@ -82,7 +82,7 @@ public class ThreePartyLoginController extends HttpServlet {
         if (existingUser == null) {
             existingUser = socialAccountService.save(customerRequest);
         }
-        //Neu da ton tai thi tien hanh update
+        //Neu da ton tai thi tien hanh update chua xu ly
 //        else {
 //            existingUser = new CustomerResponse();
 ////            userModel.setId(existingUser.getId());
