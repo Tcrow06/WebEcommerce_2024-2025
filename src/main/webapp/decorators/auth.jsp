@@ -22,17 +22,17 @@
                         ${message}
                 </div>
             </c:if>
-            <form action="#" class="sign-in-form">
+            <form action="<c:url value='/dang-nhap'/>" class="sign-in-form" method="post">
                 <h2 class="title">Đăng nhập</h2>
                 <div class="input-field">
                     <i class="fas fa-user"></i>
-                    <input type="text" placeholder="Tên đăng nhập" />
+                    <input type="text" placeholder="Tên đăng nhập" id="userName" name="userName" />
                 </div>
                 <div class="input-field">
                     <i class="fas fa-lock"></i>
-                    <input type="password" placeholder="Mật khẩu" />
+                    <input type="password" placeholder="Mật khẩu" id="password" name="password" />
                 </div>
-                <input type="submit" value="Đăng nhập" class="btn solid" />
+                <input type="submit" value="login" class="btn solid" name="action"/>
                 <p class="social-text">Hoặc đăng nhập bằng phương thức khác</p>
                 <div class="social-media">
                     <a href="#" class="social-icon">
