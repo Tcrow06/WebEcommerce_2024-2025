@@ -17,6 +17,7 @@ public class CustomerMapper implements ICustomerMapper {
     public CustomerEntity toCustomerEntity(CustomerRequest customerRequest) {
         CustomerEntity customerEntity = new CustomerEntity();
         customerEntity.setName(customerRequest.getName());
+        customerEntity.setEmail(customerRequest.getEmail());
         return customerEntity;
     }
 
