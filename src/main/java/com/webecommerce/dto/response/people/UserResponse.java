@@ -1,6 +1,6 @@
 package com.webecommerce.dto.response.people;
 
-public class CustomerResponse {
+public class UserResponse {
 
     private Long id;
 
@@ -10,19 +10,6 @@ public class CustomerResponse {
 
     private String phone;
 
-    private  String avatar;
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
 
     public Long getId() {
         return id;
