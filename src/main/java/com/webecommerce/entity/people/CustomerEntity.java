@@ -32,8 +32,11 @@ public class CustomerEntity extends UserEntity {
     @OneToMany(mappedBy = "customer")
     private List<SearchHistoryEntity> searchHistories = new ArrayList<>();
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "account_id", referencedColumnName = "id")
+//    @OneToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "account_id", referencedColumnName = "id")
+//    private AccountEntity account;
+
+    @OneToOne(mappedBy = "customer")
     private AccountEntity account;
 
     @OneToOne(mappedBy = "customer")

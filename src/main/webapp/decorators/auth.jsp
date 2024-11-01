@@ -10,6 +10,7 @@
             crossorigin="anonymous"
     ></script>
     <link href="<c:url value="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="<c:url value="/static/auth/style.css"/>" />
     <title>Đăng nhập và đăng ký</title>
 </head>
@@ -17,11 +18,7 @@
 <div class="container">
     <div class="forms-container">
         <div class="signin-signup">
-            <c:if test="${not empty message}">
-                <div class="alert alert-${alert}">
-                        ${message}
-                </div>
-            </c:if>
+
             <form action="<c:url value='/dang-nhap'/>" class="sign-in-form" method="post">
                 <h2 class="title">Đăng nhập</h2>
                 <div class="input-field">
@@ -32,7 +29,8 @@
                     <i class="fas fa-lock"></i>
                     <input type="password" placeholder="Mật khẩu" id="password" name="password" />
                 </div>
-                <input type="submit" value="login" class="btn solid" name="action"/>
+                <input type="hidden" name="action" value="login" />
+                <input type="submit" value="Đăng nhập" class="btn solid" />
                 <p class="social-text">Hoặc đăng nhập bằng phương thức khác</p>
                 <div class="social-media">
                     <a href="#" class="social-icon">
@@ -42,36 +40,42 @@
                         <i class="fab fa-google"></i>
                     </a>
                 </div>
+                <c:if test="${not empty message}">
+                    <div class="alert alert-${alert}" role="alert">
+                            ${message}
+                    </div>
+                </c:if>
             </form>
-            <form action="#" class="sign-up-form">
+            <form action="<c:url value='/dang-ky'/>" class="sign-up-form" method="post">
                 <h2 class="title">Tạo tài khoản</h2>
 
                 <div class="input-field">
                     <i class="fas fa-user"></i>
-                    <input type="text" placeholder="Họ và tên" />
+                    <input type="text" placeholder="Họ và tên" id="name" name="name"  />
                 </div>
 
                 <div class="input-field">
                     <i class="fas fa-phone"></i>
-                    <input type="tel" placeholder="Số điện thoại" pattern="[0-9]{10}" />
+                    <input type="tel" placeholder="Số điện thoại" pattern="[0-9]{10}" id="phone" name="phone"  />
                 </div>
 
 
                 <div class="input-field">
                     <i class="fas fa-envelope"></i>
-                    <input type="email" placeholder="Email" />
+                    <input type="email" placeholder="Email" id="email" name="email" />
                 </div>
 
                 <div class="input-field">
                     <i class="fas fa-user"></i>
-                    <input type="text" placeholder="Tên đăng nhập" />
+                    <input type="text" placeholder="Tên đăng nhập" name="userName"/>
                 </div>
 
                 <div class="input-field">
                     <i class="fas fa-lock"></i>
-                    <input type="password" placeholder="Mật khẩu" />
+                    <input type="password" placeholder="Mật khẩu" name="password" />
                 </div>
-                <input type="submit" class="btn" value="Đăng ký" />
+                <input type="hidden" name="action" value="register" />
+                <input type="submit" value="Đăng ký" class="btn" />
             </form>
         </div>
     </div>

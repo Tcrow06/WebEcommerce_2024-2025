@@ -5,6 +5,8 @@ import com.webecommerce.dao.impl.AbstractDAO;
 import com.webecommerce.dao.other.IAccountDAO;
 import com.webecommerce.dto.request.other.AccountRequest;
 import com.webecommerce.entity.other.AccountEntity;
+import com.webecommerce.mapper.IAccountMapper;
+import com.webecommerce.mapper.Impl.AccountMapper;
 import com.webecommerce.utils.HibernateUtil;
 
 import javax.persistence.EntityManager;
@@ -13,11 +15,12 @@ import java.util.List;
 
 public class AccountDAODAO extends AbstractDAO<AccountEntity> implements IAccountDAO {
 
+    private IAccountMapper accountMapper = new AccountMapper();
     private EntityManagerFactory entityManagerFactory;
     private EntityManager entityManager;
     public AccountDAODAO() {
         super(AccountEntity.class);
-        this.entityManagerFactory = HibernateUtil.getEmFactory(); // Giả sử bạn có một HibernateUtil
+        this.entityManagerFactory = HibernateUtil.getEmFactory();
         this.entityManager = entityManagerFactory.createEntityManager();
     }
 
@@ -29,25 +32,18 @@ public class AccountDAODAO extends AbstractDAO<AccountEntity> implements IAccoun
         try {
             accountStatus = EnumAccountStatus.valueOf(status.toUpperCase());
         } catch (IllegalArgumentException e) {
-            // Trường hợp giá trị không hợp lệ
-            return null; // Hoặc xử lý theo cách khác tùy theo yêu cầu
+            return null;
         }
 
         List<AccountEntity> resultList = entityManager.createQuery(jpql, AccountEntity.class)
                 .setParameter("username", userName)
                 .setParameter("password", password)
-                .setParameter("status", accountStatus) // Truyền vào giá trị enum
+                .setParameter("status", accountStatus)
                 .getResultList();
 
         if (resultList != null && !resultList.isEmpty()) {
             AccountEntity accountEntity = resultList.get(0);
-            // Ánh xạ từ AccountEntity sang AccountRequest nếu cần
-            AccountRequest accountRequest = new AccountRequest();
-            accountRequest.setUserName(accountEntity.getUsername());
-            accountRequest.setPassword(accountEntity.getPassword());
-            accountRequest.setStatus(accountEntity.getStatus().toString());
-            accountRequest.setRole(accountEntity.getRole().toString());
-            // Thêm các thuộc tính khác nếu cần
+            AccountRequest accountRequest = accountMapper.toAccountRequest(accountEntity);
             return accountRequest;
         }
         return null;

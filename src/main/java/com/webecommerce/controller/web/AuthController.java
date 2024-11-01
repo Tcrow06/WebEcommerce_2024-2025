@@ -1,6 +1,8 @@
 package com.webecommerce.controller.web;
 
 import com.webecommerce.dto.request.other.AccountRequest;
+import com.webecommerce.dto.request.people.CustomerRequest;
+import com.webecommerce.dto.response.people.CustomerResponse;
 import com.webecommerce.service.IAccountService;
 import com.webecommerce.utils.FormUtils;
 import com.webecommerce.utils.SessionUtil;
@@ -34,6 +36,8 @@ public class AuthController extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("utf-8");
+        response.setCharacterEncoding("utf-8");
         String action = request.getParameter("action");
         if(action != null && action.equals("login")) {
             AccountRequest account = FormUtils.toModel(AccountRequest.class, request);
@@ -50,6 +54,19 @@ public class AuthController extends HttpServlet {
             else {
                 response.sendRedirect(request.getContextPath() + "/dang-nhap?action=login&message=username_password_invalid&alert=danger");
             }
+        }
+        else if(action != null && action.equals("register")) {
+            CustomerRequest customerRequest = FormUtils.toModel(CustomerRequest.class, request);
+            CustomerResponse customerResponse = accountService.save(customerRequest);
+            if(customerResponse != null) {
+                response.sendRedirect(request.getContextPath() + "/dang-nhap?action=login&message=register_success&alert=success");
+            }
+            else {
+                response.sendRedirect(request.getContextPath() + "/dang-nhap?action=register&message=register_failed&alert=danger");
+            }
+        }
+        else {
+            System.out.println("Error");
         }
     }
 }
