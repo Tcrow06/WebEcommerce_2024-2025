@@ -38,7 +38,7 @@
                     <a href="#" class="social-icon">
                         <i class="fab fa-facebook-f"></i>
                     </a>
-                    <a href="#" class="social-icon">
+                    <a id="google-id" href="https://accounts.google.com/o/oauth2/auth?scope=email profile openid&redirect_uri=http://localhost:8080/three-party-login&response_type=code&client_id=166848038588-5bre3evlsm652tcp88lrogu6m189s5lb.apps.googleusercontent.com&approval_prompt=force" class="social-icon">
                         <i class="fab fa-google"></i>
                     </a>
                 </div>
@@ -95,5 +95,6 @@
 </div>
 
 <script src="<c:url value="/static/auth/app.js"/>"></script>
+<script src="<c:url value='/static/auth/js/sendDirection.js'/> " type="text/javascript"></script>
 </body>
 </html>

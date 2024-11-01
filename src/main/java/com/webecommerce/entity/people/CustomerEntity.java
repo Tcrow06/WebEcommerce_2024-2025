@@ -36,9 +36,14 @@ public class CustomerEntity extends UserEntity {
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     private AccountEntity account;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "social_account_id", referencedColumnName = "id")
+    @OneToOne(mappedBy = "customer")
     private SocialAccountEntity socialAccount;
+
+//    @OneToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "social_account_id", referencedColumnName = "id")
+//    private SocialAccountEntity socialAccount;
+
+
 
     @OneToMany(mappedBy = "customer")
     private List<ProductReviewEntity> productReviews = new ArrayList<>();
