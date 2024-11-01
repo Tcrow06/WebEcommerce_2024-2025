@@ -17,6 +17,7 @@
 
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
+    <commons-beanutils.version>1.9.3</commons-beanutils.version>
   </properties>
   <dependencies>
     <dependency>
@@ -93,10 +94,42 @@
       <version>5.0.1</version>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/org.jboss.weld.servlet/weld-servlet -->
+    <dependency>
+      <groupId>org.jboss.weld.servlet</groupId>
+      <artifactId>weld-servlet</artifactId>
+      <version>${weld.servlet.version}</version>
+    </dependency>
+
+    <!-- json -->
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>2.13.0</version> <!-- hoặc phiên bản mới hơn -->
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>2.13.0</version> <!-- hoặc phiên bản mới hơn -->
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>2.13.0</version> <!-- hoặc phiên bản mới hơn -->
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.datatype</groupId>
+        <artifactId>jackson-datatype-jsr310</artifactId>
+        <version>2.13.0</version> <!-- hoặc phiên bản mới hơn -->
+      </dependency>
+
+    <!--end json -->
+
+    <!-- https://mvnrepository.com/artifact/commons-beanutils/commons-beanutils -->
     <dependency>
       <groupId>commons-beanutils</groupId>
       <artifactId>commons-beanutils</artifactId>
-      <version>1.9.3</version>
+      <version>${commons-beanutils.version}</version>
     </dependency>
 
   </dependencies>

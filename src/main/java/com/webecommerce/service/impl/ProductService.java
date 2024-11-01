@@ -1,6 +1,6 @@
 package com.webecommerce.service.impl;
 
-import com.webecommerce.dao.IProductDAO;
+import com.webecommerce.dao.product.IProductDAO;
 import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.service.IProductService;
 
@@ -14,6 +14,6 @@ public class ProductService implements IProductService {
 
     @Override
     public List<ProductEntity> getAllProducts() {
-        return productDAO.getAllProduct();
+        return productDAO.findAll();
     }
 }
