@@ -11,24 +11,29 @@
     ></script>
     <link href="<c:url value="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>" rel="stylesheet">
     <link rel="stylesheet" href="<c:url value="/static/auth/style.css"/>" />
-    <title>Sign in & Sign up Form</title>
+    <title>Đăng nhập và đăng ký</title>
 </head>
 <body>
 <div class="container">
     <div class="forms-container">
         <div class="signin-signup">
+            <c:if test="${not empty message}">
+                <div class="alert alert-${alert}">
+                        ${message}
+                </div>
+            </c:if>
             <form action="#" class="sign-in-form">
-                <h2 class="title">Sign in</h2>
+                <h2 class="title">Đăng nhập</h2>
                 <div class="input-field">
                     <i class="fas fa-user"></i>
-                    <input type="text" placeholder="Username" />
+                    <input type="text" placeholder="Tên đăng nhập" />
                 </div>
                 <div class="input-field">
                     <i class="fas fa-lock"></i>
-                    <input type="password" placeholder="Password" />
+                    <input type="password" placeholder="Mật khẩu" />
                 </div>
-                <input type="submit" value="Login" class="btn solid" />
-                <p class="social-text">Or Sign in with social</p>
+                <input type="submit" value="Đăng nhập" class="btn solid" />
+                <p class="social-text">Hoặc đăng nhập bằng phương thức khác</p>
                 <div class="social-media">
                     <a href="#" class="social-icon">
                         <i class="fab fa-facebook-f"></i>
@@ -39,10 +44,10 @@
                 </div>
             </form>
             <form action="#" class="sign-up-form">
-                <h2 class="title">Sign up</h2>
+                <h2 class="title">Tạo tài khoản</h2>
                 <div class="input-field">
                     <i class="fas fa-user"></i>
-                    <input type="text" placeholder="Username" />
+                    <input type="text" placeholder="Tên đăng nhập" />
                 </div>
                 <div class="input-field">
                     <i class="fas fa-envelope"></i>
@@ -50,9 +55,9 @@
                 </div>
                 <div class="input-field">
                     <i class="fas fa-lock"></i>
-                    <input type="password" placeholder="Password" />
+                    <input type="password" placeholder="Mật khẩu" />
                 </div>
-                <input type="submit" class="btn" value="Sign up" />
+                <input type="submit" class="btn" value="Đăng ký" />
             </form>
         </div>
     </div>
@@ -60,27 +65,31 @@
     <div class="panels-container">
         <div class="panel left-panel">
             <div class="content">
-                <h3>Don't you have account?</h3>
+                <h3>Bạn chưa có tài khoản?</h3>
                 <p>
-                    Please register now to browse and order great books on our website
+                    Hãy nhấn nút đăng ký ở bên dưới để có trải nghiệm tốt hơn với trang web
                 </p>
                 <button class="btn transparent" id="sign-up-btn">
-                    Sign up
+                    Đăng ký
                 </button>
             </div>
-            <img src="<c:url value="/static/auth/img/signin.png"/>" class="image" alt="" />
+            <div class="image-container">
+                <img src="/static/auth/img/product-big-2 copy.png" class="image" alt=""/>
+            </div>
         </div>
         <div class="panel right-panel">
             <div class="content">
-                <h3>Create your account</h3>
+                <h3>Bạn đã có tài khoản?</h3>
                 <p>
-                    Create an account to access our exclusive book collection and enjoy seamless ordering.
+                    Hãy nhấn nút đăng nhập với tài khoản đã có sẵn để đến với trang web của chúng tôi
                 </p>
                 <button class="btn transparent" id="sign-in-btn">
-                    Sign in
+                    Đăng nhập
                 </button>
             </div>
-            <img src="<c:url value="/static/auth/img/signup.png"/>" class="image" alt="" />
+            <div class="image-container">
+                <img src="/static/auth/img/a2 - Copy.png" class="image" alt="" />
+            </div>
         </div>
     </div>
 </div>
