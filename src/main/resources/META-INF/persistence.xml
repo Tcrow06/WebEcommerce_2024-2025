@@ -50,7 +50,6 @@
             <property name="hibernate.hikari.idleTimeout" value="30000" />
             <property name="hibernate.hikari.maxLifetime" value="1800000" />
             <property name="hibernate.hikari.connectionTimeout" value="30000" />
-<!--            <property name="hibernate.hikari.leakDetectionThreshold" value="5000" />-->
             <property name="hibernate.hikari.connectionTestQuery" value="SELECT 1" />
         </properties>
     </persistence-unit>

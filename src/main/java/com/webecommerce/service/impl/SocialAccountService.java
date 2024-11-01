@@ -1,9 +1,8 @@
 package com.webecommerce.service.impl;
 
-import com.webecommerce.dao.ISocialAccountDAO;
+import com.webecommerce.dao.other.ISocialAccountDAO;
 import com.webecommerce.dto.request.people.CustomerRequest;
 import com.webecommerce.dto.response.people.CustomerResponse;
-import com.webecommerce.entity.other.AccountEntity;
 import com.webecommerce.entity.other.SocialAccountEntity;
 import com.webecommerce.entity.people.CustomerEntity;
 import com.webecommerce.mapper.ICustomerMapper;
@@ -44,7 +43,7 @@ public class SocialAccountService implements ISocialAccountService {
         CustomerEntity customerEntity = customerMapper.toCustomerEntity(customerRequest);
         SocialAccountEntity socialAccountEntity = SocialAccountMapper.toSocialAccountEntity(customerRequest);
         socialAccountEntity.setCustomer(customerEntity);
-        socialAccountDAO.save(socialAccountEntity);
+        socialAccountDAO.insert(socialAccountEntity);
         return customerMapper.toCustomerResponse(socialAccountEntity.getCustomer());
 
 //        CustomerResponse customerResponse = customerService.save(customerRequest);

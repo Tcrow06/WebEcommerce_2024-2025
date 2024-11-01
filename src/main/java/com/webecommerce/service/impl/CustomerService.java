@@ -1,10 +1,9 @@
 package com.webecommerce.service.impl;
 
-import com.webecommerce.dao.ICustomerDAO;
+import com.webecommerce.dao.people.ICustomerDAO;
 import com.webecommerce.dto.request.people.CustomerRequest;
 import com.webecommerce.dto.response.people.CustomerResponse;
 import com.webecommerce.entity.people.CustomerEntity;
-import com.webecommerce.entity.people.UserEntity;
 import com.webecommerce.mapper.ICustomerMapper;
 import com.webecommerce.service.ICustomerService;
 
@@ -20,7 +19,7 @@ public class CustomerService implements ICustomerService {
     public CustomerResponse save(CustomerRequest customerRequest) {
         CustomerEntity customerEntity = new CustomerEntity();
         customerEntity.setName(customerRequest.getName());
-        customerDAO.save(customerEntity);
+        customerDAO.insert(customerEntity);
         return customerMapper.toCustomerResponse(customerEntity);
     }
 
