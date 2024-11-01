@@ -62,6 +62,8 @@
 <script src="<c:url value="/static/js/mixitup.min.js"/>"></script>
 <script src="<c:url value="/static/js/owl.carousel.min.js"/>"></script>
 <script src="<c:url value="/static/js/main.js"/>"></script>
+
+<%--<script src="<c:url value='/static/auth/js/sendDirection.js'/> " type="text/javascript"></script>--%>
 </body>
 
 </html>

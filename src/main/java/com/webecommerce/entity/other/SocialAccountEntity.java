@@ -11,8 +11,31 @@ public class SocialAccountEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(mappedBy = "socialAccount")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private CustomerEntity customer;
+
+//    @OneToOne(mappedBy = "socialAccount")
+//    private CustomerEntity customer;
+
+    private String ggID;
+    private String fbID;
+
+    public String getGgID() {
+        return ggID;
+    }
+
+    public void setGgID(String ggID) {
+        this.ggID = ggID;
+    }
+
+    public String getFbID() {
+        return fbID;
+    }
+
+    public void setFbID(String fbID) {
+        this.fbID = fbID;
+    }
 
     public Long getId() {
         return id;

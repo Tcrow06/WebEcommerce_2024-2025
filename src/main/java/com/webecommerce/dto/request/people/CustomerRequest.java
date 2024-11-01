@@ -9,6 +9,34 @@ public class CustomerRequest {
 
     private String phone;
 
+    private String avatar;
+    private String ggID;
+    private String fbID;
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getGgID() {
+        return ggID;
+    }
+
+    public void setGgID(String ggID) {
+        this.ggID = ggID;
+    }
+
+    public String getFbID() {
+        return fbID;
+    }
+
+    public void setFbID(String fbID) {
+        this.fbID = fbID;
+    }
+
     public String getName() {
         return name;
     }

@@ -1,6 +1,10 @@
 package com.webecommerce.dao;
 
+import com.webecommerce.dto.request.people.CustomerRequest;
+import com.webecommerce.entity.people.CustomerEntity;
+
 public interface ICustomerDAO {
-    void findByFbID(String fbID);
-    void findByGgID(String ggID);
+
+    CustomerEntity findById(Long id);
+    void save(CustomerEntity customerEntity);
 }
