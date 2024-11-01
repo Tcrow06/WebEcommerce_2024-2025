@@ -23,4 +23,13 @@
   <session-config>
     <tracking-mode>COOKIE</tracking-mode>
   </session-config>
+
+  <filter>
+    <filter-name>loginFilter</filter-name>
+    <filter-class>com.webecommerce.filter.AuthorizationFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>loginFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
 </web-app>

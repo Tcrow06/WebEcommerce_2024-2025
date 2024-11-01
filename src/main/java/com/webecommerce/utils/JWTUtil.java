@@ -20,7 +20,7 @@ import java.util.UUID;
 public class JWTUtil {
     public static final String SECRET = System.getProperty("SECRET");
     public static final long EXPIRATION_TIME = Long.parseLong(System.getProperty("EXPIRATION_TIME"));
-    public static String generateToken(CustomerResponse user, String ROLE) {
+    public static String generateToken(UserResponse user, String ROLE) {
         Algorithm algorithm = Algorithm.HMAC256(SECRET);
         JWTCreator.Builder buildToken = JWT.create()
                 .withClaim("id", user.getId())
