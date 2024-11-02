@@ -38,13 +38,12 @@ public class ProductVariantEntity {
     @JoinColumn(name = "product_id", nullable = false)
     private ProductEntity product;
 
-    @ManyToOne
-    @JoinColumn(name = "order_detail_id")
-    private OrderDetailEntity orderDetail;
 
-    @ManyToOne
-    @JoinColumn(name = "cart_item_id")
-    private CartItemEntity cartItem;
+    @OneToMany(mappedBy = "productVariant")
+    private List<OrderDetailEntity> orderDetails = new ArrayList<>();
+
+    @OneToMany(mappedBy = "productVariant")
+    private List<CartItemEntity> cartItems = new ArrayList<>();
 
     @OneToMany(mappedBy = "productVariant")
     private List<ProductReviewEntity> productReviews = new ArrayList<>();
@@ -53,24 +52,24 @@ public class ProductVariantEntity {
         return product;
     }
 
+    public List<CartItemEntity> getCartItems() {
+        return cartItems;
+    }
+
+    public void setCartItems(List<CartItemEntity> cartItems) {
+        this.cartItems = cartItems;
+    }
+
     public void setProduct(ProductEntity product) {
         this.product = product;
     }
 
-    public OrderDetailEntity getOrderDetail() {
-        return orderDetail;
+    public List<OrderDetailEntity> getOrderDetails() {
+        return orderDetails;
     }
 
-    public void setOrderDetail(OrderDetailEntity orderDetail) {
-        this.orderDetail = orderDetail;
-    }
-
-    public CartItemEntity getCartItem() {
-        return cartItem;
-    }
-
-    public void setCartItem(CartItemEntity cartItem) {
-        this.cartItem = cartItem;
+    public void setOrderDetails(List<OrderDetailEntity> orderDetails) {
+        this.orderDetails = orderDetails;
     }
 
     public List<ProductReviewEntity> getProductReviews() {

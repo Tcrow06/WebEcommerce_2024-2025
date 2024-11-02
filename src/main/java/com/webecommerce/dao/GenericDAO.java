@@ -2,6 +2,7 @@ package com.webecommerce.dao;
 
 import com.webecommerce.dao.impl.AbstractDAO;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 public interface GenericDAO <T> {
