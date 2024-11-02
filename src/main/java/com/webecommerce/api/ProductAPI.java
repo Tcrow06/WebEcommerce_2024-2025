@@ -22,6 +22,8 @@ public class ProductAPI extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding("UTF-8");
+
         ObjectMapper mapper = new ObjectMapper();
         HttpUtils httpUtils =  HttpUtils.of(req.getReader()) ;
         ProductDTO product = httpUtils.toModel(ProductDTO.class);

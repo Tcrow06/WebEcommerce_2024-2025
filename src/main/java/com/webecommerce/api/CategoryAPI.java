@@ -22,6 +22,8 @@ public class CategoryAPI extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding("UTF-8");
+
         ObjectMapper mapper = new ObjectMapper();
         HttpUtils httpUtils =  HttpUtils.of(req.getReader()) ;
         CategoryDTO category = httpUtils.toModel(CategoryDTO.class);

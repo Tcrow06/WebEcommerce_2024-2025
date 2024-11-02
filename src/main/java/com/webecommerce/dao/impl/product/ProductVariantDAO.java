@@ -15,23 +15,22 @@ public class ProductVariantDAO extends AbstractDAO <ProductVariantEntity> implem
         super(ProductVariantEntity.class);
     }
 
-    public ProductVariantEntity getProductVariantByProduct (ProductEntity productEntity) {
+    public ProductVariantEntity getProductVariantByProduct(ProductEntity productEntity) {
         String query = "SELECT e FROM " + ProductVariantEntity.class.getSimpleName() +
-                " e WHERE e.price = (SELECT MIN(pv.price) FROM ProductVariantEntity pv WHERE pv.product = :product)";
+                " e WHERE e.product = :product ORDER BY e.price ASC";
 
         try {
-            return super.entityManager.createQuery(query, ProductVariantEntity.class)
+            return entityManager.createQuery(query, ProductVariantEntity.class)
                     .setParameter("product", productEntity)
-                    .getSingleResult();
+                    .setMaxResults(1) // Giới hạn kết quả về 1
+                    .getSingleResult(); // Lấy kết quả duy nhất
         } catch (NoResultException e) {
             LOGGER.log(Level.WARNING, "Không tìm thấy biến thể sản phẩm nào", e);
-            return null;
-        } catch (NonUniqueResultException e) {
-            LOGGER.log(Level.SEVERE, "Có nhiều hơn một biến thể sản phẩm có giá thấp nhất", e);
             return null;
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Lỗi khi lấy biến thể sản phẩm", e);
             return null;
         }
     }
+
 }
