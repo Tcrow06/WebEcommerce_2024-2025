@@ -1,5 +1,6 @@
 package com.webecommerce.service.impl;
 
+import com.webecommerce.dao.impl.product.ProductDAO;
 import com.webecommerce.dao.product.ICategoryDAO;
 import com.webecommerce.dao.product.IProductDAO;
 import com.webecommerce.dao.product.IProductVariantDAO;
@@ -17,6 +18,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductService implements IProductService {
@@ -33,10 +35,6 @@ public class ProductService implements IProductService {
     @Inject
     private IProductVariantDAO productVariantDAO;
 
-    @Override
-    public List<ProductEntity> getAllProducts() {
-        return productDAO.findAll();
-    }
 
     @Transactional
     public ProductDTO save(ProductDTO product) {
@@ -47,11 +45,30 @@ public class ProductService implements IProductService {
                 categoryDAO.findById(product.getCategory().getId())
         );
 
-        // thiết lập liên e
+        // thiết lập liên kết
         for (ProductVariantEntity productVariant : productEntity.getProductVariants()) {
             productVariant.setProduct(productEntity);
         }
 
         return productMapper.toDTO(productDAO.insert(productEntity));
+    }
+
+    @Override
+    public List<ProductDTO> findAll () {
+        List <ProductDTO> productDTOS = new ArrayList<ProductDTO>();
+
+        List<ProductEntity> productEntities =  productDAO.findAll();
+        for (ProductEntity product : productEntities) {
+            ProductDTO productDTO = productMapper.toDTO(product);
+
+            // lấy productvariant để lấy ảnh và giá (lấy product variant rẻ nhất)
+            ProductVariantEntity productVariant = productVariantDAO.getProductVariantByProduct(product);
+            if (productVariant != null) {
+                productDTO.setPhoto(productVariant.getImageUrl());
+                productDTO.setPrice(productVariant.getPrice());
+            }
+            productDTOS.add(productDTO);
+        }
+        return productDTOS;
     }
 }

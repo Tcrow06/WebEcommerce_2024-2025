@@ -28,6 +28,26 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
 
     private List<ProductVariantDTO> productVariants = new ArrayList<>();
 
+    private String photo;
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    private double price;
+
 
     public CategoryEntity getCategory() {
         return category;
