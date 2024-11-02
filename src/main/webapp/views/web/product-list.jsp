@@ -41,15 +41,19 @@
                                     <div class="card-body">
                                         <div class="shop__sidebar__categories">
                                             <ul class="nice-scroll">
-                                                <li><a href="#">Men (20)</a></li>
-                                                <li><a href="#">Women (20)</a></li>
-                                                <li><a href="#">Bags (20)</a></li>
-                                                <li><a href="#">Clothing (20)</a></li>
-                                                <li><a href="#">Shoes (20)</a></li>
-                                                <li><a href="#">Accessories (20)</a></li>
-                                                <li><a href="#">Kids (20)</a></li>
-                                                <li><a href="#">Kids (20)</a></li>
-                                                <li><a href="#">Kids (20)</a></li>
+                                                <c:forEach var="item" items="${onemodel}">
+                                                    <li><a href="san-pham?action=product_list&category=${item.code}">${item.name}</a></li>
+                                                </c:forEach>
+
+<%--                                                <li><a href="#">Men (20)</a></li>--%>
+<%--                                                <li><a href="#">Women (20)</a></li>--%>
+<%--                                                <li><a href="#">Bags (20)</a></li>--%>
+<%--                                                <li><a href="#">Clothing (20)</a></li>--%>
+<%--                                                <li><a href="#">Shoes (20)</a></li>--%>
+<%--                                                <li><a href="#">Accessories (20)</a></li>--%>
+<%--                                                <li><a href="#">Kids (20)</a></li>--%>
+<%--                                                <li><a href="#">Kids (20)</a></li>--%>
+<%--                                                <li><a href="#">Kids (20)</a></li>--%>
                                             </ul>
                                         </div>
                                     </div>
@@ -217,7 +221,7 @@
                                     <ul class="product__hover">
                                         <li><a href="#"><img src="<c:url value="/static/img/icon/heart.png"/>" alt=""></a></li>
                                         <li><a href="#"><img src="<c:url value="/static/img/icon/compare.png"/>" alt=""> <span>Compare</span></a></li>
-                                        <li><a href="#"><img src="<c:url value="/static/img/icon/search.png"/>" alt=""></a></li>
+                                        <li><a href="san-pham?action=product_detail&id=${item.id}"><img src="<c:url value="/static/img/icon/search.png"/>" alt=""></a></li>
                                     </ul>
                                 </div>
                                 <div class="product__item__text">

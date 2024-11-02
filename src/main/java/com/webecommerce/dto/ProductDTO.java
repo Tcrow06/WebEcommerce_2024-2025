@@ -118,4 +118,5 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
     public void setProductVariants(List<ProductVariantDTO> productVariants) {
         this.productVariants = productVariants;
     }
+
 }
