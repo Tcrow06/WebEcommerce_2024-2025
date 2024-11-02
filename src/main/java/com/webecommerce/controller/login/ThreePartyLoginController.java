@@ -7,6 +7,7 @@ import com.webecommerce.dto.request.people.CustomerRequest;
 import com.webecommerce.dto.response.people.CustomerResponse;
 import com.webecommerce.service.ICustomerService;
 import com.webecommerce.service.ISocialAccountService;
+import com.webecommerce.service.impl.CustomerService;
 import com.webecommerce.utils.JWTUtil;
 
 import javax.inject.Inject;
@@ -28,7 +29,17 @@ public class ThreePartyLoginController extends HttpServlet {
     @Inject
     private ISocialAccountService socialAccountService;
 
+    @Inject
+    private CustomerService customerService;
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = request.getParameter("action");
+        if(action!=null && action.equals("logout-tmp")){
+            JWTUtil.destroyToken(request,response);
+            response.sendRedirect(request.getContextPath() + "/dang-nhap");
+            return;
+        }
+
         String code = request.getParameter("code");
         String state = request.getParameter("state");
         String path;
@@ -44,8 +55,13 @@ public class ThreePartyLoginController extends HttpServlet {
                 if(provider.equals("google")){
                     String accessToken = GoogleLogin.getToken(code);
                     acc = GoogleLogin.getUserInfo(accessToken);
-                }else{
+                }else if(provider.equals("facebook")){
+                    String accessToken = FacebookLogin.getToken(code);
+                    acc = FacebookLogin.getUserInfo(accessToken);
+                }
+                else{
                     System.out.println("Unknown provider: " + provider);
+                    response.sendRedirect(request.getContextPath() + "/dang-nhap?message=khong_hop_le&alert=danger");
                 }
 
                 if(acc !=null){
@@ -60,7 +76,7 @@ public class ThreePartyLoginController extends HttpServlet {
 
             }else {
                 System.out.println("Sate is null");
-                response.sendRedirect(request.getContextPath() + "/dang-nhap");
+                response.sendRedirect(request.getContextPath() + "/dang-nhap?message=loi_server&alert=warning");
                 return;
             }
         }
@@ -75,7 +91,12 @@ public class ThreePartyLoginController extends HttpServlet {
             throws IOException {
         CustomerResponse existingUser;
         if (provider.equals("google")) {
+
+            //Chưa chỉnh sửa nhất quan về thông tin đăng nhập bằng gg
             existingUser = socialAccountService.findByGgID(customerRequest.getGgID());
+            if(existingUser==null){
+                existingUser = customerService.findByEmail(customerRequest.getEmail());
+            }
         } else {
             existingUser = socialAccountService.findByFbID(customerRequest.getFbID());
         }

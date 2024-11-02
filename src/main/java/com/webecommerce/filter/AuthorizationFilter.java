@@ -3,8 +3,12 @@ package com.webecommerce.filter;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.webecommerce.constant.EnumRole;
+import com.webecommerce.dto.response.people.CustomerResponse;
+import com.webecommerce.dto.response.people.UserResponse;
+import com.webecommerce.service.impl.CustomerService;
 import com.webecommerce.utils.JWTUtil;
 
+import javax.inject.Inject;
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.Cookie;
@@ -15,7 +19,8 @@ import java.io.IOException;
 @WebFilter("/loginFilter")
 public class AuthorizationFilter implements Filter {
 
-
+    @Inject
+    private CustomerService customerService;
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
     }
@@ -49,6 +54,17 @@ public class AuthorizationFilter implements Filter {
             throws ServletException, IOException {
         DecodedJWT decodedJWT = JWTUtil.verifyToken(token);
         String role = decodedJWT.getClaim("role").asString();
+        Long id = decodedJWT.getClaim("id").asLong();
+        UserResponse userResponse = null;
+        if(role.equals(EnumRole.CUSTOMER.toString())){
+            userResponse = customerService.findById(id);
+        }
+        if(userResponse == null){
+            request.setAttribute("status", 404);
+            JWTUtil.destroyToken(request,response);
+            response.sendRedirect(request.getContextPath() + "/dang-nhap?message=token_invalid&alert=danger");
+            return;
+        }
         request.setAttribute("status", 200);
         if (url.startsWith("/dang-nhap")||url.startsWith("/dang-ki")) {
             response.sendRedirect(request.getContextPath() + "/");
