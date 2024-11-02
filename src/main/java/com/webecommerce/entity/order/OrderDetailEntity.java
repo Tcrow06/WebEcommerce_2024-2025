@@ -17,8 +17,10 @@ public class OrderDetailEntity {
     @Column(name = "quantity")
     private int quantity;
 
-    @OneToMany(mappedBy = "orderDetail")
-    private List<ProductVariantEntity> productVariants;
+    @ManyToOne
+    @JoinColumn(name = "product_vartiant_id")
+    private ProductVariantEntity productVariant;
+
 
     @OneToOne(mappedBy = "orderDetail")
     private ReturnOrderEntity returnOrder;
@@ -30,12 +32,12 @@ public class OrderDetailEntity {
     @OneToMany(mappedBy = "orderDetail")
     private List<ProductReviewEntity> productReviews;
 
-    public List<ProductVariantEntity> getProductVariants() {
-        return productVariants;
+    public ProductVariantEntity getProductVariant() {
+        return productVariant;
     }
 
-    public void setProductVariants(List<ProductVariantEntity> productVariants) {
-        this.productVariants = productVariants;
+    public void setProductVariant(ProductVariantEntity productVariant) {
+        this.productVariant = productVariant;
     }
 
     public ReturnOrderEntity getReturnOrder() {
