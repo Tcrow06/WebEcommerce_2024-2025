@@ -35,7 +35,7 @@
                 <input type="submit" value="login" class="btn solid" name="action"/>
                 <p class="social-text">Hoặc đăng nhập bằng phương thức khác</p>
                 <div class="social-media">
-                    <a href="#" class="social-icon">
+                    <a id="facebook-id" href="https://www.facebook.com/v20.0/dialog/oauth?client_id=1217837109270713&redirect_uri=http://localhost:8080/three-party-login&scope=email,public_profile" class="social-icon">
                         <i class="fab fa-facebook-f"></i>
                     </a>
                     <a id="google-id" href="https://accounts.google.com/o/oauth2/auth?scope=email profile openid&redirect_uri=http://localhost:8080/three-party-login&response_type=code&client_id=166848038588-5bre3evlsm652tcp88lrogu6m189s5lb.apps.googleusercontent.com&approval_prompt=force" class="social-icon">
