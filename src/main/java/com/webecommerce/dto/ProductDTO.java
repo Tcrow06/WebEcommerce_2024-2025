@@ -24,7 +24,7 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
 
     private String description;
 
-    private CategoryEntity category;
+    private CategoryDTO category;
 
     private List<ProductVariantDTO> productVariants = new ArrayList<>();
 
@@ -49,11 +49,11 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
     private double price;
 
 
-    public CategoryEntity getCategory() {
+    public CategoryDTO getCategory() {
         return category;
     }
 
-    public void setCategory(CategoryEntity category) {
+    public void setCategory(CategoryDTO category) {
         this.category = category;
     }
 

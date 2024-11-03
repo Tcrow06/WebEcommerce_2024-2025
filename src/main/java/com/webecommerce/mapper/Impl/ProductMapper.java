@@ -2,6 +2,7 @@ package com.webecommerce.mapper.Impl;
 
 import com.webecommerce.dto.ProductDTO;
 import com.webecommerce.dto.ProductVariantDTO;
+import com.webecommerce.entity.product.CategoryEntity;
 import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.entity.product.ProductVariantEntity;
 import com.webecommerce.mapper.GenericMapper;
@@ -26,13 +27,6 @@ public class ProductMapper implements GenericMapper <ProductDTO, ProductEntity> 
         dto.setNew(entity.isNew());
         dto.setBrand(entity.getBrand());
         dto.setDescription(entity.getDescription());
-        dto.setCategory(entity.getCategory()); // Assuming CategoryEntity is already set
-
-        // Convert ProductVariantEntities to ProductVariantDTOs
-        List<ProductVariantDTO> productVariants =
-            productVariantMapper.toDTOList(entity.getProductVariants());
-
-        dto.setProductVariants(productVariants);
 
         return dto;
     }
@@ -51,7 +45,10 @@ public class ProductMapper implements GenericMapper <ProductDTO, ProductEntity> 
         entity.setNew(dto.isNew());
         entity.setBrand(dto.getBrand());
         entity.setDescription(dto.getDescription());
-        entity.setCategory(dto.getCategory()); // Assuming CategoryEntity is already set
+
+        CategoryEntity category = new CategoryEntity();
+        category.setId(dto.getId());
+        entity.setCategory(category); // Assuming CategoryEntity is already set
 
         // Convert ProductVariantDTOs to ProductVariantEntities
         List<ProductVariantEntity> productVariants =

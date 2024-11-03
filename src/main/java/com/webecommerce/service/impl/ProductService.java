@@ -99,6 +99,12 @@ public class ProductService implements IProductService {
         ProductEntity productEntity = productDAO.findById(id);
 
         ProductDTO productDTO = productMapper.toDTO(productEntity);
+        for (ProductVariantEntity productVariant : productEntity.getProductVariants()) {
+            productDTO.getProductVariants().add(
+                    productVariantMapper.toDTO(productVariant)
+            );
+        }
+
         return productDTO;
     }
 }
