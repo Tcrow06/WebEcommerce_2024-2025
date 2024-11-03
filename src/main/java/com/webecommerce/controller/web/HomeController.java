@@ -16,11 +16,6 @@ import java.util.List;
 @WebServlet(urlPatterns = {"/trang-chu"})
 public class HomeController extends HttpServlet {
 
-    @Inject
-    private IProductService productService;
-
-    @Inject
-    ICustomerDAO customerDAO;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.getRequestDispatcher("/views/web/home.jsp").forward(request,response);
