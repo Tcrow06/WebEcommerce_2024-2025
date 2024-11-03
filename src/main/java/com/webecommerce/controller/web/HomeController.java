@@ -23,7 +23,6 @@ public class HomeController extends HttpServlet {
     ICustomerDAO customerDAO;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List <CustomerEntity> customers = customerDAO.findAll();
         request.getRequestDispatcher("/views/web/home.jsp").forward(request,response);
     }
 }
