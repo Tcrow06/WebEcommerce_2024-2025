@@ -216,7 +216,6 @@
 
                         <div class="col-lg-4 col-md-6 col-sm-6">
                             <div class="product__item">
-<%--                                <div class="product__item__pic set-bg" data-setbg="<c:url value="/static/img/product/product-2.jpg"/>">--%>
                                 <div class="product__item__pic set-bg" data-setbg="<c:url value="${item.photo}"/>">
                                     <ul class="product__hover">
                                         <li><a href="#"><img src="<c:url value="/static/img/icon/heart.png"/>" alt=""></a></li>

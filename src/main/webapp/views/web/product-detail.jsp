@@ -104,13 +104,13 @@
                         </div>
 
                         <div class="product__details__cart__option">
-                            <div class="quantity">
-                                <div class="pro-qty">
-                                    <input type="text" value="1">
-                                </div>
-                            </div>
-
                             <form>
+                                <div class="quantity">
+                                    <div class="pro-qty">
+                                        <input type="text" value="1">
+                                    </div>
+                                </div>
+
                                 <button id="add-your-cart" href="#" class="primary-btn" style="margin-top: 10px">add to cart</button>
                                 <input type="hidden" name="productId" value="${model.id}">
                                 <input type="hidden" id="productVariantId" name="productVariantId" value="">

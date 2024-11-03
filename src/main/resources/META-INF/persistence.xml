@@ -42,9 +42,9 @@
 
 
             <property name="hibernate.hikari.dataSourceClassName" value="com.mysql.cj.jdbc.MysqlDataSource" />
-            <property name="hibernate.hikari.dataSource.url" value="jdbc:mysql://localhost:3306/webcuoiky" />
-            <property name="hibernate.hikari.dataSource.user" value="root" />
-            <property name="hibernate.hikari.dataSource.password" value="1942004anh" />
+            <property name="hibernate.hikari.dataSource.url" value="${MYSQL_URL}" />
+            <property name="hibernate.hikari.dataSource.user" value="${MYSQL_USERNAME}" />
+            <property name="hibernate.hikari.dataSource.password" value="${MYSQL_PASSWORD}" />
             <property name="hibernate.hikari.maximumPoolSize" value="5" />
             <property name="hibernate.hikari.minimumIdle" value="2" />
             <property name="hibernate.hikari.idleTimeout" value="30000" />
