@@ -6,6 +6,7 @@ import com.webecommerce.utils.HibernateUtil;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 import java.util.logging.Level;
@@ -13,9 +14,9 @@ import java.util.logging.Logger;
 
 public abstract class AbstractDAO<T> implements GenericDAO<T> {
 
-    private static final Logger LOGGER = Logger.getLogger(AbstractDAO.class.getName());
+    protected static final Logger LOGGER = Logger.getLogger(AbstractDAO.class.getName());
 
-    private EntityManager entityManager = HibernateUtil.getEmFactory().createEntityManager();
+    protected EntityManager entityManager = HibernateUtil.getEmFactory().createEntityManager();
     private Class<T> entityClass;
 
     public AbstractDAO(Class<T> entityClass) {
@@ -37,6 +38,24 @@ public abstract class AbstractDAO<T> implements GenericDAO<T> {
         String query = "SELECT e FROM " + entityClass.getSimpleName() + " e";
         try {
             return entityManager.createQuery(query, entityClass).getResultList();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi lấy tất cả các đối tượng", e);
+            return null;
+        }
+    }
+
+    protected List <T> findAllbyQuery(String query) {
+        try {
+            return entityManager.createQuery(query, entityClass).getResultList();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi lấy tất cả các đối tượng", e);
+            return null;
+        }
+    }
+
+    protected T findOneByQuery(String query) {
+        try {
+            return entityManager.createQuery(query, entityClass).getSingleResult();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Lỗi khi lấy tất cả các đối tượng", e);
             return null;
@@ -110,6 +129,4 @@ public abstract class AbstractDAO<T> implements GenericDAO<T> {
             em.close();
         }
     }
-
-
 }
