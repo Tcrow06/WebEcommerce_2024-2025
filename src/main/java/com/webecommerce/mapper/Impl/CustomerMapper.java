@@ -24,6 +24,8 @@ public class CustomerMapper implements ICustomerMapper {
     @Override
     public CustomerResponse toCustomerResponse(CustomerEntity customerEntity) {
         CustomerResponse customerResponse = new CustomerResponse();
+        if(customerEntity==null)
+            return null;
         customerResponse.setId(customerEntity.getId());
         customerResponse.setName(customerEntity.getName());
         customerResponse.setEmail(customerEntity.getEmail());

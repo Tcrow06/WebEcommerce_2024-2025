@@ -25,6 +25,9 @@ public class SocialAccountService implements ISocialAccountService {
 
     @Override
     public CustomerResponse findByFbID(String fbID) {
+        SocialAccountEntity acc = socialAccountDAO.findByFbID(fbID);
+        if(acc !=null)
+            return customerMapper.toCustomerResponse(acc.getCustomer());
         return null;
     }
 

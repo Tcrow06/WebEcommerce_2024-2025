@@ -15,14 +15,24 @@ public class SocialAccountDAO extends AbstractDAO<SocialAccountEntity> implement
     }
     @Override
     public SocialAccountEntity findByFbID(String fbID) {
-        return null;
+        EntityManager em = HibernateUtil.getEmFactory().createEntityManager();
+        SocialAccountEntity result = null;
+        try {
+            String jpql = "SELECT s FROM  SocialAccountEntity  s WHERE s.fbID  = :fbID";
+            TypedQuery<SocialAccountEntity> query = em.createQuery(jpql, SocialAccountEntity.class);
+            query.setParameter("fbID", fbID);
+            result = query.getSingleResult();
+        } catch (NoResultException e) {
+            e.printStackTrace();
+        }finally {
+            em.close();
+        }
+        return result;
     }
 
     @Override
     public SocialAccountEntity findByGgID(String ggID) {
-
         EntityManager em = HibernateUtil.getEmFactory().createEntityManager();
-
         SocialAccountEntity result = null;
         try {
             String jpql = "SELECT s FROM  SocialAccountEntity  s WHERE s.ggID  = :ggID";

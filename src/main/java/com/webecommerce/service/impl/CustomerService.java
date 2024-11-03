@@ -25,6 +25,13 @@ public class CustomerService implements ICustomerService {
 
     @Override
     public CustomerResponse findById(Long id) {
-        return null;
+        CustomerEntity customerEntity = customerDAO.findById(id);
+        return customerMapper.toCustomerResponse(customerEntity);
+    }
+
+    @Override
+    public CustomerResponse findByEmail(String email) {
+        CustomerEntity customerEntity = customerDAO.findByEmail(email);
+        return customerMapper.toCustomerResponse(customerEntity);
     }
 }
