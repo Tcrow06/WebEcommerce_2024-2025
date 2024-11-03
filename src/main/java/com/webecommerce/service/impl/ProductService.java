@@ -27,6 +27,9 @@ public class ProductService implements IProductService {
     private GenericMapper<ProductDTO, ProductEntity> productMapper;
 
     @Inject
+    private GenericMapper<ProductVariantDTO, ProductVariantEntity> productVariantMapper;
+
+    @Inject
     private ICategoryDAO categoryDAO;
 
     @Inject
@@ -70,5 +73,32 @@ public class ProductService implements IProductService {
             productDTOS.add(productDTO);
         }
         return productDTOS;
+    }
+
+    public List<ProductDTO> findProductsByCategoryCode(String categoryCode) {
+        List <ProductEntity> productEntities =  productDAO.findProductsByCategoryCode(categoryCode);
+        if (productEntities != null) {
+            List <ProductDTO> productDTOS = new ArrayList<ProductDTO>();
+            for (ProductEntity product : productEntities) {
+                ProductDTO productDTO = productMapper.toDTO(product);
+
+                // lấy productvariant để lấy ảnh và giá (lấy product variant rẻ nhất)
+                ProductVariantEntity productVariant = productVariantDAO.getProductVariantByProduct(product);
+                if (productVariant != null) {
+                    productDTO.setPhoto(productVariant.getImageUrl());
+                    productDTO.setPrice(productVariant.getPrice());
+                }
+                productDTOS.add(productDTO);
+            }
+            return productDTOS;
+        } else
+            return new ArrayList<>();
+    }
+
+    public ProductDTO getProductById(Long id) {
+        ProductEntity productEntity = productDAO.findById(id);
+
+        ProductDTO productDTO = productMapper.toDTO(productEntity);
+        return productDTO;
     }
 }

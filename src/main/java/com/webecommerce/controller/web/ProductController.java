@@ -2,6 +2,7 @@ package com.webecommerce.controller.web;
 
 import com.webecommerce.constant.ModelConstant;
 import com.webecommerce.dto.ProductDTO;
+import com.webecommerce.service.ICategoryService;
 import com.webecommerce.service.IProductService;
 
 import javax.inject.Inject;
@@ -19,18 +20,32 @@ public class ProductController extends HttpServlet {
     @Inject
     private IProductService productService;
 
+    @Inject
+    private ICategoryService categoryService;
+
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
-        if ("ten-san-pham-o-day".equals(action)) {
-            request.getRequestDispatcher("/views/web/product-detail.jsp").forward(request, response);
-        } else {
-            ProductDTO product = new ProductDTO();
-            product.setResultList(
-                    productService.findAll()
-            );
+        ProductDTO product ;
+        if ("product_detail".equals(action)) {
+            Long id = Long.valueOf(request.getParameter("id"));
+            product = productService.getProductById(id);
 
+            request.setAttribute(ModelConstant.MODEL, product);
+            request.getRequestDispatcher("/views/web/product-detail.jsp").forward(request, response);
+        } else if ("product_list".equals(action)) {
+
+            String category = request.getParameter("category");
+            product = new ProductDTO();
+            if (category != null) {
+                product.setResultList(productService.findProductsByCategoryCode(category));
+            } else {
+                product.setResultList(productService.findAll());
+            }
+
+            request.setAttribute(ModelConstant.MODEL1, categoryService.findAll());
             request.setAttribute(ModelConstant.MODEL,product);
-            request.getRequestDispatcher("/views/web/product-list.jsp").forward(request, response);
-        }
+        } else {}
+        request.getRequestDispatcher("/views/web/product-list.jsp").forward(request, response);
     }
 }

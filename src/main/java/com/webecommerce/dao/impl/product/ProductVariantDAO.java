@@ -32,4 +32,5 @@ public class ProductVariantDAO extends AbstractDAO <ProductVariantEntity> implem
             return null;
         }
     }
+
 }
