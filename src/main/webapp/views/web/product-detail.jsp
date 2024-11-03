@@ -1,6 +1,29 @@
 <%@include file="/common/taglib.jsp"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
+<style>
+    .size-options label {
+        padding: 10px 15px;
+        margin: 0;
+        border: 1px solid #ddd;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .size-options input[type="radio"] {
+        display: none;
+    }
+
+    .size-options input[type="radio"]:checked + label {
+        background-color: #050303;
+        color: #fff;
+    }
+
+    .size-options label:not(:last-child) {
+        border-right: none;
+    }
+</style>
+
 <!-- Shop Details Section Begin -->
 <section class="shop-details">
     <div class="product__details__pic">
@@ -17,38 +40,26 @@
             <div class="row">
                 <div class="col-lg-3 col-md-3">
                     <ul class="nav nav-tabs" role="tablist">
-                        <c:forEach var="item" items="${model.productVariants}">
+                        <c:forEach var="item" items="${model.productVariants}" varStatus="status">
                             <li class="nav-item">
-                                <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab">
-                                    <div class="product__thumb__pic set-bg" data-setbg="<c:url value="${item.imageUrl}"/>">
+                                <a class="nav-link <c:if test="${status.index == 0}">active</c:if>" data-toggle="tab" href="#tabs-${status.index + 1}" role="tab" data-image="${item.imageUrl}">
+                                    <div class="product__thumb__pic set-bg" data-setbg="<c:url value='${item.imageUrl}'/>">
                                     </div>
                                 </a>
                             </li>
                         </c:forEach>
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#tabs-4" role="tab">
-                                <div class="product__thumb__pic set-bg" data-setbg="<c:url value="/static/img/shop-details/thumb-4.png"/>">
-                                    <i class="fa fa-play"></i>
-                                </div>
-                            </a>
-                        </li>
                     </ul>
                 </div>
+
                 <div class="col-lg-6 col-md-9">
                     <div class="tab-content">
-
-                        <div class="tab-pane active" id="tabs-1" role="tabpanel">
-                            <div class="product__details__pic__item">
-                                <img src="<c:url value="${item.imageUrl}"/>" alt="">
+                        <c:forEach var="item" items="${model.productVariants}" varStatus="status">
+                            <div class="tab-pane <c:if test="${status.index == 0}">active</c:if>" id="tabs-${status.index + 1}" role="tabpanel">
+                                <div class="product__details__pic__item">
+                                    <img src="<c:url value='${item.imageUrl}'/>" alt="" id="detail-image">
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="tab-pane" id="tabs-4" role="tabpanel">
-                            <div class="product__details__pic__item">
-                                <img src="<c:url value="/static/img/shop-details/product-big-4.png"/>" alt="">
-                                <a href="https://www.youtube.com/watch?v=8PJ3_p7VqHw&list=RD8PJ3_p7VqHw&start_radio=1" class="video-popup"><i class="fa fa-play"></i></a>
-                            </div>
-                        </div>
+                        </c:forEach>
                     </div>
                 </div>
             </div>
@@ -68,29 +79,46 @@
                             <i class="fa fa-star-o"></i>
                             <span> - 5 Reviews</span>
                         </div>
-                        <h3>$270.00 <span>70.00</span></h3>
+                        <h3 id="price-product">$${model.price} <span>70.00</span></h3>
                         <p>${model.brand}.</p>
                         <div class="product__details__option">
-                            <div class="product__details__option__size">
+                            <div class="product__details__option__size" id="sizeOptions">
                                 <span>Size:</span>
-
-                                <c:forEach var="item" items="${model.productVariants}">
-                                    <label for="${item.size}">${item.size}
-                                        <input type="radio" id="${item.size}">
-                                        <input type="hidden" value="${item.color}">
+                                <c:forEach var="size" items="${model.getSizeList()}">
+                                    <label for="size_${size}">${size}
+                                        <input type="radio" id="size_${size}" name="size" value="${size}">
                                     </label>
                                 </c:forEach>
                             </div>
-                            <div class="product__details__option__color">
+                        </div>
+
+                        <div class="container mt-5 product__details__option">
+                            <span>Color:</span>
+                            <div class="btn-group size-options" role="group" aria-label="Size options">
+                                <c:forEach var="color" items="${model.getColorList()}">
+                                    <input type="radio" class="btn-check" name="color" id="${color}" autocomplete="off" value="${color}">
+                                    <label class="btn btn-outline-secondary" for="${color}">${color}</label>
+                                </c:forEach>
+
                             </div>
                         </div>
+
                         <div class="product__details__cart__option">
                             <div class="quantity">
                                 <div class="pro-qty">
                                     <input type="text" value="1">
                                 </div>
                             </div>
-                            <a href="#" class="primary-btn">add to cart</a>
+
+                            <form>
+                                <button id="add-your-cart" href="#" class="primary-btn" style="margin-top: 10px">add to cart</button>
+                                <input type="hidden" name="productId" value="${model.id}">
+                                <input type="hidden" id="productVariantId" name="productVariantId" value="">
+                            </form>
+
+                            <div id="product-quantity" style="display: none; margin-top: 10px">
+                                <p>34 products available</p>
+                            </div>
                         </div>
                         <div class="product__details__btns__option">
                             <a href="#"><i class="fa fa-heart"></i> add to wishlist</a>
@@ -309,61 +337,66 @@
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-
-        function ProductVariant (size, listColor) {
-            this.size = id
-            this.colors = listColor
-        }
-
-        var productVariantLst = [
-
-        ]
-
-
+        $(document).ready(function () {
+            // Lắng nghe sự kiện click trên các tab
+            $('.nav-link').on('click', function () {
+                // Lấy đường dẫn hình ảnh từ thuộc tính data-image của tab được nhấp
+                var imageUrl = $(this).data('image');
+                // Cập nhật hình ảnh chi tiết
+                $('#detail-image').attr('src', imageUrl);
+            });
+        });
 
 
-        var webs = [
+        $(document).ready(function () {
+                // Hàm gọi API
+                function fetchProduct() {
+                    // Lấy giá trị color và size được chọn
+                    var selectedSize = $('input[name="size"]:checked').val();
+                    var selectedColor = $('input[name="color"]:checked').val();
 
-            new Web("7","Simple java mail project to send emails - How to do it ?",
-                "25th October,2024",
-                "https://github.com/t9tieanh/javamail",
-                "https://tieanh-javamail-production.up.railway.app"),
+                    // Kiểm tra xem cả hai radio đều có giá trị
+                    if (selectedSize && selectedColor) {
+                        $.ajax({
+                            url: 'api-product', // Thay đổi thành API của bạn
+                            method: 'GET',
+                            data: {
+                                id: ${model.id},
+                                color: selectedColor,
+                                size: selectedSize
+                            },
+                            success: function (productVariant) {
+                                if (productVariant.id != -1 && productVariant.quantity > 0) {
+                                    $('#product-quantity p').text(productVariant.quantity + ' products available').css('color','green');
+                                    $('#price-product').text("$"+productVariant.price)
+                                    // Kích hoạt lại button
+                                    $('#add-your-cart').prop('disabled', false).css({
+                                        'opacity': '1',        // Khôi phục độ trong suốt
+                                        'cursor': 'pointer'    // Khôi phục con trỏ chuột
+                                    });
+                                    $('#productVariantId').val(productVariant.id) // gán cho product variant id
+                                } else {
+                                    $('#product-quantity p').text("Product is not available!").css('color', 'red');
+                                    $('#price-product').text("out of stock !")
+                                    $('#add-your-cart').prop('disabled', true).css({
+                                        'opacity': '0.5',      // Làm mờ button
+                                        'cursor': 'not-allowed' // Đổi con trỏ chuột khi hover
+                                    });
+                                }
+                                $('#product-quantity').show(); // Hiện thẻ này
+                            },
+                            error: function (error) {
+                                console.error('Error fetching product:', error);
+                            }
+                        });
+                    }
+                }
 
-            new Web("6","Build a JPA project - How to do it ?",
-                "18th October,2024",
-                "https://github.com/t9tieanh/jpa-project",
-                "https://tieanh-jpaproject-production.up.railway.app"),
-
-            new Web("5","Implement connection pool to create connection in jdbc - How to do it ?",
-                "9th October,2024",
-                "https://github.com/t9tieanh/Connection-pool",
-                "https://tieanh-connectionpool-production.up.railway.app"),
-
-            new Web("4","Create a jdbc application project to execute sql statements - How to do it ?",
-                "3th October,2024",
-                "https://github.com/t9tieanh/SqlQuery",
-                "https://tieanh-sqlquerry-production.up.railway.app/home"),
-
-            new Web("3","Use session in java servlet to create basic shopping cart functionality - How to do it?",
-                "26th September,2024",
-                "https://github.com/t9tieanh/shopping-cart",
-                "https://shopping-cart-deploy-u6i2.onrender.com/shop"),
-
-            new Web("2","Build a basic web using Java servlet - How to do it?",
-                "4th September,2024",
-                "https://github.com/t9tieanh/basic-web",
-                "https://tieanh-deploywebsite-production.up.railway.app/trang-chu"),
-
-            new Web("1","Build a basic web introduce myself - How to do it?",
-                "18th July, 2024 - now",
-                "https://github.com/t9tieanh/tieanh19-infomation",
-                "https://t9tieanh.github.io/tieanh19-infomation")
-        ]
-
-
-
-
-    </script>
-</section>
-<!-- Related Section End -->
+                // Gọi hàm khi người dùng nhấp vào bất kỳ radio nào
+                $('input[name="size"], input[name="color"]').on('change', fetchProduct);
+            });
+        </script>
+    </section>
+    <!-- Related Section End -->

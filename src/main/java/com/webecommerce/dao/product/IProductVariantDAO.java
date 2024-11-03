@@ -6,4 +6,5 @@ import com.webecommerce.entity.product.ProductVariantEntity;
 
 public interface IProductVariantDAO extends GenericDAO <ProductVariantEntity> {
     ProductVariantEntity getProductVariantByProduct (ProductEntity productEntity);
+    ProductVariantEntity getProductVariantByColorAndSize (Long productId, String color, String size);
 }

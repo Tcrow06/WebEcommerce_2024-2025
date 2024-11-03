@@ -33,4 +33,24 @@ public class ProductVariantDAO extends AbstractDAO <ProductVariantEntity> implem
         }
     }
 
+    public ProductVariantEntity getProductVariantByColorAndSize (Long productId, String color, String size) {
+        String query = "SELECT e FROM " + ProductVariantEntity.class.getSimpleName() +
+                " e WHERE e.product.id = :productId and e.color = :color and e.size = :size";
+
+        try {
+            return entityManager.createQuery(query, ProductVariantEntity.class)
+                    .setParameter("productId", productId)
+                    .setParameter("color", color)
+                    .setParameter("size", size)
+                    .setMaxResults(1) // Giới hạn kết quả về 1
+                    .getSingleResult(); // Lấy kết quả duy nhất
+        } catch (NoResultException e) {
+            LOGGER.log(Level.WARNING, "Không tìm thấy biến thể sản phẩm nào", e);
+            return null;
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi lấy biến thể sản phẩm", e);
+            return null;
+        }
+    }
+
 }
