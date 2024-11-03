@@ -6,6 +6,7 @@ import com.webecommerce.dto.request.people.CustomerRequest;
 import com.webecommerce.dto.response.people.CustomerResponse;
 import com.webecommerce.entity.other.AccountEntity;
 import com.webecommerce.entity.people.CustomerEntity;
+import com.webecommerce.exception.DuplicateFieldException;
 import com.webecommerce.mapper.IAccountMapper;
 import com.webecommerce.mapper.ICustomerMapper;
 import com.webecommerce.mapper.Impl.AccountMapper;
@@ -30,6 +31,16 @@ public class AccountService implements IAccountService {
     @Transactional
     @Override
     public CustomerResponse save(CustomerRequest customerRequest) {
+        if (accountDAO.existsByEmail(customerRequest.getEmail())) {
+            throw new DuplicateFieldException("email");
+        }
+        if (accountDAO.existsByPhone(customerRequest.getPhone())) {
+            throw new DuplicateFieldException("phone");
+        }
+        if (accountDAO.existsByUsername(customerRequest.getUserName())) {
+            throw new DuplicateFieldException("username");
+        }
+
         CustomerEntity customerEntity = customerMapper.toCustomerEntityFull(customerRequest);
         AccountEntity accountEntity = accountMapper.toAccountEntity(customerRequest);
         accountEntity.setCustomer(customerEntity);

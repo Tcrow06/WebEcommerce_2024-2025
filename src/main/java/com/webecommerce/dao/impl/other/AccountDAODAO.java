@@ -11,12 +11,16 @@ import com.webecommerce.utils.HibernateUtil;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.util.List;
 
 public class AccountDAODAO extends AbstractDAO<AccountEntity> implements IAccountDAO {
 
     private IAccountMapper accountMapper = new AccountMapper();
     private EntityManagerFactory entityManagerFactory;
+
+    @PersistenceContext
     private EntityManager entityManager;
     public AccountDAODAO() {
         super(AccountEntity.class);
@@ -48,4 +52,32 @@ public class AccountDAODAO extends AbstractDAO<AccountEntity> implements IAccoun
         }
         return null;
     }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        String jpql = "SELECT COUNT(c) FROM CustomerEntity c WHERE c.email = :email";
+        Query query = entityManager.createQuery(jpql);
+        query.setParameter("email", email);
+        Long count = (Long) query.getSingleResult();
+        return count > 0;
+    }
+
+    @Override
+    public boolean existsByPhone(String phone) {
+        String jpql = "SELECT COUNT(c) FROM CustomerEntity c WHERE c.phone = :phone";
+        Query query = entityManager.createQuery(jpql);
+        query.setParameter("phone", phone);
+        Long count = (Long) query.getSingleResult();
+        return count > 0;
+    }
+
+    @Override
+    public boolean existsByUsername(String username) {
+        String jpql = "SELECT COUNT(a) FROM AccountEntity a WHERE a.username = :username";
+        Query query = entityManager.createQuery(jpql);
+        query.setParameter("username", username);
+        Long count = (Long) query.getSingleResult();
+        return count > 0;
+    }
+
 }

@@ -20,6 +20,11 @@
         <div class="signin-signup">
 
             <form action="<c:url value='/dang-nhap'/>" class="sign-in-form" method="post">
+                <c:if test="${not empty message}">
+                    <div class="alert alert-${alert}" role="alert">
+                            ${message}
+                    </div>
+                </c:if>
                 <h2 class="title">Đăng nhập</h2>
                 <div class="input-field">
                     <i class="fas fa-user"></i>
@@ -40,13 +45,13 @@
                         <i class="fab fa-google"></i>
                     </a>
                 </div>
+            </form>
+            <form action="<c:url value='/dang-ky'/>" class="sign-up-form" method="post">
                 <c:if test="${not empty message}">
                     <div class="alert alert-${alert}" role="alert">
                             ${message}
                     </div>
                 </c:if>
-            </form>
-            <form action="<c:url value='/dang-ky'/>" class="sign-up-form" method="post">
                 <h2 class="title">Tạo tài khoản</h2>
 
                 <div class="input-field">
@@ -114,5 +119,20 @@
 
 <script src="<c:url value="/static/auth/app.js"/>"></script>
 <script src="<c:url value='/static/auth/js/sendDirection.js'/> " type="text/javascript"></script>
+
+<script type="text/javascript">
+    (function() {
+        // Check if action is 'register' from the query string
+        let urlParams = new URLSearchParams(window.location.search);
+        let action = urlParams.get('action');
+
+        // If the action is 'register', trigger the registration view
+        if (action === 'register') {
+            document.getElementById('sign-up-btn').click();
+        }
+    })();
+</script>
+
+
 </body>
 </html>
