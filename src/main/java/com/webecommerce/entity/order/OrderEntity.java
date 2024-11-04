@@ -23,9 +23,6 @@ public class OrderEntity {
     private BillDiscountEntity billDiscount;
 
     @OneToMany(mappedBy = "order")
-    private List<ProductDiscountEntity> productDiscounts;
-
-    @OneToMany(mappedBy = "order")
     private List<OrderStatusEntity> orderStatuses;
 
     @OneToMany(mappedBy = "order")
@@ -45,14 +42,6 @@ public class OrderEntity {
 
     public void setBillDiscount(BillDiscountEntity billDiscount) {
         this.billDiscount = billDiscount;
-    }
-
-    public List<ProductDiscountEntity> getProductDiscounts() {
-        return productDiscounts;
-    }
-
-    public void setProductDiscounts(List<ProductDiscountEntity> productDiscounts) {
-        this.productDiscounts = productDiscounts;
     }
 
     public List<OrderStatusEntity> getOrderStatuses() {

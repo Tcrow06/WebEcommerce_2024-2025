@@ -1,41 +1,22 @@
-package com.webecommerce.entity.discount;
+package com.webecommerce.dto;
 
-import com.webecommerce.entity.order.OrderEntity;
-
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.time.LocalDateTime;
 
-@MappedSuperclass
-public abstract class DiscountEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public abstract class DiscountDTO extends BaseDTO <DiscountDTO> {
 
-    @Column(name = "description")
     private String description;
 
-    @Column(name = "start_date")
     private LocalDateTime startDate;
 
-    @Column(name = "end_date")
     private LocalDateTime endDate;
 
-    @Column(name = "discount_percentage")
     private int discountPercentage;
 
-    @Column(name = "maximum_amount")
     private double maximumAmount;
-
-    @Column(name = "minimum_purchase_quantity")
-    private int minimumPurchaseQuantity;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getDescription() {
         return description;
@@ -84,4 +65,7 @@ public abstract class DiscountEntity {
     public void setMinimumPurchaseQuantity(int minimumPurchaseQuantity) {
         this.minimumPurchaseQuantity = minimumPurchaseQuantity;
     }
+
+    private int minimumPurchaseQuantity;
+
 }

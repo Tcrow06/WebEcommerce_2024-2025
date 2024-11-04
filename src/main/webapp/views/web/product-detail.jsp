@@ -476,7 +476,7 @@
 
                 // Gửi yêu cầu AJAX POST
                 $.ajax({
-                    url: '/them-gio-hang',
+                    url: 'them-gio-hang',
                     method: 'POST',
                     data: formData,
                     success: function (response) {
