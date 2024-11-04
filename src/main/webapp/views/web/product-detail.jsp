@@ -99,27 +99,25 @@
                                     <input type="radio" class="btn-check" name="color" id="${color}" autocomplete="off" value="${color}">
                                     <label class="btn btn-outline-secondary" for="${color}">${color}</label>
                                 </c:forEach>
-
                             </div>
                         </div>
 
                         <div class="product__details__cart__option">
-                            <form>
+                            <form id="add-to-cart-form">
                                 <div class="quantity">
                                     <div class="pro-qty">
-                                        <input type="text" value="1">
+                                        <input type="text" value="1" name="quantity" id="quantity">
                                     </div>
                                 </div>
-
-                                <button id="add-your-cart" href="#" class="primary-btn" style="margin-top: 10px">add to cart</button>
+                                <button type="button" id="add-to-cart-btn" class="primary-btn" style="margin-top: 10px">add to cart</button>
                                 <input type="hidden" name="productId" value="${model.id}">
                                 <input type="hidden" id="productVariantId" name="productVariantId" value="">
                             </form>
-
                             <div id="product-quantity" style="display: none; margin-top: 10px">
                                 <p>34 products available</p>
                             </div>
                         </div>
+
                         <div class="product__details__btns__option">
                             <a href="#"><i class="fa fa-heart"></i> add to wishlist</a>
                             <a href="#"><i class="fa fa-exchange"></i> Add To Compare</a>
@@ -368,7 +366,7 @@
                             size: selectedSize
                         },
                         success: function (productVariant) {
-                            if (productVariant.id != -1 && productVariant.quantity > 0) {
+                            if (productVariant.id !== -1 && productVariant.quantity > 0) {
                                 $('#product-quantity p').text(productVariant.quantity + ' products available').css('color','green');
                                 $('#price-product').text("$"+productVariant.price)
                                 // Kích hoạt lại button
@@ -376,7 +374,7 @@
                                     'opacity': '1',        // Khôi phục độ trong suốt
                                     'cursor': 'pointer'    // Khôi phục con trỏ chuột
                                 });
-                                $('#productVariantId').val(productVariant.id) // gán cho product variant id
+                                $('#productVariantId').val(productVariant.id) // Gán cho product variant id
                             } else {
                                 $('#product-quantity p').text("Product is not available!").css('color', 'red');
                                 $('#price-product').text("out of stock !")
@@ -396,6 +394,40 @@
 
             // Gọi hàm khi người dùng nhấp vào bất kỳ radio nào
             $('input[name="size"], input[name="color"]').on('change', fetchProduct);
+        });
+
+
+        // Hàm xử lý sự kiện khi nhấn nút "Thêm vào giỏ hàng"
+        $(document).ready(function () {
+            $('#add-to-cart-btn').on('click', function (e) {
+                e.preventDefault(); // Ngăn chặn việc submit form mặc định
+
+                // Thu thập dữ liệu từ form
+                var formData = {
+                    productId: $('input[name="productId"]').val(),
+                    productVariantId: $('#productVariantId').val(),
+                    quantity: $('#quantity').val()
+                };
+
+                // Kiểm tra nếu productVariantId đã được chọn
+                if (!formData.productVariantId) {
+                    alert("Please select a color and size.");
+                    return;
+                }
+
+                // Gửi yêu cầu AJAX POST
+                $.ajax({
+                    url: '/them-gio-hang',
+                    method: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        alert("Product added to cart successfully!");
+                    },
+                    error: function (error) {
+                        alert("Failed to add product to cart.");
+                    }
+                });
+            });
         });
     </script>
 </section>

@@ -19,19 +19,19 @@ public class CartItemService implements ICartItemService {
     private ProductVariantMapper productVariantMapper;
 
     @Override
-    public HashMap<Long, CartItemDTO> addCart(Long id, HashMap<Long, CartItemDTO> cart) {
+    public HashMap<Long, CartItemDTO> addCart(Long id, int quantity, HashMap<Long, CartItemDTO> cart) {
         CartItemDTO cartItemDTO = new CartItemDTO();
         ProductVariantDTO productVariantDTO = productVariantMapper.toDTO(productVariantDAO.findById(id));
 
         if(productVariantDTO != null && cart.containsKey(id)) {
             cartItemDTO = cart.get(id);
-            cartItemDTO.setQuantity(cartItemDTO.getQuantity() + 1);
+            cartItemDTO.setQuantity(cartItemDTO.getQuantity() + quantity);
             cartItemDTO.setTotalPrice(cartItemDTO.getQuantity() * productVariantDTO.getPrice());
         } else {
             assert productVariantDTO != null;
             cartItemDTO.setProductVariant(productVariantDTO);
-            cartItemDTO.setQuantity(1);
-            cartItemDTO.setTotalPrice(productVariantDTO.getPrice());
+            cartItemDTO.setQuantity(quantity);
+            cartItemDTO.setTotalPrice(productVariantDTO.getPrice() * quantity);
         }
         cart.put(id, cartItemDTO);
         return cart;
@@ -39,12 +39,24 @@ public class CartItemService implements ICartItemService {
 
     @Override
     public HashMap<Long, CartItemDTO> editCart(Long id, int quantity, HashMap<Long, CartItemDTO> cart) {
-        return null;
+
+        ProductVariantDTO productVariantDTO = productVariantMapper.toDTO(productVariantDAO.findById(id));
+        CartItemDTO cartItemDTO = new CartItemDTO();
+        if (cart.containsKey(id)) {
+            cartItemDTO = cart.get(id);
+            cartItemDTO.setQuantity(quantity);
+            cartItemDTO.setTotalPrice(productVariantDTO.getPrice() * quantity);
+        }
+        cart.put(id, cartItemDTO);
+        return cart;
     }
 
     @Override
     public HashMap<Long, CartItemDTO> deleteCart(Long id, HashMap<Long, CartItemDTO> cart) {
-        return null;
+        if (cart.containsKey(id)) {
+            cart.remove(id);
+        }
+        return cart;
     }
 
     @Override

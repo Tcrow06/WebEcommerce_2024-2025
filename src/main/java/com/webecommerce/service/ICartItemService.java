@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 public interface ICartItemService {
 
-    HashMap<Long, CartItemDTO> addCart(Long id, HashMap<Long, CartItemDTO> cart);
+    HashMap<Long, CartItemDTO> addCart(Long id, int quantity, HashMap<Long, CartItemDTO> cart);
 
     HashMap<Long, CartItemDTO> editCart(Long id, int quantity, HashMap<Long, CartItemDTO> cart);
 

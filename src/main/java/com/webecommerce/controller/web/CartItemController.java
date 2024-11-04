@@ -24,12 +24,6 @@ public class CartItemController extends HttpServlet {
         String path = request.getServletPath();
         if (path.equals("/gio-hang")) {
             request.getRequestDispatcher("/views/web/cart.jsp").forward(request, response);
-        } else if (path.startsWith("/them-gio-hang")) {
-            handleAddCart(request, response);
-        } else if (path.startsWith("/sua-gio-hang")) {
-            handleEditCart(request, response);
-        } else if (path.startsWith("/xoa-gio-hang")) {
-            handleRemoveCart(request, response);
         } else {
             response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "Không thể thực hiện thao tác này.");
         }
@@ -37,21 +31,30 @@ public class CartItemController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        String path = request.getServletPath();
+        handleCart(request, response, path);
     }
 
-    private void handleAddCart(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void handleCart(HttpServletRequest request, HttpServletResponse response, String path)
+            throws IOException {
         HttpSession session = request.getSession();
 
-        String idParam = request.getParameter("id");
-        long id = Long.parseLong(idParam);
+        Long productVariantId = Long.parseLong(request.getParameter("productVariantId"));
+        int quantity = Integer.parseInt(request.getParameter("quantity"));
 
         HashMap<Long, CartItemDTO> cart = (HashMap<Long, CartItemDTO>) session.getAttribute("cart");
 
         if (cart == null) {
             cart = new HashMap<>();
         }
-        cart = cartItemService.addCart(id, cart);
+
+        switch (path) {
+            case "/them-gio-hang" -> cart = cartItemService.addCart(productVariantId, quantity, cart);
+            case "/sua-gio-hang" -> cart = cartItemService.editCart(productVariantId, quantity, cart);
+            case "/xoa-gio-hang" -> cart = cartItemService.deleteCart(productVariantId, cart);
+            default ->
+                    response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "Không thể thực hiện thao tác này.");
+        }
 
         session.setAttribute("cart", cart);
         session.setAttribute("totalPrice", cartItemService.getPriceOfCart(cart));
@@ -59,14 +62,6 @@ public class CartItemController extends HttpServlet {
 
         String referer = request.getHeader("referer");
         response.sendRedirect(referer != null ? referer : "/gio-hang");
-    }
-
-    private void handleEditCart(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-    }
-
-    private void handleRemoveCart(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
     }
 
     private Long extractIdFromPath(String pathInfo) {

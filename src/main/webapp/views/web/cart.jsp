@@ -42,11 +42,12 @@
                             <tr>
                                 <td class="product__cart__item">
                                     <div class="product__cart__item__pic">
-                                        <img src="<c:url value="${item.productVariant.imageUrl}.jpg"/>" alt="${item.productVariant.name}">
+                                        <img src="<c:url value="${item.productVariant.imageUrl}"/>" alt="${item.productVariant.name}">
                                     </div>
                                     <div class="product__cart__item__text">
                                         <h6>${item.productVariant.name}</h6>
-                                        <h5>$${item.productVariant.price}</h5>
+                                        <h6>Size: ${item.productVariant.size}</h6>
+                                        <h6>Size: ${item.productVariant.color}</h6>
                                     </div>
                                 </td>
                                 <td class="quantity__item">
@@ -58,7 +59,10 @@
                                 </td>
                                 <td class="cart__price">$ ${item.productVariant.price * item.quantity}</td>
                                 <td class="cart__close">
-                                    <a href="<c:url value='/xoa-gio-hang?id=${itemId}' />"><i class="fa fa-close"></i></a>
+                                    <form action="/xoa-gio-hang" method="post">
+                                        <input type="hidden" id="productVariantId" name="productVariantId" value="${item.productVariant.id}">
+                                        <button type="submit"><i class="fa fa-close"></i></button>
+                                    </form>
                                 </td>
                             </tr>
                         </c:forEach>
@@ -68,7 +72,7 @@
                 <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-6">
                         <div class="continue__btn">
-                            <a href="<c:url value='/san-pham' />">Continue Shopping</a>
+                            <a href="<c:url value='/san-pham?action=product_list' />">Continue Shopping</a>
                         </div>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-6">
