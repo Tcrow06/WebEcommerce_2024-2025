@@ -7,6 +7,7 @@ import com.webecommerce.dto.request.people.CustomerRequest;
 import com.webecommerce.entity.other.AccountEntity;
 import com.webecommerce.entity.other.SocialAccountEntity;
 import com.webecommerce.mapper.IAccountMapper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class AccountMapper implements IAccountMapper {
 
@@ -22,9 +23,10 @@ public class AccountMapper implements IAccountMapper {
 
     @Override
     public AccountEntity toAccountEntity(CustomerRequest customerRequest) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         AccountEntity accountEntity = new AccountEntity();
         accountEntity.setUsername(customerRequest.getUserName());
-        accountEntity.setPassword(customerRequest.getPassword());
+        accountEntity.setPassword(passwordEncoder.encode(customerRequest.getPassword()));
         accountEntity.setRole(EnumRoleAccount.CUSTOMER);
         accountEntity.setStatus(EnumAccountStatus.ACTIVE);
         return accountEntity;

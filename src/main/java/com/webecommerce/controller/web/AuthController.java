@@ -14,6 +14,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ResourceBundle;
@@ -38,6 +39,7 @@ public class AuthController extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
         request.setCharacterEncoding("utf-8");
         response.setCharacterEncoding("utf-8");
         String action = request.getParameter("action");
@@ -54,6 +56,7 @@ public class AuthController extends HttpServlet {
                 }
             }
             else {
+                session.setAttribute("loginData", account);
                 response.sendRedirect(request.getContextPath() + "/dang-nhap?action=login&message=username_password_invalid&alert=danger");
             }
         }
@@ -65,6 +68,7 @@ public class AuthController extends HttpServlet {
                     response.sendRedirect(request.getContextPath() + "/dang-nhap?action=login&message=register_success&alert=success");
                 }
             } catch (DuplicateFieldException e) {
+                session.setAttribute("registrationData", customerRequest);
                 String errorMessage;
                 switch (e.getFieldName()) {
                     case "email":

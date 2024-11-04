@@ -1,3 +1,5 @@
+<%@ page import="com.webecommerce.dto.request.people.CustomerRequest" %>
+<%@ page import="com.webecommerce.dto.request.other.AccountRequest" %>
 <%@ include file="/common/taglib.jsp"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -19,16 +21,21 @@
     <div class="forms-container">
         <div class="signin-signup">
 
+            <%@ page session="true" %>
+            <%
+                AccountRequest account = (AccountRequest) session.getAttribute("loginData");
+            %>
             <form action="<c:url value='/dang-nhap'/>" class="sign-in-form" method="post">
                 <c:if test="${not empty message}">
-                    <div class="alert alert-${alert}" role="alert">
+                    <div class="alert alert-${alert}" role="alert" id="login-error-message">
                             ${message}
                     </div>
                 </c:if>
                 <h2 class="title">Đăng nhập</h2>
                 <div class="input-field">
                     <i class="fas fa-user"></i>
-                    <input type="text" placeholder="Tên đăng nhập" id="userName" name="userName" />
+                    <input type="text" placeholder="Tên đăng nhập" id="userName" name="userName"
+                           value="<%= account != null ? account.getUserName() : "" %>"/>
                 </div>
                 <div class="input-field">
                     <i class="fas fa-lock"></i>
@@ -46,9 +53,15 @@
                     </a>
                 </div>
             </form>
+
+            <%@ page session="true" %>
+            <%
+                CustomerRequest registrationData = (CustomerRequest) session.getAttribute("registrationData");
+            %>
+
             <form action="<c:url value='/dang-ky'/>" class="sign-up-form" method="post">
                 <c:if test="${not empty message}">
-                    <div class="alert alert-${alert}" role="alert">
+                    <div class="alert alert-${alert}" role="alert" id="register-error-message">
                             ${message}
                     </div>
                 </c:if>
@@ -56,23 +69,26 @@
 
                 <div class="input-field">
                     <i class="fas fa-user"></i>
-                    <input type="text" placeholder="Họ và tên" id="name" name="name"  />
+                    <input type="text" placeholder="Họ và tên" id="name" name="name"
+                           value="<%= registrationData != null ? registrationData.getName() : "" %>"/>
                 </div>
 
                 <div class="input-field">
                     <i class="fas fa-phone"></i>
-                    <input type="tel" placeholder="Số điện thoại" pattern="[0-9]{10}" id="phone" name="phone"  />
+                    <input type="tel" placeholder="Số điện thoại" pattern="[0-9]{10}" id="phone" name="phone"
+                           value="<%= registrationData != null ? registrationData.getPhone() : "" %>"/>
                 </div>
-
 
                 <div class="input-field">
                     <i class="fas fa-envelope"></i>
-                    <input type="email" placeholder="Email" id="email" name="email" />
+                    <input type="email" placeholder="Email" id="email" name="email"
+                           value="<%= registrationData != null ? registrationData.getEmail() : "" %>"/>
                 </div>
 
                 <div class="input-field">
                     <i class="fas fa-user"></i>
-                    <input type="text" placeholder="Tên đăng nhập" name="userName"/>
+                    <input type="text" placeholder="Tên đăng nhập" name="userName"
+                           value="<%= registrationData != null ? registrationData.getUserName() : "" %>"/>
                 </div>
 
                 <div class="input-field">
@@ -82,6 +98,15 @@
                 <input type="hidden" name="action" value="register" />
                 <input type="submit" value="Đăng ký" class="btn" />
             </form>
+            <%
+                String queryString = request.getQueryString();
+
+                if (queryString != null && queryString.contains("message=register_success")) {
+                    if (registrationData != null) {
+                        session.removeAttribute("registrationData");
+                    }
+                }
+            %>
         </div>
     </div>
 
@@ -133,6 +158,7 @@
     })();
 </script>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 </body>
 </html>
