@@ -452,7 +452,7 @@
         // Hàm xử lý sự kiện khi nhấn nút "Thêm vào giỏ hàng"
         $(document).ready(function () {
             $('#add-to-cart-btn').on('click', function (e) {
-                e.preventDefault(); // Ngăn chặn việc submit form mặc định
+                e.preventDefault(); // Ngăn chặn submit form mặc định
 
                 // Thu thập dữ liệu từ form
                 var formData = {
@@ -463,7 +463,14 @@
 
                 // Kiểm tra nếu productVariantId đã được chọn
                 if (!formData.productVariantId) {
-                    alert("Please select a color and size.");
+                    alert("Vui lòng chọn kích cỡ và màu sắc.");
+                    return;
+                }
+
+                // Kiểm tra trạng thái sản phẩm có sẵn
+                var productStatus = $('#product-quantity p').text();
+                if (productStatus.includes("Product is not available!") || productStatus.includes("not available!")) {
+                    alert("Sản phẩm không có sẵn. Không thể thêm vào giỏ hàng.");
                     return;
                 }
 
@@ -473,10 +480,11 @@
                     method: 'POST',
                     data: formData,
                     success: function (response) {
-                        alert("Product added to cart successfully!");
+                        alert("Sản phẩm đã được thêm vào giỏ hàng thành công!");
                     },
                     error: function (error) {
-                        alert("Failed to add product to cart.");
+                        console.error("Lỗi khi thêm sản phẩm vào giỏ hàng:", error);
+                        alert("Không thể thêm sản phẩm vào giỏ hàng.");
                     }
                 });
             });

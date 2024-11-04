@@ -1,5 +1,6 @@
 package com.webecommerce.controller.web;
 
+import com.google.gson.Gson;
 import com.webecommerce.dto.CartItemDTO;
 import com.webecommerce.service.impl.CartItemService;
 
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 @WebServlet(urlPatterns = {"/gio-hang", "/them-gio-hang", "/sua-gio-hang", "/xoa-gio-hang"})
 public class CartItemController extends HttpServlet {
@@ -37,10 +39,17 @@ public class CartItemController extends HttpServlet {
 
     private void handleCart(HttpServletRequest request, HttpServletResponse response, String path)
             throws IOException {
+        // Trả về JSON
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
         HttpSession session = request.getSession();
 
         Long productVariantId = Long.parseLong(request.getParameter("productVariantId"));
-        int quantity = Integer.parseInt(request.getParameter("quantity"));
+        int quantity = 0;
+        if (path.equals("/them-gio-hang") || path.equals("/sua-gio-hang")) {
+            quantity = Integer.parseInt(request.getParameter("quantity"));
+        }
 
         HashMap<Long, CartItemDTO> cart = (HashMap<Long, CartItemDTO>) session.getAttribute("cart");
 
@@ -62,6 +71,12 @@ public class CartItemController extends HttpServlet {
 
         String referer = request.getHeader("referer");
         response.sendRedirect(referer != null ? referer : "/gio-hang");
+
+        // Dữ liệu JSON trả về
+        Map<String, Object> result = new HashMap<>();
+        result.put("totalPrice", session.getAttribute("totalPrice"));
+        result.put("totalQuantity", session.getAttribute("totalQuantity"));
+        response.getWriter().write(new Gson().toJson(result));
     }
 
     private Long extractIdFromPath(String pathInfo) {
