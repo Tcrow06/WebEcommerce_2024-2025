@@ -25,7 +25,8 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-8">
-                <div class="shopping__cart__table">
+                <%-- Thêm id vào để load lại phần này khi thao tác với giỏ hàng --%>
+                <div id="cart-container" class="shopping__cart__table">
                     <table>
                         <thead>
                         <tr>
@@ -53,16 +54,16 @@
                                 <td class="quantity__item">
                                     <div class="quantity">
                                         <div class="pro-qty-2">
-                                            <input type="text" value="${item.quantity}">
+                                            <input type="text" value="${item.quantity}"
+                                                   onchange="updateCart(${item.productVariant.id}, this.value)">
                                         </div>
                                     </div>
                                 </td>
                                 <td class="cart__price">$ ${item.productVariant.price * item.quantity}</td>
                                 <td class="cart__close">
-                                    <form action="/xoa-gio-hang" method="post">
-                                        <input type="hidden" id="productVariantId" name="productVariantId" value="${item.productVariant.id}">
-                                        <button type="submit"><i class="fa fa-close"></i></button>
-                                    </form>
+                                    <a href="javascript:void(0);" onclick="removeFromCart(${item.productVariant.id})">
+                                        <i class="fa fa-close"></i>
+                                    </a>
                                 </td>
                             </tr>
                         </c:forEach>
@@ -94,7 +95,7 @@
                     <h6>Cart total</h6>
                     <ul>
                         <li>Subtotal <span>$ 0</span></li>
-                        <li>Total <span>$ ${sessionScope.totalPrice}</span></li>
+                        <li>Total <span id="total-price">$ ${sessionScope.totalPrice}</span></li>
                     </ul>
                     <a href="<c:url value='/' />" class="primary-btn">Proceed to checkout</a>
                 </div>
@@ -102,4 +103,52 @@
         </div>
     </div>
 </section>
+
+<script>
+    function updateCart(productVariantId, quantity) {
+        $.ajax({
+            type: "POST",
+            url: "/sua-gio-hang",
+            data: { productVariantId: productVariantId, quantity: quantity },
+            success: function(response) {
+                alert("Sửa sản phẩm hàng thành công.");
+                refreshCart();
+            },
+            error: function(xhr) {
+                alert("Không thể cập nhật giỏ hàng.");
+            }
+        });
+    }
+
+    function removeFromCart(productVariantId) {
+        console.log("Deleting productVariantId: ", productVariantId);
+        $.ajax({
+            type: "POST",
+            url: "/xoa-gio-hang",
+            data: { productVariantId: productVariantId },
+            success: function(response) {
+                // Cập nhật giao diện giỏ hàng
+                alert("Xóa sản phẩm khỏi giỏ hàng thành công.");
+                refreshCart();
+            },
+            error: function(xhr) {
+                alert("Không thể xóa sản phẩm khỏi giỏ hàng.");
+            }
+        });
+    }
+
+    function refreshCart() {
+        $.ajax({
+            type: "GET",
+            url: "/gio-hang",
+            success: function(response) {
+                $('#cart-container').html($(response).find('#cart-container').html());
+                $('#total-price').text('$ ' + response.totalPrice);
+            },
+            error: function(xhr) {
+                alert("Không thể tải giỏ hàng.");
+            }
+        });
+    }
+</script>
 <!-- Shopping Cart Section End -->
