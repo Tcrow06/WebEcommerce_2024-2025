@@ -2,12 +2,27 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <style>
+
+    /* CSS cho radio button khi ở trạng thái disabled */
+    input[type="radio"]:disabled + label {
+        opacity: 0.5;  /* Giảm độ trong suốt */
+        pointer-events: none; /* Ngăn không cho người dùng tương tác */
+        color: gray; /* Thay đổi màu chữ để biểu thị trạng thái không khả dụng */
+    }
+
+    .btn-check:disabled + .btn {
+        opacity: 0.5; /* Giảm độ trong suốt cho button */
+        cursor: not-allowed; /* Thay đổi con trỏ chuột khi hover */
+    }
+
+
     .size-options label {
         padding: 10px 15px;
         margin: 0;
         border: 1px solid #ddd;
         cursor: pointer;
         transition: background-color 0.3s ease;
+        font-weight: bold; /* Đặt màu chữ đậm */
     }
 
     .size-options input[type="radio"] {
@@ -15,8 +30,9 @@
     }
 
     .size-options input[type="radio"]:checked + label {
-        background-color: #050303;
+        background-color: #0e0d0d;
         color: #fff;
+        font-weight: bold; /* Làm chữ đậm */
     }
 
     .size-options label:not(:last-child) {
@@ -81,13 +97,12 @@
                         </div>
                         <h3 id="price-product">$${model.price} <span>70.00</span></h3>
                         <p>${model.brand}.</p>
-                        <div class="product__details__option">
-                            <div class="product__details__option__size" id="sizeOptions">
-                                <span>Size:</span>
+                        <div class="container mt-5 product__details__option">
+                            <span>Size:</span>
+                            <div class="btn-group size-options" role="group" aria-label="Size options">
                                 <c:forEach var="size" items="${model.getSizeList()}">
-                                    <label for="size_${size}">${size}
-                                        <input type="radio" id="size_${size}" name="size" value="${size}">
-                                    </label>
+                                    <input type="radio" class="btn-check" name="size" id="${size}" autocomplete="off" value="${size}">
+                                    <label class="btn btn-outline-secondary" for="${size}">${size}</label>
                                 </c:forEach>
                             </div>
                         </div>
@@ -346,29 +361,37 @@
                 $('#detail-image').attr('src', imageUrl);
             });
         });
-
+        var CHECKFECHPRODCUCT = true
 
         $(document).ready(function () {
             // Hàm gọi API
-            function fetchProduct() {
+            function fetchProduct(sizeOrColor) {
+                if (!CHECKFECHPRODCUCT) return
+                $('#product-quantity p').text('');
                 // Lấy giá trị color và size được chọn
                 var selectedSize = $('input[name="size"]:checked').val();
                 var selectedColor = $('input[name="color"]:checked').val();
 
                 // Kiểm tra xem cả hai radio đều có giá trị
-                if (selectedSize && selectedColor) {
-                    $.ajax({
-                        url: 'api-product', // Thay đổi thành API của bạn
-                        method: 'GET',
-                        data: {
-                            id: ${model.id},
-                            color: selectedColor,
-                            size: selectedSize
-                        },
-                        success: function (productVariant) {
+                $.ajax({
+                    url: 'api-product', // Thay đổi thành API của bạn
+                    method: 'GET',
+                    data: {
+                        id: ${model.id},
+                        color: selectedColor,
+                        size: selectedSize,
+                        atributeName : sizeOrColor,
+                    },
+                    success: function (response) {
+                        var colorOrSizeAvailable = response.colorOrSizeAvailable;
+                        updateAvailableOptions(colorOrSizeAvailable,sizeOrColor)
+                        if (selectedSize && selectedColor) {
+                            var productVariant = response.productVariant;
+                            console.log(productVariant)
                             if (productVariant.id !== -1 && productVariant.quantity > 0) {
-                                $('#product-quantity p').text(productVariant.quantity + ' products available').css('color','green');
-                                $('#price-product').text("$"+productVariant.price)
+
+                                $('#product-quantity p').text(productVariant.quantity + ' products available').css('color', 'green');
+                                $('#price-product').text("$" + productVariant.price)
                                 // Kích hoạt lại button
                                 $('#add-your-cart').prop('disabled', false).css({
                                     'opacity': '1',        // Khôi phục độ trong suốt
@@ -382,19 +405,48 @@
                                     'opacity': '0.5',      // Làm mờ button
                                     'cursor': 'not-allowed' // Đổi con trỏ chuột khi hover
                                 });
+
+                                CHECKFECHPRODCUCT = false
+                                if (sizeOrColor == 'color') sizeOrColor = 'size'
+                                else sizeOrColor = 'color'
+                                $('input[name="' + sizeOrColor + '"]').each(function () {
+                                    $(this).prop('checked', false); // Kích hoạt radio button
+                                });
+                                CHECKFECHPRODCUCT = true
                             }
                             $('#product-quantity').show(); // Hiện thẻ này
-                        },
-                        error: function (error) {
-                            console.error('Error fetching product:', error);
                         }
-                    });
-                }
+                    },
+                    error: function (error) {
+                        console.error('Error fetching product:', error);
+                    }
+                });
             }
 
             // Gọi hàm khi người dùng nhấp vào bất kỳ radio nào
-            $('input[name="size"], input[name="color"]').on('change', fetchProduct);
+            $('input[name="size"], input[name="color"]').on('change', function () {
+                fetchProduct(this.name);
+            });
         });
+
+        function updateAvailableOptions(colorOrSizeAvailable, attributeName) {
+            $('input[name="' + attributeName + '"]').each(function () {
+                    $(this).prop('disabled', false); // Kích hoạt radio button
+            });
+
+            if (attributeName == 'color') attributeName = 'size'
+            else attributeName = 'color'
+            // Cập nhật các radio button dựa vào tên thuộc tính
+            $('input[name="' + attributeName + '"]').each(function () {
+                var value = $(this).val();
+                console.log(value);
+                if (colorOrSizeAvailable.includes(value)) {
+                    $(this).prop('disabled', false); // Kích hoạt radio button
+                } else {
+                    $(this).prop('disabled', true); // Vô hiệu hóa radio button
+                }
+            });
+        }
 
 
         // Hàm xử lý sự kiện khi nhấn nút "Thêm vào giỏ hàng"

@@ -19,7 +19,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 
 public class ProductService implements IProductService {
 
@@ -106,5 +108,19 @@ public class ProductService implements IProductService {
         }
 
         return productDTO;
+    }
+
+    public List<String> getListColorBySize (String size, Long productId) {
+        List <String> colorList = productDAO.getListColorBySize(size, productId);
+        if (colorList != null)
+            return colorList;
+        return Collections.emptyList();
+    }
+
+    public List<String> getListSizeByColor (String color, Long productId) {
+        List <String> sizeList = productDAO.getListSizeByColor(color, productId);
+        if (sizeList != null)
+            return sizeList;
+        return Collections.emptyList();
     }
 }

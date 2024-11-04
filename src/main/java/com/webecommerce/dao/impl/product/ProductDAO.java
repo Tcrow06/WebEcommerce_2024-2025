@@ -5,6 +5,7 @@ import com.webecommerce.dao.impl.AbstractDAO;
 import com.webecommerce.dao.product.IProductDAO;
 import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.entity.product.ProductVariantEntity;
+import org.apache.hc.core5.http.io.entity.StringEntity;
 
 import java.util.List;
 import java.util.logging.Level;
@@ -27,4 +28,31 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
             return null;
         }
     }
+
+    public List<String> getListColorBySize (String size, Long productId) {
+        String query = "SELECT p.color FROM ProductVariantEntity p WHERE p.product.id = :id AND p.size = :size";
+        try {
+            return entityManager.createQuery(query, String.class)
+                    .setParameter("id", productId)
+                    .setParameter("size", size)
+                    .getResultList();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error fetching product colors by size and product ID: " + productId, e);
+            return null;
+        }
+    }
+
+    public List<String> getListSizeByColor (String color, Long productId) {
+        String query = "SELECT p.size FROM ProductVariantEntity p WHERE p.product.id = :id AND p.color = :color";
+        try {
+            return entityManager.createQuery(query, String.class)
+                    .setParameter("id", productId)
+                    .setParameter("color", color)
+                    .getResultList();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error fetching product sizes by size and product ID: " + productId, e);
+            return null;
+        }
+    }
+
 }

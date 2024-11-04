@@ -16,6 +16,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @WebServlet(urlPatterns = {"/api-product"})
 public class ProductAPI extends HttpServlet {
@@ -31,15 +35,27 @@ public class ProductAPI extends HttpServlet {
         resp.setContentType("application/json; charset=UTF-8"); // Thiết lập kiểu nội dung và mã hóa
         resp.setCharacterEncoding("UTF-8"); // Thiết lập mã hóa UTF-8 cho phản hồi
 
+        Map<String, Object> responseMap = new HashMap<>();
         try {
             Long idProduct = Long.valueOf(req.getParameter("id"));
             String color = req.getParameter("color");
             String size = req.getParameter("size");
+            String atributenName = req.getParameter("atributeName");
 
-            ProductVariantDTO productVariant = productVariantService.getProductVariantByColorAndSize(idProduct, color, size);
+            if (color != null && size != null) {
+                ProductVariantDTO productVariant = productVariantService.getProductVariantByColorAndSize(idProduct, color, size);
+                responseMap.put("productVariant", productVariant);
+            }
+
+            List<String> colorOrSizeAvaiable;
+            if (atributenName.equals("size"))
+                colorOrSizeAvaiable = productService.getListColorBySize(size, idProduct);
+            else colorOrSizeAvaiable = productService.getListSizeByColor(color, idProduct);
+
+            responseMap.put("colorOrSizeAvailable", colorOrSizeAvaiable);
 
             resp.setStatus(HttpServletResponse.SC_OK);
-            mapper.writeValue(resp.getWriter(), productVariant);
+            mapper.writeValue(resp.getWriter(), responseMap);
 
         } catch (NumberFormatException e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
