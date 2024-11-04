@@ -46,6 +46,10 @@
             <property name="hibernate.hikari.dataSource.user" value="root" />
             <property name="hibernate.hikari.dataSource.password" value="root" />
 
+<!--            <property name="hibernate.hikari.dataSource.url" value="${MYSQL_URL}" />-->
+<!--            <property name="hibernate.hikari.dataSource.user" value="${MYSQL_USERNAME}" />-->
+<!--            <property name="hibernate.hikari.dataSource.password" value="${MYSQL_PASSWORD}" />-->
+
             <property name="hibernate.hikari.maximumPoolSize" value="5" />
             <property name="hibernate.hikari.minimumIdle" value="2" />
             <property name="hibernate.hikari.idleTimeout" value="30000" />

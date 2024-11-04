@@ -1,12 +1,8 @@
 package com.webecommerce.dto;
 
 import com.webecommerce.constant.EnumProductStatus;
-import com.webecommerce.entity.discount.ProductDiscountEntity;
-import com.webecommerce.entity.product.CategoryEntity;
-import com.webecommerce.entity.product.ProductEntity;
-import com.webecommerce.entity.product.ProductVariantEntity;
+import com.webecommerce.utils.PairUtils;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -115,8 +111,26 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
         return productVariants;
     }
 
-    public void setProductVariants(List<ProductVariantDTO> productVariants) {
+    public void setProductVariants (List<ProductVariantDTO> productVariants) {
         this.productVariants = productVariants;
     }
 
+
+    public List<String> getColorList() {
+        List<String> colorList = new ArrayList<>();
+        for (ProductVariantDTO productVariantDTO : productVariants) {
+            if (colorList.contains(productVariantDTO.getColor())) continue;
+            colorList.add(productVariantDTO.getColor());
+        }
+        return colorList;
+    }
+
+    public List<String> getSizeList () {
+        List<String> sizeList = new ArrayList<>();
+        for (ProductVariantDTO productVariantDTO : productVariants) {
+            if (sizeList.contains(productVariantDTO.getSize())) continue;
+            sizeList.add(productVariantDTO.getSize());
+        }
+        return sizeList;
+    }
 }
