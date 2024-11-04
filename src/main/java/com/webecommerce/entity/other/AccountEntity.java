@@ -30,7 +30,8 @@ public class AccountEntity {
     @Column(name = "role")
     private EnumRoleAccount role;
 
-    @OneToOne(mappedBy = "account")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private CustomerEntity customer;
 
     @OneToOne(mappedBy = "account")

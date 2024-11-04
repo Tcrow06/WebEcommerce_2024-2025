@@ -1,6 +1,9 @@
 package com.webecommerce.controller.web;
 
 import com.webecommerce.dto.request.other.AccountRequest;
+import com.webecommerce.dto.request.people.CustomerRequest;
+import com.webecommerce.dto.response.people.CustomerResponse;
+import com.webecommerce.exception.DuplicateFieldException;
 import com.webecommerce.service.IAccountService;
 import com.webecommerce.utils.FormUtils;
 import com.webecommerce.utils.SessionUtil;
@@ -11,7 +14,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ResourceBundle;
 
 @WebServlet(urlPatterns = {"/dang-nhap", "/dang-ky"})
@@ -22,7 +27,7 @@ public class AuthController extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
-        if (action != null && action.equals("login")) {
+        if (action != null && (action.equals("login") || (action.equals("register")))) {
             String message = request.getParameter("message");
             String alert = request.getParameter("alert");
             if (message != null && alert != null) {
@@ -34,6 +39,9 @@ public class AuthController extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        request.setCharacterEncoding("utf-8");
+        response.setCharacterEncoding("utf-8");
         String action = request.getParameter("action");
         if(action != null && action.equals("login")) {
             AccountRequest account = FormUtils.toModel(AccountRequest.class, request);
@@ -48,7 +56,35 @@ public class AuthController extends HttpServlet {
                 }
             }
             else {
+                session.setAttribute("loginData", account);
                 response.sendRedirect(request.getContextPath() + "/dang-nhap?action=login&message=username_password_invalid&alert=danger");
+            }
+        }
+        else if(action != null && action.equals("register")) {
+            CustomerRequest customerRequest = FormUtils.toModel(CustomerRequest.class, request);
+            try {
+                CustomerResponse customerResponse = accountService.save(customerRequest);
+                if (customerResponse != null) {
+                    response.sendRedirect(request.getContextPath() + "/dang-nhap?action=login&message=register_success&alert=success");
+                }
+            } catch (DuplicateFieldException e) {
+                session.setAttribute("registrationData", customerRequest);
+                String errorMessage;
+                switch (e.getFieldName()) {
+                    case "email":
+                        errorMessage = "duplicate_email";
+                        break;
+                    case "phone":
+                        errorMessage = "duplicate_phone";
+                        break;
+                    case "username":
+                        errorMessage = "duplicate_username";
+                        break;
+                    default:
+                        errorMessage = "duplicate_information";
+                        break;
+                }
+                response.sendRedirect(request.getContextPath() + "/dang-nhap?action=register&message=" + errorMessage + "&alert=danger");
             }
         }
     }
