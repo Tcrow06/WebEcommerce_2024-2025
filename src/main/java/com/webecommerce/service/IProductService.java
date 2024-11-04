@@ -9,5 +9,5 @@ public interface IProductService {
     List<ProductDTO> findAll ();
     ProductDTO save(ProductDTO product);
     List<ProductDTO> findProductsByCategoryCode(String categoryCode);
-    public ProductDTO getProductById(Long id);
+    ProductDTO getProductById(Long id);
 }

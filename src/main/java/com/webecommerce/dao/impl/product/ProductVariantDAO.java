@@ -1,13 +1,11 @@
 package com.webecommerce.dao.impl.product;
 
-import com.webecommerce.dao.GenericDAO;
 import com.webecommerce.dao.impl.AbstractDAO;
 import com.webecommerce.dao.product.IProductVariantDAO;
 import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.entity.product.ProductVariantEntity;
 
 import javax.persistence.NoResultException;
-import javax.persistence.NonUniqueResultException;
 import java.util.logging.Level;
 
 public class ProductVariantDAO extends AbstractDAO <ProductVariantEntity> implements IProductVariantDAO {
@@ -29,6 +27,22 @@ public class ProductVariantDAO extends AbstractDAO <ProductVariantEntity> implem
             return null;
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Lỗi khi lấy biến thể sản phẩm", e);
+            return null;
+        }
+    }
+
+    public ProductVariantEntity getProductVariantById(Long id) {
+        String query = "SELECT e FROM " + ProductVariantEntity.class.getSimpleName() + " e WHERE e.id = :id";
+
+        try {
+            return entityManager.createQuery(query, ProductVariantEntity.class)
+                    .setParameter("id", id)
+                    .getSingleResult(); // Lấy kết quả duy nhất
+        } catch (NoResultException e) {
+            LOGGER.log(Level.WARNING, "Không tìm thấy biến thể sản phẩm với ID: " + id, e);
+            return null;
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi lấy biến thể sản phẩm với ID: " + id, e);
             return null;
         }
     }

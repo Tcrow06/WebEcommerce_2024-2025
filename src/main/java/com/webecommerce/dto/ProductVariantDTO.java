@@ -17,6 +17,16 @@ public class ProductVariantDTO extends BaseDTO <ProductVariantDTO> {
 
     private int quantity;
 
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public double getPrice() {
         return price;
     }
@@ -32,6 +42,7 @@ public class ProductVariantDTO extends BaseDTO <ProductVariantDTO> {
     public void setStatus(EnumProductStatus status) {
         this.status = status;
     }
+
     public void setStatus (String status) {
         this.status = EnumProductStatus.valueOf(status);
     }

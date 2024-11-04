@@ -17,38 +17,25 @@
             <div class="row">
                 <div class="col-lg-3 col-md-3">
                     <ul class="nav nav-tabs" role="tablist">
-                        <c:forEach var="item" items="${model.productVariants}">
+                        <c:forEach var="item" items="${model.productVariants}" varStatus="status">
                             <li class="nav-item">
-                                <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab">
-                                    <div class="product__thumb__pic set-bg" data-setbg="<c:url value="${item.imageUrl}"/>">
+                                <a class="nav-link <c:if test="${status.index == 0}">active</c:if>" data-toggle="tab" href="#tabs-${status.index + 1}" role="tab">
+                                    <div class="product__thumb__pic set-bg" data-setbg="<c:url value="${item.imageUrl}.jpg"/>">
                                     </div>
                                 </a>
                             </li>
                         </c:forEach>
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#tabs-4" role="tab">
-                                <div class="product__thumb__pic set-bg" data-setbg="<c:url value="/static/img/shop-details/thumb-4.png"/>">
-                                    <i class="fa fa-play"></i>
-                                </div>
-                            </a>
-                        </li>
                     </ul>
                 </div>
                 <div class="col-lg-6 col-md-9">
                     <div class="tab-content">
-
-                        <div class="tab-pane active" id="tabs-1" role="tabpanel">
-                            <div class="product__details__pic__item">
-                                <img src="<c:url value="${item.imageUrl}"/>" alt="">
+                        <c:forEach var="item" items="${model.productVariants}" varStatus="status">
+                            <div class="tab-pane <c:if test="${status.index == 0}">active</c:if>" id="tabs-${status.index + 1}" role="tabpanel">
+                                <div class="product__details__pic__item">
+                                    <img src="<c:url value="${item.imageUrl}.jpg"/>" alt="">
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="tab-pane" id="tabs-4" role="tabpanel">
-                            <div class="product__details__pic__item">
-                                <img src="<c:url value="/static/img/shop-details/product-big-4.png"/>" alt="">
-                                <a href="https://www.youtube.com/watch?v=8PJ3_p7VqHw&list=RD8PJ3_p7VqHw&start_radio=1" class="video-popup"><i class="fa fa-play"></i></a>
-                            </div>
-                        </div>
+                        </c:forEach>
                     </div>
                 </div>
             </div>
@@ -73,7 +60,6 @@
                         <div class="product__details__option">
                             <div class="product__details__option__size">
                                 <span>Size:</span>
-
                                 <c:forEach var="item" items="${model.productVariants}">
                                     <label for="${item.size}">${item.size}
                                         <input type="radio" id="${item.size}">
@@ -310,60 +296,6 @@
         </div>
     </div>
     <script>
-
-        function ProductVariant (size, listColor) {
-            this.size = id
-            this.colors = listColor
-        }
-
-        var productVariantLst = [
-
-        ]
-
-
-
-
-        var webs = [
-
-            new Web("7","Simple java mail project to send emails - How to do it ?",
-                "25th October,2024",
-                "https://github.com/t9tieanh/javamail",
-                "https://tieanh-javamail-production.up.railway.app"),
-
-            new Web("6","Build a JPA project - How to do it ?",
-                "18th October,2024",
-                "https://github.com/t9tieanh/jpa-project",
-                "https://tieanh-jpaproject-production.up.railway.app"),
-
-            new Web("5","Implement connection pool to create connection in jdbc - How to do it ?",
-                "9th October,2024",
-                "https://github.com/t9tieanh/Connection-pool",
-                "https://tieanh-connectionpool-production.up.railway.app"),
-
-            new Web("4","Create a jdbc application project to execute sql statements - How to do it ?",
-                "3th October,2024",
-                "https://github.com/t9tieanh/SqlQuery",
-                "https://tieanh-sqlquerry-production.up.railway.app/home"),
-
-            new Web("3","Use session in java servlet to create basic shopping cart functionality - How to do it?",
-                "26th September,2024",
-                "https://github.com/t9tieanh/shopping-cart",
-                "https://shopping-cart-deploy-u6i2.onrender.com/shop"),
-
-            new Web("2","Build a basic web using Java servlet - How to do it?",
-                "4th September,2024",
-                "https://github.com/t9tieanh/basic-web",
-                "https://tieanh-deploywebsite-production.up.railway.app/trang-chu"),
-
-            new Web("1","Build a basic web introduce myself - How to do it?",
-                "18th July, 2024 - now",
-                "https://github.com/t9tieanh/tieanh19-infomation",
-                "https://t9tieanh.github.io/tieanh19-infomation")
-        ]
-
-
-
-
     </script>
 </section>
 <!-- Related Section End -->
