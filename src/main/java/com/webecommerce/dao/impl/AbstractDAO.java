@@ -53,6 +53,20 @@ public abstract class AbstractDAO<T> implements GenericDAO<T> {
         }
     }
 
+    // Tìm kiếm đối tượng theo thuộc tính
+    protected List<T> findByAttribute(String attributeName, Object value) {
+        String query = "SELECT e FROM " + entityClass.getSimpleName() + " e WHERE e." + attributeName + " = :value";
+        try {
+            return entityManager.createQuery(query, entityClass)
+                    .setParameter("value", value)
+                    .getResultList();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi tìm kiếm đối tượng theo thuộc tính: " + attributeName + " với giá trị: " + value, e);
+            return null;
+        }
+    }
+
+
     protected T findOneByQuery(String query) {
         try {
             return entityManager.createQuery(query, entityClass).getSingleResult();

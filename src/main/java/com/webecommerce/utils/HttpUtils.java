@@ -13,7 +13,7 @@ public class HttpUtils {
         this.value = value;
     }
 
-    ///covert từ json string to model
+    // Json string sang model
     public  <T> T toModel (Class <T> tClass) {
         try {
             return new ObjectMapper().readValue(value,tClass) ;
@@ -25,7 +25,7 @@ public class HttpUtils {
     }
 
 
-    public static HttpUtils of (BufferedReader reader) {
+    public static HttpUtils of(BufferedReader reader) {
         StringBuilder sb = new StringBuilder() ;
         try {
             String line;

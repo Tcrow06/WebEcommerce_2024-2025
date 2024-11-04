@@ -4,6 +4,7 @@ import com.webecommerce.constant.EnumProductStatus;
 
 
 public class ProductVariantDTO extends BaseDTO <ProductVariantDTO> {
+    private Long id;
 
     private double price;
 
@@ -16,6 +17,26 @@ public class ProductVariantDTO extends BaseDTO <ProductVariantDTO> {
     private String size;
 
     private int quantity;
+
+    private String name;
+
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public double getPrice() {
         return price;
@@ -32,6 +53,7 @@ public class ProductVariantDTO extends BaseDTO <ProductVariantDTO> {
     public void setStatus(EnumProductStatus status) {
         this.status = status;
     }
+
     public void setStatus (String status) {
         this.status = EnumProductStatus.valueOf(status);
     }

@@ -4,7 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public class SessionUtil {
 
-    //duy tri he thong thong tin cua nguoi dung
+    // Duy trì thông tin trong hệ thống của người dùng
     private static SessionUtil sessionUtil = null;
     public static SessionUtil getInstance() {
         if(sessionUtil == null) {
