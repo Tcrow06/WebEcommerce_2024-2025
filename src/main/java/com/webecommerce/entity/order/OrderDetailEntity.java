@@ -1,5 +1,6 @@
 package com.webecommerce.entity.order;
 
+import com.webecommerce.entity.discount.ProductDiscountEntity;
 import com.webecommerce.entity.product.ProductVariantEntity;
 import com.webecommerce.entity.review.ProductReviewEntity;
 
@@ -18,7 +19,7 @@ public class OrderDetailEntity {
     private int quantity;
 
     @ManyToOne
-    @JoinColumn(name = "product_vartiant_id")
+    @JoinColumn(name = "product_variant_id")
     private ProductVariantEntity productVariant;
 
 
@@ -26,8 +27,13 @@ public class OrderDetailEntity {
     private ReturnOrderEntity returnOrder;
 
     @ManyToOne
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(name = "orderdetail_id", nullable = false)
     private OrderEntity order;
+
+    @ManyToOne
+    @JoinColumn(name = "product_discount_id", nullable = false)
+    private ProductDiscountEntity productDiscount;
+
 
     @OneToMany(mappedBy = "orderDetail")
     private List<ProductReviewEntity> productReviews;
@@ -78,5 +84,13 @@ public class OrderDetailEntity {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public ProductDiscountEntity getProductDiscount() {
+        return productDiscount;
+    }
+
+    public void setProductDiscount(ProductDiscountEntity productDiscount) {
+        this.productDiscount = productDiscount;
     }
 }

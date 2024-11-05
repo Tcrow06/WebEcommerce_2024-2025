@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(urlPatterns = {"/san-pham"})
+@WebServlet(urlPatterns = {"/danh-sach-san-pham"})
 public class ProductController extends HttpServlet {
 
     @Inject
@@ -25,27 +25,18 @@ public class ProductController extends HttpServlet {
 
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String action = request.getParameter("action");
         ProductDTO product ;
-        if ("product_detail".equals(action)) {
-            Long id = Long.valueOf(request.getParameter("id"));
-            product = productService.getProductById(id);
 
-            request.setAttribute(ModelConstant.MODEL, product);
-            request.getRequestDispatcher("/views/web/product-detail.jsp").forward(request, response);
-        } else if ("product_list".equals(action)) {
+        String category = request.getParameter("category");
+        product = new ProductDTO();
+        if (category != null) {
+            product.setResultList(productService.findProductsByCategoryCode(category));
+        } else {
+            product.setResultList(productService.findAll());
+        }
 
-            String category = request.getParameter("category");
-            product = new ProductDTO();
-            if (category != null) {
-                product.setResultList(productService.findProductsByCategoryCode(category));
-            } else {
-                product.setResultList(productService.findAll());
-            }
-
-            request.setAttribute(ModelConstant.MODEL1, categoryService.findAll());
-            request.setAttribute(ModelConstant.MODEL,product);
-        } else {}
+        request.setAttribute(ModelConstant.MODEL1, categoryService.findAll());
+        request.setAttribute(ModelConstant.MODEL,product);
         request.getRequestDispatcher("/views/web/product-list.jsp").forward(request, response);
     }
 }
