@@ -42,7 +42,7 @@
                                         <div class="shop__sidebar__categories">
                                             <ul class="nice-scroll">
                                                 <c:forEach var="item" items="${onemodel}">
-                                                    <li><a href="san-pham?action=product_list&category=${item.code}">${item.name}</a></li>
+                                                    <li><a href="danh-sach-san-pham?category=${item.code}">${item.name}</a></li>
                                                 </c:forEach>
                                             </ul>
                                         </div>
@@ -210,7 +210,7 @@
                                     <ul class="product__hover">
                                         <li><a href="#"><img src="<c:url value="/static/img/icon/heart.png"/>" alt=""></a></li>
                                         <li><a href="#"><img src="<c:url value="/static/img/icon/compare.png"/>" alt=""> <span>Compare</span></a></li>
-                                        <li><a href="san-pham?action=product_detail&id=${item.id}"><img src="<c:url value="/static/img/icon/search.png"/>" alt=""></a></li>
+                                        <li><a href="san-pham?id=${item.id}"><img src="<c:url value="/static/img/icon/search.png"/>" alt=""></a></li>
                                     </ul>
                                 </div>
                                 <div class="product__item__text">
