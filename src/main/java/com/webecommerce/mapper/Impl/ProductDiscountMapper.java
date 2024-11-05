@@ -20,7 +20,7 @@ public class ProductDiscountMapper extends DiscountMapper implements GenericMapp
         if (super.toDTO(productDiscountEntity,productDiscount) == null)
             return null;
 
-        productDiscount.setProduct(productMapper.toDTO(productDiscountEntity.getProduct()));
+        productDiscount.setOutStanding(productDiscountEntity.isOutStanding());
 
         return productDiscount;
     }
@@ -32,7 +32,8 @@ public class ProductDiscountMapper extends DiscountMapper implements GenericMapp
         if (super.toEntity(productDiscountDTO,productDiscountEntity) == null)
             return null;
 
-        productDiscountEntity.getProduct().setId(productDiscountDTO.getProduct().getId());
+        productDiscountEntity.setProduct(productMapper.toEntity(productDiscountDTO.getProduct()));
+        productDiscountEntity.setOutStanding(productDiscountDTO.getIsOutStanding());
 
         return productDiscountEntity;
     }

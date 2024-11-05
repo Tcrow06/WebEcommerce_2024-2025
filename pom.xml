@@ -145,8 +145,9 @@
       <dependency>
         <groupId>com.fasterxml.jackson.datatype</groupId>
         <artifactId>jackson-datatype-jsr310</artifactId>
-        <version>2.13.0</version> <!-- hoặc phiên bản mới hơn -->
+        <version>2.15.0</version> <!-- Use a version compatible with your Jackson version -->
       </dependency>
+
 
     <!--end json -->
 

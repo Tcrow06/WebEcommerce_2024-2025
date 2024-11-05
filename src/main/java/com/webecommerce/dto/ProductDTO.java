@@ -1,6 +1,7 @@
 package com.webecommerce.dto;
 
 import com.webecommerce.constant.EnumProductStatus;
+import com.webecommerce.entity.discount.ProductDiscountEntity;
 import com.webecommerce.utils.PairUtils;
 
 import java.util.ArrayList;
@@ -23,6 +24,9 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
     private CategoryDTO category;
 
     private List<ProductVariantDTO> productVariants = new ArrayList<>();
+
+    private ProductDiscountDTO productDiscount;
+
 
     private String photo;
 
@@ -132,5 +136,13 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
             sizeList.add(productVariantDTO.getSize());
         }
         return sizeList;
+    }
+
+    public ProductDiscountDTO getProductDiscount() {
+        return productDiscount;
+    }
+
+    public void setProductDiscount(ProductDiscountDTO productDiscount) {
+        this.productDiscount = productDiscount;
     }
 }

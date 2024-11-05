@@ -1,6 +1,5 @@
 package com.webecommerce.entity.discount;
 
-import com.webecommerce.entity.order.OrderEntity;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

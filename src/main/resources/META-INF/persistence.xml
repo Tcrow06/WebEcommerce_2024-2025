@@ -35,7 +35,7 @@
 
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect" />
-            <property name="hibernate.hbm2ddl.auto" value="update" />
+            <property name="hibernate.hbm2ddl.auto" value="none" />
             <property name="hibernate.show_sql" value="true" />
             <property name="hibernate.format_sql" value="true"/>
             <property name="hibernate.use_sql_comments" value="true"/>
@@ -45,7 +45,6 @@
             <property name="hibernate.hikari.dataSource.url" value="${MYSQL_URL}" />
             <property name="hibernate.hikari.dataSource.user" value="${MYSQL_USERNAME}" />
             <property name="hibernate.hikari.dataSource.password" value="${MYSQL_PASSWORD}" />
-
             <property name="hibernate.hikari.maximumPoolSize" value="5" />
             <property name="hibernate.hikari.minimumIdle" value="2" />
             <property name="hibernate.hikari.idleTimeout" value="30000" />
