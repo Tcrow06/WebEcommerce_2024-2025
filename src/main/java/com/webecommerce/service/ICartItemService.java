@@ -12,7 +12,7 @@ public interface ICartItemService {
 
     HashMap<Long, CartItemDTO> deleteCart(Long id, HashMap<Long, CartItemDTO> cart);
 
-    public int getQuantityOfCart(HashMap<Long, CartItemDTO> cart);
+    int getQuantityOfCart(HashMap<Long, CartItemDTO> cart);
 
-    public double getPriceOfCart(HashMap<Long, CartItemDTO> cart);
+    double getPriceOfCart(HashMap<Long, CartItemDTO> cart);
 }
