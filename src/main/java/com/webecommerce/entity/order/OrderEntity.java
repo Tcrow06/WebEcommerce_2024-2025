@@ -18,7 +18,7 @@ public class OrderEntity {
     @Column(name = "shipping_fee")
     private double shippingFee;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "bill_discount_id", referencedColumnName = "id")
     private BillDiscountEntity billDiscount;
 

@@ -31,10 +31,10 @@ public class DiscountProductAPI extends HttpServlet {
         ProductDiscountDTO productDiscount = httpUtils.toModel(ProductDiscountDTO.class);
 
         if(productDiscount != null) {
-//            productDiscount = productDiscountService.save(productDiscount);
-//            if(productDiscount != null) {
-//                mapper.writeValue(resp.getWriter(), productDiscount);
-//            } else mapper.writeValue(resp.getWriter(), "error");
+            productDiscount = productDiscountService.save(productDiscount);
+            if(productDiscount != null) {
+                mapper.writeValue(resp.getWriter(), productDiscount);
+            } else mapper.writeValue(resp.getWriter(), "error");
         }
     }
 }

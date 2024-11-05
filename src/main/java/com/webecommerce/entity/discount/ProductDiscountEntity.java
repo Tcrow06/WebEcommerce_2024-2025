@@ -13,14 +13,18 @@ import java.util.List;
 @Table(name = "product_discount")
 public class ProductDiscountEntity extends DiscountEntity {
 
+    public boolean isOutStanding() {
+        return isOutStanding;
+    }
+
     @Column (name = "is_outStanding")
     private boolean isOutStanding ;
 
     @OneToMany(mappedBy = "productDiscount")
     private List<OrderDetailEntity> orderDetails;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id", referencedColumnName = "id")
+
+    @OneToOne(mappedBy = "productDiscount", cascade = CascadeType.ALL)
     private ProductEntity product;
 
     public List<OrderDetailEntity> getOrderDetails() {
