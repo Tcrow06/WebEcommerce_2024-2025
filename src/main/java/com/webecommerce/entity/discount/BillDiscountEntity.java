@@ -16,15 +16,14 @@ public class BillDiscountEntity extends DiscountEntity {
     @Column(name = "invoice_type")
     private String invoiceType;
 
-    @OneToOne(mappedBy = "billDiscount")
+
+    @ManyToOne
     private OrderEntity order;
 
-    @Override
     public OrderEntity getOrder() {
         return order;
     }
 
-    @Override
     public void setOrder(OrderEntity order) {
         this.order = order;
     }
