@@ -41,6 +41,9 @@
                     <i class="fas fa-lock"></i>
                     <input type="password" placeholder="Mật khẩu" id="password" name="password" />
                 </div>
+                <div class="container-action">
+                    <a href="#" class="forgot-password" style="color: #bca58c;">Quên mật khẩu?</a>
+                </div>
                 <input type="hidden" name="action" value="login" />
                 <input type="submit" value="Đăng nhập" class="btn solid" />
                 <p class="social-text">Hoặc đăng nhập bằng phương thức khác</p>

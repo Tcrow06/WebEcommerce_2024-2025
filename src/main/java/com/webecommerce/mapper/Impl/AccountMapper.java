@@ -4,6 +4,7 @@ import com.webecommerce.constant.EnumAccountStatus;
 import com.webecommerce.constant.EnumRoleAccount;
 import com.webecommerce.dto.request.other.AccountRequest;
 import com.webecommerce.dto.request.people.CustomerRequest;
+import com.webecommerce.dto.response.other.AccountResponse;
 import com.webecommerce.entity.other.AccountEntity;
 import com.webecommerce.entity.other.SocialAccountEntity;
 import com.webecommerce.mapper.IAccountMapper;
@@ -12,13 +13,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class AccountMapper implements IAccountMapper {
 
     @Override
-    public AccountRequest toAccountRequest(AccountEntity accountEntity) {
-        AccountRequest accountRequest = new AccountRequest();
-        accountRequest.setUserName(accountEntity.getUsername());
-        accountRequest.setPassword(accountEntity.getPassword());
-        accountRequest.setStatus(accountEntity.getStatus().toString());
-        accountRequest.setRole(accountEntity.getRole().toString());
-        return accountRequest;
+    public AccountResponse toAccountResponse(AccountEntity accountEntity) {
+        AccountResponse accountResponse = new AccountResponse();
+        accountResponse.setUserName(accountEntity.getUsername());
+        accountResponse.setPassword(accountEntity.getPassword());
+        accountResponse.setStatus(accountEntity.getStatus().toString());
+        accountResponse.setRole(accountEntity.getRole().toString());
+        return accountResponse;
     }
 
     @Override

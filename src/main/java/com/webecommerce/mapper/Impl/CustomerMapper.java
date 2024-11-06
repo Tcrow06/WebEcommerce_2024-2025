@@ -38,6 +38,7 @@ public class CustomerMapper implements ICustomerMapper {
         customerResponse.setId(customerEntity.getId());
         customerResponse.setName(customerEntity.getName());
         customerResponse.setEmail(customerEntity.getEmail());
+        customerResponse.setRole("CUSTOMER");
         return customerResponse;
     }
 

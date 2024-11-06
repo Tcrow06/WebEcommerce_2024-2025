@@ -1,15 +1,20 @@
 package com.webecommerce.dto.response.people;
 
 public class UserResponse {
-
     private Long id;
-
     private String name;
-
     private String email;
-
     private String phone;
     private  String avatar;
+    private String role;
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 
     public void setId(Long id) {
         this.id = id;

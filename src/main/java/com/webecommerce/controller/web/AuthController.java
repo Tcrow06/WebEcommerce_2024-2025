@@ -2,7 +2,9 @@ package com.webecommerce.controller.web;
 
 import com.webecommerce.dto.request.other.AccountRequest;
 import com.webecommerce.dto.request.people.CustomerRequest;
+import com.webecommerce.dto.response.other.AccountResponse;
 import com.webecommerce.dto.response.people.CustomerResponse;
+import com.webecommerce.dto.response.people.UserResponse;
 import com.webecommerce.exception.DuplicateFieldException;
 import com.webecommerce.service.IAccountService;
 import com.webecommerce.utils.FormUtils;
@@ -45,13 +47,13 @@ public class AuthController extends HttpServlet {
         String action = request.getParameter("action");
         if(action != null && action.equals("login")) {
             AccountRequest account = FormUtils.toModel(AccountRequest.class, request);
-            account = accountService.findByUserNameAndPasswordAndStatus(account.getUserName(), account.getPassword(), "ACTIVE");
-            if(account != null) {
-                SessionUtil.getInstance().putValue(request, "ACCOUNTDTO", account);
-                if(account.getRole().equals("OWNER")) {
+            UserResponse user = accountService.findByUserNameAndPasswordAndStatus(account.getUserName(), account.getPassword(), "ACTIVE");
+            if(user != null) {
+                SessionUtil.getInstance().putValue(request, "USERINFO", user);
+                if(user.getRole().equals("OWNER")) {
                     response.sendRedirect(request.getContextPath() + "/chu-doanh-nghiep");
                 }
-                else if(account.getRole().equals("CUSTOMER")) {
+                else if(user.getRole().equals("CUSTOMER")) {
                     response.sendRedirect(request.getContextPath() + "/trang-chu");
                 }
             }
