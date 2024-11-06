@@ -2,9 +2,7 @@ package com.webecommerce.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.webecommerce.dto.CategoryDTO;
-import com.webecommerce.dto.ProductDTO;
-import com.webecommerce.dto.ProductDiscountDTO;
+import com.webecommerce.dto.discount.ProductDiscountDTO;
 import com.webecommerce.service.IProductDiscountService;
 import com.webecommerce.utils.HttpUtils;
 
@@ -31,10 +29,10 @@ public class DiscountProductAPI extends HttpServlet {
         ProductDiscountDTO productDiscount = httpUtils.toModel(ProductDiscountDTO.class);
 
         if(productDiscount != null) {
-//            productDiscount = productDiscountService.save(productDiscount);
-//            if(productDiscount != null) {
-//                mapper.writeValue(resp.getWriter(), productDiscount);
-//            } else mapper.writeValue(resp.getWriter(), "error");
+            productDiscount = productDiscountService.save(productDiscount);
+            if(productDiscount != null) {
+                mapper.writeValue(resp.getWriter(), productDiscount);
+            } else mapper.writeValue(resp.getWriter(), "error");
         }
     }
 }

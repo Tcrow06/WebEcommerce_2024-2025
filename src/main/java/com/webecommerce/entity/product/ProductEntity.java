@@ -4,6 +4,7 @@ import com.webecommerce.constant.EnumProductStatus;
 import com.webecommerce.entity.discount.ProductDiscountEntity;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,8 +24,16 @@ public class ProductEntity {
     @Column(name = "status")
     private EnumProductStatus status;
 
+    public LocalDateTime getIsNew() {
+        return isNew;
+    }
+
+    public void setIsNew(LocalDateTime isNew) {
+        this.isNew = isNew;
+    }
+
     @Column(name = "is_new")
-    private boolean isNew;
+    private LocalDateTime isNew;
 
     @Column(name = "brand")
     private String brand;
@@ -39,8 +48,17 @@ public class ProductEntity {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductVariantEntity> productVariants = new ArrayList<>();
 
-    @OneToOne(mappedBy = "product")
-    private ProductDiscountEntity productDiscounts ;
+    public ProductDiscountEntity getProductDiscount() {
+        return productDiscount;
+    }
+
+    public void setProductDiscount(ProductDiscountEntity productDiscount) {
+        this.productDiscount = productDiscount;
+    }
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "product_discount_id", referencedColumnName = "id")
+    private ProductDiscountEntity productDiscount ;
 
     public CategoryEntity getCategory() {
         return category;
@@ -90,13 +108,6 @@ public class ProductEntity {
         this.status = status;
     }
 
-    public boolean isNew() {
-        return isNew;
-    }
-
-    public void setNew(boolean aNew) {
-        isNew = aNew;
-    }
 
     public String getBrand() {
         return brand;
@@ -114,11 +125,4 @@ public class ProductEntity {
         this.description = description;
     }
 
-    public ProductDiscountEntity getProductDiscounts() {
-        return productDiscounts;
-    }
-
-    public void setProductDiscounts(ProductDiscountEntity productDiscounts) {
-        this.productDiscounts = productDiscounts;
-    }
 }

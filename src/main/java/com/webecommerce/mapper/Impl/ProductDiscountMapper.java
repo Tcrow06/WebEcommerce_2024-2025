@@ -1,7 +1,7 @@
 package com.webecommerce.mapper.Impl;
 
 import com.webecommerce.dto.ProductDTO;
-import com.webecommerce.dto.ProductDiscountDTO;
+import com.webecommerce.dto.discount.ProductDiscountDTO;
 import com.webecommerce.entity.discount.ProductDiscountEntity;
 import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.mapper.GenericMapper;
@@ -20,7 +20,7 @@ public class ProductDiscountMapper extends DiscountMapper implements GenericMapp
         if (super.toDTO(productDiscountEntity,productDiscount) == null)
             return null;
 
-        productDiscount.setProduct(productMapper.toDTO(productDiscountEntity.getProduct()));
+        productDiscount.setOutStanding(productDiscountEntity.isOutStanding());
 
         return productDiscount;
     }
@@ -32,7 +32,8 @@ public class ProductDiscountMapper extends DiscountMapper implements GenericMapp
         if (super.toEntity(productDiscountDTO,productDiscountEntity) == null)
             return null;
 
-        productDiscountEntity.getProduct().setId(productDiscountDTO.getProduct().getId());
+        productDiscountEntity.setProduct(productMapper.toEntity(productDiscountDTO.getProduct()));
+        productDiscountEntity.setOutStanding(productDiscountDTO.getIsOutStanding());
 
         return productDiscountEntity;
     }

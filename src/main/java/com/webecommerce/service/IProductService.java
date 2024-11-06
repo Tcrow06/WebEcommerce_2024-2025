@@ -6,6 +6,8 @@ import com.webecommerce.entity.product.ProductEntity;
 import java.util.List;
 
 public interface IProductService {
+    List<String> getBrands();
+    List<ProductDTO> findProductsByBrand(String brand);
     List<ProductDTO> findAll ();
     ProductDTO save(ProductDTO product);
     List<ProductDTO> findProductsByCategoryCode(String categoryCode);

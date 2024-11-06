@@ -1,12 +1,10 @@
-package com.webecommerce.dto;
+package com.webecommerce.dto.discount;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.webecommerce.dto.BaseDTO;
+
 import java.time.LocalDateTime;
 
-public abstract class DiscountDTO extends BaseDTO <DiscountDTO> {
+public abstract class DiscountDTO extends BaseDTO<DiscountDTO> {
 
     private String description;
 

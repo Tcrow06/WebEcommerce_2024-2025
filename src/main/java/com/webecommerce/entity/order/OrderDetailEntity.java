@@ -27,7 +27,7 @@ public class OrderDetailEntity {
     private ReturnOrderEntity returnOrder;
 
     @ManyToOne
-    @JoinColumn(name = "orderdetail_id", nullable = false)
+    @JoinColumn(name = "order_id", nullable = false)
     private OrderEntity order;
 
     @ManyToOne

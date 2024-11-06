@@ -6,7 +6,10 @@ import com.webecommerce.dao.product.IProductDAO;
 import com.webecommerce.dao.product.IProductVariantDAO;
 import com.webecommerce.dto.CategoryDTO;
 import com.webecommerce.dto.ProductDTO;
+import com.webecommerce.dto.discount.ProductDiscountDTO;
 import com.webecommerce.dto.ProductVariantDTO;
+import com.webecommerce.entity.discount.DiscountEntity;
+import com.webecommerce.entity.discount.ProductDiscountEntity;
 import com.webecommerce.entity.product.CategoryEntity;
 import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.entity.product.ProductVariantEntity;
@@ -18,6 +21,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,11 +44,20 @@ public class ProductService implements IProductService {
     @Inject
     private IProductVariantDAO productVariantDAO;
 
+    @Inject
+    private GenericMapper<ProductDiscountDTO, ProductDiscountEntity> productDiscountMapper;
+
+    // Lây danh sách brand có trong product -> load giao diện
+    public List<String> getBrands() {
+        return productDAO.getBrands() != null ? productDAO.getBrands() : Collections.emptyList();
+    }
 
     @Transactional
     public ProductDTO save(ProductDTO product) {
 
         ProductEntity productEntity = productMapper.toEntity(product);
+        productEntity.setIsNew(LocalDateTime.now());
+
 
         productEntity.setCategory(
                 categoryDAO.findById(product.getCategory().getId())
@@ -58,13 +71,20 @@ public class ProductService implements IProductService {
         return productMapper.toDTO(productDAO.insert(productEntity));
     }
 
-    @Override
-    public List<ProductDTO> findAll () {
+    // dùng để lấy discout, price mà không cần lay het product variant -> load nhanh hơn
+    private List <ProductDTO> getProduct (List<ProductEntity> productEntities) {
         List <ProductDTO> productDTOS = new ArrayList<ProductDTO>();
-
-        List<ProductEntity> productEntities =  productDAO.findAll();
         for (ProductEntity product : productEntities) {
             ProductDTO productDTO = productMapper.toDTO(product);
+            //lấy discount cho từng sản phâm
+            ProductDiscountEntity productDiscountEntity = product.getProductDiscount();
+            if (productDiscountEntity != null) {
+                if (productDiscountEntity.getEndDate().isBefore(LocalDateTime.now())) {
+                    productDTO.setProductDiscount(
+                            productDiscountMapper.toDTO(productDiscountEntity)
+                    );
+                }
+            }
 
             // lấy productvariant để lấy ảnh và giá (lấy product variant rẻ nhất)
             ProductVariantEntity productVariant = productVariantDAO.getProductVariantByProduct(product);
@@ -77,24 +97,20 @@ public class ProductService implements IProductService {
         return productDTOS;
     }
 
+    public List<ProductDTO> findProductsByBrand(String brand) {
+        List <ProductEntity> products = productDAO.findProductsByBrand(brand);
+        return getProduct(products);
+    }
+
+    @Override
+    public List<ProductDTO> findAll () {
+        List<ProductEntity> productEntities =  productDAO.findAll();
+        return getProduct(productEntities);
+    }
+
     public List<ProductDTO> findProductsByCategoryCode(String categoryCode) {
         List <ProductEntity> productEntities =  productDAO.findProductsByCategoryCode(categoryCode);
-        if (productEntities != null) {
-            List <ProductDTO> productDTOS = new ArrayList<ProductDTO>();
-            for (ProductEntity product : productEntities) {
-                ProductDTO productDTO = productMapper.toDTO(product);
-
-                // lấy productvariant để lấy ảnh và giá (lấy product variant rẻ nhất)
-                ProductVariantEntity productVariant = productVariantDAO.getProductVariantByProduct(product);
-                if (productVariant != null) {
-                    productDTO.setPhoto(productVariant.getImageUrl());
-                    productDTO.setPrice(productVariant.getPrice());
-                }
-                productDTOS.add(productDTO);
-            }
-            return productDTOS;
-        } else
-            return new ArrayList<>();
+        return getProduct(productEntities);
     }
 
     public ProductDTO getProductById(Long id) {
@@ -123,4 +139,5 @@ public class ProductService implements IProductService {
             return sizeList;
         return Collections.emptyList();
     }
+
 }

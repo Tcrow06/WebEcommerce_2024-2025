@@ -1,8 +1,11 @@
 package com.webecommerce.dto;
 
 import com.webecommerce.constant.EnumProductStatus;
+import com.webecommerce.dto.discount.ProductDiscountDTO;
+import com.webecommerce.entity.discount.ProductDiscountEntity;
 import com.webecommerce.utils.PairUtils;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +19,16 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
 
     private boolean isNew;
 
+    public LocalDateTime getIsNewProduct() {
+        return isNewProduct;
+    }
+
+    public void setIsNewProduct(LocalDateTime isNewProduct) {
+        this.isNewProduct = isNewProduct;
+    }
+
+    private LocalDateTime isNewProduct;
+
     private String brand;
 
     private String description;
@@ -23,6 +36,9 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
     private CategoryDTO category;
 
     private List<ProductVariantDTO> productVariants = new ArrayList<>();
+
+    private ProductDiscountDTO productDiscount;
+
 
     private String photo;
 
@@ -35,7 +51,16 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
     }
 
     public double getPrice() {
-        return price;
+        if (price != 0) return price;
+        if (productVariants != null) {
+            for (ProductVariantDTO productVariant : productVariants) {
+                if (price == 0) price = productVariant.getPrice();
+                else if (price > productVariant.getPrice())
+                    price = productVariant.getPrice(); // Lấy giá thâp nhâất
+            }
+            return price;
+        }
+        return 0;
     }
 
     public void setPrice(double price) {
@@ -83,7 +108,7 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
         this.status = status;
     }
 
-    public boolean isNew() {
+    public boolean getIsNew() {
         return isNew;
     }
 
@@ -132,5 +157,13 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
             sizeList.add(productVariantDTO.getSize());
         }
         return sizeList;
+    }
+
+    public ProductDiscountDTO getProductDiscount() {
+        return productDiscount;
+    }
+
+    public void setProductDiscount(ProductDiscountDTO productDiscount) {
+        this.productDiscount = productDiscount;
     }
 }

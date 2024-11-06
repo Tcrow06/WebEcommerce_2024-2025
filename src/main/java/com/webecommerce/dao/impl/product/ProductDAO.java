@@ -3,6 +3,7 @@ package com.webecommerce.dao.impl.product;
 import com.webecommerce.dao.GenericDAO;
 import com.webecommerce.dao.impl.AbstractDAO;
 import com.webecommerce.dao.product.IProductDAO;
+import com.webecommerce.dto.ProductDTO;
 import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.entity.product.ProductVariantEntity;
 import org.apache.hc.core5.http.io.entity.StringEntity;
@@ -53,6 +54,20 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
             LOGGER.log(Level.SEVERE, "Error fetching product sizes by size and product ID: " + productId, e);
             return null;
         }
+    }
+
+    public List <String> getBrands () {
+        String query = "SELECT DISTINCT p.brand FROM ProductEntity p";
+        try {
+            return entityManager.createQuery(query, String.class).getResultList();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "No brand found", e);
+            return null;
+        }
+    }
+
+    public List<ProductEntity> findProductsByBrand(String brand) {
+        return super.findByAttribute("brand",brand);
     }
 
 }

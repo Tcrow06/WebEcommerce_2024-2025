@@ -2,11 +2,9 @@ package com.webecommerce.service.impl;
 
 import com.webecommerce.dao.discount.IProductDiscountDAO;
 import com.webecommerce.dao.product.IProductDAO;
-import com.webecommerce.dto.ProductDTO;
-import com.webecommerce.dto.ProductDiscountDTO;
+import com.webecommerce.dto.discount.ProductDiscountDTO;
 import com.webecommerce.entity.discount.ProductDiscountEntity;
 import com.webecommerce.entity.product.ProductEntity;
-import com.webecommerce.entity.product.ProductVariantEntity;
 import com.webecommerce.mapper.GenericMapper;
 import com.webecommerce.service.IProductDiscountService;
 
@@ -29,10 +27,18 @@ public class ProductDiscountService implements IProductDiscountService {
 
         ProductDiscountEntity productDiscountEntity = productDiscountMapper.toEntity(productDiscount);
 
-        productDiscountEntity.setProduct(
-            productDAO.findById(productDiscount.getProduct().getId())
-        );
+        ProductEntity productEntity = productDAO.findById(productDiscount.getProduct().getId());
 
-        return productDiscountMapper.toDTO(productDiscountEntity);
+        if (productEntity != null) {
+            // Thiết lập liên kết giữa sản phẩm và discount
+            productDiscountEntity.setProduct(productEntity);
+            productEntity.setProductDiscount(productDiscountEntity); // Cập nhật liên kết hai chiều
+
+            productEntity = productDAO.update(productEntity); // Cập nhật sản phẩm
+
+            return productDiscountMapper.toDTO(productEntity.getProductDiscount());
+        }
+
+        return null;
     }
 }

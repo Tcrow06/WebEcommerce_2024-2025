@@ -1,6 +1,32 @@
 <%@include file="/common/taglib.jsp"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
+<style>
+    .product__item__pic {
+        position: relative; /* Để chứa các thẻ con có position absolute */
+    }
+
+    .div_label_product {
+        position: absolute;
+        left: 10px;
+        font-size: 14px;
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+
+    /* Nhãn Sale ở phía trên */
+    .div_label_product:nth-child(1) {
+        top: 10px; /* Nhãn Sale nằm ở trên cùng */
+    }
+
+    /* Nhãn New ở phía dưới */
+    .div_label_product:nth-child(2) {
+        top:40px; /* Nhãn New nằm ở dưới cùng */
+    }
+
+</style>
+
 <!-- Breadcrumb Section Begin -->
 <section class="breadcrumb-option">
     <div class="container">
@@ -57,10 +83,13 @@
                                     <div class="card-body">
                                         <div class="shop__sidebar__brand">
                                             <ul>
-                                                <li><a href="#">Louis Vuitton</a></li>
-                                                <li><a href="#">Chanel</a></li>
-                                                <li><a href="#">Hermes</a></li>
-                                                <li><a href="#">Gucci</a></li>
+                                                <c:forEach var="item" items="${twomodel}">
+                                                    <li><a href="danh-sach-san-pham?brand=${item}">${item}</a></li>
+                                                </c:forEach>
+<%--                                                <li><a href="#">Louis Vuitton</a></li>--%>
+<%--                                                <li><a href="#">Chanel</a></li>--%>
+<%--                                                <li><a href="#">Hermes</a></li>--%>
+<%--                                                <li><a href="#">Gucci</a></li>--%>
                                             </ul>
                                         </div>
                                     </div>
@@ -201,12 +230,18 @@
                     </div>
                 </div>
                 <div class="row">
-
                     <c:forEach var="item" items="${model.resultList}">
 
+
                         <div class="col-lg-4 col-md-6 col-sm-6">
-                            <div class="product__item">
+                            <div class="product__item sale">
                                 <div class="product__item__pic set-bg" data-setbg="<c:url value="${item.photo}"/>">
+                                    <c:if test="${item.productDiscount != null}">
+                                        <div class="div_label_product"><span class="label">Sale_${item.productDiscount.discountPercentage}%</span></div>
+                                    </c:if>
+                                    <c:if test="${item.isNew}">
+                                        <div class="div_label_product"><span class="label">New</span></div>
+                                    </c:if>
                                     <ul class="product__hover">
                                         <li><a href="#"><img src="<c:url value="/static/img/icon/heart.png"/>" alt=""></a></li>
                                         <li><a href="#"><img src="<c:url value="/static/img/icon/compare.png"/>" alt=""> <span>Compare</span></a></li>
@@ -216,7 +251,7 @@
                                 <div class="product__item__text">
                                     <h6>${item.name}</h6>
 <%--                                    <a href="<c:url value="/them-gio-hang?id=${item.id}"/>" class="add-cart">View Detail</a>--%>
-                                    <a href="san-pham?action=product_detail&id=${item.id}" class="add-cart">View Detail</a>
+                                    <a href="san-pham?id=${item.id}" class="add-cart">View Detail</a>
                                     <div class="rating">
                                         <i class="fa fa-star-o"></i>
                                         <i class="fa fa-star-o"></i>

@@ -28,13 +28,16 @@ public class ProductController extends HttpServlet {
         ProductDTO product ;
 
         String category = request.getParameter("category");
+        String brand = request.getParameter("brand");
+
         product = new ProductDTO();
         if (category != null) {
             product.setResultList(productService.findProductsByCategoryCode(category));
-        } else {
-            product.setResultList(productService.findAll());
-        }
+        } else if (brand != null) {
+            product.setResultList(productService.findProductsByBrand(brand));
+        } else product.setResultList(productService.findAll());
 
+        request.setAttribute(ModelConstant.MODEL2, productService.getBrands());
         request.setAttribute(ModelConstant.MODEL1, categoryService.findAll());
         request.setAttribute(ModelConstant.MODEL,product);
         request.getRequestDispatcher("/views/web/product-list.jsp").forward(request, response);
