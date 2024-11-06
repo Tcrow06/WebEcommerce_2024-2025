@@ -8,6 +8,8 @@ import com.webecommerce.entity.product.ProductVariantEntity;
 import com.webecommerce.mapper.GenericMapper;
 
 import javax.inject.Inject;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 public class ProductMapper implements GenericMapper <ProductDTO, ProductEntity> {
@@ -24,7 +26,16 @@ public class ProductMapper implements GenericMapper <ProductDTO, ProductEntity> 
         dto.setName(entity.getName());
         dto.setHighlight(entity.isHighlight());
         dto.setStatus(entity.getStatus());
-        dto.setNew(entity.isNew());
+
+        if (entity.getIsNew() != null && ChronoUnit.DAYS.between(entity.getIsNew(), LocalDateTime.now()) > 7) {
+            dto.setNew(false);
+        } else {
+            dto.setNew(true);
+        }
+
+
+        dto.setIsNewProduct(entity.getIsNew());
+
         dto.setBrand(entity.getBrand());
         dto.setDescription(entity.getDescription());
 
@@ -42,7 +53,7 @@ public class ProductMapper implements GenericMapper <ProductDTO, ProductEntity> 
         entity.setName(dto.getName());
         entity.setHighlight(dto.isHighlight());
         entity.setStatus(dto.getStatus());
-        entity.setNew(dto.isNew());
+//        entity.setIsNew(dto.getIsNewProduct());
         entity.setBrand(dto.getBrand());
         entity.setDescription(dto.getDescription());
 
