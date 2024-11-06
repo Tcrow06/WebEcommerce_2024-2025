@@ -55,32 +55,6 @@
                     </ul>
                 </nav>
             </div>
-<%--            <div class="col-lg-2 col-md-2">--%>
-<%--                <div class="header__nav__option ">--%>
-<%--                    <a href="#" class="search-switch"><img src="<c:url value="/static/img/icon/search.png"/>" alt=""></a>--%>
-<%--                    <a href="<c:url value="/gio-hang"/>"><img src="<c:url value="/static/img/icon/cart.png"/>" alt=""> <span>0</span></a>--%>
-<%--                </div>--%>
-<%--            </div>--%>
-<%--            <div class="col-lg-1 col-md-1">--%>
-<%--                    <nav class="header__menu mobile-menu">--%>
-<%--                        <ul>--%>
-<%--                            <li>--%>
-<%--                                <a href="#">--%>
-<%--                                    <c:if test="${not empty userModel.avatar}">--%>
-<%--                                        <img src="${userModel.avatar}" alt="mdo" width="32" height="32" class="rounded-circle">--%>
-<%--                                    </c:if>--%>
-<%--                                    <c:if test="${empty userModel.avatar}">--%>
-<%--                                        <img src='<c:url value = "/static/img/avatar/user.png"/>' alt="mdo" width="32" height="32" class="rounded-circle">--%>
-<%--                                    </c:if>--%>
-<%--                                </a>--%>
-<%--                                <ul class="dropdown " style="width:165px">--%>
-<%--                                    <li><a href="<c:url value="#"/>">Thông tin cá nhân</a></li>--%>
-<%--                                    <li><a href="<c:url value="#"/>">Lịch sử mua hàng</a></li>--%>
-<%--                                </ul>--%>
-<%--                            </li>--%>
-<%--                        </ul>--%>
-<%--                    </nav>--%>
-<%--            </div>--%>
             <div class="col-lg-3 col-md-3 d-flex justify-content-end align-items-center gap-4" >
                 <div class="header__nav__option">
                     <a href="#" class="search-switch"><img src="<c:url value="/static/img/icon/search.png"/>" alt=""></a>
