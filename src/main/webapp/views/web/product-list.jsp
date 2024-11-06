@@ -216,7 +216,7 @@
                                 <div class="product__item__text">
                                     <h6>${item.name}</h6>
 <%--                                    <a href="<c:url value="/them-gio-hang?id=${item.id}"/>" class="add-cart">View Detail</a>--%>
-                                    <a href="san-pham?action=product_detail&id=${item.id}" class="add-cart">View Detail</a>
+                                    <a href="san-pham?id=${item.id}" class="add-cart">View Detail</a>
                                     <div class="rating">
                                         <i class="fa fa-star-o"></i>
                                         <i class="fa fa-star-o"></i>

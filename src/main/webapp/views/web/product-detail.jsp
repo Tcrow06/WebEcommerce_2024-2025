@@ -458,7 +458,7 @@
                 var formData = {
                     productId: $('input[name="productId"]').val(),
                     productVariantId: $('#productVariantId').val(),
-                    quantity: $('#quantity').val()
+                    quantity: parseInt($('#quantity').val(), 10) // Lấy số lượng người dùng chọn và chuyển thành số nguyên
                 };
 
                 // Kiểm tra nếu productVariantId đã được chọn
@@ -471,6 +471,13 @@
                 var productStatus = $('#product-quantity p').text();
                 if (productStatus.includes("Product is not available!") || productStatus.includes("not available!")) {
                     alert("Sản phẩm không có sẵn. Không thể thêm vào giỏ hàng.");
+                    return;
+                }
+
+                // Kiểm tra số lượng người dùng chọn có hợp lệ hay không
+                var availableQuantity = parseInt($('#product-quantity p').text(), 10); // Lấy số lượng sản phẩm có sẵn
+                if (formData.quantity > availableQuantity) {
+                    alert("Số lượng sản phẩm không hợp lệ. Vui lòng chọn số lượng nhỏ hơn hoặc bằng " + availableQuantity + ".");
                     return;
                 }
 
