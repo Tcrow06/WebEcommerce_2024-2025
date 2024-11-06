@@ -2,6 +2,7 @@ package com.webecommerce.utils;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,10 +14,12 @@ public class HttpUtils {
         this.value = value;
     }
 
-    ///covert từ json string to model
+    // Json string sang model
     public  <T> T toModel (Class <T> tClass) {
         try {
-            return new ObjectMapper().readValue(value,tClass) ;
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.registerModule(new JavaTimeModule());
+            return mapper.readValue(value,tClass) ;
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -25,7 +28,7 @@ public class HttpUtils {
     }
 
 
-    public static HttpUtils of (BufferedReader reader) {
+    public static HttpUtils of(BufferedReader reader) {
         StringBuilder sb = new StringBuilder() ;
         try {
             String line;

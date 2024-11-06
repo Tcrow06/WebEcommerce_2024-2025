@@ -39,8 +39,17 @@ public class ProductEntity {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductVariantEntity> productVariants = new ArrayList<>();
 
-    @OneToMany(mappedBy = "product")
-    private List<ProductDiscountEntity> productDiscounts = new ArrayList<>();
+    public ProductDiscountEntity getProductDiscount() {
+        return productDiscount;
+    }
+
+    public void setProductDiscount(ProductDiscountEntity productDiscount) {
+        this.productDiscount = productDiscount;
+    }
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "product_discount_id", referencedColumnName = "id")
+    private ProductDiscountEntity productDiscount ;
 
     public CategoryEntity getCategory() {
         return category;
@@ -56,14 +65,6 @@ public class ProductEntity {
 
     public void setProductVariants(List<ProductVariantEntity> productVariants) {
         this.productVariants = productVariants;
-    }
-
-    public List<ProductDiscountEntity> getProductDiscounts() {
-        return productDiscounts;
-    }
-
-    public void setProductDiscounts(List<ProductDiscountEntity> productDiscounts) {
-        this.productDiscounts = productDiscounts;
     }
 
     public Long getId() {
@@ -121,4 +122,5 @@ public class ProductEntity {
     public void setDescription(String description) {
         this.description = description;
     }
+
 }

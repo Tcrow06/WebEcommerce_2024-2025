@@ -20,6 +20,7 @@ public class ProductVariantMapper implements GenericMapper <ProductVariantDTO, P
         dto.setColor(productVariantEntity.getColor());
         dto.setSize(productVariantEntity.getSize());
         dto.setQuantity(productVariantEntity.getQuantity());
+        dto.setName(productVariantEntity.getProduct().getName()); // Field này cần khi load sản phẩm
 
         return dto;
     }
@@ -38,6 +39,7 @@ public class ProductVariantMapper implements GenericMapper <ProductVariantDTO, P
         entity.setColor(productVariantDTO.getColor());
         entity.setSize(productVariantDTO.getSize());
         entity.setQuantity(productVariantDTO.getQuantity());
+
 
         return entity;
     }

@@ -2,11 +2,8 @@ package com.webecommerce.dto;
 
 import com.webecommerce.constant.EnumProductStatus;
 import com.webecommerce.entity.discount.ProductDiscountEntity;
-import com.webecommerce.entity.product.CategoryEntity;
-import com.webecommerce.entity.product.ProductEntity;
-import com.webecommerce.entity.product.ProductVariantEntity;
+import com.webecommerce.utils.PairUtils;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,9 +21,12 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
 
     private String description;
 
-    private CategoryEntity category;
+    private CategoryDTO category;
 
     private List<ProductVariantDTO> productVariants = new ArrayList<>();
+
+    private ProductDiscountDTO productDiscount;
+
 
     private String photo;
 
@@ -49,11 +49,11 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
     private double price;
 
 
-    public CategoryEntity getCategory() {
+    public CategoryDTO getCategory() {
         return category;
     }
 
-    public void setCategory(CategoryEntity category) {
+    public void setCategory(CategoryDTO category) {
         this.category = category;
     }
 
@@ -115,7 +115,34 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
         return productVariants;
     }
 
-    public void setProductVariants(List<ProductVariantDTO> productVariants) {
+    public void setProductVariants (List<ProductVariantDTO> productVariants) {
         this.productVariants = productVariants;
+    }
+
+
+    public List<String> getColorList() {
+        List<String> colorList = new ArrayList<>();
+        for (ProductVariantDTO productVariantDTO : productVariants) {
+            if (colorList.contains(productVariantDTO.getColor())) continue;
+            colorList.add(productVariantDTO.getColor());
+        }
+        return colorList;
+    }
+
+    public List<String> getSizeList () {
+        List<String> sizeList = new ArrayList<>();
+        for (ProductVariantDTO productVariantDTO : productVariants) {
+            if (sizeList.contains(productVariantDTO.getSize())) continue;
+            sizeList.add(productVariantDTO.getSize());
+        }
+        return sizeList;
+    }
+
+    public ProductDiscountDTO getProductDiscount() {
+        return productDiscount;
+    }
+
+    public void setProductDiscount(ProductDiscountDTO productDiscount) {
+        this.productDiscount = productDiscount;
     }
 }

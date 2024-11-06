@@ -40,7 +40,6 @@
             <property name="hibernate.format_sql" value="true"/>
             <property name="hibernate.use_sql_comments" value="true"/>
 
-
             <property name="hibernate.hikari.dataSourceClassName" value="com.mysql.cj.jdbc.MysqlDataSource" />
             <property name="hibernate.hikari.dataSource.url" value="${MYSQL_URL}" />
             <property name="hibernate.hikari.dataSource.user" value="${MYSQL_USERNAME}" />

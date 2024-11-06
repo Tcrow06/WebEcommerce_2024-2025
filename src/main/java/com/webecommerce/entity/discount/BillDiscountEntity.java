@@ -5,6 +5,7 @@ import com.webecommerce.entity.order.ReturnOrderEntity;
 import org.hibernate.criterion.Order;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "bill_discount")
@@ -16,18 +17,17 @@ public class BillDiscountEntity extends DiscountEntity {
     @Column(name = "invoice_type")
     private String invoiceType;
 
-    @OneToOne(mappedBy = "billDiscount")
-    private OrderEntity order;
-
-    @Override
-    public OrderEntity getOrder() {
-        return order;
+    public List<OrderEntity> getOrders() {
+        return orders;
     }
 
-    @Override
-    public void setOrder(OrderEntity order) {
-        this.order = order;
+    public void setOrders(List<OrderEntity> orders) {
+        this.orders = orders;
     }
+
+    @OneToMany(mappedBy = "billDiscount")
+    private List<OrderEntity> orders;
+
 
     public double getMinimumInvoiceAmount() {
         return minimumInvoiceAmount;

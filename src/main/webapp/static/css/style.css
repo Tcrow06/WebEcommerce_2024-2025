@@ -3362,6 +3362,14 @@ ol {
 	padding: 14px 35px;
 }
 
+/* Custom */
+.product__details__pic__item img {
+	width: 100%; /* Đảm bảo ảnh phủ toàn bộ chiều rộng của phần tử chứa */
+	height: auto; /* Duy trì tỷ lệ gốc của ảnh */
+	object-fit: cover; /* Giúp ảnh vừa khít khung mà không bị méo */
+}
+
+
 /*--------------------------------- Responsive Media Quaries -----------------------------*/
 
 @media only screen and (min-width: 1200px) {

@@ -68,7 +68,7 @@
                 <nav class="header__menu mobile-menu">
                     <ul>
                         <li class="active"><a href="<c:url value="/trang-chu"/>">Home</a></li>
-                        <li><a href="<c:url value="/san-pham"/>">Shop</a></li>
+                        <li><a href="<c:url value="/danh-sach-san-pham"/>">Shop</a></li>
                         <li><a href="#">Pages</a>
                             <ul class="dropdown">
                                 <li><a href="<c:url value="/ve-chung-toi"/>">About Us</a></li>
@@ -86,7 +86,7 @@
                 <div class="header__nav__option">
                     <a href="#" class="search-switch"><img src="<c:url value="/static/img/icon/search.png"/>" alt=""></a>
                     <a href="#"><img src="<c:url value="/static/img/icon/heart.png"/>" alt=""></a>
-                    <a href="#"><img src="<c:url value="/static/img/icon/cart.png"/>" alt=""> <span>0</span></a>
+                    <a href="<c:url value="/gio-hang"/>"><img src="<c:url value="/static/img/icon/cart.png"/>" alt=""> <span>0</span></a>
                     <div class="price">$0.00</div>
                 </div>
             </div>

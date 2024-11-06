@@ -10,8 +10,8 @@ public class FormUtils {
         T obj = null;
         try {
             obj = (T) tclass.newInstance();
-            BeanUtils.populate(obj,request.getParameterMap());
-        } catch (InstantiationException | IllegalAccessException  |InvocationTargetException e ) {
+            BeanUtils.populate(obj, request.getParameterMap());
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e ) {
             System.out.println(e.getMessage());
         }
         return obj;
