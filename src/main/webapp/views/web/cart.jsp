@@ -25,7 +25,6 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-8">
-                <%-- Thêm id vào để load lại phần này khi thao tác với giỏ hàng --%>
                 <div id="cart-container" class="shopping__cart__table">
                     <table>
                         <thead>
@@ -48,14 +47,13 @@
                                     <div class="product__cart__item__text">
                                         <h6>${item.productVariant.name}</h6>
                                         <h6>Size: ${item.productVariant.size}</h6>
-                                        <h6>Size: ${item.productVariant.color}</h6>
+                                        <h6>Color: ${item.productVariant.color}</h6>
                                     </div>
                                 </td>
                                 <td class="quantity__item">
                                     <div class="quantity">
                                         <div class="pro-qty-2">
-                                            <input type="text" value="${item.quantity}"
-                                                   onchange="updateCart(${item.productVariant.id}, this.value)">
+                                            <input type="text" value="${item.quantity}" data-product-id="${item.productVariant.id}">
                                         </div>
                                     </div>
                                 </td>
@@ -73,12 +71,17 @@
                 <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-6">
                         <div class="continue__btn">
-                            <a href="<c:url value='/san-pham?action=product_list' />">Continue Shopping</a>
+                            <a href="<c:url value='/danh-sach-san-pham' />">Continue Shopping</a>
                         </div>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-6">
                         <div class="continue__btn update__btn">
-                            <a href="#"><i class="fa fa-spinner"></i> Update cart</a>
+                            <c:if test="${empty cookie.token}">
+                                <a href="<c:url value="/dang-nhap"/>"><i class="fa fa-spinner"></i> Update cart</a>
+                            </c:if>
+                            <c:if test="${not empty cookie.token}">
+                                <a href="javascript:void(0);" onclick="updateCart()"><i class="fa fa-spinner"></i> Update cart</a>
+                            </c:if>
                         </div>
                     </div>
                 </div>
@@ -105,13 +108,18 @@
 </section>
 
 <script>
-    function updateCart(productVariantId, quantity) {
+    function updateCart() {
+        const cartData = getCartData();
+
         $.ajax({
             type: "POST",
             url: "/sua-gio-hang",
-            data: { productVariantId: productVariantId, quantity: quantity },
+            contentType: "application/json",
+            data: JSON.stringify({
+                cartItems: cartData
+            }),
             success: function(response) {
-                alert("Sửa sản phẩm hàng thành công.");
+                alert("Cập nhật giỏ hàng thành công.");
                 refreshCart();
             },
             error: function(xhr) {
@@ -127,7 +135,6 @@
             url: "/xoa-gio-hang",
             data: { productVariantId: productVariantId },
             success: function(response) {
-                // Cập nhật giao diện giỏ hàng
                 alert("Xóa sản phẩm khỏi giỏ hàng thành công.");
                 refreshCart();
             },
@@ -135,6 +142,22 @@
                 alert("Không thể xóa sản phẩm khỏi giỏ hàng.");
             }
         });
+    }
+
+    function getCartData() {
+        const cartData = [];
+        $('#cart-container tbody tr').each(function() {
+            const productVariantId = $(this).find('input').data('product-id');
+            const quantity = $(this).find('input').val();
+
+            if (productVariantId && quantity) {
+                cartData.push({
+                    productVariantId: productVariantId,
+                    quantity: parseInt(quantity, 10)
+                });
+            }
+        });
+        return cartData;
     }
 
     function refreshCart() {
