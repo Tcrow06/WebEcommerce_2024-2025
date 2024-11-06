@@ -1,6 +1,7 @@
 package com.webecommerce.dto;
 
 import com.webecommerce.constant.EnumProductStatus;
+import com.webecommerce.dto.discount.ProductDiscountDTO;
 import com.webecommerce.entity.discount.ProductDiscountEntity;
 import com.webecommerce.utils.PairUtils;
 
@@ -50,7 +51,16 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
     }
 
     public double getPrice() {
-        return price;
+        if (price != 0) return price;
+        if (productVariants != null) {
+            for (ProductVariantDTO productVariant : productVariants) {
+                if (price == 0) price = productVariant.getPrice();
+                else if (price > productVariant.getPrice())
+                    price = productVariant.getPrice(); // Lấy giá thâp nhâất
+            }
+            return price;
+        }
+        return 0;
     }
 
     public void setPrice(double price) {
