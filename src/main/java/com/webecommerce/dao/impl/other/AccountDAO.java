@@ -15,14 +15,14 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 
-public class AccountDAODAO extends AbstractDAO<AccountEntity> implements IAccountDAO {
+public class AccountDAO extends AbstractDAO<AccountEntity> implements IAccountDAO {
 
     private IAccountMapper accountMapper = new AccountMapper();
     private EntityManagerFactory entityManagerFactory;
 
     @PersistenceContext
     private EntityManager entityManager;
-    public AccountDAODAO() {
+    public AccountDAO() {
         super(AccountEntity.class);
         this.entityManagerFactory = HibernateUtil.getEmFactory();
         this.entityManager = entityManagerFactory.createEntityManager();
