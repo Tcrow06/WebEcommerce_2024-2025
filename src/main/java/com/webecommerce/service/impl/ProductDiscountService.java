@@ -2,13 +2,10 @@ package com.webecommerce.service.impl;
 
 import com.webecommerce.dao.discount.IProductDiscountDAO;
 import com.webecommerce.dao.product.IProductDAO;
-import com.webecommerce.dto.ProductDTO;
-import com.webecommerce.dto.ProductDiscountDTO;
+import com.webecommerce.dto.discount.ProductDiscountDTO;
 import com.webecommerce.entity.discount.ProductDiscountEntity;
 import com.webecommerce.entity.product.ProductEntity;
-import com.webecommerce.entity.product.ProductVariantEntity;
 import com.webecommerce.mapper.GenericMapper;
-import com.webecommerce.mapper.Impl.ProductDiscountMapper;
 import com.webecommerce.service.IProductDiscountService;
 
 import javax.inject.Inject;

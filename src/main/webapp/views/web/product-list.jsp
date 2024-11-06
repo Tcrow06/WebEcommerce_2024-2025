@@ -83,10 +83,13 @@
                                     <div class="card-body">
                                         <div class="shop__sidebar__brand">
                                             <ul>
-                                                <li><a href="#">Louis Vuitton</a></li>
-                                                <li><a href="#">Chanel</a></li>
-                                                <li><a href="#">Hermes</a></li>
-                                                <li><a href="#">Gucci</a></li>
+                                                <c:forEach var="item" items="${twomodel}">
+                                                    <li><a href="danh-sach-san-pham?brand=${item}">${item}</a></li>
+                                                </c:forEach>
+<%--                                                <li><a href="#">Louis Vuitton</a></li>--%>
+<%--                                                <li><a href="#">Chanel</a></li>--%>
+<%--                                                <li><a href="#">Hermes</a></li>--%>
+<%--                                                <li><a href="#">Gucci</a></li>--%>
                                             </ul>
                                         </div>
                                     </div>

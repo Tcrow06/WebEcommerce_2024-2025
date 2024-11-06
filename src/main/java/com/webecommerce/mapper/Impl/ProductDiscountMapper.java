@@ -1,7 +1,7 @@
 package com.webecommerce.mapper.Impl;
 
 import com.webecommerce.dto.ProductDTO;
-import com.webecommerce.dto.ProductDiscountDTO;
+import com.webecommerce.dto.discount.ProductDiscountDTO;
 import com.webecommerce.entity.discount.ProductDiscountEntity;
 import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.mapper.GenericMapper;

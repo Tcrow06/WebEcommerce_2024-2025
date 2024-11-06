@@ -17,6 +17,9 @@ public class BillDiscountEntity extends DiscountEntity {
     @Column(name = "invoice_type")
     private String invoiceType;
 
+    @Column(name = "code")
+    private String code;
+
     public List<OrderEntity> getOrders() {
         return orders;
     }
@@ -43,5 +46,13 @@ public class BillDiscountEntity extends DiscountEntity {
 
     public void setInvoiceType(String invoiceType) {
         this.invoiceType = invoiceType;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }
