@@ -48,6 +48,7 @@ public class AuthorizationFilter implements Filter {
         } else {
             handleNoToken(url, request, response, filterChain);
         }
+
     }
 
     private void handleValidToken(String token, String url, HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -55,6 +56,7 @@ public class AuthorizationFilter implements Filter {
         DecodedJWT decodedJWT = JWTUtil.verifyToken(token);
         String role = decodedJWT.getClaim("role").asString();
         Long id = decodedJWT.getClaim("id").asLong();
+
         UserResponse userResponse = null;
         if(role.equals(EnumRole.CUSTOMER.toString())){
             userResponse = customerService.findById(id);
@@ -65,11 +67,13 @@ public class AuthorizationFilter implements Filter {
             response.sendRedirect(request.getContextPath() + "/dang-nhap?message=token_invalid&alert=danger");
             return;
         }
+        userResponse.setId(-1L);
+        request.setAttribute("user",userResponse);
         request.setAttribute("status", 200);
         if (url.startsWith("/dang-nhap")||url.startsWith("/dang-ki")) {
             response.sendRedirect(request.getContextPath() + "/");
-        } else if (url.startsWith("/admin")) {
-            if (role.equals(EnumRole.ADMIN.toString())) {
+        } else if (url.startsWith("/chu-doanh-nghiep")) {
+            if (role.equals(EnumRole.OWNER.toString())) {
                 filterChain.doFilter(request, response);
             } else {
                 response.sendRedirect(request.getContextPath() + "/trang-chu?message=not_permission&alert=danger");
