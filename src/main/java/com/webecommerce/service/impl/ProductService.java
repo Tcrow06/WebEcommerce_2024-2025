@@ -6,7 +6,10 @@ import com.webecommerce.dao.product.IProductDAO;
 import com.webecommerce.dao.product.IProductVariantDAO;
 import com.webecommerce.dto.CategoryDTO;
 import com.webecommerce.dto.ProductDTO;
+import com.webecommerce.dto.ProductDiscountDTO;
 import com.webecommerce.dto.ProductVariantDTO;
+import com.webecommerce.entity.discount.DiscountEntity;
+import com.webecommerce.entity.discount.ProductDiscountEntity;
 import com.webecommerce.entity.product.CategoryEntity;
 import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.entity.product.ProductVariantEntity;
@@ -40,6 +43,9 @@ public class ProductService implements IProductService {
     @Inject
     private IProductVariantDAO productVariantDAO;
 
+    @Inject
+    private GenericMapper<ProductDiscountDTO, ProductDiscountEntity> productDiscountMapper;
+
 
     @Transactional
     public ProductDTO save(ProductDTO product) {
@@ -65,6 +71,13 @@ public class ProductService implements IProductService {
         List<ProductEntity> productEntities =  productDAO.findAll();
         for (ProductEntity product : productEntities) {
             ProductDTO productDTO = productMapper.toDTO(product);
+            //lấy discount cho từng sản phâm
+            ProductDiscountEntity productDiscountEntity = product.getProductDiscount();
+            if (productDiscountEntity != null) {
+                productDTO.setProductDiscount(
+                        productDiscountMapper.toDTO(productDiscountEntity)
+                );
+            }
 
             // lấy productvariant để lấy ảnh và giá (lấy product variant rẻ nhất)
             ProductVariantEntity productVariant = productVariantDAO.getProductVariantByProduct(product);
