@@ -350,6 +350,21 @@ ol {
 .header__top__links a:last-child {
 	margin-right: 0;
 }
+.btn-dang-xuat {
+	color: #ffffff;
+	font-size: 13px;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	margin-right: 28px;
+	display: inline-block;
+	margin-right: 0;
+}
+
+
+.btn-dang-xuat:hover {
+	color: #ffffff;
+	text-decoration: none;
+}
 
 .header__top__hover {
 	display: inline-block;

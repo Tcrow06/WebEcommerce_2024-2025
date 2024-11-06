@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
-@WebServlet(urlPatterns = {"/three-party-login"})
+@WebServlet(urlPatterns = {"/three-party-login","/dang-xuat"})
 public class ThreePartyLoginController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -122,9 +122,16 @@ public class ThreePartyLoginController extends HttpServlet {
 //        response.sendRedirect(request.getContextPath() + "/" + sendDirection);
 
     }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        JWTUtil.destroyToken(request, response);
+        response.sendRedirect(request.getContextPath() + "/trang-chu");
+    }
+
     public void handleUserLogout(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         JWTUtil.destroyToken(request, response);
         response.sendRedirect(request.getContextPath() + "/dang-nhap");
     }
+
 }
