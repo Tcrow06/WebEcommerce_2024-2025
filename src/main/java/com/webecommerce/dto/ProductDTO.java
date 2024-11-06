@@ -4,6 +4,7 @@ import com.webecommerce.constant.EnumProductStatus;
 import com.webecommerce.entity.discount.ProductDiscountEntity;
 import com.webecommerce.utils.PairUtils;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +17,16 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
     private EnumProductStatus status;
 
     private boolean isNew;
+
+    public LocalDateTime getIsNewProduct() {
+        return isNewProduct;
+    }
+
+    public void setIsNewProduct(LocalDateTime isNewProduct) {
+        this.isNewProduct = isNewProduct;
+    }
+
+    private LocalDateTime isNewProduct;
 
     private String brand;
 
@@ -87,7 +98,7 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
         this.status = status;
     }
 
-    public boolean isNew() {
+    public boolean getIsNew() {
         return isNew;
     }
 

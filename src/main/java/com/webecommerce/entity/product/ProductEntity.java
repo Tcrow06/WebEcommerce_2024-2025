@@ -4,6 +4,7 @@ import com.webecommerce.constant.EnumProductStatus;
 import com.webecommerce.entity.discount.ProductDiscountEntity;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,8 +24,16 @@ public class ProductEntity {
     @Column(name = "status")
     private EnumProductStatus status;
 
+    public LocalDateTime getIsNew() {
+        return isNew;
+    }
+
+    public void setIsNew(LocalDateTime isNew) {
+        this.isNew = isNew;
+    }
+
     @Column(name = "is_new")
-    private boolean isNew;
+    private LocalDateTime isNew;
 
     @Column(name = "brand")
     private String brand;
@@ -99,13 +108,6 @@ public class ProductEntity {
         this.status = status;
     }
 
-    public boolean isNew() {
-        return isNew;
-    }
-
-    public void setNew(boolean aNew) {
-        isNew = aNew;
-    }
 
     public String getBrand() {
         return brand;

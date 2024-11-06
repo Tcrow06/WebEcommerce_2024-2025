@@ -21,6 +21,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -51,6 +52,8 @@ public class ProductService implements IProductService {
     public ProductDTO save(ProductDTO product) {
 
         ProductEntity productEntity = productMapper.toEntity(product);
+        productEntity.setIsNew(LocalDateTime.of(2023, 4, 19, 0, 0));
+
 
         productEntity.setCategory(
                 categoryDAO.findById(product.getCategory().getId())
@@ -74,9 +77,11 @@ public class ProductService implements IProductService {
             //lấy discount cho từng sản phâm
             ProductDiscountEntity productDiscountEntity = product.getProductDiscount();
             if (productDiscountEntity != null) {
-                productDTO.setProductDiscount(
-                        productDiscountMapper.toDTO(productDiscountEntity)
-                );
+                if (productDiscountEntity.getEndDate().isBefore(LocalDateTime.now())) {
+                    productDTO.setProductDiscount(
+                            productDiscountMapper.toDTO(productDiscountEntity)
+                    );
+                }
             }
 
             // lấy productvariant để lấy ảnh và giá (lấy product variant rẻ nhất)
