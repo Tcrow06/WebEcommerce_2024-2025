@@ -1,5 +1,6 @@
 package com.webecommerce.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.webecommerce.constant.EnumProductStatus;
 import com.webecommerce.dto.discount.ProductDiscountDTO;
 import com.webecommerce.entity.discount.ProductDiscountEntity;
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ProductDTO extends BaseDTO<ProductDTO> {
 
     private String name;
@@ -19,13 +21,6 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
 
     private boolean isNew;
 
-    public LocalDateTime getIsNewProduct() {
-        return isNewProduct;
-    }
-
-    public void setIsNewProduct(LocalDateTime isNewProduct) {
-        this.isNewProduct = isNewProduct;
-    }
 
     private LocalDateTime isNewProduct;
 
@@ -41,6 +36,14 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
 
 
     private String photo;
+
+    public LocalDateTime getIsNewProduct() {
+        return isNewProduct;
+    }
+
+    public void setIsNewProduct(LocalDateTime isNewProduct) {
+        this.isNewProduct = isNewProduct;
+    }
 
     public String getPhoto() {
         return photo;
