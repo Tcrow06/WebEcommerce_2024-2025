@@ -108,6 +108,9 @@
 </section>
 
 <script>
+    $(document).ready(function() {
+        initQuantityButtons();
+    });
     function updateCart() {
         const cartData = getCartData();
 
@@ -167,10 +170,36 @@
             success: function(response) {
                 $('#cart-container').html($(response).find('#cart-container').html());
                 $('#total-price').text('$ ' + response.totalPrice);
+
+                initQuantityButtons();
             },
             error: function(xhr) {
                 alert("Không thể tải giỏ hàng.");
             }
+        });
+    }
+
+    // Hàm khởi tạo hiệu ứng tăng giảm số lượng
+    function initQuantityButtons() {
+        $('.pro-qty-2').each(function () {
+            // Khởi tạo lại hiệu ứng tăng giảm số lượng, có thể cần chỉnh sửa theo plugin bạn đang dùng
+            $(this).prepend('<span class="dec qtybtn">-</span>');
+            $(this).append('<span class="inc qtybtn">+</span>');
+
+            // Sự kiện click để tăng giảm số lượng
+            $(this).on('click', '.qtybtn', function () {
+                let $button = $(this);
+                let oldValue = $button.siblings('input').val();
+                let newVal = parseInt(oldValue, 10);
+
+                if ($button.hasClass('inc')) {
+                    newVal++;
+                } else {
+                    newVal = (newVal > 1) ? newVal - 1 : 1;
+                }
+
+                $button.siblings('input').val(newVal);
+            });
         });
     }
 </script>

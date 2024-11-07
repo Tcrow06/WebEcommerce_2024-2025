@@ -17,7 +17,9 @@ public class CustomerEntity extends UserEntity {
     @Column(name = "[loyalty_point]")
     private int loyaltyPoint;
 
-    @OneToOne(mappedBy = "customer")
+    // Tải lên các thuộc tính của cart khi customer được tải
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "cart_id", referencedColumnName = "id")
     private CartEntity cart;
 
     @OneToMany(mappedBy = "customer")
@@ -32,21 +34,11 @@ public class CustomerEntity extends UserEntity {
     @OneToMany(mappedBy = "customer")
     private List<SearchHistoryEntity> searchHistories = new ArrayList<>();
 
-//    @OneToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "account_id", referencedColumnName = "id")
-//    private AccountEntity account;
-
     @OneToOne(mappedBy = "customer")
     private AccountEntity account;
 
     @OneToOne(mappedBy = "customer")
     private SocialAccountEntity socialAccount;
-
-//    @OneToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "social_account_id", referencedColumnName = "id")
-//    private SocialAccountEntity socialAccount;
-
-
 
     @OneToMany(mappedBy = "customer")
     private List<ProductReviewEntity> productReviews = new ArrayList<>();
