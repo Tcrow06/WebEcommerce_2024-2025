@@ -110,7 +110,7 @@ public class ImageServiceImpl extends HttpServlet implements ImageService {
 
     @Override
     public boolean delete(String path) {
-        return false;
+        return getFile(path).delete();
     }
 
     @Override
@@ -118,8 +118,4 @@ public class ImageServiceImpl extends HttpServlet implements ImageService {
         return new File(getFolderUpload() + File.separator + path);
     }
 
-    @Override
-    public String getPathToSaveDB(String path) {
-        return null;
-    }
 }
