@@ -66,8 +66,8 @@ public class CartItemController extends HttpServlet {
         Long userId = JWTUtil.getIdUser(request);
         List<Map<String, Object>> cartItems = (List<Map<String, Object>>) data.get("cartItems");
 
-        // Tạo HashMap để lưu các sản phẩm cập nhật
-        HashMap<Long, CartItemDTO> cart = new HashMap<>();
+        // Lấy HashMap từ session: Chứa các sản phẩm được load từ db
+        HashMap<Long, CartItemDTO> cart = (HashMap<Long, CartItemDTO>) session.getAttribute("cart");
         for (Map<String, Object> item : cartItems) {
             Long productVariantId = ((Double) item.get("productVariantId")).longValue();
             int quantity = ((Double) item.get("quantity")).intValue();

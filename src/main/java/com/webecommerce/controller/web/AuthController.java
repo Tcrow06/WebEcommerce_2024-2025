@@ -4,7 +4,6 @@ import com.webecommerce.dao.people.ICustomerDAO;
 import com.webecommerce.dto.CartItemDTO;
 import com.webecommerce.dto.request.other.AccountRequest;
 import com.webecommerce.dto.request.people.CustomerRequest;
-import com.webecommerce.dto.response.other.AccountResponse;
 import com.webecommerce.dto.response.people.CustomerResponse;
 import com.webecommerce.dto.response.people.UserResponse;
 import com.webecommerce.entity.cart.CartEntity;
@@ -12,19 +11,15 @@ import com.webecommerce.entity.cart.CartItemEntity;
 import com.webecommerce.exception.DuplicateFieldException;
 import com.webecommerce.mapper.Impl.CartItemMapper;
 import com.webecommerce.service.IAccountService;
-import com.webecommerce.service.ICustomerService;
 import com.webecommerce.utils.FormUtils;
+import com.webecommerce.utils.JWTUtil;
 import com.webecommerce.utils.SessionUtil;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 
@@ -61,10 +56,15 @@ public class AuthController extends HttpServlet {
         if(action != null && action.equals("login")) {
             AccountRequest account = FormUtils.toModel(AccountRequest.class, request);
             UserResponse user = accountService.findByUserNameAndPasswordAndStatus(account.getUserName(), account.getPassword(), "ACTIVE");
+
             if(user != null) {
+                response.setContentType("application/json");
+                String path=null,jwtToken=null;
+
                 SessionUtil.getInstance().putValue(request, "USERINFO", user);
                 if(user.getRole().equals("OWNER")) {
-                    response.sendRedirect(request.getContextPath() + "/chu-doanh-nghiep");
+                    jwtToken = JWTUtil.generateToken(user);
+                    path = "/chu-doanh-nghiep";
                 }
                 else if(user.getRole().equals("CUSTOMER")) {
                     // Khách hàng đăng nhập thành công thì hệ thống sẽ load dữ liệu giỏ hàng
@@ -77,7 +77,15 @@ public class AuthController extends HttpServlet {
                     }
                     request.getSession().setAttribute("cart", cart);
                     response.sendRedirect(request.getContextPath() + "/trang-chu");
+                    jwtToken = JWTUtil.generateToken(user);
+                    path="/trang-chu";
                 }
+                System.out.println("Generated JWT Token: " + jwtToken);
+
+                Cookie cookie = new Cookie("token", jwtToken);
+                response.addCookie(cookie);
+
+                response.sendRedirect(request.getContextPath() + path);
             }
             else {
                 session.setAttribute("loginData", account);

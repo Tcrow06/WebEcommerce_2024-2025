@@ -30,7 +30,8 @@ public class RefreshTokenServlet extends HttpServlet {
             String role = decodedJWT.getClaim("role").asString();
             UserResponse userModel = new OwnerResponse();
             userModel.setId(id);
-            String token = JWTUtil.generateToken(userModel, role);
+            userModel.setRole(role);
+            String token = JWTUtil.generateToken(userModel);
             Cookie tokenCookie = new Cookie("token", token);
 //            tokenCookie.setPath("/");
 //            tokenCookie.setHttpOnly(true);
