@@ -12,9 +12,9 @@
         <div class="row">
             <div class="col-lg-12">
                 <ul class="filter__controls">
-                    <li class="active" data-filter="*">Best Sellers</li>
-                    <li data-filter=".new-arrivals">New Arrivals</li>
-                    <li data-filter=".hot-sales">Hot Sales</li>
+                    <li class="active" data-filter="*">Sales</li>
+                    <li data-filter=".new-arrivals">News</li>
+                    <li data-filter=".hot-sales">Other</li>
                 </ul>
             </div>
         </div>
