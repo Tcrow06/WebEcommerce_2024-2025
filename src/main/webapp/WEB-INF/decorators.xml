@@ -4,8 +4,8 @@
 		<pattern>/api*</pattern>
 	</encludes>
 	
-	<decorator name="admin" page="admin.jsp"> <!-- .jsp là master layout -->
-		<pattern>/admin*</pattern>
+	<decorator name="aadmin" page="admin.jsp"> <!-- .jsp là master layout -->
+		<pattern>/aadmin*</pattern>
 	</decorator>
 	
 	<decorator name="web" page="web.jsp">
