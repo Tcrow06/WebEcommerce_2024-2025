@@ -1,27 +1,31 @@
 package com.webecommerce.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.webecommerce.dto.CategoryDTO;
 import com.webecommerce.dto.ProductDTO;
 import com.webecommerce.dto.ProductVariantDTO;
-import com.webecommerce.service.ICategoryService;
 import com.webecommerce.service.IProductService;
 import com.webecommerce.service.IProductVariantService;
-import com.webecommerce.utils.HttpUtils;
+import com.webecommerce.service.impl.ImageServiceImpl;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns = {"/api-product"})
+@MultipartConfig
 public class ProductAPI extends HttpServlet {
     @Inject
     IProductService productService;
@@ -29,7 +33,10 @@ public class ProductAPI extends HttpServlet {
     @Inject
     IProductVariantService productVariantService;
 
-    @Override
+    @Inject
+    private ImageServiceImpl imageService;
+
+
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ObjectMapper mapper = new ObjectMapper();
         resp.setContentType("application/json; charset=UTF-8"); // Thiết lập kiểu nội dung và mã hóa
@@ -64,20 +71,69 @@ public class ProductAPI extends HttpServlet {
         }
     }
 
-
-    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
 
         ObjectMapper mapper = new ObjectMapper();
-        HttpUtils httpUtils =  HttpUtils.of(req.getReader());
-        ProductDTO product = httpUtils.toModel(ProductDTO.class);
-
-        if(product != null) {
-            product = productService.save(product);
-            if(product != null) {
-                mapper.writeValue(resp.getWriter(), product);
-            } else mapper.writeValue(resp.getWriter(), "error");
+        ProductDTO product = getPostInfo(req);
+        try {
+            if (product != null) {
+                product = productService.save(product);
+                if (product != null) {
+                    mapper.writeValue(resp.getWriter(), product);
+                } else mapper.writeValue(resp.getWriter(), "error");
+            }
+            System.out.println(product);
+        } catch (Exception e) {
+            mapper.writeValue(resp.getWriter(), "error");
         }
+    }
+    private ProductDTO getPostInfo(HttpServletRequest request) {
+        Map<String, Object> formData = new HashMap<>();
+        File rez = null;
+
+        try {
+            for (Part part : request.getParts()) {
+                if (part.getContentType() == null) {
+                    String fieldName = part.getName();
+                    String fieldValue = new BufferedReader(new InputStreamReader(part.getInputStream()))
+                            .lines().collect(Collectors.joining("\n"));
+                    formData.put(fieldName, fieldValue);
+                } else {
+                    if (part.getName().equals("image")) {
+                        try {
+                            String realPath= getServletContext().getRealPath("/");
+                            imageService.setRealPath(realPath);
+                            imageService.setPath(part);
+                            imageService.saveImageToDisk();
+                            rez = imageService.getFile();
+
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
+                        }
+                    }
+                }
+            }
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+
+        ProductDTO productDTO = new ObjectMapper().convertValue(formData, ProductDTO.class);
+        if (productDTO.getId() != null) {
+            productDTO = productService.getProductById(productDTO.getId());
+            if (rez != null) {
+                if (!imageService.delete(productDTO.getPhoto())) {
+                    System.out.println("Delete image unsuccessfully");
+                }
+            }
+        }
+
+
+        // Cập nhật đường dẫn ảnh và ảnh thumbnail
+        if (rez != null) {
+            productDTO.setPhoto(rez.getName());
+        }
+
+        return productDTO;
     }
 }
