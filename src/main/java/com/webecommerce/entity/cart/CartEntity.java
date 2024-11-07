@@ -13,11 +13,10 @@ public class CartEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "cart")
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
     private List<CartItemEntity> cartItems = new ArrayList<>();
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "customer_id", referencedColumnName = "id")
+    @OneToOne(mappedBy = "cart", cascade = CascadeType.ALL)
     private CustomerEntity customer;
 
     public List<CartItemEntity> getCartItems() {

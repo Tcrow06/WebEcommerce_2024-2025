@@ -50,6 +50,12 @@ public class CartItemController extends HttpServlet {
     }
 
     private void handleUpdateCart(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession();
+
+        // Trả dữ liệu qua JSON
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
         // Lấy dữ liệu JSON từ request
         String jsonData = request.getReader().lines().reduce("", (accumulator, actual) -> accumulator + actual);
 
@@ -74,11 +80,19 @@ public class CartItemController extends HttpServlet {
         }
 
         // Tiến hành update
-        cartItemService.editCart(null, 0, cart);
+        cartItemService.editCart(userId, cart);
+        session.setAttribute("cart", cart);
 
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(new Gson().toJson(Map.of("message", "Giỏ hàng đã được cập nhật thành công")));
+        // Sẽ bỏ các dòng này khi có tính năng chọn sản phẩm để thanh toán
+        session.setAttribute("totalPrice", cartItemService.getPriceOfCart(cart));
+        session.setAttribute("totalQuantity", cartItemService.getQuantityOfCart(cart));
+        Map<String, Object> result = new HashMap<>();
+        result.put("totalPrice", session.getAttribute("totalPrice"));
+        result.put("totalQuantity", session.getAttribute("totalQuantity"));
+
+        String referer = request.getHeader("referer");
+        response.sendRedirect(referer != null ? referer : "/gio-hang");
+        response.getWriter().write(new Gson().toJson(result));
     }
 
     private void handleCart(HttpServletRequest request, HttpServletResponse response, String path)
@@ -109,6 +123,8 @@ public class CartItemController extends HttpServlet {
         }
 
         session.setAttribute("cart", cart);
+
+        // Sẽ bỏ 2 dòng này khi có tính năng chọn sản phẩm để thanh toán
         session.setAttribute("totalPrice", cartItemService.getPriceOfCart(cart));
         session.setAttribute("totalQuantity", cartItemService.getQuantityOfCart(cart));
 
@@ -120,10 +136,5 @@ public class CartItemController extends HttpServlet {
         result.put("totalPrice", session.getAttribute("totalPrice"));
         result.put("totalQuantity", session.getAttribute("totalQuantity"));
         response.getWriter().write(new Gson().toJson(result));
-    }
-
-    private Long extractIdFromPath(String pathInfo) {
-        String[] pathParts = pathInfo.split("/");
-        return Long.parseLong(pathParts[1]);
     }
 }

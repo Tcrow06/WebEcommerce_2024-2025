@@ -32,7 +32,6 @@
         <class>com.webecommerce.entity.people.OwnerEntity</class>
 
 
-
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect" />
             <property name="hibernate.hbm2ddl.auto" value="update" />

@@ -1,12 +1,18 @@
 package com.webecommerce.controller.web;
 
+import com.webecommerce.dao.people.ICustomerDAO;
+import com.webecommerce.dto.CartItemDTO;
 import com.webecommerce.dto.request.other.AccountRequest;
 import com.webecommerce.dto.request.people.CustomerRequest;
 import com.webecommerce.dto.response.other.AccountResponse;
 import com.webecommerce.dto.response.people.CustomerResponse;
 import com.webecommerce.dto.response.people.UserResponse;
+import com.webecommerce.entity.cart.CartEntity;
+import com.webecommerce.entity.cart.CartItemEntity;
 import com.webecommerce.exception.DuplicateFieldException;
+import com.webecommerce.mapper.Impl.CartItemMapper;
 import com.webecommerce.service.IAccountService;
+import com.webecommerce.service.ICustomerService;
 import com.webecommerce.utils.FormUtils;
 import com.webecommerce.utils.SessionUtil;
 
@@ -19,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 
 @WebServlet(urlPatterns = {"/dang-nhap", "/dang-ky"})
@@ -26,6 +33,12 @@ public class AuthController extends HttpServlet {
     @Inject
     private IAccountService accountService;
     ResourceBundle resourceBundle = ResourceBundle.getBundle("message");
+
+    @Inject
+    private ICustomerDAO customerDAO;
+
+    @Inject
+    private CartItemMapper cartItemMapper;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
@@ -54,6 +67,15 @@ public class AuthController extends HttpServlet {
                     response.sendRedirect(request.getContextPath() + "/chu-doanh-nghiep");
                 }
                 else if(user.getRole().equals("CUSTOMER")) {
+                    // Khách hàng đăng nhập thành công thì hệ thống sẽ load dữ liệu giỏ hàng
+                    CartEntity cartEntity = customerDAO.findById(user.getId()).getCart();
+
+                    HashMap<Long, CartItemDTO> cart = new HashMap<>();
+                    for (CartItemEntity cartItemEntity : cartEntity.getCartItems()) {
+                        CartItemDTO cartItemDTO = cartItemMapper.toDTO(cartItemEntity);
+                        cart.put(cartItemDTO.getId(), cartItemDTO);
+                    }
+                    request.getSession().setAttribute("cart", cart);
                     response.sendRedirect(request.getContextPath() + "/trang-chu");
                 }
             }

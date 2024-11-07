@@ -6,6 +6,7 @@ import com.webecommerce.dto.request.people.CustomerRequest;
 import com.webecommerce.dto.response.other.AccountResponse;
 import com.webecommerce.dto.response.people.CustomerResponse;
 import com.webecommerce.dto.response.people.UserResponse;
+import com.webecommerce.entity.cart.CartEntity;
 import com.webecommerce.entity.other.AccountEntity;
 import com.webecommerce.entity.people.CustomerEntity;
 import com.webecommerce.exception.DuplicateFieldException;
@@ -44,6 +45,7 @@ public class AccountService implements IAccountService {
         }
 
         CustomerEntity customerEntity = customerMapper.toCustomerEntityFull(customerRequest);
+        customerEntity.setCart(new CartEntity());
         AccountEntity accountEntity = accountMapper.toAccountEntity(customerRequest);
         accountEntity.setCustomer(customerEntity);
         accountDAO.insert(accountEntity);
