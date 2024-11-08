@@ -1,33 +1,25 @@
 package com.webecommerce.service.impl;
 
-import com.webecommerce.dao.impl.product.ProductDAO;
 import com.webecommerce.dao.product.ICategoryDAO;
 import com.webecommerce.dao.product.IProductDAO;
 import com.webecommerce.dao.product.IProductVariantDAO;
-import com.webecommerce.dto.CategoryDTO;
 import com.webecommerce.dto.ProductDTO;
-import com.webecommerce.dto.discount.ProductDiscountDTO;
 import com.webecommerce.dto.ProductVariantDTO;
-import com.webecommerce.entity.discount.DiscountEntity;
+import com.webecommerce.dto.discount.ProductDiscountDTO;
 import com.webecommerce.entity.discount.ProductDiscountEntity;
-import com.webecommerce.entity.product.CategoryEntity;
 import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.entity.product.ProductVariantEntity;
 import com.webecommerce.mapper.GenericMapper;
+import com.webecommerce.paging.Pageable;
 import com.webecommerce.service.IProductService;
-import com.webecommerce.utils.HibernateUtil;
 
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.servlet.http.Part;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 public class ProductService implements IProductService {
@@ -112,15 +104,41 @@ public class ProductService implements IProductService {
         return productDTOS;
     }
 
+    private List <ProductDTO> getProduct (List<ProductEntity> productEntities, double minPrice, double maxPrice) {
+        List <ProductDTO> productDTOS = new ArrayList<ProductDTO>();
+        for (ProductEntity product : productEntities) {
+            ProductDTO productDTO = productMapper.toDTO(product);
+            //lấy discount cho từng sản phâm
+            ProductDiscountEntity productDiscountEntity = product.getProductDiscount();
+            if (productDiscountEntity != null) {
+                if (productDiscountEntity.getEndDate().isBefore(LocalDateTime.now())) {
+                    productDTO.setProductDiscount(
+                            productDiscountMapper.toDTO(productDiscountEntity)
+                    );
+                }
+            }
+
+            // lấy productvariant để lấy ảnh và giá (lấy product variant rẻ nhất)
+            ProductVariantEntity productVariant = productVariantDAO.getProductVariantByProduct(product);
+            if (productVariant != null && (productVariant.getPrice() >= minPrice && productVariant.getPrice() <= maxPrice)) {
+                productDTO.setPhoto(productVariant.getImageUrl());
+                productDTO.setPrice(productVariant.getPrice());
+                productDTOS.add(productDTO);
+            }
+            //productDTOS.add(productDTO);
+        }
+        return productDTOS;
+    }
+
     public List<ProductDTO> findProductsByBrand(String brand) {
         List <ProductEntity> products = productDAO.findProductsByBrand(brand);
         return getProduct(products);
     }
 
     @Override
-    public List<ProductDTO> findAll () {
-        List<ProductEntity> productEntities =  productDAO.findAll();
-        return getProduct(productEntities);
+    public List<ProductDTO> findAll(Pageable pageable, double minPrice, double maxPrice) {
+        List<ProductEntity> productEntities = productDAO.findAll(pageable);
+        return getProduct(productEntities, minPrice, maxPrice);
     }
 
     public List<ProductDTO> findProductsByCategoryCode(String categoryCode) {
@@ -185,5 +203,13 @@ public class ProductService implements IProductService {
                 .collect(Collectors.toMap(ProductDTO::getId, product -> product, (existing, replacement) -> existing))
                 .values());
     }
+    public Long getTotalItem() {
+        return productDAO.getTotalItem();
+    }
+    @Override
+    public int setTotalPage(Long totalItem, int maxPageItem) {
+        return (int) Math.ceil((double) totalItem / maxPageItem);
+    }
+
 
 }

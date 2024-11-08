@@ -98,8 +98,11 @@
 
 <script src="<c:url value='/static/web/js/token/refreshToken.js'/> "></script>
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 8d0c568a30b8607e9c26c2f3381d71e768d97ca9
 </body>
 
 </html>
