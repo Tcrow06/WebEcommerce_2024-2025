@@ -1,9 +1,14 @@
 package com.webecommerce.filter;
 
 public class FilterProduct {
-    private String filterCategory;
+    private int filterCategory;
 
     private String filterBrand;
+
+    public FilterProduct(int filterCategory, String filterBrand) {
+        this.filterCategory = filterCategory;
+        this.filterBrand = filterBrand;
+    }
 
     public String getFilterBrand() {
         return filterBrand;
@@ -13,11 +18,11 @@ public class FilterProduct {
         this.filterBrand = filterBrand;
     }
 
-    public String getFilterCategory() {
+    public int getFilterCategory() {
         return filterCategory;
     }
 
-    public void setFilterCategory(String filterCategory) {
+    public void setFilterCategory(int filterCategory) {
         this.filterCategory = filterCategory;
     }
 }

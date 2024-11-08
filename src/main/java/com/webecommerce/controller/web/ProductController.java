@@ -34,24 +34,28 @@ public class ProductController extends HttpServlet {
 
         String category = request.getParameter("category");
         String brand = request.getParameter("brand");
+        int page = Integer.parseInt(request.getParameter("page"));
+        int maxPageItem = Integer.parseInt(request.getParameter("maxPageItem"));
 
-        product = FormUtils.toModel(ProductDTO.class, request);
+        product.setPage(page);
+        product.setMaxPageItem(maxPageItem);
 
-        Pageable pageable =new PageRequest(product.getPage(), product.getMaxPageItem());
+        int categoryId = -1;
+
+        try {
+            categoryId = Integer.parseInt(category);
+        }
+        catch (NumberFormatException e) {
+            System.out.println(e);
+        }
+
+        //product = FormUtils.toModel(ProductDTO.class, request);
+
+        Pageable pageable =new PageRequest(product.getPage(), product.getMaxPageItem(), new FilterProduct(categoryId, brand));
         product.setResultList(productService.findAll(pageable));
         product.setTotalItem(productService.getTotalItem());
         product.setTotalPage(productService.setTotalPage(product.getTotalItem(),
                 product.getMaxPageItem()));
-
-
-
-        //product = new ProductDTO();
-
-//        if (category != null) {
-//            product.setResultList(productService.findProductsByCategoryCode(category));
-//        } else if (brand != null) {
-//            product.setResultList(productService.findProductsByBrand(brand));
-//        } else product.setResultList(productService.findAll());
 
         request.setAttribute(ModelConstant.MODEL2, productService.getBrands());
         request.setAttribute(ModelConstant.MODEL1, categoryService.findAll());

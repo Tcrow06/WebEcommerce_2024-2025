@@ -85,9 +85,29 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
 
     @Override
     public List<ProductEntity> findAll(Pageable pageable) {
-        String jpql = "SELECT n FROM ProductEntity n";
 
-        TypedQuery<ProductEntity> query = entityManager.createQuery(jpql, ProductEntity.class);
+        StringBuilder jpql = new StringBuilder("SELECT n FROM ProductEntity n WHERE 1=1");
+
+        if (pageable.getFilterProduct().getFilterCategory() != -1) {
+            jpql.append(" AND n.category.id = :categoryId");
+        }
+
+        if (pageable.getFilterProduct().getFilterBrand() != null && !pageable.getFilterProduct().getFilterBrand().isEmpty()) {
+            jpql.append(" AND n.brand = :brand");
+        }
+
+        String queryStr = jpql.toString();
+
+        TypedQuery<ProductEntity> query = entityManager.createQuery(queryStr, ProductEntity.class);
+
+        if (pageable.getFilterProduct().getFilterCategory() != -1) {
+            query.setParameter("categoryId", Long.valueOf(pageable.getFilterProduct().getFilterCategory()));
+        }
+
+        // Đặt giá trị tham số cho brand_id nếu có
+        if (pageable.getFilterProduct().getFilterBrand() != null && !pageable.getFilterProduct().getFilterBrand().isEmpty()) {
+            query.setParameter("brand", pageable.getFilterProduct().getFilterBrand());
+        }
 
         if (pageable.getOffset() != null) {
             query.setFirstResult(pageable.getOffset());

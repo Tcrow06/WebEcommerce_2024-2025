@@ -87,11 +87,7 @@
                         </form>
                     </div>
 <%--                    Thử filter--%>
-                    <form id="filterForm" action="FilterProduct" method="get">
-                        <!-- Giữ giá trị của bộ lọc để gửi đi -->
-                        <input type="hidden" name="category" id="category">
-                        <input type="hidden" name="brand" id="brand">
-                    </form>
+
                     <div class="shop__sidebar__accordion">
                         <div class="accordion" id="accordionExample">
                             <div class="card">
@@ -103,7 +99,9 @@
                                         <div class="shop__sidebar__categories">
                                             <ul class="nice-scroll">
                                                 <c:forEach var="item" items="${onemodel}">
-                                                    <li><a href="danh-sach-san-pham?category=${item.code}">${item.name}</a></li>
+                                                    <li><a href="javascript:void(0);" onclick="selectCategory('${item.id}')">${item.name}</a></li>
+
+                                                    <%--<li><a href="danh-sach-san-pham?category=${item.code}">${item.name}</a></li>--%>
                                                 </c:forEach>
                                             </ul>
                                         </div>
@@ -119,7 +117,9 @@
                                         <div class="shop__sidebar__brand">
                                             <ul>
                                                 <c:forEach var="item" items="${twomodel}">
-                                                    <li><a href="danh-sach-san-pham?brand=${item}">${item}</a></li>
+                                                    <li><a href="javascript:void(0);" onclick="selectBrand('${item}')">${item}</a></li>
+
+                                                    <%--<li><a href="danh-sach-san-pham?brand=${item}">${item}</a></li>--%>
                                                 </c:forEach>
                                             </ul>
                                         </div>
@@ -233,9 +233,12 @@
                 </div>
 
                 <form id="formSubmit" action="/danh-sach-san-pham" method="get">
+                    <!-- Giữ giá trị của bộ lọc để gửi đi -->
                     <ul class="pagination" id="pagination"></ul>
                     <input type="hidden" name="page" id="page" value="">
                     <input type="hidden" name="maxPageItem" id="maxPageItem" value="">
+                    <input type="hidden" name="category" id="category">
+                    <input type="hidden" name="brand" id="brand">
                 </form>
 
             </div>
@@ -243,20 +246,79 @@
     </div>
 
     <script>
+
         function selectCategory(categoryCode) {
-            document.getElementById('category').value = categoryCode;
+
+            if (categoryCode) {
+                document.getElementById('category').value = categoryCode;
+                sessionStorage.setItem('selectedCategory', categoryCode); // Lưu lại giá trị đã chọn
+            } else {
+                document.getElementById('category').value = '';
+                sessionStorage.removeItem('selectedCategory'); // Xóa nếu không chọn gì
+            }
+
+            const previousBrand = sessionStorage.getItem('selectedBrand');
+            if (!previousBrand) {
+                document.getElementById('brand').removeAttribute('name');
+            }
+
+            updatePageInfo();
+            submitFilterForm()
         }
 
         function selectBrand(brandName) {
-            document.getElementById('brand').value = brandName;
+
+            if (brandName) {
+                document.getElementById('brand').value = brandName;
+                sessionStorage.setItem('selectedBrand', brandName); // Lưu lại giá trị đã chọn
+            } else {
+                document.getElementById('brand').value = '';
+                sessionStorage.removeItem('selectedBrand'); // Xóa nếu không chọn gì
+            }
+
+            const previousCategory = sessionStorage.getItem('selectedCategory');
+            if (!previousCategory) {
+                document.getElementById('category').removeAttribute('name');
+            }
+
+            updatePageInfo();
+            submitFilterForm();
         }
 
+        function updatePageInfo() {
+            document.getElementById('page').value = currentPage;
+            document.getElementById('maxPageItem').value = ${model.maxPageItem};
+        }
+
+        function submitFilterForm() {
+
+            const storedCategory = sessionStorage.getItem('selectedCategory');
+            const storedBrand = sessionStorage.getItem('selectedBrand');
+
+            if (storedCategory) {
+                document.getElementById('category').value = storedCategory;
+            }
+            if (storedBrand) {
+                document.getElementById('brand').value = storedBrand;
+            }
+
+            document.getElementById('formSubmit').submit();
+        }
+
+        document.getElementById('reset-filter-btn').addEventListener('click', function() {
+            document.getElementById('category').value = '';
+            document.getElementById('brand').value = '';
+            updatePageInfo();
+            submitFilterForm();
+        });
     </script>
 
     <script>
         var totalPages = ${model.totalPage};
         var currentPage = ${model.page};
         var limit = ${model.maxPageItem};
+
+
 
         $(function () {
             window.pagObj = $('#pagination').twbsPagination({
@@ -277,6 +339,7 @@
             });
         });
     </script>
+
 
 
 </section>

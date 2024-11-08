@@ -1,15 +1,27 @@
 package com.webecommerce.paging;
 
+import com.webecommerce.filter.FilterProduct;
+
 public class PageRequest implements Pageable{
 
     private Integer page;
 
     private Integer maxPageItem;
 
+    private FilterProduct filterProduct;
+
     public PageRequest(Integer page, Integer maxPageItem) {
         this.page = page;
         this.maxPageItem = maxPageItem;
     }
+
+    public PageRequest(Integer page, Integer maxPageItem, FilterProduct filterProduct) {
+        this.page = page;
+        this.maxPageItem = maxPageItem;
+        this.filterProduct = filterProduct;
+    }
+
+
 
     @Override
     public Integer getPage() {
@@ -27,5 +39,13 @@ public class PageRequest implements Pageable{
     @Override
     public Integer getLimit() {
         return this.maxPageItem;
+    }
+
+    @Override
+    public FilterProduct getFilterProduct() {
+        if(this.filterProduct != null) {
+            return this.filterProduct;
+        }
+        return null;
     }
 }
