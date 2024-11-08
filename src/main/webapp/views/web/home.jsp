@@ -31,7 +31,6 @@
     }
 
 </style>
-
 <!-- Product Section Begin -->
 <section class="product spad">
     <div class="container">

@@ -271,9 +271,10 @@
             });
         }
 
-        function addProduct () {
+        function addProduct() {
+            if (!checkInput()) return;
 
-            if (!checkInput())  return
+            const formData = new FormData();
 
             var product = {
                 name: $('#productName').val(),
@@ -284,37 +285,49 @@
                 category: {
                     id: $('#category').val(),
                 },
-                productVariants: []
             };
 
-            // Gather product variants
-            $('#productVariantsContainer .product-variant-card').each(function() {
+            formData.append('product.name', product.name);
+            formData.append('product.highlight', product.highlight);
+            formData.append('product.status', product.status);
+            formData.append('product.brand', product.brand);
+            formData.append('product.description', product.description);
+            formData.append('product.category.id', product.category.id);
+
+            $('#productVariantsContainer .product-variant-card').each(function(index) {
                 var variant = {
                     price: parseFloat($(this).find('.variant-price').val()),
-                    status: 'SELLING', // This can be adjusted based on your need
-                    imageUrl: '/static/img/product/product-10.jpg', // Assuming a static image URL
                     color: $(this).find('.variant-color').val(),
                     size: $(this).find('.variant-size').val(),
                     quantity: parseInt($(this).find('.variant-quantity').val())
                 };
-                product.productVariants.push(variant);
+
+                formData.append(`productVariants[` + index + `].price`, variant.price);
+                // formData.append(`productVariants[` + index + `].status`, variant.status);
+                formData.append(`productVariants[` + index + `].color`, variant.color);
+                formData.append(`productVariants[` + index + `].size`, variant.size);
+                formData.append(`productVariants[` + index + `].quantity`, variant.quantity);
+
+                const fileInput = $(this).find(".image-upload input[type='file']")[0];
+                if (fileInput && fileInput.files[0]) {
+                    formData.append(`productVariants[` + index + `].image`, fileInput.files[0]);
+                }
             });
 
-            // Send product data to server as JSON
+            // Gửi dữ liệu lên server
             $.ajax({
-                url: '/api-product',  // Your API endpoint
+                url: '/api-product',
                 type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(product),
+                data: formData,
+                processData: false,  // Không xử lý dữ liệu
+                contentType: false,  // Để trình duyệt tự xử lý content-type
                 success: function(response) {
                     alert('Product added successfully');
-                    // Optionally, reload page or update UI
                 },
                 error: function(xhr, status, error) {
                     alert('Failed to add product: ' + error);
                 }
             });
-
         }
 
     </script>

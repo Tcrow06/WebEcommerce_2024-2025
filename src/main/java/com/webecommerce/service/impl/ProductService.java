@@ -20,6 +20,7 @@ import com.webecommerce.utils.HibernateUtil;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.servlet.http.Part;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,8 +30,10 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 public class ProductService implements IProductService {
+
+    @Inject
+    private ImageServiceImpl imageServiceImpl;
 
     @Inject
     private GenericMapper<ProductDTO, ProductEntity> productMapper;
@@ -57,10 +60,19 @@ public class ProductService implements IProductService {
 
     @Transactional
     public ProductDTO save(ProductDTO product) {
+        try { // tiến hành lưu ảnh
+            for (ProductVariantDTO productVariant : product.getProductVariants()) {
+                imageServiceImpl.setRealPath(product.getRealPathFile());
+                imageServiceImpl.setPath(productVariant.getImage());
+                imageServiceImpl.saveImageToDisk();
+                productVariant.setImageUrl(imageServiceImpl.getFileName());
+            }
+        } catch (Exception e) {return null;}
 
         ProductEntity productEntity = productMapper.toEntity(product);
-        productEntity.setIsNew(LocalDateTime.now());
+        if (productEntity == null) return null;
 
+        productEntity.setIsNew(LocalDateTime.now());
 
         productEntity.setCategory(
                 categoryDAO.findById(product.getCategory().getId())
