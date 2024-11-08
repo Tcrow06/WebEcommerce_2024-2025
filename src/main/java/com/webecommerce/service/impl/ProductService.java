@@ -19,8 +19,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 public class ProductService implements IProductService {
+
+    @Inject
+    private ImageServiceImpl imageServiceImpl;
 
     @Inject
     private GenericMapper<ProductDTO, ProductEntity> productMapper;
@@ -47,10 +52,19 @@ public class ProductService implements IProductService {
 
     @Transactional
     public ProductDTO save(ProductDTO product) {
+        try { // tiến hành lưu ảnh
+            for (ProductVariantDTO productVariant : product.getProductVariants()) {
+                imageServiceImpl.setRealPath(product.getRealPathFile());
+                imageServiceImpl.setPath(productVariant.getImage());
+                imageServiceImpl.saveImageToDisk();
+                productVariant.setImageUrl(imageServiceImpl.getId());
+            }
+        } catch (Exception e) {return null;}
 
         ProductEntity productEntity = productMapper.toEntity(product);
-        productEntity.setIsNew(LocalDateTime.now());
+        if (productEntity == null) return null;
 
+        productEntity.setIsNew(LocalDateTime.now());
 
         productEntity.setCategory(
                 categoryDAO.findById(product.getCategory().getId())
@@ -160,6 +174,35 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    public List<ProductDTO> findProductOnSale(int limit) {
+        List<ProductEntity>  productEntities =  productDAO.findProductOnSale(limit);
+        return getProduct(productEntities);
+    }
+
+    @Override
+    public List<ProductDTO>  findProductIsNew(int limit) {
+        List<ProductEntity>  productEntities =  productDAO.findProductIsNew(limit);
+        return getProduct(productEntities);
+    }
+
+    @Override
+    public List<ProductDTO>  findProductOther(int limit) {
+        List<ProductEntity>  productEntities =  productDAO.findProductOther(limit);
+        return getProduct(productEntities);
+    }
+
+    @Override
+    public List<ProductDTO> findProductForAllTag(int limit){
+        List<ProductDTO> productOnSales = findProductOnSale(limit);
+        List<ProductDTO> productIsNew = findProductIsNew(limit);
+        List<ProductDTO> productOther = findProductOther(limit);
+
+        return new ArrayList<>(Stream.of(productOnSales, productIsNew, productOther)
+                .flatMap(List::stream)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toMap(ProductDTO::getId, product -> product, (existing, replacement) -> existing))
+                .values());
+    }
     public Long getTotalItem() {
         return productDAO.getTotalItem();
     }
@@ -167,7 +210,6 @@ public class ProductService implements IProductService {
     public int setTotalPage(Long totalItem, int maxPageItem) {
         return (int) Math.ceil((double) totalItem / maxPageItem);
     }
-
 
 
 }

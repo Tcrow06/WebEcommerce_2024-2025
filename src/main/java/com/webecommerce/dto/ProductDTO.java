@@ -1,17 +1,30 @@
 package com.webecommerce.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.webecommerce.constant.EnumProductStatus;
 import com.webecommerce.dto.discount.ProductDiscountDTO;
 import com.webecommerce.entity.discount.ProductDiscountEntity;
 import com.webecommerce.utils.PairUtils;
 
+import javax.servlet.http.Part;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ProductDTO extends BaseDTO<ProductDTO> {
 
     private String name;
+
+    public ProductDTO(String name, boolean highlight, String brand, String description, CategoryDTO category) {
+        this.name = name;
+        this.highlight = highlight;
+        this.brand = brand;
+        this.description = description;
+        this.category = category;
+    }
+
+    public ProductDTO () {}
 
     private boolean highlight;
 
@@ -19,13 +32,6 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
 
     private boolean isNew;
 
-    public LocalDateTime getIsNewProduct() {
-        return isNewProduct;
-    }
-
-    public void setIsNewProduct(LocalDateTime isNewProduct) {
-        this.isNewProduct = isNewProduct;
-    }
 
     private LocalDateTime isNewProduct;
 
@@ -42,6 +48,13 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
 
     private String photo;
 
+    public LocalDateTime getIsNewProduct() {
+        return isNewProduct;
+    }
+
+    public void setIsNewProduct(LocalDateTime isNewProduct) {
+        this.isNewProduct = isNewProduct;
+    }
     private int page;
     private Integer maxPageItem;
     private int totalPage;

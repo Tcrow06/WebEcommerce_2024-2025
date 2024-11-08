@@ -16,9 +16,13 @@ public class CartItemEntity {
     @Column(name = "[quantity]")
     private int quantity;
 
-    @ManyToOne
-    @JoinColumn(name = "cart_id")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "cart_id", referencedColumnName = "id")
     private CartEntity cart;
+
+    @ManyToOne
+    @JoinColumn(name = "product_variant_id")
+    private ProductVariantEntity productVariant;
 
     public ProductVariantEntity getProductVariant() {
         return productVariant;
@@ -27,10 +31,6 @@ public class CartItemEntity {
     public void setProductVariant(ProductVariantEntity productVariant) {
         this.productVariant = productVariant;
     }
-
-    @ManyToOne
-    @JoinColumn(name = "product_variant_id")
-    private ProductVariantEntity productVariant;
 
     public CartEntity getCart() {
         return cart;
