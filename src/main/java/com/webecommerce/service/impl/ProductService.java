@@ -94,7 +94,7 @@ public class ProductService implements IProductService {
             //lấy discount cho từng sản phâm
             ProductDiscountEntity productDiscountEntity = product.getProductDiscount();
             if (productDiscountEntity != null) {
-                if (productDiscountEntity.getEndDate().isBefore(LocalDateTime.now())) {
+                if (productDiscountEntity.getEndDate().isAfter(LocalDateTime.now())) {
                     productDTO.setProductDiscount(
                             productDiscountMapper.toDTO(productDiscountEntity)
                     );
