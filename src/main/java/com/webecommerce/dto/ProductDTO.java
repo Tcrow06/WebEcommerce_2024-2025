@@ -6,6 +6,7 @@ import com.webecommerce.dto.discount.ProductDiscountDTO;
 import com.webecommerce.entity.discount.ProductDiscountEntity;
 import com.webecommerce.utils.PairUtils;
 
+import javax.servlet.http.Part;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,16 @@ import java.util.List;
 public class ProductDTO extends BaseDTO<ProductDTO> {
 
     private String name;
+
+    public ProductDTO(String name, boolean highlight, String brand, String description, CategoryDTO category) {
+        this.name = name;
+        this.highlight = highlight;
+        this.brand = brand;
+        this.description = description;
+        this.category = category;
+    }
+
+    public ProductDTO () {}
 
     private boolean highlight;
 
