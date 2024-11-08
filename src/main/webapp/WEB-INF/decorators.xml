@@ -7,6 +7,10 @@
 	<decorator name="aadmin" page="admin.jsp"> <!-- .jsp là master layout -->
 		<pattern>/aadmin*</pattern>
 	</decorator>
+
+	<decorator name="chu-doanh-nghiep" page="admin.jsp"> <!-- .jsp là master layout -->
+		<pattern>/chu-doanh-nghiep*</pattern>
+	</decorator>
 	
 	<decorator name="web" page="web.jsp">
 		<pattern>/*</pattern>

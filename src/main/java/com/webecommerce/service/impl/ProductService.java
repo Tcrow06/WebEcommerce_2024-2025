@@ -65,7 +65,7 @@ public class ProductService implements IProductService {
                 imageServiceImpl.setRealPath(product.getRealPathFile());
                 imageServiceImpl.setPath(productVariant.getImage());
                 imageServiceImpl.saveImageToDisk();
-                productVariant.setImageUrl(imageServiceImpl.getFileName());
+                productVariant.setImageUrl(imageServiceImpl.getId());
             }
         } catch (Exception e) {return null;}
 

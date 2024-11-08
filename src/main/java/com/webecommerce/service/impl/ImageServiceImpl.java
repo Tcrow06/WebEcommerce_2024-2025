@@ -115,7 +115,7 @@ public class ImageServiceImpl extends HttpServlet implements ImageService {
 
     @Override
     public File getFile(String path) {
-        return new File(getFolderUpload() + File.separator + path);
+        return new File(getFolderUpload() + File.separator + path + DOT_EXTENDS);
     }
 
 }

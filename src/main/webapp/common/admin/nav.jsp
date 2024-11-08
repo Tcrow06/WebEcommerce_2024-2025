@@ -25,7 +25,7 @@
                 <li class="submenu">
                     <a href="javascript:void(0);"><img src="../static/admin/assets/img/icons/sales1.svg" alt="img"><span> Sales</span> <span class="menu-arrow"></span></a>
                     <ul>
-                        <li><a href="saleslist.html">Sales List</a></li>
+                        <li><a href="<c:url value='/admin/danh-sach-don-hang'/> ">Sales List</a></li>
                         <li><a href="pos.html">POS</a></li>
                         <li><a href="pos.html">New Sales</a></li>
                         <li><a href="salesreturnlists.html">Sales Return List</a></li>
