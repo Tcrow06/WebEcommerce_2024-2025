@@ -6,13 +6,20 @@ import com.webecommerce.dao.product.IProductDAO;
 import com.webecommerce.dto.ProductDTO;
 import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.entity.product.ProductVariantEntity;
+import com.webecommerce.mapper.Impl.ProductMapper;
+import com.webecommerce.paging.Pageable;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 
+import javax.inject.Inject;
+import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDAO {
 
+    @Inject
+    private ProductMapper productMapper;
     public ProductDAO() {
         super(ProductEntity.class);
     }
@@ -70,4 +77,27 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
         return super.findByAttribute("brand",brand);
     }
 
+    @Override
+    public Long getTotalItem() {
+        return (Long) entityManager.createQuery("SELECT COUNT(p) FROM ProductEntity p")
+                .getSingleResult();
+    }
+
+    @Override
+    public List<ProductEntity> findAll(Pageable pageable) {
+        String jpql = "SELECT n FROM ProductEntity n";
+
+        TypedQuery<ProductEntity> query = entityManager.createQuery(jpql, ProductEntity.class);
+
+        if (pageable.getOffset() != null) {
+            query.setFirstResult(pageable.getOffset());
+        }
+        if (pageable.getLimit() != null) {
+            query.setMaxResults(pageable.getLimit());
+        }
+
+        List<ProductEntity> productEntities = query.getResultList();
+
+        return productEntities;
+    }
 }

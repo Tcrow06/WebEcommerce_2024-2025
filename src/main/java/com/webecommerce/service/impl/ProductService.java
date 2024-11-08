@@ -1,31 +1,24 @@
 package com.webecommerce.service.impl;
 
-import com.webecommerce.dao.impl.product.ProductDAO;
 import com.webecommerce.dao.product.ICategoryDAO;
 import com.webecommerce.dao.product.IProductDAO;
 import com.webecommerce.dao.product.IProductVariantDAO;
-import com.webecommerce.dto.CategoryDTO;
 import com.webecommerce.dto.ProductDTO;
-import com.webecommerce.dto.discount.ProductDiscountDTO;
 import com.webecommerce.dto.ProductVariantDTO;
-import com.webecommerce.entity.discount.DiscountEntity;
+import com.webecommerce.dto.discount.ProductDiscountDTO;
 import com.webecommerce.entity.discount.ProductDiscountEntity;
-import com.webecommerce.entity.product.CategoryEntity;
 import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.entity.product.ProductVariantEntity;
 import com.webecommerce.mapper.GenericMapper;
+import com.webecommerce.paging.Pageable;
 import com.webecommerce.service.IProductService;
-import com.webecommerce.utils.HibernateUtil;
 
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
 
 public class ProductService implements IProductService {
 
@@ -103,8 +96,8 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public List<ProductDTO> findAll () {
-        List<ProductEntity> productEntities =  productDAO.findAll();
+    public List<ProductDTO> findAll(Pageable pageable) {
+        List<ProductEntity> productEntities = productDAO.findAll(pageable);
         return getProduct(productEntities);
     }
 
@@ -138,6 +131,15 @@ public class ProductService implements IProductService {
         if (sizeList != null)
             return sizeList;
         return Collections.emptyList();
+    }
+
+    @Override
+    public Long getTotalItem() {
+        return productDAO.getTotalItem();
+    }
+    @Override
+    public int setTotalPage(Long totalItem, int maxPageItem) {
+        return (int) Math.ceil((double) totalItem / maxPageItem);
     }
 
 }

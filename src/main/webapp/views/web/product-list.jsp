@@ -25,8 +25,37 @@
         top:40px; /* Nhãn New nằm ở dưới cùng */
     }
 
-</style>
+    .pagination {
+        display: flex;
+        justify-content: center;
+    }
 
+    .pagination li {
+        display: inline-block;
+        margin-right: 5px;
+    }
+
+    .pagination li.active a {
+        color: white !important; /* Màu chữ khi trang đang được chọn */
+        background-color: black !important; /* Màu nền khi trang được chọn */
+    }
+
+    .pagination li.active {
+        background-color: black !important; /* Màu nền của ô active */
+    }
+
+    .pagination li a {
+        color: black !important; /* Thay đổi màu chữ thành đen */
+    }
+
+    .pagination li:hover a {
+        color: black !important; /* Màu chữ khi hover */
+    }
+
+
+
+
+</style>
 <!-- Breadcrumb Section Begin -->
 <section class="breadcrumb-option">
     <div class="container">
@@ -57,11 +86,17 @@
                             <button type="submit"><span class="icon_search"></span></button>
                         </form>
                     </div>
+<%--                    Thử filter--%>
+                    <form id="filterForm" action="FilterProduct" method="get">
+                        <!-- Giữ giá trị của bộ lọc để gửi đi -->
+                        <input type="hidden" name="category" id="category">
+                        <input type="hidden" name="brand" id="brand">
+                    </form>
                     <div class="shop__sidebar__accordion">
                         <div class="accordion" id="accordionExample">
                             <div class="card">
                                 <div class="card-heading">
-                                    <a data-toggle="collapse" data-target="#collapseOne">Categories</a>
+                                    <a data-toggle="collapse" data-target="#collapseOne">Thể loại</a>
                                 </div>
                                 <div id="collapseOne" class="collapse show" data-parent="#accordionExample">
                                     <div class="card-body">
@@ -77,7 +112,7 @@
                             </div>
                             <div class="card">
                                 <div class="card-heading">
-                                    <a data-toggle="collapse" data-target="#collapseTwo">Branding</a>
+                                    <a data-toggle="collapse" data-target="#collapseTwo">Hãng</a>
                                 </div>
                                 <div id="collapseTwo" class="collapse show" data-parent="#accordionExample">
                                     <div class="card-body">
@@ -86,10 +121,6 @@
                                                 <c:forEach var="item" items="${twomodel}">
                                                     <li><a href="danh-sach-san-pham?brand=${item}">${item}</a></li>
                                                 </c:forEach>
-<%--                                                <li><a href="#">Louis Vuitton</a></li>--%>
-<%--                                                <li><a href="#">Chanel</a></li>--%>
-<%--                                                <li><a href="#">Hermes</a></li>--%>
-<%--                                                <li><a href="#">Gucci</a></li>--%>
                                             </ul>
                                         </div>
                                     </div>
@@ -97,7 +128,7 @@
                             </div>
                             <div class="card">
                                 <div class="card-heading">
-                                    <a data-toggle="collapse" data-target="#collapseThree">Filter Price</a>
+                                    <a data-toggle="collapse" data-target="#collapseThree">Lọc theo giá</a>
                                 </div>
                                 <div id="collapseThree" class="collapse show" data-parent="#accordionExample">
                                     <div class="card-body">
@@ -116,95 +147,19 @@
                             </div>
                             <div class="card">
                                 <div class="card-heading">
-                                    <a data-toggle="collapse" data-target="#collapseFour">Size</a>
-                                </div>
-                                <div id="collapseFour" class="collapse show" data-parent="#accordionExample">
-                                    <div class="card-body">
-                                        <div class="shop__sidebar__size">
-                                            <label for="xs">xs
-                                                <input type="radio" id="xs">
-                                            </label>
-                                            <label for="sm">s
-                                                <input type="radio" id="sm">
-                                            </label>
-                                            <label for="md">m
-                                                <input type="radio" id="md">
-                                            </label>
-                                            <label for="xl">xl
-                                                <input type="radio" id="xl">
-                                            </label>
-                                            <label for="2xl">2xl
-                                                <input type="radio" id="2xl">
-                                            </label>
-                                            <label for="xxl">xxl
-                                                <input type="radio" id="xxl">
-                                            </label>
-                                            <label for="3xl">3xl
-                                                <input type="radio" id="3xl">
-                                            </label>
-                                            <label for="4xl">4xl
-                                                <input type="radio" id="4xl">
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-heading">
-                                    <a data-toggle="collapse" data-target="#collapseFive">Colors</a>
-                                </div>
-                                <div id="collapseFive" class="collapse show" data-parent="#accordionExample">
-                                    <div class="card-body">
-                                        <div class="shop__sidebar__color">
-                                            <label class="c-1" for="sp-1">
-                                                <input type="radio" id="sp-1">
-                                            </label>
-                                            <label class="c-2" for="sp-2">
-                                                <input type="radio" id="sp-2">
-                                            </label>
-                                            <label class="c-3" for="sp-3">
-                                                <input type="radio" id="sp-3">
-                                            </label>
-                                            <label class="c-4" for="sp-4">
-                                                <input type="radio" id="sp-4">
-                                            </label>
-                                            <label class="c-5" for="sp-5">
-                                                <input type="radio" id="sp-5">
-                                            </label>
-                                            <label class="c-6" for="sp-6">
-                                                <input type="radio" id="sp-6">
-                                            </label>
-                                            <label class="c-7" for="sp-7">
-                                                <input type="radio" id="sp-7">
-                                            </label>
-                                            <label class="c-8" for="sp-8">
-                                                <input type="radio" id="sp-8">
-                                            </label>
-                                            <label class="c-9" for="sp-9">
-                                                <input type="radio" id="sp-9">
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-heading">
                                     <a data-toggle="collapse" data-target="#collapseSix">Tags</a>
                                 </div>
                                 <div id="collapseSix" class="collapse show" data-parent="#accordionExample">
                                     <div class="card-body">
                                         <div class="shop__sidebar__tags">
-                                            <a href="#">Product</a>
-                                            <a href="#">Bags</a>
-                                            <a href="#">Shoes</a>
-                                            <a href="#">Fashio</a>
-                                            <a href="#">Clothing</a>
-                                            <a href="#">Hats</a>
-                                            <a href="#">Accessories</a>
+                                            <a href="#">New</a>
+                                            <a href="#">Sale</a>
+                                            <a href="#">Others</a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            <button type="button" id="add-to-cart btn" class="primary-btn">Hủy tiêu chí</button>
                         </div>
                     </div>
                 </div>
@@ -214,7 +169,7 @@
                     <div class="row">
                         <div class="col-lg-6 col-md-6 col-sm-6">
                             <div class="shop__product__option__left">
-                                <p>Showing 1–12 of 126 results</p>
+                                <p>Showing ${model.totalItem} results</p>
                             </div>
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-6">
@@ -276,18 +231,57 @@
                         </div>
                     </c:forEach>
                 </div>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="product__pagination">
-                            <a class="active" href="#">1</a>
-                            <a href="#">2</a>
-                            <a href="#">3</a>
-                            <span>...</span>
-                            <a href="#">21</a>
-                        </div>
-                    </div>
-                </div>
+
+                <form id="formSubmit" action="/danh-sach-san-pham" method="get">
+                    <ul class="pagination" id="pagination"></ul>
+                    <input type="hidden" name="page" id="page" value="">
+                    <input type="hidden" name="maxPageItem" id="maxPageItem" value="">
+                </form>
+
             </div>
         </div>
     </div>
+
+    <script>
+        function selectCategory(categoryCode) {
+            document.getElementById('category').value = categoryCode;
+        }
+
+        function selectBrand(brandName) {
+            document.getElementById('brand').value = brandName;
+        }
+
+    </script>
+
+    <script>
+        var totalPages = ${model.totalPage};
+        var currentPage = ${model.page};
+        var limit = ${model.maxPageItem};
+
+        $(function () {
+            window.pagObj = $('#pagination').twbsPagination({
+                totalPages: totalPages,
+                visiblePages: 5,
+                startPage: currentPage, // Trang bắt đầu khi load
+                onPageClick: function (event, page) {
+                    if (currentPage != page) {
+                        $('#maxPageItem').val(limit);
+                        $('#page').val(page);
+                        $('#formSubmit').submit();
+                    }
+                },
+                first: 'Trang đầu',
+                prev: 'Trang trước',
+                next: 'Trang tiếp',
+                last: 'Trang cuối'
+            });
+        });
+    </script>
+
+
 </section>
+
+
+
+
+

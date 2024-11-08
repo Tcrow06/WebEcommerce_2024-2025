@@ -27,8 +27,12 @@
     <link rel="stylesheet" href="<c:url value="/static/css/owl.carousel.min.css"/>" type="text/css">
     <link rel="stylesheet" href="<c:url value="/static/css/slicknav.min.css"/>" type="text/css">
     <link rel="stylesheet" href="<c:url value="/static/css/style.css"/>" type="text/css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
+    <script src="<c:url value='/template/web/assets/js/jquery.2.1.1.min.js' />"></script>
+    <script type='text/javascript' src='<c:url value="/template/web/js/jquery-2.2.3.min.js" />'></script>
 
+    <script src="<c:url value='/template/paging/jquery.twbsPagination.js' />"></script>
 </head>
 
 <body>
@@ -58,7 +62,6 @@
 
 <!-- Js Plugins -->
 <script src="<c:url value='/static/web/js/token/refreshToken.js'/> "></script>
-<script src="<c:url value="/static/js/jquery-3.3.1.min.js"/>"></script>
 <script src="<c:url value="/static/js/bootstrap.min.js"/>"></script>
 <script src="<c:url value="/static/js/jquery.nice-select.min.js"/>"></script>
 <script src="<c:url value="/static/js/jquery.nicescroll.min.js"/>"></script>
@@ -68,6 +71,7 @@
 <script src="<c:url value="/static/js/mixitup.min.js"/>"></script>
 <script src="<c:url value="/static/js/owl.carousel.min.js"/>"></script>
 <script src="<c:url value="/static/js/main.js"/>"></script>
+
 
 <%--<script src="<c:url value='/static/auth/js/sendDirection.js'/> " type="text/javascript"></script>--%>
 </body>
