@@ -12,4 +12,8 @@ public interface IProductDAO extends GenericDAO <ProductEntity> {
     List<String> getListSizeByColor (String color, Long productId);
     List <String> getBrands ();
     List<ProductEntity> findProductsByBrand(String brand);
+    List<ProductEntity> findProductOnSale(int limit);
+    List<ProductEntity> findProductIsNew(int limit);
+    List<ProductEntity> findProductOther(int limit);
+
 }

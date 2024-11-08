@@ -8,6 +8,7 @@ import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.entity.product.ProductVariantEntity;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -68,6 +69,60 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
 
     public List<ProductEntity> findProductsByBrand(String brand) {
         return super.findByAttribute("brand",brand);
+    }
+
+    @Override
+    public List<ProductEntity> findProductOnSale(int limit) {
+        String query = "SELECT p FROM ProductEntity p " +
+                "JOIN p.productDiscount d " +
+                "WHERE d.startDate <= :currentDate AND d.endDate >= :currentDate";
+        try {
+            LocalDateTime currentDate = LocalDateTime.now();
+            return entityManager.createQuery(query, ProductEntity.class)
+                    .setParameter("currentDate", currentDate)
+                    .setMaxResults(limit)
+                    .getResultList();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi lấy sản phẩm có discount còn hiệu lực", e);
+            return null;
+        }
+    }
+
+    @Override
+    public List<ProductEntity> findProductIsNew(int limit) {
+        String query = "SELECT p FROM ProductEntity p WHERE p.isNew BETWEEN :startDate AND :endDate";
+        try {
+            LocalDateTime endDate = LocalDateTime.now();
+            LocalDateTime startDate = endDate.minusDays(7);
+            return entityManager.createQuery(query, ProductEntity.class)
+                    .setParameter("startDate", startDate)
+                    .setParameter("endDate", endDate)
+                    .setMaxResults(limit)
+                    .getResultList();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi lấy sản phẩm mới", e);
+            return null;
+        }
+    }
+
+    @Override
+    public List<ProductEntity> findProductOther(int limit) {
+        String query = "SELECT p FROM ProductEntity p " +
+                "LEFT JOIN p.productDiscount d " +
+                "WHERE (d IS NULL OR d.endDate < :currentDate) " +
+                "AND p.isNew <= :sevenDaysAgo";
+        try {
+            LocalDateTime currentDate = LocalDateTime.now();
+            LocalDateTime sevenDaysAgo = currentDate.minusDays(7);
+            return entityManager.createQuery(query, ProductEntity.class)
+                    .setParameter("currentDate", currentDate)
+                    .setParameter("sevenDaysAgo", sevenDaysAgo)
+                    .setMaxResults(limit)
+                    .getResultList();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi tìm kiếm sản phẩm không có discount hoặc discount đã hết hạn và bán sau 7 ngày", e);
+            return null;
+        }
     }
 
 }

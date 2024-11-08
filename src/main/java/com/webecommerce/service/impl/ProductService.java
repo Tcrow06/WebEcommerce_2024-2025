@@ -25,7 +25,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ProductService implements IProductService {
 
@@ -138,6 +141,37 @@ public class ProductService implements IProductService {
         if (sizeList != null)
             return sizeList;
         return Collections.emptyList();
+    }
+
+    @Override
+    public List<ProductDTO> findProductOnSale(int limit) {
+        List<ProductEntity>  productEntities =  productDAO.findProductOnSale(limit);
+        return getProduct(productEntities);
+    }
+
+    @Override
+    public List<ProductDTO>  findProductIsNew(int limit) {
+        List<ProductEntity>  productEntities =  productDAO.findProductIsNew(limit);
+        return getProduct(productEntities);
+    }
+
+    @Override
+    public List<ProductDTO>  findProductOther(int limit) {
+        List<ProductEntity>  productEntities =  productDAO.findProductOther(limit);
+        return getProduct(productEntities);
+    }
+
+    @Override
+    public List<ProductDTO> findProductForAllTag(int limit){
+        List<ProductDTO> productOnSales = findProductOnSale(limit);
+        List<ProductDTO> productIsNew = findProductIsNew(limit);
+        List<ProductDTO> productOther = findProductOther(limit);
+
+        return new ArrayList<>(Stream.of(productOnSales, productIsNew, productOther)
+                .flatMap(List::stream)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toMap(ProductDTO::getId, product -> product, (existing, replacement) -> existing))
+                .values());
     }
 
 }
