@@ -48,6 +48,10 @@ public class ProductEntity {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductVariantEntity> productVariants = new ArrayList<>();
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "product_discount_id", referencedColumnName = "id")
+    private ProductDiscountEntity productDiscount ;
+
     public ProductDiscountEntity getProductDiscount() {
         return productDiscount;
     }
@@ -56,9 +60,7 @@ public class ProductEntity {
         this.productDiscount = productDiscount;
     }
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_discount_id", referencedColumnName = "id")
-    private ProductDiscountEntity productDiscount ;
+
 
     public CategoryEntity getCategory() {
         return category;
