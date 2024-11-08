@@ -249,6 +249,34 @@
     </div>
 
     <script>
+        window.addEventListener('DOMContentLoaded', function () {
+            const urlParams = new URLSearchParams(window.location.search);
+
+            // Thu thập tất cả các tham số có giá trị rỗng
+            const emptyKeys = [];
+            urlParams.forEach(function(value, key) {
+                if (value.trim() === '') {
+                    emptyKeys.push(key); // Thêm vào danh sách các khóa rỗng
+                }
+            });
+
+            // Xóa tất cả các khóa rỗng sau khi đã duyệt xong
+            emptyKeys.forEach(function(key) {
+                urlParams.delete(key);
+            });
+
+            // Cập nhật lại URL mà không có các tham số rỗng
+            const newUrl = window.location.pathname + '?' + urlParams.toString();
+            window.history.replaceState(null, '', newUrl); // Cập nhật URL mà không reload trang
+        });
+        window.addEventListener('DOMContentLoaded', function () {
+            const currentUrl = window.location.pathname + window.location.search;
+
+            // Kiểm tra nếu URL là /danh-sach-san-pham?page=1&maxPageItem=9
+            if (currentUrl === '/danh-sach-san-pham?page=1&maxPageItem=9') {
+                sessionStorage.clear(); // Xóa toàn bộ sessionStorage
+            }
+        });
 
         function selectCategory(categoryCode) {
 
@@ -341,6 +369,8 @@
 
         function submitFilterForm() {
 
+            document.getElementById('page').value = 1;
+
             const storedCategory = sessionStorage.getItem('selectedCategory');
             const storedBrand = sessionStorage.getItem('selectedBrand');
             const storedMinPrice = sessionStorage.getItem('selectedMinPrice');
@@ -371,6 +401,16 @@
     </script>
 
     <script>
+
+        window.addEventListener('DOMContentLoaded', function () {
+            const urlParams = new URLSearchParams(window.location.search);
+
+            // Gán giá trị từ URL vào các input ẩn trong form
+            document.getElementById('category').value = urlParams.get('category') || '';
+            document.getElementById('brand').value = urlParams.get('brand') || '';
+            document.getElementById('minPrice').value = urlParams.get('minPrice') || '';
+            document.getElementById('maxPrice').value = urlParams.get('maxPrice') || '';
+        });
         var totalPages = ${model.totalPage};
         var currentPage = ${model.page};
         var limit = ${model.maxPageItem};
