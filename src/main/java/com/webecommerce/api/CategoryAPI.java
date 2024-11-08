@@ -23,16 +23,27 @@ public class CategoryAPI extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
+        resp.setContentType("application/json");
 
         ObjectMapper mapper = new ObjectMapper();
-        HttpUtils httpUtils =  HttpUtils.of(req.getReader()) ;
-        CategoryDTO category = httpUtils.toModel(CategoryDTO.class);
 
-        if (category != null) {
-            category = categoryService.save(category) ;
+        try {
+            HttpUtils httpUtils = HttpUtils.of(req.getReader());
+            CategoryDTO category = httpUtils.toModel(CategoryDTO.class);
+
             if (category != null) {
-                mapper.writeValue(resp.getWriter(), categoryService.findAll());
-            } else mapper.writeValue(resp.getWriter(), "error");
+                category = categoryService.save(category);
+                if (category != null) {
+                    mapper.writeValue(resp.getWriter(), "added category successfully");
+                } else {
+                    resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); // 500
+                    mapper.writeValue(resp.getWriter(), "Failed to save category");
+                }
+            } else resp.setStatus(HttpServletResponse.SC_BAD_REQUEST); // 500
+        } catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); // 500
+            mapper.writeValue(resp.getWriter(), "{\"error\": \"Server error: " + e.getMessage() + "\"}");
         }
     }
+
 }
