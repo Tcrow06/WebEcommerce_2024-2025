@@ -1,19 +1,21 @@
 package com.webecommerce.dao.impl.product;
 
-import com.webecommerce.dao.GenericDAO;
 import com.webecommerce.dao.impl.AbstractDAO;
 import com.webecommerce.dao.product.IProductDAO;
-import com.webecommerce.dto.ProductDTO;
 import com.webecommerce.entity.product.ProductEntity;
-import com.webecommerce.entity.product.ProductVariantEntity;
-import org.apache.hc.core5.http.io.entity.StringEntity;
+import com.webecommerce.mapper.Impl.ProductMapper;
+import com.webecommerce.paging.Pageable;
 
+import javax.inject.Inject;
+import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Level;
 
 public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDAO {
 
+    @Inject
+    private ProductMapper productMapper;
     public ProductDAO() {
         super(ProductEntity.class);
     }
@@ -125,4 +127,46 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
         }
     }
 
+    public Long getTotalItem() {
+        return (Long) entityManager.createQuery("SELECT COUNT(p) FROM ProductEntity p")
+                .getSingleResult();
+    }
+
+    @Override
+    public List<ProductEntity> findAll(Pageable pageable) {
+
+        StringBuilder jpql = new StringBuilder("SELECT n FROM ProductEntity n WHERE 1=1");
+
+        if (pageable.getFilterProduct().getFilterCategory() != -1) {
+            jpql.append(" AND n.category.id = :categoryId");
+        }
+
+        if (pageable.getFilterProduct().getFilterBrand() != null && !pageable.getFilterProduct().getFilterBrand().isEmpty()) {
+            jpql.append(" AND n.brand = :brand");
+        }
+
+        String queryStr = jpql.toString();
+
+        TypedQuery<ProductEntity> query = entityManager.createQuery(queryStr, ProductEntity.class);
+
+        if (pageable.getFilterProduct().getFilterCategory() != -1) {
+            query.setParameter("categoryId", Long.valueOf(pageable.getFilterProduct().getFilterCategory()));
+        }
+
+        // Đặt giá trị tham số cho brand_id nếu có
+        if (pageable.getFilterProduct().getFilterBrand() != null && !pageable.getFilterProduct().getFilterBrand().isEmpty()) {
+            query.setParameter("brand", pageable.getFilterProduct().getFilterBrand());
+        }
+
+        if (pageable.getOffset() != null) {
+            query.setFirstResult(pageable.getOffset());
+        }
+        if (pageable.getLimit() != null) {
+            query.setMaxResults(pageable.getLimit());
+        }
+
+        List<ProductEntity> productEntities = query.getResultList();
+
+        return productEntities;
+    }
 }

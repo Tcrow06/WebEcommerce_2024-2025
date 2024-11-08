@@ -2,13 +2,14 @@ package com.webecommerce.service;
 
 import com.webecommerce.dto.ProductDTO;
 import com.webecommerce.entity.product.ProductEntity;
+import com.webecommerce.paging.Pageable;
 
 import java.util.List;
 
 public interface IProductService {
     List<String> getBrands();
     List<ProductDTO> findProductsByBrand(String brand);
-    List<ProductDTO> findAll ();
+    List<ProductDTO> findAll (Pageable pageable, double minPrice, double maxPrice);
     ProductDTO save(ProductDTO product);
     List<ProductDTO> findProductsByCategoryCode(String categoryCode);
     ProductDTO getProductById(Long id);
@@ -20,4 +21,7 @@ public interface IProductService {
     List<ProductDTO> findProductOther(int limit);
 
     List<ProductDTO> findProductForAllTag(int limit);
+    Long getTotalItem();
+    int setTotalPage(Long totalItem, int maxPageItem);
+
 }
