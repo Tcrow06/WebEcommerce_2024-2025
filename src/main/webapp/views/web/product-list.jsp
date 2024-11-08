@@ -86,7 +86,7 @@
                             <button type="submit"><span class="icon_search"></span></button>
                         </form>
                     </div>
-<%--                    Thử filter--%>
+                    <%--                    Thử filter--%>
 
                     <div class="shop__sidebar__accordion">
                         <div class="accordion" id="accordionExample">
@@ -204,7 +204,7 @@
                                 </div>
                                 <div class="product__item__text">
                                     <h6>${item.name}</h6>
-<%--                                    <a href="<c:url value="/them-gio-hang?id=${item.id}"/>" class="add-cart">View Detail</a>--%>
+                                        <%--                                    <a href="<c:url value="/them-gio-hang?id=${item.id}"/>" class="add-cart">View Detail</a>--%>
                                     <a href="san-pham?id=${item.id}" class="add-cart">View Detail</a>
                                     <div class="rating">
                                         <i class="fa fa-star-o"></i>
@@ -373,8 +373,6 @@
         var currentPage = ${model.page};
         var limit = ${model.maxPageItem};
 
-
-
         $(function () {
             window.pagObj = $('#pagination').twbsPagination({
                 totalPages: totalPages,
@@ -395,21 +393,4 @@
         });
     </script>
 
-    <script>
-        window.addEventListener('beforeunload', function() {
-            // Xóa các giá trị lọc trong sessionStorage khi người dùng rời khỏi trang
-            sessionStorage.removeItem('selectedMinPrice');
-            sessionStorage.removeItem('selectedMaxPrice');
-            sessionStorage.removeItem('selectedBrand');
-            sessionStorage.removeItem('selectedCategory');
-        });
-    </script>
-
-
-
 </section>
-
-
-
-
-
