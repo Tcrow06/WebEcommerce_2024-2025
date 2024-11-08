@@ -9,7 +9,7 @@ import java.util.List;
 public interface IProductService {
     List<String> getBrands();
     List<ProductDTO> findProductsByBrand(String brand);
-    List<ProductDTO> findAll (Pageable pageable);
+    List<ProductDTO> findAll (Pageable pageable, double minPrice, double maxPrice);
     ProductDTO save(ProductDTO product);
     List<ProductDTO> findProductsByCategoryCode(String categoryCode);
     ProductDTO getProductById(Long id);
@@ -17,4 +17,5 @@ public interface IProductService {
     List<String> getListSizeByColor (String color, Long productId);
     Long getTotalItem();
     int setTotalPage(Long totalItem, int maxPageItem);
+
 }

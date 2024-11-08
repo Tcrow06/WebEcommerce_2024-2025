@@ -134,12 +134,11 @@
                                     <div class="card-body">
                                         <div class="shop__sidebar__price">
                                             <ul>
-                                                <li><a href="#">$0.00 - $50.00</a></li>
-                                                <li><a href="#">$50.00 - $100.00</a></li>
-                                                <li><a href="#">$100.00 - $150.00</a></li>
-                                                <li><a href="#">$150.00 - $200.00</a></li>
-                                                <li><a href="#">$200.00 - $250.00</a></li>
-                                                <li><a href="#">250.00+</a></li>
+                                                <li><a href="javascript:void(0);" onclick="selectPriceRange(0, 50)">$0.00 - $50.00</a></li>
+                                                <li><a href="javascript:void(0);" onclick="selectPriceRange(50, 100)">$50.00 - $100.00</a></li>
+                                                <li><a href="javascript:void(0);" onclick="selectPriceRange(100, 150)">$100.00 - $150.00</a></li>
+                                                <li><a href="javascript:void(0);" onclick="selectPriceRange(150, 200)">$150.00 - $200.00</a></li>
+                                                <li><a href="javascript:void(0);" onclick="selectPriceRange(200, 9999)">200.00+</a></li>
                                             </ul>
                                         </div>
                                     </div>
@@ -239,6 +238,8 @@
                     <input type="hidden" name="maxPageItem" id="maxPageItem" value="">
                     <input type="hidden" name="category" id="category">
                     <input type="hidden" name="brand" id="brand">
+                    <input type="hidden" name="minPrice" id="minPrice">
+                    <input type="hidden" name="maxPrice" id="maxPrice">
                 </form>
 
             </div>
@@ -262,6 +263,15 @@
                 document.getElementById('brand').removeAttribute('name');
             }
 
+            const previousMin = sessionStorage.getItem('selectedMinPrice');
+            if (!previousMin) {
+                document.getElementById('minPrice').removeAttribute('name');
+            }
+            const previousMax = sessionStorage.getItem('selectedMaxPrice');
+            if (!previousMax) {
+                document.getElementById('maxPrice').removeAttribute('name');
+            }
+
             updatePageInfo();
             submitFilterForm()
         }
@@ -281,9 +291,46 @@
                 document.getElementById('category').removeAttribute('name');
             }
 
+            const previousMin = sessionStorage.getItem('selectedMinPrice');
+            if (!previousMin) {
+                document.getElementById('minPrice').removeAttribute('name');
+            }
+            const previousMax = sessionStorage.getItem('selectedMaxPrice');
+            if (!previousMax) {
+                document.getElementById('maxPrice').removeAttribute('name');
+            }
+
             updatePageInfo();
             submitFilterForm();
         }
+
+        function selectPriceRange(minPrice, maxPrice) {
+            if (minPrice >=0 && maxPrice >=0) {
+                document.getElementById('minPrice').value = minPrice;
+                sessionStorage.setItem('selectedMinPrice', minPrice);
+                document.getElementById('maxPrice').value = maxPrice;
+                sessionStorage.setItem('selectedMaxPrice', maxPrice);
+            } else {
+                document.getElementById('maxPrice').value = '';
+                sessionStorage.removeItem('selectedMaxPrice');
+                document.getElementById('minPrice').value = '';
+                sessionStorage.removeItem('selectedMinPrice'); // Xóa nếu không chọn gì
+            }
+
+            const previousBrand = sessionStorage.getItem('selectedBrand');
+            if (!previousBrand) {
+                document.getElementById('brand').removeAttribute('name');
+            }
+
+            const previousCategory = sessionStorage.getItem('selectedCategory');
+            if (!previousCategory) {
+                document.getElementById('category').removeAttribute('name');
+            }
+
+            updatePageInfo();
+            submitFilterForm();
+        }
+
 
         function updatePageInfo() {
             document.getElementById('page').value = currentPage;
@@ -294,12 +341,20 @@
 
             const storedCategory = sessionStorage.getItem('selectedCategory');
             const storedBrand = sessionStorage.getItem('selectedBrand');
+            const storedMinPrice = sessionStorage.getItem('selectedMinPrice');
+            const storedMaxPrice = sessionStorage.getItem('selectedMaxPrice');
 
             if (storedCategory) {
                 document.getElementById('category').value = storedCategory;
             }
             if (storedBrand) {
                 document.getElementById('brand').value = storedBrand;
+            }
+            if (storedMinPrice) {
+                document.getElementById('minPrice').value = storedMinPrice;
+            }
+            if (storedMaxPrice) {
+                document.getElementById('maxPrice').value = storedMaxPrice;
             }
 
             document.getElementById('formSubmit').submit();
@@ -337,6 +392,16 @@
                 next: 'Trang tiếp',
                 last: 'Trang cuối'
             });
+        });
+    </script>
+
+    <script>
+        window.addEventListener('beforeunload', function() {
+            // Xóa các giá trị lọc trong sessionStorage khi người dùng rời khỏi trang
+            sessionStorage.removeItem('selectedMinPrice');
+            sessionStorage.removeItem('selectedMaxPrice');
+            sessionStorage.removeItem('selectedBrand');
+            sessionStorage.removeItem('selectedCategory');
         });
     </script>
 

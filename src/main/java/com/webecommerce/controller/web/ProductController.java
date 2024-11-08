@@ -3,11 +3,12 @@ package com.webecommerce.controller.web;
 import com.webecommerce.constant.ModelConstant;
 import com.webecommerce.dto.ProductDTO;
 import com.webecommerce.filter.FilterProduct;
+import com.webecommerce.filter.FilterProductVariant;
 import com.webecommerce.paging.PageRequest;
 import com.webecommerce.paging.Pageable;
 import com.webecommerce.service.ICategoryService;
 import com.webecommerce.service.IProductService;
-import com.webecommerce.utils.FormUtils;
+import com.webecommerce.service.IProductVariantService;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -23,7 +24,6 @@ public class ProductController extends HttpServlet {
 
     @Inject
     private IProductService productService;
-
     @Inject
     private ICategoryService categoryService;
 
@@ -36,6 +36,8 @@ public class ProductController extends HttpServlet {
         String brand = request.getParameter("brand");
         int page = Integer.parseInt(request.getParameter("page"));
         int maxPageItem = Integer.parseInt(request.getParameter("maxPageItem"));
+        String minPriceStr = (request.getParameter("minPrice"));
+        String maxPriceStr = request.getParameter("maxPrice");
 
         product.setPage(page);
         product.setMaxPageItem(maxPageItem);
@@ -49,10 +51,24 @@ public class ProductController extends HttpServlet {
             System.out.println(e);
         }
 
+        double minPrice = 0;
+        double maxPrice = 9999;
+        if(maxPriceStr != null && !maxPriceStr.isEmpty()) {
+            maxPrice = Double.parseDouble(maxPriceStr);
+        }
+        if(minPriceStr != null && !minPriceStr.isEmpty()) {
+            minPrice = Double.parseDouble(minPriceStr);
+        }
+
         //product = FormUtils.toModel(ProductDTO.class, request);
 
         Pageable pageable =new PageRequest(product.getPage(), product.getMaxPageItem(), new FilterProduct(categoryId, brand));
-        product.setResultList(productService.findAll(pageable));
+
+        List<ProductDTO> productDTOList = productService.findAll(pageable, minPrice, maxPrice);
+
+        product.setResultList(productDTOList);
+
+        //product.setResultList(productService.findAll(pageable));
         product.setTotalItem(productService.getTotalItem());
         product.setTotalPage(productService.setTotalPage(product.getTotalItem(),
                 product.getMaxPageItem()));

@@ -1,6 +1,7 @@
 package com.webecommerce.paging;
 
 import com.webecommerce.filter.FilterProduct;
+import com.webecommerce.filter.FilterProductVariant;
 
 public class PageRequest implements Pageable{
 
@@ -9,6 +10,8 @@ public class PageRequest implements Pageable{
     private Integer maxPageItem;
 
     private FilterProduct filterProduct;
+
+    private FilterProductVariant filterProductVariant;
 
     public PageRequest(Integer page, Integer maxPageItem) {
         this.page = page;
@@ -19,6 +22,10 @@ public class PageRequest implements Pageable{
         this.page = page;
         this.maxPageItem = maxPageItem;
         this.filterProduct = filterProduct;
+    }
+
+    public PageRequest(FilterProductVariant filterProductVariant) {
+        this.filterProductVariant = filterProductVariant;
     }
 
 
