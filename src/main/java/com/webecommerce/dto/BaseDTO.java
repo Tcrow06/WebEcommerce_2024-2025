@@ -5,9 +5,12 @@ import java.util.List;
 public class BaseDTO <T> {
     private Long id;
 
-
-
     private Long [] ids;
+    private String realPathFile;
+
+
+
+
     public Long[] getIds() {
         return ids;
     }
@@ -32,5 +35,13 @@ public class BaseDTO <T> {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getRealPathFile() {
+        return realPathFile;
+    }
+
+    public void setRealPathFile(String realPathFile) {
+        this.realPathFile = realPathFile;
     }
 }
