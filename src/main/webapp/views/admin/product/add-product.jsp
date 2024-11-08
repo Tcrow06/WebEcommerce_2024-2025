@@ -3,6 +3,14 @@
 
 <link rel="stylesheet" href="<c:url value='/static/admin/add-product/style.css'/> ">
 
+<style>
+    .error-message {
+        color: red;
+        font-size: 0.875em;
+        margin-top: 5px;
+    }
+</style>
+
 
 <div class="content">
     <div class="page-header">
@@ -22,6 +30,7 @@
                                 <div data-mdb-input-init class="form-outline">
                                     <input type="text" name="firstName" id="productName" class="custom-input form-control form-control-lg" />
                                     <label class="form-label" for="productName">Tên sản phẩm</label>
+                                    <div class="error-message" id="productNameError" style="font-size: 12px"></div>
                                 </div>
                             </div>
                         </div>
@@ -32,6 +41,7 @@
                                 <div data-mdb-input-init class="form-outline">
                                     <input type="text" name="firstName" id="productBrand" class="custom-input form-control form-control-lg" />
                                     <label class="form-label" for="productBrand">Hãng sản phẩm</label>
+                                    <div class="error-message" id="productBrandError" style="font-size: 12px"></div>
                                 </div>
                             </div>
                         </div>
@@ -45,7 +55,7 @@
                 <label>Category</label>
                 <select class="select" id="categorySelect">
                     <c:forEach var="item" items="${model}">
-                        <option data-id=${item.id}" value="${item.code}">${item.name}</option>
+                        <option data-id=${item.id} value="${item.code}">${item.name}</option>
                     </c:forEach>
                 </select>
                 <div class="certified">
@@ -91,12 +101,14 @@
                                 <div class="form-group">
                                     <label>Color</label>
                                     <input type="text" placeholder="Color" class="form-control variant-color">
+                                    <div class="error-message"></div>
                                 </div>
                             </div>
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Size</label>
                                     <input type="text" placeholder="Size" class="form-control variant-size">
+                                    <div class="error-message"></div>
                                 </div>
                             </div>
                             <div class="col-lg-3 col-sm-6 col-12">
@@ -109,6 +121,7 @@
                                 <div class="form-group">
                                     <label>Price</label>
                                     <input type="text" placeholder="Price" class="form-control variant-price">
+                                    <div class="error-message"></div>
                                 </div>
                             </div>
                             <div class="col-lg-12">
@@ -148,8 +161,9 @@
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 
     <script>
+        var quill
         $(document).ready(function() {
-            var quill = new Quill('#productDescription', {
+            quill = new Quill('#productDescription', {
                 theme: 'snow'
             });
 
@@ -169,6 +183,62 @@
             updateProductCards()
             $('#add-product-btn').click(addProduct);
         });
+
+        function checkInput () {
+            let isValid = true;
+
+            const productName = $('#productName').val();
+            if (!productName) {
+                $('#productNameError').text('Vui lòng nhập tên sản phẩm.');
+                isValid = false;
+            } else {
+                $('#productNameError').text('');
+            }
+
+            const productBrand = $('#productBrand').val();
+            if (!productBrand) {
+                $('#productBrandError').text('Vui lòng nhập hãng sản phẩm.');
+                isValid = false;
+            } else {
+                $('#productBrandError').text('');
+            }
+
+            $('#productVariantsContainer .product-variant-card').each(function(index) {
+                const price = $(this).find('.variant-price').val();
+                const quantity = $(this).find('.variant-quantity').val();
+                const color = $(this).find('.variant-color').val();
+                const size = $(this).find('.variant-size').val();
+
+                if (!color) {
+                    $(this).find('.variant-color').next('.error-message').text('Vui lòng nhập màu.');
+                    isValid = false;
+                } else {
+                    $(this).find('.variant-color').next('.error-message').text('');
+                }
+
+                if (!size) {
+                    $(this).find('.variant-size').next('.error-message').text('Vui lòng nhập kích cỡ.');
+                    isValid = false;
+                } else {
+                    $(this).find('.variant-size').next('.error-message').text('');
+                }
+
+                if (!quantity || isNaN(quantity) || parseInt(quantity) <= 0) {
+                    $(this).find('.variant-quantity').next('.error-message').text('Vui lòng nhập số lượng hợp lệ.');
+                    isValid = false;
+                } else {
+                    $(this).find('.variant-quantity').next('.error-message').text('');
+                }
+
+                if (!price || isNaN(price) || parseFloat(price) <= 0) {
+                    $(this).find('.variant-price').next('.error-message').text('Vui lòng nhập giá hợp lệ.');
+                    isValid = false;
+                } else {
+                    $(this).find('.variant-price').next('.error-message').text('');
+                }
+            });
+            return isValid
+        }
 
 
         function updateProductCards() {
@@ -203,12 +273,14 @@
 
         function addProduct () {
 
+            if (!checkInput())  return
+
             var product = {
                 name: $('#productName').val(),
                 highlight: $('#highlight').is(':checked'),
                 status: 'SELLING',
                 brand: $('#productBrand').val(),
-                description: $('#productDescription').val(),
+                description: quill.root.innerHTML,
                 category: {
                     id: $('#category').val(),
                 },
