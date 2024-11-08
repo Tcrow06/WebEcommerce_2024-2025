@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 public abstract class DiscountDTO extends BaseDTO<DiscountDTO> {
 
-    private String description;
+    private String name;
 
     private LocalDateTime startDate;
 
@@ -14,15 +14,15 @@ public abstract class DiscountDTO extends BaseDTO<DiscountDTO> {
 
     private int discountPercentage;
 
-    private double maximumAmount;
 
-    public String getDescription() {
-        return description;
+    public String getName() {
+        return name;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setName(String name) {
+        this.name = name;
     }
+
 
     public LocalDateTime getStartDate() {
         return startDate;
@@ -47,23 +47,5 @@ public abstract class DiscountDTO extends BaseDTO<DiscountDTO> {
     public void setDiscountPercentage(int discountPercentage) {
         this.discountPercentage = discountPercentage;
     }
-
-    public double getMaximumAmount() {
-        return maximumAmount;
-    }
-
-    public void setMaximumAmount(double maximumAmount) {
-        this.maximumAmount = maximumAmount;
-    }
-
-    public int getMinimumPurchaseQuantity() {
-        return minimumPurchaseQuantity;
-    }
-
-    public void setMinimumPurchaseQuantity(int minimumPurchaseQuantity) {
-        this.minimumPurchaseQuantity = minimumPurchaseQuantity;
-    }
-
-    private int minimumPurchaseQuantity;
 
 }

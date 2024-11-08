@@ -20,6 +20,28 @@ public class BillDiscountEntity extends DiscountEntity {
     @Column(name = "code")
     private String code;
 
+    public double getMaximumAmount() {
+        return maximumAmount;
+    }
+
+    public void setMaximumAmount(double maximumAmount) {
+        this.maximumAmount = maximumAmount;
+    }
+
+    public int getMinimumPurchaseQuantity() {
+        return minimumPurchaseQuantity;
+    }
+
+    public void setMinimumPurchaseQuantity(int minimumPurchaseQuantity) {
+        this.minimumPurchaseQuantity = minimumPurchaseQuantity;
+    }
+
+    @Column(name = "maximum_amount")
+    private double maximumAmount;
+
+    @Column(name = "minimum_purchase_quantity")
+    private int minimumPurchaseQuantity;
+
     public List<OrderEntity> getOrders() {
         return orders;
     }
