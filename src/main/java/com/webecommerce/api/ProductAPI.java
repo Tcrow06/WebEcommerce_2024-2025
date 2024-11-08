@@ -1,10 +1,8 @@
 package com.webecommerce.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.webecommerce.dto.CategoryDTO;
 import com.webecommerce.dto.ProductDTO;
 import com.webecommerce.dto.ProductVariantDTO;
-import com.webecommerce.service.ICategoryService;
 import com.webecommerce.service.IProductService;
 import com.webecommerce.service.IProductVariantService;
 import com.webecommerce.utils.HttpUtils;
@@ -16,7 +14,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -4,9 +4,9 @@ import com.webecommerce.dao.impl.AbstractDAO;
 import com.webecommerce.dao.order.IOrderDAO;
 import com.webecommerce.entity.order.OrderEntity;
 
-public class OrderDAODAO extends AbstractDAO<OrderEntity> implements IOrderDAO {
+public class OrderDAO extends AbstractDAO<OrderEntity> implements IOrderDAO {
 
-    public OrderDAODAO() {
+    public OrderDAO() {
         super(OrderEntity.class);
     }
 }

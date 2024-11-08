@@ -3,7 +3,10 @@ package com.webecommerce.service.impl;
 import com.webecommerce.dao.other.IAccountDAO;
 import com.webecommerce.dto.request.other.AccountRequest;
 import com.webecommerce.dto.request.people.CustomerRequest;
+import com.webecommerce.dto.response.other.AccountResponse;
 import com.webecommerce.dto.response.people.CustomerResponse;
+import com.webecommerce.dto.response.people.UserResponse;
+import com.webecommerce.entity.cart.CartEntity;
 import com.webecommerce.entity.other.AccountEntity;
 import com.webecommerce.entity.people.CustomerEntity;
 import com.webecommerce.exception.DuplicateFieldException;
@@ -24,7 +27,7 @@ public class AccountService implements IAccountService {
     @Inject
     private IAccountMapper accountMapper;
     @Override
-    public AccountRequest findByUserNameAndPasswordAndStatus(String userName, String password, String status) {
+    public UserResponse findByUserNameAndPasswordAndStatus(String userName, String password, String status) {
         return accountDAO.findByUserNameAndPasswordAndStatus(userName, password, status);
     }
 
@@ -42,6 +45,7 @@ public class AccountService implements IAccountService {
         }
 
         CustomerEntity customerEntity = customerMapper.toCustomerEntityFull(customerRequest);
+        customerEntity.setCart(new CartEntity());
         AccountEntity accountEntity = accountMapper.toAccountEntity(customerRequest);
         accountEntity.setCustomer(customerEntity);
         accountDAO.insert(accountEntity);

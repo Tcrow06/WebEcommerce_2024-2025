@@ -4,7 +4,7 @@ public class CartItemDTO extends BaseDTO<CartItemDTO> {
 
     private int quantity;
 
-    private int cartId;
+    private Long cartId;
 
     private double totalPrice;
 
@@ -26,11 +26,11 @@ public class CartItemDTO extends BaseDTO<CartItemDTO> {
         this.quantity = quantity;
     }
 
-    public int getCartId() {
+    public Long getCartId() {
         return cartId;
     }
 
-    public void setCartId(int cartId) {
+    public void setCartId(Long cartId) {
         this.cartId = cartId;
     }
 

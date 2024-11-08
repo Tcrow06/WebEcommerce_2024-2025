@@ -9,8 +9,7 @@ import javax.persistence.*;
 @Table(name = "[owner]")
 public class OwnerEntity extends UserEntity {
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "account_id", referencedColumnName = "id")
+    @OneToOne(mappedBy = "owner")
     private AccountEntity account;
 
     @OneToOne(cascade = CascadeType.ALL)

@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
-@WebServlet(urlPatterns = {"/three-party-login"})
+@WebServlet(urlPatterns = {"/three-party-login","/dang-xuat"})
 public class ThreePartyLoginController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -33,13 +33,6 @@ public class ThreePartyLoginController extends HttpServlet {
     private CustomerService customerService;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String action = request.getParameter("action");
-        if(action!=null && action.equals("logout-tmp")){
-            JWTUtil.destroyToken(request,response);
-            response.sendRedirect(request.getContextPath() + "/dang-nhap");
-            return;
-        }
-
         String code = request.getParameter("code");
         String state = request.getParameter("state");
         String path;
@@ -103,6 +96,7 @@ public class ThreePartyLoginController extends HttpServlet {
         if (existingUser == null) {
             existingUser = socialAccountService.save(customerRequest);
         }
+        existingUser.setRole("CUSTOMER");
         //Neu da ton tai thi tien hanh update chua xu ly
 //        else {
 //            existingUser = new CustomerResponse();
@@ -110,7 +104,7 @@ public class ThreePartyLoginController extends HttpServlet {
 ////            userModel = customerService.update(userModel);
 //        }
         response.setContentType("application/json");
-        String jwtToken = JWTUtil.generateToken(existingUser, EnumRole.CUSTOMER.toString());
+        String jwtToken = JWTUtil.generateToken(existingUser);
 
         System.out.println("Generated JWT Token: " + jwtToken);
 
@@ -122,9 +116,16 @@ public class ThreePartyLoginController extends HttpServlet {
 //        response.sendRedirect(request.getContextPath() + "/" + sendDirection);
 
     }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        JWTUtil.destroyToken(request, response);
+        response.sendRedirect(request.getContextPath() + "/trang-chu");
+    }
+
     public void handleUserLogout(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         JWTUtil.destroyToken(request, response);
         response.sendRedirect(request.getContextPath() + "/dang-nhap");
     }
+
 }
