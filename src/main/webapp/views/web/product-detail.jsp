@@ -58,8 +58,11 @@
                     <ul class="nav nav-tabs" role="tablist">
                         <c:forEach var="item" items="${model.productVariants}" varStatus="status">
                             <li class="nav-item">
-                                <a class="nav-link <c:if test="${status.index == 0}">active</c:if>" data-toggle="tab" href="#tabs-${status.index + 1}" role="tab" data-image="${item.imageUrl}">
-                                    <div class="product__thumb__pic set-bg" data-setbg="<c:url value='${item.imageUrl}'/>">
+                                <a class="nav-link <c:if test="${status.index == 0}">active</c:if>"
+                                   data-toggle="tab" href="#tabs-${status.index + 1}"
+                                   role="tab"
+                                   data-image="<c:url value='/api-image?path=${item.imageUrl}'/>">
+                                    <div class="product__thumb__pic set-bg" data-setbg="<c:url value='/api-image?path=${item.imageUrl}'/>">
                                     </div>
                                 </a>
                             </li>
@@ -72,7 +75,7 @@
                         <c:forEach var="item" items="${model.productVariants}" varStatus="status">
                             <div class="tab-pane <c:if test="${status.index == 0}">active</c:if>" id="tabs-${status.index + 1}" role="tabpanel">
                                 <div class="product__details__pic__item">
-                                    <img src="<c:url value='${item.imageUrl}'/>" alt="" id="detail-image">
+                                    <img src="<c:url value='/api-image?path=${item.imageUrl}'/>" alt="" id="detail-image">
                                 </div>
                             </div>
                         </c:forEach>

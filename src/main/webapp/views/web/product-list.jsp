@@ -235,7 +235,9 @@
 
                         <div class="col-lg-4 col-md-6 col-sm-6">
                             <div class="product__item sale">
-                                <div class="product__item__pic set-bg" data-setbg="<c:url value="${item.photo}"/>">
+<%--                                <div class="product__item__pic set-bg" data-setbg="<c:url value="${item.photo}"/>">--%>
+                                <div class="product__item__pic set-bg" data-setbg="<c:url value='/api-image?path=${item.photo}'/>">
+
                                     <c:if test="${item.productDiscount != null}">
                                         <div class="div_label_product"><span class="label">Sale_${item.productDiscount.discountPercentage}%</span></div>
                                     </c:if>
