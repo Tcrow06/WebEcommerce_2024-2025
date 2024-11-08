@@ -2,14 +2,10 @@ package com.webecommerce.mapper.Impl;
 
 import com.webecommerce.dto.request.people.CustomerRequest;
 import com.webecommerce.dto.response.people.CustomerResponse;
-import com.webecommerce.entity.other.AccountEntity;
 import com.webecommerce.entity.people.CustomerEntity;
 import com.webecommerce.mapper.ICustomerMapper;
-import com.webecommerce.mapper.ISocialAccountMapper;
 
-import javax.inject.Inject;
-
-public class CustomerMapper implements ICustomerMapper {
+public class CustomerMapper implements ICustomerMapper{
 
 
 
@@ -50,4 +46,5 @@ public class CustomerMapper implements ICustomerMapper {
         ///////
         return customerEntity;
     }
+
 }
