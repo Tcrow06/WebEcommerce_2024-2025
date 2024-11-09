@@ -5,7 +5,7 @@
         <div id="sidebar-menu" class="sidebar-menu">
             <ul>
                 <li>
-                    <a href="index.html"><img src="../static/admin/assets/img/icons/dashboard.svg" alt="img"><span> Dashboard</span> </a>
+                    <a href="/aadmin"><img src="../static/admin/assets/img/icons/dashboard.svg" alt="img"><span> Trang chủ</span> </a>
                 </li>
                 <li class="submenu">
                     <a href="javascript:void(0);"><img src="../static/admin/assets/img/icons/product.svg" alt="img"><span> Sản phẩm</span> <span class="menu-arrow"></span></a>
@@ -18,6 +18,7 @@
                 <li class="submenu">
                     <a href="javascript:void(0);"><img src="../static/admin/assets/img/icons/product.svg" alt="img"><span> Marketing</span> <span class="menu-arrow"></span></a>
                     <ul>
+                        <li><a href="/aadmin/danh-sach-ma-giam-gia">Danh sách giảm giá</a></li>
                         <li><a href="/aadmin/giam-gia-cho-san-pham">Thêm giảm giá cho sản phẩm</a></li>
                         <li><a href="/aadmin/giam-gia-cho-don-hang">Thêm giảm giá cho đơn hàng</a></li>
                     </ul>

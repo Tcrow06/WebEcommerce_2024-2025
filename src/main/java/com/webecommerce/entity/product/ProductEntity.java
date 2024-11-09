@@ -38,7 +38,7 @@ public class ProductEntity {
     @Column(name = "brand")
     private String brand;
 
-    @Column(name = "description")
+    @Column(name = "description",columnDefinition = "TEXT")
     private String description;
 
     @ManyToOne

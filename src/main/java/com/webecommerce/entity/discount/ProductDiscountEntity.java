@@ -13,13 +13,6 @@ import java.util.List;
 @Table(name = "product_discount")
 public class ProductDiscountEntity extends DiscountEntity {
 
-    public boolean isOutStanding() {
-        return isOutStanding;
-    }
-
-    @Column (name = "is_outStanding")
-    private boolean isOutStanding ;
-
     @OneToMany(mappedBy = "productDiscount")
     private List<OrderDetailEntity> orderDetails;
 
@@ -43,7 +36,4 @@ public class ProductDiscountEntity extends DiscountEntity {
         this.product = product;
     }
 
-    public void setOutStanding(boolean outStanding) {
-        isOutStanding = outStanding;
-    }
 }

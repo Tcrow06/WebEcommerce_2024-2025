@@ -14,6 +14,7 @@ public class DiscountMapper {
         discountDTO.setStartDate(discountEntity.getStartDate());
         discountDTO.setEndDate(discountEntity.getEndDate());
         discountDTO.setDiscountPercentage(discountEntity.getDiscountPercentage());
+        discountDTO.setOutStanding(discountEntity.isOutStanding());
 
         return discountDTO;
     }
@@ -27,6 +28,7 @@ public class DiscountMapper {
         discountEntity.setStartDate(discountDTO.getStartDate());
         discountEntity.setEndDate(discountDTO.getEndDate());
         discountEntity.setDiscountPercentage(discountDTO.getDiscountPercentage());
+        discountEntity.setOutStanding(discountDTO.getIsOutStanding());
 
         return discountEntity;
     }

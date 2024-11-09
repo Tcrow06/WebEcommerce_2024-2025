@@ -22,6 +22,16 @@ public abstract class DiscountEntity {
     @Column(name = "discount_percentage")
     private int discountPercentage;
 
+    @Column (name = "is_outStanding")
+    private boolean isOutStanding ;
+
+    public boolean isOutStanding() {
+        return isOutStanding;
+    }
+
+    public void setOutStanding(boolean outStanding) {
+        isOutStanding = outStanding;
+    }
 
     public Long getId() {
         return id;
