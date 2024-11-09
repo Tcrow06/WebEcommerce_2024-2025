@@ -1,10 +1,12 @@
 package com.webecommerce.dto.discount;
 
 
+import org.hibernate.procedure.spi.ParameterRegistrationImplementor;
+
 public class BillDiscountDTO extends DiscountDTO {
     private double minimumInvoiceAmount;
+    private int loyaltyPointsRequired;
 
-    private String invoiceType;
     private String code;
 
     public double getMaximumAmount() {
@@ -34,13 +36,6 @@ public class BillDiscountDTO extends DiscountDTO {
         this.minimumInvoiceAmount = minimumInvoiceAmount;
     }
 
-    public String getInvoiceType() {
-        return invoiceType;
-    }
-
-    public void setInvoiceType(String invoiceType) {
-        this.invoiceType = invoiceType;
-    }
 
     public String getCode() {
         return code;
@@ -48,5 +43,13 @@ public class BillDiscountDTO extends DiscountDTO {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public int getLoyaltyPointsRequired() {
+        return loyaltyPointsRequired;
+    }
+
+    public void setLoyaltyPointsRequired(int loyaltyPointsRequired) {
+        this.loyaltyPointsRequired = loyaltyPointsRequired;
     }
 }

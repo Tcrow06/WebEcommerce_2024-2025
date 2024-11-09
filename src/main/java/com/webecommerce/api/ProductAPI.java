@@ -126,10 +126,15 @@ public class ProductAPI extends HttpServlet {
                     objectMapper.writeValue(response.getWriter(), product);
                 } else objectMapper.writeValue(response.getWriter(), "error");
             }
+        } catch (NumberFormatException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST); // 400 Bad Request
+            objectMapper.writeValue(response.getWriter(), "Invalid number format");
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); // 500 Internal Server Error
+            objectMapper.writeValue(response.getWriter(), "File processing error");
         } catch (ServletException e) {
-            throw new RuntimeException(e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); // 500 Internal Server Error
+            objectMapper.writeValue(response.getWriter(), "Servlet error");
         }
     }
 }

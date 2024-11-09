@@ -14,8 +14,9 @@ public class BillDiscountEntity extends DiscountEntity {
     @Column(name = "minimum_invoice_amount")
     private double minimumInvoiceAmount;
 
-    @Column(name = "invoice_type")
-    private String invoiceType;
+
+    @Column(name = "loyaltyPointsRequired")
+    private int loyaltyPointsRequired;
 
     @Column(name = "code")
     private String code;
@@ -62,19 +63,19 @@ public class BillDiscountEntity extends DiscountEntity {
         this.minimumInvoiceAmount = minimumInvoiceAmount;
     }
 
-    public String getInvoiceType() {
-        return invoiceType;
-    }
-
-    public void setInvoiceType(String invoiceType) {
-        this.invoiceType = invoiceType;
-    }
-
     public String getCode() {
         return code;
     }
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public int getLoyaltyPointsRequired() {
+        return loyaltyPointsRequired;
+    }
+
+    public void setLoyaltyPointsRequired(int loyaltyPointsRequired) {
+        this.loyaltyPointsRequired = loyaltyPointsRequired;
     }
 }
