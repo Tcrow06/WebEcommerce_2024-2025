@@ -14,8 +14,8 @@
 <div class="content">
     <div class="page-header">
         <div class="page-title">
-            <h4>Chỉnh sửa sản phẩm</h4>
-            <h6>Tạo Chương Trình khuyến Mãi mới</h6>
+            <h4>Thêm giảm giá cho sản phẩm</h4>
+            <h6>Marketing</h6>
         </div>
     </div>
 
@@ -108,7 +108,7 @@
         <div class="card mt-4">
             <div class="card-body">
                 <h5 class="card-title">Sản phẩm khuyến mãi</h5>
-                <button class="btn btn-outline-primary" data-toggle="modal" data-target="#productModal">+ Chọn sản pẩm</button>
+                <button class="btn btn-outline-primary" data-toggle="modal" data-target="#productModal">+ Chọn sản phẩm</button>
             </div>
         </div>
     </div>
