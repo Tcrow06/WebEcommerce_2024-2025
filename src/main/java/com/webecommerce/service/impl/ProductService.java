@@ -140,6 +140,11 @@ public class ProductService implements IProductService {
         List<ProductEntity> productEntities = productDAO.findAll(pageable);
         return getProduct(productEntities, minPrice, maxPrice);
     }
+    @Override
+    public List<ProductDTO> findAll() {
+        List<ProductEntity> productEntities = productDAO.findAll();
+        return getProduct(productEntities);
+    }
 
     public List<ProductDTO> findProductsByCategoryCode(String categoryCode) {
         List <ProductEntity> productEntities =  productDAO.findProductsByCategoryCode(categoryCode);
