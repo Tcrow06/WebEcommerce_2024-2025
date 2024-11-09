@@ -4,7 +4,7 @@
 <div class="header">
 
     <div class="header-left active">
-        <a href="index.html" class="logo">
+        <a href="/aadmin" class="logo">
             <img src="../static/admin/assets/img/logo.png" alt="">
         </a>
         <a href="index.html" class="logo-small">
