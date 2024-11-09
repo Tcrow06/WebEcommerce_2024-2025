@@ -1,4 +1,4 @@
-package com.webecommerce.controller.admin;
+package com.webecommerce.controller.admin.product;
 
 import com.webecommerce.constant.ModelConstant;
 import com.webecommerce.service.ICategoryService;

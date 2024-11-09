@@ -10,12 +10,10 @@ public class DiscountMapper {
             return null;
 
         discountDTO.setId(discountEntity.getId());
-        discountDTO.setDescription(discountEntity.getDescription());
+        discountDTO.setName(discountEntity.getName());
         discountDTO.setStartDate(discountEntity.getStartDate());
         discountDTO.setEndDate(discountEntity.getEndDate());
         discountDTO.setDiscountPercentage(discountEntity.getDiscountPercentage());
-        discountDTO.setMaximumAmount(discountEntity.getMaximumAmount());
-        discountDTO.setMinimumPurchaseQuantity(discountEntity.getMinimumPurchaseQuantity());
 
         return discountDTO;
     }
@@ -25,12 +23,10 @@ public class DiscountMapper {
             return null;
 
         discountEntity.setId(discountDTO.getId());
-        discountEntity.setDescription(discountDTO.getDescription());
+        discountEntity.setName(discountDTO.getName());
         discountEntity.setStartDate(discountDTO.getStartDate());
         discountEntity.setEndDate(discountDTO.getEndDate());
         discountEntity.setDiscountPercentage(discountDTO.getDiscountPercentage());
-        discountEntity.setMaximumAmount(discountDTO.getMaximumAmount());
-        discountEntity.setMinimumPurchaseQuantity(discountDTO.getMinimumPurchaseQuantity());
 
         return discountEntity;
     }
