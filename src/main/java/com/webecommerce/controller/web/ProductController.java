@@ -62,10 +62,10 @@ public class ProductController extends HttpServlet {
 
         //product = FormUtils.toModel(ProductDTO.class, request);
 
-        Pageable pageable =new PageRequest(product.getPage(), product.getMaxPageItem(), new FilterProduct(categoryId, brand));
+        Pageable pageable =new PageRequest(product.getPage(), product.getMaxPageItem(), new FilterProduct(categoryId, brand),
+                new FilterProductVariant(minPrice, maxPrice));
 
-        List<ProductDTO> productDTOList = productService.findAll(pageable, minPrice, maxPrice);
-        System.out.println("AAAAAAAA" + productDTOList.size());
+        List<ProductDTO> productDTOList = productService.findAll(pageable);
         product.setResultList(productDTOList);
 
         //product.setResultList(productService.findAll(pageable));

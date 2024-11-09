@@ -135,27 +135,52 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
     @Override
     public List<ProductEntity> findAll(Pageable pageable) {
 
-        StringBuilder jpql = new StringBuilder("SELECT n FROM ProductEntity n WHERE 1=1");
+        StringBuilder jpql = new StringBuilder(
+                "SELECT DISTINCT p FROM ProductEntity p " +
+                        "JOIN p.productVariants v " +
+                        "WHERE 1=1"
+        );
 
         if (pageable.getFilterProduct().getFilterCategory() != -1) {
-            jpql.append(" AND n.category.id = :categoryId");
+            jpql.append(" AND p.category.id = :categoryId");
         }
 
-        if (pageable.getFilterProduct().getFilterBrand() != null && !pageable.getFilterProduct().getFilterBrand().isEmpty()) {
-            jpql.append(" AND n.brand = :brand");
+        if (pageable.getFilterProduct().getFilterBrand() != null &&
+                !pageable.getFilterProduct().getFilterBrand().isEmpty()) {
+            jpql.append(" AND p.brand = :brand");
+        }
+
+        jpql.append(
+                " AND v.price = (SELECT MIN(v2.price) FROM ProductVariantEntity v2 WHERE v2.product.id = p.id)"
+        );
+
+        double minPrice = pageable.getFilterProductVariant().getMinPrice();
+        double maxPrice = pageable.getFilterProductVariant().getMaxPrice();
+        if (!Double.isNaN( minPrice) && !Double.isNaN(maxPrice)) {
+            jpql.append(" AND v.price BETWEEN :minPrice AND :maxPrice");
+        } else if (!Double.isNaN( minPrice)) {
+            jpql.append(" AND v.price >= :minPrice");
+        } else if (!Double.isNaN( maxPrice)) {
+            jpql.append(" AND v.price <= :maxPrice");
         }
 
         String queryStr = jpql.toString();
-
         TypedQuery<ProductEntity> query = entityManager.createQuery(queryStr, ProductEntity.class);
 
         if (pageable.getFilterProduct().getFilterCategory() != -1) {
             query.setParameter("categoryId", Long.valueOf(pageable.getFilterProduct().getFilterCategory()));
         }
 
-        // Đặt giá trị tham số cho brand_id nếu có
-        if (pageable.getFilterProduct().getFilterBrand() != null && !pageable.getFilterProduct().getFilterBrand().isEmpty()) {
+        if (pageable.getFilterProduct().getFilterBrand() != null &&
+                !pageable.getFilterProduct().getFilterBrand().isEmpty()) {
             query.setParameter("brand", pageable.getFilterProduct().getFilterBrand());
+        }
+
+        if (!Double.isNaN( minPrice) && !Double.isNaN(minPrice)) {
+            query.setParameter("minPrice", minPrice);
+        }
+        if (!Double.isNaN( minPrice) && !Double.isNaN(maxPrice)) {
+            query.setParameter("maxPrice", maxPrice);
         }
 
         if (pageable.getOffset() != null) {
@@ -166,7 +191,6 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
         }
 
         List<ProductEntity> productEntities = query.getResultList();
-
         return productEntities;
     }
 }

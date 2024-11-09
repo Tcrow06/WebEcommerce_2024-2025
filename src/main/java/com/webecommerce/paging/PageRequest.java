@@ -18,17 +18,12 @@ public class PageRequest implements Pageable{
         this.maxPageItem = maxPageItem;
     }
 
-    public PageRequest(Integer page, Integer maxPageItem, FilterProduct filterProduct) {
+    public PageRequest(Integer page, Integer maxPageItem, FilterProduct filterProduct, FilterProductVariant filterProductVariant) {
         this.page = page;
         this.maxPageItem = maxPageItem;
         this.filterProduct = filterProduct;
-    }
-
-    public PageRequest(FilterProductVariant filterProductVariant) {
         this.filterProductVariant = filterProductVariant;
     }
-
-
 
     @Override
     public Integer getPage() {
@@ -52,6 +47,14 @@ public class PageRequest implements Pageable{
     public FilterProduct getFilterProduct() {
         if(this.filterProduct != null) {
             return this.filterProduct;
+        }
+        return null;
+    }
+
+    @Override
+    public FilterProductVariant getFilterProductVariant() {
+        if(this.filterProductVariant != null) {
+            return this.filterProductVariant;
         }
         return null;
     }

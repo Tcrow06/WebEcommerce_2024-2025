@@ -45,9 +45,9 @@ public class AccountService implements IAccountService {
         }
 
         CustomerEntity customerEntity = customerMapper.toCustomerEntityFull(customerRequest);
-        customerEntity.setCart(new CartEntity());
+        //customerEntity.setCart(new CartEntity());
         AccountEntity accountEntity = accountMapper.toAccountEntity(customerRequest);
-        accountEntity.setCustomer(customerEntity);
+        //accountEntity.setCustomer(customerEntity);
         accountDAO.insert(accountEntity);
         return customerMapper.toCustomerResponse(accountEntity.getCustomer());
     }
