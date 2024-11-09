@@ -55,44 +55,6 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
     public void setIsNewProduct(LocalDateTime isNewProduct) {
         this.isNewProduct = isNewProduct;
     }
-    private int page;
-    private Integer maxPageItem;
-    private int totalPage;
-
-    private Long totalItem;
-
-
-    public int getPage() {
-        return page;
-    }
-
-    public void setPage(int page) {
-        this.page = page;
-    }
-
-    public Integer getMaxPageItem() {
-        return maxPageItem;
-    }
-
-    public void setMaxPageItem(Integer maxPageItem) {
-        this.maxPageItem = maxPageItem;
-    }
-
-    public Long getTotalItem() {
-        return totalItem;
-    }
-
-    public void setTotalItem(Long totalItem) {
-        this.totalItem = totalItem;
-    }
-
-    public int getTotalPage() {
-        return totalPage;
-    }
-
-    public void setTotalPage(int totalPage) {
-        this.totalPage = totalPage;
-    }
 
     public String getPhoto() {
         return photo;

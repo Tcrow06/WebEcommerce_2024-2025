@@ -1,5 +1,6 @@
 package com.webecommerce.dao.impl.product;
 
+import antlr.StringUtils;
 import com.webecommerce.dao.impl.AbstractDAO;
 import com.webecommerce.dao.product.IProductDAO;
 import com.webecommerce.entity.product.ProductEntity;
@@ -134,10 +135,10 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
 
     @Override
     public List<ProductEntity> findAll(Pageable pageable) {
-
         StringBuilder jpql = new StringBuilder(
                 "SELECT DISTINCT p FROM ProductEntity p " +
                         "JOIN p.productVariants v " +
+                        "LEFT JOIN p.productDiscount d " +
                         "WHERE 1=1"
         );
 
@@ -154,15 +155,30 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
                 " AND v.price = (SELECT MIN(v2.price) FROM ProductVariantEntity v2 WHERE v2.product.id = p.id)"
         );
 
+        String tag = pageable.getFilterProduct().getTag();
         double minPrice = pageable.getFilterProductVariant().getMinPrice();
         double maxPrice = pageable.getFilterProductVariant().getMaxPrice();
-        if (!Double.isNaN( minPrice) && !Double.isNaN(maxPrice)) {
+        if (!Double.isNaN(minPrice) && !Double.isNaN(maxPrice)) {
             jpql.append(" AND v.price BETWEEN :minPrice AND :maxPrice");
         } else if (!Double.isNaN( minPrice)) {
             jpql.append(" AND v.price >= :minPrice");
         } else if (!Double.isNaN( maxPrice)) {
             jpql.append(" AND v.price <= :maxPrice");
         }
+
+        if(tag != null) {
+            if(tag.equals("new")) {
+                jpql.append(" AND DATEDIFF(CURRENT_DATE, p.isNew) <= 7");
+            }
+            else if(tag.equals("sale")) {
+                jpql.append(" AND d.startDate <= CURRENT_DATE AND d.endDate >= CURRENT_DATE");
+            }
+            else if (tag.equals("other")) {
+                jpql.append(" AND (DATEDIFF(CURRENT_DATE, p.isNew) > 7 OR p.isNew IS NULL)");
+                jpql.append(" AND (d.startDate > CURRENT_DATE OR d.endDate < CURRENT_DATE OR d.startDate IS NULL OR d.endDate IS NULL)");
+            }
+        }
+
 
         String queryStr = jpql.toString();
         TypedQuery<ProductEntity> query = entityManager.createQuery(queryStr, ProductEntity.class);
@@ -176,10 +192,10 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
             query.setParameter("brand", pageable.getFilterProduct().getFilterBrand());
         }
 
-        if (!Double.isNaN( minPrice) && !Double.isNaN(minPrice)) {
+        if (!Double.isNaN( minPrice)) {
             query.setParameter("minPrice", minPrice);
         }
-        if (!Double.isNaN( minPrice) && !Double.isNaN(maxPrice)) {
+        if (!Double.isNaN( minPrice)) {
             query.setParameter("maxPrice", maxPrice);
         }
 

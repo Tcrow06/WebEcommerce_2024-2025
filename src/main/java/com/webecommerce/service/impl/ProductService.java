@@ -54,12 +54,14 @@ public class ProductService implements IProductService {
     public ProductDTO save(ProductDTO product) {
         try { // tiến hành lưu ảnh
             for (ProductVariantDTO productVariant : product.getProductVariants()) {
-                imageServiceImpl.setRealPath(product.getRealPathFile());
+                imageServiceImpl.setRealPath(product. getRealPathFile());
                 imageServiceImpl.setPath(productVariant.getImage());
                 imageServiceImpl.saveImageToDisk();
                 productVariant.setImageUrl(imageServiceImpl.getId());
             }
-        } catch (Exception e) {return null;}
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;}
 
         ProductEntity productEntity = productMapper.toEntity(product);
         if (productEntity == null) return null;

@@ -151,9 +151,9 @@
                                 <div id="collapseSix" class="collapse show" data-parent="#accordionExample">
                                     <div class="card-body">
                                         <div class="shop__sidebar__tags">
-                                            <a href="#">New</a>
-                                            <a href="#">Sale</a>
-                                            <a href="#">Others</a>
+                                            <a href="javascript:void(0);" onclick="selectTag('new')">Hàng mới</a>
+                                            <a href="javascript:void(0);" onclick="selectTag('sale')">Giảm giá</a>
+                                            <a href="javascript:void(0);" onclick="selectTag('other')">Khác</a>
                                         </div>
                                     </div>
                                 </div>
@@ -173,11 +173,11 @@
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-6">
                             <div class="shop__product__option__right">
-                                <p>Sort by Price:</p>
-                                <select>
-                                    <option value="">Low To High</option>
-                                    <option value="">$0 - $55</option>
-                                    <option value="">$55 - $100</option>
+                                <p>Sắp xếp theo giá:</p>
+                                <select onchange="selectSort(this)">
+                                    <option value="none">Mặc định</option>
+                                    <option value="desc">Giảm dần</option>
+                                    <option value="asc">Tăng dần</option>
                                 </select>
                             </div>
                         </div>
@@ -242,6 +242,7 @@
                     <input type="hidden" name="brand" id="brand">
                     <input type="hidden" name="minPrice" id="minPrice">
                     <input type="hidden" name="maxPrice" id="maxPrice">
+                    <input type="hidden" name="tag" id="tag">
                 </form>
 
             </div>
@@ -302,6 +303,11 @@
                 document.getElementById('maxPrice').removeAttribute('name');
             }
 
+            const previousTag = sessionStorage.getItem('selectedTag');
+            if (!previousTag) {
+                document.getElementById('tag').removeAttribute('name');
+            }
+
             updatePageInfo();
             submitFilterForm()
         }
@@ -328,6 +334,11 @@
             const previousMax = sessionStorage.getItem('selectedMaxPrice');
             if (!previousMax) {
                 document.getElementById('maxPrice').removeAttribute('name');
+            }
+
+            const previousTag = sessionStorage.getItem('selectedTag');
+            if (!previousTag) {
+                document.getElementById('tag').removeAttribute('name');
             }
 
             updatePageInfo();
@@ -357,10 +368,46 @@
                 document.getElementById('category').removeAttribute('name');
             }
 
+            const previousTag = sessionStorage.getItem('selectedTag');
+            if (!previousTag) {
+                document.getElementById('tag').removeAttribute('name');
+            }
+
             updatePageInfo();
             submitFilterForm();
         }
 
+        function selectTag(tagName) {
+            if (tagName) {
+                document.getElementById('tag').value = tagName;
+                sessionStorage.setItem('selectedTag', tagName); // Store selected tag
+            } else {
+                document.getElementById('tag').value = '';
+                sessionStorage.removeItem('selectedTag'); // Remove if no tag is selected
+            }
+
+            const previousCategory = sessionStorage.getItem('selectedCategory');
+            if (!previousCategory) {
+                document.getElementById('category').removeAttribute('name');
+            }
+
+            const previousBrand = sessionStorage.getItem('selectedBrand');
+            if (!previousBrand) {
+                document.getElementById('brand').removeAttribute('name');
+            }
+
+            const previousMin = sessionStorage.getItem('selectedMinPrice');
+            if (!previousMin) {
+                document.getElementById('minPrice').removeAttribute('name');
+            }
+            const previousMax = sessionStorage.getItem('selectedMaxPrice');
+            if (!previousMax) {
+                document.getElementById('maxPrice').removeAttribute('name');
+            }
+
+            updatePageInfo();
+            submitFilterForm();
+        }
 
         function updatePageInfo() {
             document.getElementById('page').value = currentPage;
@@ -375,6 +422,7 @@
             const storedBrand = sessionStorage.getItem('selectedBrand');
             const storedMinPrice = sessionStorage.getItem('selectedMinPrice');
             const storedMaxPrice = sessionStorage.getItem('selectedMaxPrice');
+            const storedTag = sessionStorage.getItem('selectedTag');
 
             if (storedCategory) {
                 document.getElementById('category').value = storedCategory;
@@ -387,6 +435,9 @@
             }
             if (storedMaxPrice) {
                 document.getElementById('maxPrice').value = storedMaxPrice;
+            }
+            if (storedTag) {
+                document.getElementById('tag').value = storedTag;
             }
 
             document.getElementById('formSubmit').submit();
@@ -410,6 +461,8 @@
             document.getElementById('brand').value = urlParams.get('brand') || '';
             document.getElementById('minPrice').value = urlParams.get('minPrice') || '';
             document.getElementById('maxPrice').value = urlParams.get('maxPrice') || '';
+            document.getElementById('tag').value = urlParams.get('tag') || '';
+
         });
         var totalPages = ${model.totalPage};
         var currentPage = ${model.page};
