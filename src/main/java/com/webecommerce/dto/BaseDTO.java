@@ -10,6 +10,15 @@ public class BaseDTO <T> {
     private Integer maxPageItem;
     private int totalPage;
     private Long totalItem;
+    private String sortBy;
+
+    public String getSortBy() {
+        return sortBy;
+    }
+
+    public void setSortBy(String sortBy) {
+        this.sortBy = sortBy;
+    }
 
     public int getPage() {
         return page;

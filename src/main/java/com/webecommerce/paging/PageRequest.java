@@ -2,6 +2,7 @@ package com.webecommerce.paging;
 
 import com.webecommerce.filter.FilterProduct;
 import com.webecommerce.filter.FilterProductVariant;
+import com.webecommerce.sort.Sorter;
 
 public class PageRequest implements Pageable{
 
@@ -13,16 +14,19 @@ public class PageRequest implements Pageable{
 
     private FilterProductVariant filterProductVariant;
 
+    private Sorter sorter;
+
     public PageRequest(Integer page, Integer maxPageItem) {
         this.page = page;
         this.maxPageItem = maxPageItem;
     }
 
-    public PageRequest(Integer page, Integer maxPageItem, FilterProduct filterProduct, FilterProductVariant filterProductVariant) {
+    public PageRequest(Integer page, Integer maxPageItem, FilterProduct filterProduct, FilterProductVariant filterProductVariant, Sorter sorter) {
         this.page = page;
         this.maxPageItem = maxPageItem;
         this.filterProduct = filterProduct;
         this.filterProductVariant = filterProductVariant;
+        this.sorter = sorter;
     }
 
     @Override
@@ -55,6 +59,14 @@ public class PageRequest implements Pageable{
     public FilterProductVariant getFilterProductVariant() {
         if(this.filterProductVariant != null) {
             return this.filterProductVariant;
+        }
+        return null;
+    }
+
+    @Override
+    public Sorter getSorter() {
+        if(this.sorter != null) {
+            return this.sorter;
         }
         return null;
     }

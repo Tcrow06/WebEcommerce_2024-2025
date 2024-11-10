@@ -8,6 +8,7 @@ import com.webecommerce.paging.PageRequest;
 import com.webecommerce.paging.Pageable;
 import com.webecommerce.service.ICategoryService;
 import com.webecommerce.service.IProductService;
+import com.webecommerce.sort.Sorter;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -38,6 +39,7 @@ public class ProductController extends HttpServlet {
         String minPriceStr = (request.getParameter("minPrice"));
         String maxPriceStr = request.getParameter("maxPrice");
         String tag = request.getParameter("tag");
+        String sort = request.getParameter("sort");
 
         product.setPage(page);
         product.setMaxPageItem(maxPageItem);
@@ -60,9 +62,13 @@ public class ProductController extends HttpServlet {
             minPrice = Double.parseDouble(minPriceStr);
         }
 
+        if(sort != null) {
+            product.setSortBy(sort);
+        }
+
 
         Pageable pageable =new PageRequest(product.getPage(), product.getMaxPageItem(), new FilterProduct(categoryId, brand, tag),
-                new FilterProductVariant(minPrice, maxPrice));
+                new FilterProductVariant(minPrice, maxPrice), new Sorter(product.getSortBy()));
 
         List<ProductDTO> productDTOList = productService.findAll(pageable);
         product.setResultList(productDTOList);

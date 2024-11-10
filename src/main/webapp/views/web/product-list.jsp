@@ -185,8 +185,6 @@
                 </div>
                 <div class="row">
                     <c:forEach var="item" items="${model.resultList}">
-
-
                         <div class="col-lg-4 col-md-6 col-sm-6">
                             <div class="product__item sale">
 <%--                                <div class="product__item__pic set-bg" data-setbg="<c:url value="${item.photo}"/>">--%>
@@ -243,6 +241,7 @@
                     <input type="hidden" name="minPrice" id="minPrice">
                     <input type="hidden" name="maxPrice" id="maxPrice">
                     <input type="hidden" name="tag" id="tag">
+                    <input type="hidden" name="sort" id="sort">
                 </form>
 
             </div>
@@ -308,6 +307,11 @@
                 document.getElementById('tag').removeAttribute('name');
             }
 
+            const previousSort = sessionStorage.getItem('selectedSort');
+            if (!previousSort) {
+                document.getElementById('sort').removeAttribute('name');
+            }
+
             updatePageInfo();
             submitFilterForm()
         }
@@ -339,6 +343,11 @@
             const previousTag = sessionStorage.getItem('selectedTag');
             if (!previousTag) {
                 document.getElementById('tag').removeAttribute('name');
+            }
+
+            const previousSort = sessionStorage.getItem('selectedSort');
+            if (!previousSort) {
+                document.getElementById('sort').removeAttribute('name');
             }
 
             updatePageInfo();
@@ -373,6 +382,11 @@
                 document.getElementById('tag').removeAttribute('name');
             }
 
+            const previousSort = sessionStorage.getItem('selectedSort');
+            if (!previousSort) {
+                document.getElementById('sort').removeAttribute('name');
+            }
+
             updatePageInfo();
             submitFilterForm();
         }
@@ -405,6 +419,51 @@
                 document.getElementById('maxPrice').removeAttribute('name');
             }
 
+            const previousSort = sessionStorage.getItem('selectedSort');
+            if (!previousSort) {
+                document.getElementById('sort').removeAttribute('name');
+            }
+
+            updatePageInfo();
+            submitFilterForm();
+        }
+
+        function selectSort(sortBy) {
+            var sortByValue = sortBy.value;
+
+            if (sortByValue) {
+                document.getElementById('sort').value = sortByValue;
+                sessionStorage.setItem('selectedSort', sortByValue); // Store selected tag
+            } else {
+                document.getElementById('sort').value = '';
+                sessionStorage.removeItem('selectedSort'); // Remove if no tag is selected
+            }
+
+            const previousCategory = sessionStorage.getItem('selectedCategory');
+            if (!previousCategory) {
+                document.getElementById('category').removeAttribute('name');
+            }
+
+            const previousBrand = sessionStorage.getItem('selectedBrand');
+            if (!previousBrand) {
+                document.getElementById('brand').removeAttribute('name');
+            }
+
+            const previousMin = sessionStorage.getItem('selectedMinPrice');
+            if (!previousMin) {
+                document.getElementById('minPrice').removeAttribute('name');
+            }
+
+            const previousMax = sessionStorage.getItem('selectedMaxPrice');
+            if (!previousMax) {
+                document.getElementById('maxPrice').removeAttribute('name');
+            }
+
+            const previousTag = sessionStorage.getItem('selectedTag');
+            if (!previousTag) {
+                document.getElementById('tag').removeAttribute('name');
+            }
+
             updatePageInfo();
             submitFilterForm();
         }
@@ -423,6 +482,7 @@
             const storedMinPrice = sessionStorage.getItem('selectedMinPrice');
             const storedMaxPrice = sessionStorage.getItem('selectedMaxPrice');
             const storedTag = sessionStorage.getItem('selectedTag');
+            const storedSort = sessionStorage.getItem('selectedSort');
 
             if (storedCategory) {
                 document.getElementById('category').value = storedCategory;
@@ -438,6 +498,9 @@
             }
             if (storedTag) {
                 document.getElementById('tag').value = storedTag;
+            }
+            if(storedSort) {
+                document.getElementById('sort').value = storedSort;
             }
 
             document.getElementById('formSubmit').submit();
@@ -462,7 +525,7 @@
             document.getElementById('minPrice').value = urlParams.get('minPrice') || '';
             document.getElementById('maxPrice').value = urlParams.get('maxPrice') || '';
             document.getElementById('tag').value = urlParams.get('tag') || '';
-
+            document.getElementById('sort').value = urlParams.get('sort') || '';
         });
         var totalPages = ${model.totalPage};
         var currentPage = ${model.page};
@@ -472,7 +535,7 @@
             window.pagObj = $('#pagination').twbsPagination({
                 totalPages: totalPages,
                 visiblePages: 5,
-                startPage: currentPage, // Trang bắt đầu khi load
+                startPage: currentPage,
                 onPageClick: function (event, page) {
                     if (currentPage != page) {
                         $('#maxPageItem').val(limit);

@@ -559,6 +559,13 @@ ol {
 	display: none;
 }
 
+.user-avatar {
+	width: 20px;       /* Chiều rộng cố định */
+	height: 20px;      /* Chiều cao cố định */
+	border-radius: 50%; /* Bo tròn thành hình tròn */
+	object-fit: cover; /* Đảm bảo ảnh vừa khít với khung */
+}
+
 /*---------------------
   Hero
 -----------------------*/
