@@ -35,6 +35,8 @@
     <script type='text/javascript' src='<c:url value="/template/web/js/jquery-2.2.3.min.js" />'></script>
 
     <script src="<c:url value='/template/paging/jquery.twbsPagination.js' />"></script>
+
+
 </head>
 
 <body>
