@@ -1,6 +1,24 @@
 <%@include file="/common/taglib.jsp"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
+
+<style>
+    input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%; /* Bo tròn */
+        border: 2px solid #ccc; /* Đường viền nhạt */
+        appearance: none; /* Ẩn giao diện mặc định */
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    input[type="checkbox"]:checked {
+        background-color: black; /* Màu đen khi được chọn */
+        border-color: black;
+    }
+</style>
+
 <!-- Breadcrumb Section Begin -->
 <section class="breadcrumb-option">
     <div class="container">
@@ -29,9 +47,10 @@
                     <table>
                         <thead>
                         <tr>
-                            <th>Product</th>
-                            <th>Quantity</th>
-                            <th>Total</th>
+                            <th>Sản phẩm</th>
+                            <th>Số lượng</th>
+                            <th>Tổng tiền </th>
+                            <th></th>
                             <th></th>
                         </tr>
                         </thead>
@@ -42,7 +61,8 @@
                             <tr>
                                 <td class="product__cart__item">
                                     <div class="product__cart__item__pic">
-                                        <img src="<c:url value="${item.productVariant.imageUrl}"/>" alt="${item.productVariant.name}">
+                                        <img style="width: 100px" src="<c:url value='/static/img/product/aothun1-gray.png'/>" alt="${item.productVariant.name}">
+<%--                                        <img src="<c:url value='/api-image?path=${item.productVariant.imageUrl}'/>" alt="${item.productVariant.name}">--%>
                                     </div>
                                     <div class="product__cart__item__text">
                                         <h6>${item.productVariant.name}</h6>
@@ -58,6 +78,7 @@
                                     </div>
                                 </td>
                                 <td class="cart__price">$ ${item.productVariant.price * item.quantity}</td>
+                                <td><input type="checkbox" /></td>
                                 <td class="cart__close">
                                     <a href="javascript:void(0);" onclick="removeFromCart(${item.productVariant.id})">
                                         <i class="fa fa-close"></i>
@@ -179,28 +200,28 @@
         });
     }
 
-    // Hàm khởi tạo hiệu ứng tăng giảm số lượng
-    function initQuantityButtons() {
-        $('.pro-qty-2').each(function () {
-            // Khởi tạo lại hiệu ứng tăng giảm số lượng, có thể cần chỉnh sửa theo plugin bạn đang dùng
-            $(this).prepend('<span class="dec qtybtn">-</span>');
-            $(this).append('<span class="inc qtybtn">+</span>');
-
-            // Sự kiện click để tăng giảm số lượng
-            $(this).on('click', '.qtybtn', function () {
-                let $button = $(this);
-                let oldValue = $button.siblings('input').val();
-                let newVal = parseInt(oldValue, 10);
-
-                if ($button.hasClass('inc')) {
-                    newVal++;
-                } else {
-                    newVal = (newVal > 1) ? newVal - 1 : 1;
-                }
-
-                $button.siblings('input').val(newVal);
-            });
-        });
-    }
+    // // Hàm khởi tạo hiệu ứng tăng giảm số lượng
+    // function initQuantityButtons() {
+    //     $('.pro-qty-2').each(function () {
+    //         // Khởi tạo lại hiệu ứng tăng giảm số lượng, có thể cần chỉnh sửa theo plugin bạn đang dùng
+    //         $(this).prepend('<span class="dec qtybtn">-</span>');
+    //         $(this).append('<span class="inc qtybtn">+</span>');
+    //
+    //         // Sự kiện click để tăng giảm số lượng
+    //         $(this).on('click', '.qtybtn', function () {
+    //             let $button = $(this);
+    //             let oldValue = $button.siblings('input').val();
+    //             let newVal = parseInt(oldValue, 10);
+    //
+    //             if ($button.hasClass('inc')) {
+    //                 newVal++;
+    //             } else {
+    //                 newVal = (newVal > 1) ? newVal - 1 : 1;
+    //             }
+    //
+    //             $button.siblings('input').val(newVal);
+    //         });
+    //     });
+    // }
 </script>
 <!-- Shopping Cart Section End -->

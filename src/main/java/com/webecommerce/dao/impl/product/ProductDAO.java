@@ -169,4 +169,17 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
 
         return productEntities;
     }
+
+    @Override
+    public List<String> getAllProductName() {
+        String query = "SELECT p.name FROM ProductEntity p ";
+        try {
+            LocalDateTime currentDate = LocalDateTime.now();
+            return entityManager.createQuery(query, String.class)
+                    .getResultList();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi lấy sản phẩm có discount còn hiệu lực", e);
+            return null;
+        }
+    }
 }

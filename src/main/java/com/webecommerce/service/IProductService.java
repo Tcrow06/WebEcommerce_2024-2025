@@ -24,5 +24,5 @@ public interface IProductService {
     List<ProductDTO> findProductForAllTag(int limit);
     Long getTotalItem();
     int setTotalPage(Long totalItem, int maxPageItem);
-
+    List<String> getAllProductName();
 }

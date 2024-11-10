@@ -29,7 +29,7 @@ public class ProductController extends HttpServlet {
 
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        List<String> listNames = productService.getAllProductName();
         ProductDTO product = new ProductDTO();
 
         String category = request.getParameter("category");
@@ -77,6 +77,7 @@ public class ProductController extends HttpServlet {
         request.setAttribute(ModelConstant.MODEL1, categoryService.findAll());
 
         request.setAttribute(ModelConstant.MODEL,product);
+        request.setAttribute("listNames", listNames);
         request.getRequestDispatcher("/views/web/product-list.jsp").forward(request, response);
     }
 }

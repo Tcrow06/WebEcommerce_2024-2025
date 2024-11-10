@@ -1,6 +1,12 @@
 <%@include file="/common/taglib.jsp"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
+<%@ page import="com.google.gson.Gson" %>
+<%@ page import="java.util.List" %>
+<%
+    List<String> listNames = (List<String>) request.getAttribute("listNames");
+%>
+
 <style>
     .product__item__pic {
         position: relative; /* Để chứa các thẻ con có position absolute */
@@ -53,6 +59,22 @@
     }
 
 
+    .suggestions-dropdown {
+        position: absolute;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        width: 100%;
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 10;
+    }
+    .dropdown-item {
+        padding: 5px 10px;
+        cursor: pointer;
+    }
+    .dropdown-item:hover {
+        background-color: #f0f0f0;
+    }
 
 
 </style>
@@ -81,9 +103,11 @@
             <div class="col-lg-3">
                 <div class="shop__sidebar">
                     <div class="shop__sidebar__search">
-                        <form action="#">
-                            <input type="text" placeholder="Search...">
-                            <button type="submit"><span class="icon_search"></span></button>
+<%--                        <c:url value='/danh-sach-san-pham'/>--%>
+                        <form id="form-search">
+                            <input type="text" placeholder="Search..." id="search-product" class="search-product">
+                            <ul id="suggestions" class="suggestions-dropdown" style="display: none;"></ul>
+                            <button type="button" id ="btnSearch"><span class="icon_search"></span></button>
                         </form>
                     </div>
 <%--                    Thử filter--%>
@@ -452,6 +476,56 @@
 </section>
 
 
+<script>
+    let listNameProduct = <%= new Gson().toJson(listNames) %>;
+
+    let searchInput = document.getElementById('search-product');
+
+    let suggestions = document.getElementById('suggestions');
+
+    function normalizeString(str) {
+        return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    }
+
+    searchInput.addEventListener('input', function () {
+        const searchTerm = normalizeString(searchInput.value.trim());
+        suggestions.innerHTML = '';
+        if(searchTerm.length > 0){
+            let matches = listNameProduct.filter(name => normalizeString(name).startsWith(searchTerm)).slice(0, 5);
+            if(matches.length > 0){
+                suggestions.style.display = 'block';
+                matches.forEach(math => {
+                    const li = document.createElement('li');
+                    li.classList.add('dropdown-item');
+                    li.textContent = math;
+                    li.addEventListener('click', function (){
+                        searchInput.value = this.textContent;
+                        suggestions.style.display = 'none';
+                    });
+                    suggestions.appendChild(li);
+                })
+            }else {
+                suggestions.style.display = 'block';
+                    const li = document.createElement('li');
+                    li.classList.add('dropdown-item');
+                    li.textContent = "không có kết quả";
+                    suggestions.appendChild(li);
+            }
+        }else {
+            suggestions.style.display = 'none';
+        }
+    });
+
+</script>
+<script>
+    $('#btnSearch').click(function(e) {
+        e.preventDefault();
+        let name = document.getElementById('search-product').value;
+        window.location.href = '/danh-sach-san-pham?page=1&maxPageItem=9&ten=' + encodeURIComponent(name);
+
+    });
+
+</script>
 
 
 
