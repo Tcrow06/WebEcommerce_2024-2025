@@ -53,8 +53,8 @@ public class ProductController extends HttpServlet {
             System.out.println(e);
         }
 
-        double minPrice = 0;
-        double maxPrice = 9999;
+        double minPrice = Integer.MIN_VALUE;
+        double maxPrice = Integer.MAX_VALUE;
         if(maxPriceStr != null && !maxPriceStr.isEmpty()) {
             maxPrice = Double.parseDouble(maxPriceStr);
         }

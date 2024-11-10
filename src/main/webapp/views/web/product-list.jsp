@@ -55,7 +55,7 @@
     .discounted-price {
         text-decoration: line-through;  /* Gạch ngang */
         font-size: 0.9em;               /* Giảm kích thước font */
-        color: gray;                   /* Làm mờ màu sắc */
+        color: darkgray;                   /* Làm mờ màu sắc */
         opacity: 0.6;                  /* Làm mờ thêm */
     }
 
@@ -258,6 +258,12 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.getElementById("add-to-cart btn").addEventListener("click", function() {
+            window.location.href = "/danh-sach-san-pham?page=1&maxPageItem=9";
+        });
+    </script>
 
     <script>
         window.addEventListener('DOMContentLoaded', function () {
