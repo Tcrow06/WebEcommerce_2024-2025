@@ -40,6 +40,13 @@
         z-index: 10; /* Giúp cho sticker nằm trên các thành phần khác */
     }
 
+    .discounted-price {
+        text-decoration: line-through;  /* Gạch ngang */
+        font-size: 0.9em;               /* Giảm kích thước font */
+        color: gray;                   /* Làm mờ màu sắc */
+        opacity: 0.6;                  /* Làm mờ thêm */
+    }
+
 </style>
 <!-- Product Section Begin -->
 <section class="product spad">
@@ -92,7 +99,13 @@
                                 <i class="fa fa-star-o"></i>
                                 <i class="fa fa-star-o"></i>
                             </div>
-                            <h5>$ ${item.price}</h5>
+<%--                            <h5>$ ${item.price}</h5>--%>
+                            <h5>$${item.getDiscountedPrice()}
+                                <c:if test="${item.productDiscount != null}">
+                                    <span class="discounted-price">${item.price}</span>
+                                </c:if>
+                            </h5>
+<%--                            đây nha--%>
                             <div class="product__color__select">
                                 <label for="pc-1">
                                     <input type="radio" id="pc-1">

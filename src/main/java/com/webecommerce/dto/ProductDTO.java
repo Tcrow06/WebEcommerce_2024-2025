@@ -117,6 +117,10 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
         return 0;
     }
 
+    public double getOriginalPrice() {
+        return price;
+    }
+
     public void setPrice(double price) {
         this.price = price;
     }
