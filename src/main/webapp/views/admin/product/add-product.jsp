@@ -322,10 +322,11 @@
                 processData: false,  // Không xử lý dữ liệu
                 contentType: false,  // Để trình duyệt tự xử lý content-type
                 success: function(response) {
-                    alert('Product added successfully');
+                    alert(response);
                 },
                 error: function(xhr, status, error) {
-                    alert('Failed to add product: ' + error);
+                    const errorMessage = xhr.responseJSON ? xhr.responseJSON.message : error;
+                    alert("Failed to add product: " + errorMessage);
                 }
             });
         }

@@ -142,10 +142,19 @@
                             <tbody>
                             <c:forEach var="item" items="${model.resultList}">
                                 <tr>
-                                    <td><input type="radio" name="product" value="${item.id}"
+                                    <td>
+                                        <input type="radio" name="product" value="${item.id}"
                                                data-photo="${item.photo}" data-id="${item.id}"
                                                data-name="${item.name}" data-price="${item.price}"
-                                               data-brand="${item.brand}"></td>
+                                               data-brand="${item.brand}"
+                                        <c:if test="${item.productDiscount != null}">
+                                               data-productdiscountname="${item.productDiscount.name}"
+                                               data-discountstartdate="${item.productDiscount.startDate}"
+                                               data-discountenddate="${item.productDiscount.endDate}"
+                                               data-discountpercentage="${item.productDiscount.discountPercentage}"
+                                        </c:if>
+                                        >
+                                    </td>
                                     <td>${item.name}</td>
                                     <td>${item.price}</td>
                                     <td>${item.brand}</td>

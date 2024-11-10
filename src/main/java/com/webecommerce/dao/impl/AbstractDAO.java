@@ -81,8 +81,9 @@ public abstract class AbstractDAO<T> implements GenericDAO<T> {
         trans.begin();
         try {
             em.persist(entity);  // Insert the object
+            em.flush();  // Đảm bảo dữ liệu được ghi vào DB
+            em.clear();  // Làm trống bộ nhớ đệm sau khi ghi
             trans.commit();      // Commit the transaction
-
             LOGGER.log(Level.INFO, "Inserted object: {0}", entity);
             return entity;
         } catch (Exception e) {

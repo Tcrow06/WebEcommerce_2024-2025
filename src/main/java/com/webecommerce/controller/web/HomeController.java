@@ -28,7 +28,7 @@ public class HomeController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<ProductDTO> results = productService.findProductForAllTag(8);
         request.setAttribute("results", results);
-        request.setAttribute(ModelConstant.MODEL,billDiscountService.findAll());
+        request.setAttribute(ModelConstant.MODEL,billDiscountService.findAllOutStanding());
         request.getRequestDispatcher("/views/web/home.jsp").forward(request,response);
     }
 
