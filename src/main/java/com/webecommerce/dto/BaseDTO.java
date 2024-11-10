@@ -4,12 +4,53 @@ import java.util.List;
 
 public class BaseDTO <T> {
     private Long id;
-
     private Long [] ids;
     private String realPathFile;
+    private int page;
+    private Integer maxPageItem;
+    private int totalPage;
+    private Long totalItem;
+    private String sortBy;
 
+    public String getSortBy() {
+        return sortBy;
+    }
 
+    public void setSortBy(String sortBy) {
+        this.sortBy = sortBy;
+    }
 
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
+    }
+
+    public Integer getMaxPageItem() {
+        return maxPageItem;
+    }
+
+    public void setMaxPageItem(Integer maxPageItem) {
+        this.maxPageItem = maxPageItem;
+    }
+
+    public int getTotalPage() {
+        return totalPage;
+    }
+
+    public void setTotalPage(int totalPage) {
+        this.totalPage = totalPage;
+    }
+
+    public Long getTotalItem() {
+        return totalItem;
+    }
+
+    public void setTotalItem(Long totalItem) {
+        this.totalItem = totalItem;
+    }
 
     public Long[] getIds() {
         return ids;

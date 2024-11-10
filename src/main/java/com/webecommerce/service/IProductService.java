@@ -9,7 +9,8 @@ import java.util.List;
 public interface IProductService {
     List<String> getBrands();
     List<ProductDTO> findProductsByBrand(String brand);
-    List<ProductDTO> findAll (Pageable pageable, double minPrice, double maxPrice);
+    List<ProductDTO> findAll (Pageable pageable);
+
     List<ProductDTO> findAll();
     ProductDTO save(ProductDTO product);
     List<ProductDTO> findProductsByCategoryCode(String categoryCode);

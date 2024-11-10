@@ -52,14 +52,16 @@ public class ProductService implements IProductService {
 
     @Transactional
     public ProductDTO save(ProductDTO product) {
-//        try { // tiến hành lưu ảnh
-//            for (ProductVariantDTO productVariant : product.getProductVariants()) {
-//                imageServiceImpl.setRealPath(product.getRealPathFile());
-//                imageServiceImpl.setPath(productVariant.getImage());
-//                imageServiceImpl.saveImageToDisk();
-//                productVariant.setImageUrl(imageServiceImpl.getId());
-//            }
-//        } catch (Exception e) {return null;}
+        try { // tiến hành lưu ảnh
+            for (ProductVariantDTO productVariant : product.getProductVariants()) {
+                imageServiceImpl.setRealPath(product. getRealPathFile());
+                imageServiceImpl.setPath(productVariant.getImage());
+                imageServiceImpl.saveImageToDisk();
+                productVariant.setImageUrl(imageServiceImpl.getId());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;}
 
         ProductEntity productEntity = productMapper.toEntity(product);
         if (productEntity == null) return null;
@@ -122,42 +124,17 @@ public class ProductService implements IProductService {
         return productDTOS;
     }
 
-    private List <ProductDTO> getProduct (List<ProductEntity> productEntities, double minPrice, double maxPrice) {
-        List <ProductDTO> productDTOS = new ArrayList<ProductDTO>();
-        for (ProductEntity product : productEntities) {
-            ProductDTO productDTO = productMapper.toDTO(product);
-            //lấy discount cho từng sản phâm
-            ProductDiscountEntity productDiscountEntity = product.getProductDiscount();
-            if (productDiscountEntity != null) {
-                if (productDiscountEntity.getEndDate().isBefore(LocalDateTime.now())) {
-                    productDTO.setProductDiscount(
-                            productDiscountMapper.toDTO(productDiscountEntity)
-                    );
-                }
-            }
-
-            // lấy productvariant để lấy ảnh và giá (lấy product variant rẻ nhất)
-            ProductVariantEntity productVariant = productVariantDAO.getProductVariantByProduct(product);
-            if (productVariant != null && (productVariant.getPrice() >= minPrice && productVariant.getPrice() <= maxPrice)) {
-                productDTO.setPhoto(productVariant.getImageUrl());
-                productDTO.setPrice(productVariant.getPrice());
-                productDTOS.add(productDTO);
-            }
-            //productDTOS.add(productDTO);
-        }
-        return productDTOS;
-    }
-
     public List<ProductDTO> findProductsByBrand(String brand) {
         List <ProductEntity> products = productDAO.findProductsByBrand(brand);
         return getProduct(products);
     }
 
     @Override
-    public List<ProductDTO> findAll(Pageable pageable, double minPrice, double maxPrice) {
-        List<ProductEntity> productEntities = productDAO.findAll(pageable);
-        return getProduct(productEntities, minPrice, maxPrice);
+    public List<ProductDTO> findAll(Pageable pageable) {
+        List <ProductEntity> products = productDAO.findAll(pageable);
+        return getProduct(products);
     }
+
     @Override
     public List<ProductDTO> findAll() {
         List<ProductEntity> productEntities = productDAO.findAll();
