@@ -52,6 +52,13 @@
         color: black !important; /* Màu chữ khi hover */
     }
 
+    .discounted-price {
+        text-decoration: line-through;  /* Gạch ngang */
+        font-size: 0.9em;               /* Giảm kích thước font */
+        color: gray;                   /* Làm mờ màu sắc */
+        opacity: 0.6;                  /* Làm mờ thêm */
+    }
+
 
 
 
@@ -213,7 +220,11 @@
                                         <i class="fa fa-star-o"></i>
                                         <i class="fa fa-star-o"></i>
                                     </div>
-                                    <h5>$ ${item.price}</h5>
+                                    <h5>$${item.getDiscountedPrice()}
+                                        <c:if test="${item.productDiscount != null}">
+                                            <span class="discounted-price">${item.price}</span>
+                                        </c:if>
+                                    </h5>
                                     <div class="product__color__select">
                                         <label for="pc-4">
                                             <input type="radio" id="pc-4">

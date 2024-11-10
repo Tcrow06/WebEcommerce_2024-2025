@@ -82,6 +82,12 @@
                         <div class="col"></div>
                     </div>
                 </div>
+
+                <!-- Outstanding Checkbox -->
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="isOutstanding">
+                    <label class="form-check-label" for="isOutstanding">Nổi bật mã giảm giá này</label>
+                </div>
             </div>
 
             <div class="container mt-5">
@@ -224,6 +230,7 @@
                 const minOrderValue = $('#minOrderValue').val();
                 const usageLimit = $('#usageLimit').val();
                 const minimumPurchaseQuantity = $('#minimumPurchaseQuantity').val();
+                const isOutstanding = $('#isOutstanding').is(':checked');
 
                 // Determine the custom score based on category select value
                 let loyaltyPointsRequired = null;
@@ -250,12 +257,13 @@
                     maximumAmount: usageLimit,
                     minimumPurchaseQuantity: minimumPurchaseQuantity,
                     code: voucherCode,
+                    isOutStanding: isOutstanding,
                     loyaltyPointsRequired: loyaltyPointsRequired // Send the selected or custom score
                 };
 
                 // Send the data using AJAX
                 $.ajax({
-                    url: '/api-billdiscount',
+                    url: '/api-bill-discount',
                     method: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify(data),

@@ -30,6 +30,23 @@
         top:40px; /* Nhãn New nằm ở dưới cùng */
     }
 
+    .categories__hot__deal {
+        position: relative;
+    }
+    .hot__deal__sticker {
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 10; /* Giúp cho sticker nằm trên các thành phần khác */
+    }
+
+    .discounted-price {
+        text-decoration: line-through;  /* Gạch ngang */
+        font-size: 0.9em;               /* Giảm kích thước font */
+        color: gray;                   /* Làm mờ màu sắc */
+        opacity: 0.6;                  /* Làm mờ thêm */
+    }
+
 </style>
 <!-- Product Section Begin -->
 <section class="product spad">
@@ -82,7 +99,13 @@
                                 <i class="fa fa-star-o"></i>
                                 <i class="fa fa-star-o"></i>
                             </div>
-                            <h5>$ ${item.price}</h5>
+<%--                            <h5>$ ${item.price}</h5>--%>
+                            <h5>$${item.getDiscountedPrice()}
+                                <c:if test="${item.productDiscount != null}">
+                                    <span class="discounted-price">${item.price}</span>
+                                </c:if>
+                            </h5>
+<%--                            đây nha--%>
                             <div class="product__color__select">
                                 <label for="pc-1">
                                     <input type="radio" id="pc-1">
@@ -103,53 +126,182 @@
 </section>
 <!-- Product Section End -->
 
-<!-- Categories Section Begin -->
-<section class="categories spad">
+
+<c:forEach var="item" items="${results}">
+    <c:if test="${item.productDiscount != null}">
+        <c:set var="saleNewClass" value="${saleNewClass} sale " />
+    </c:if>
+</c:forEach>
+
+
+<section class="latest spad">
     <div class="container">
         <div class="row">
-            <div class="col-lg-3">
-                <div class="categories__text">
-                    <h2>Clothings Hot <br /> <span>Shoe Collection</span> <br /> Accessories</h2>
+            <div class="col-lg-12">
+                <div class="section-title">
+                    <span>Giảm giá đặc biệt</span>
+                    <h2>Giảm giá cho từng đơn hàng</h2>
                 </div>
             </div>
-            <div class="col-lg-4">
-                <div class="categories__hot__deal">
-                    <img src="<c:url value="/static/img/product-sale.png"/>" alt="">
-                    <div class="hot__deal__sticker">
-                        <span>Sale Of</span>
-                        <h5>$29.99</h5>
+                <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+                    <div class="carousel-inner">
+                        <c:set var="isFirstActive" value="true" />  <!-- Khởi tạo biến kiểm tra item đầu tiên -->
+
+                        <c:forEach var="item" items="${model}" varStatus="status">
+                            <c:if test="${item.isOutStanding == true}">
+                                <div class="carousel-item ${isFirstActive == true ? 'active' : ''}">
+                                    <section class="instagram spad" style="padding: 0px">
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col-lg-8">
+                                                    <div class="categories__hot__deal">
+                                                        <div style="padding: 50px">
+                                                            <c:set var="imageIndex" value="${status.index % 3}" />
+                                                            <img src="<c:url value='/static/img/instagram/ig-${imageIndex}.jpg'/>" alt="">
+                                                            <div class="hot__deal__sticker">
+                                                                <span>Giảm</span>
+                                                                <h5>${item.discountPercentage}%</h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-4">
+                                                    <div class="instagram__text">
+                                                        <span>Chỉ dành cho thành viên trên ${item.loyaltyPointsRequired} điểm !</span>
+                                                        <h3>Giảm giá cho đơn hàng trên ${item.minimumInvoiceAmount}$</h3>
+                                                        <p>Giảm tối thiểu $${item.maximumAmount}.</p>
+                                                        <div class="instagram__text" style="padding: 0">
+                                                            <span>Bắt đầu vào ngày: </span>
+                                                            <h2>${item.getStringStartDate()}</h2>
+                                                        </div>
+                                                        <div class="instagram__text" style="padding: 0">
+                                                            <span>Kết thúc vào ngày: </span>
+                                                            <h2>${item.getStringEndDate()}</h2>
+                                                        </div>
+                                                        <p>Số lượng có hạn, chỉ có ${item.minimumPurchaseQuantity} vé</p>
+                                                        <h2>#Male_Fashion</h2>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div>
+                                <!-- Đặt biến isFirstActive thành false sau khi lần đầu tiên item được chọn -->
+                                <c:set var="isFirstActive" value="false" />
+                            </c:if>
+                        </c:forEach>
                     </div>
+
+                    <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
                 </div>
-            </div>
-            <div class="col-lg-4 offset-lg-1">
-                <div class="categories__deal__countdown">
-                    <span>Deal Of The Week</span>
-                    <h2>Multi-pocket Chest Bag Black</h2>
-                    <div class="categories__deal__countdown__timer" id="countdown">
-                        <div class="cd-item">
-                            <span>3</span>
-                            <p>Days</p>
-                        </div>
-                        <div class="cd-item">
-                            <span>1</span>
-                            <p>Hours</p>
-                        </div>
-                        <div class="cd-item">
-                            <span>50</span>
-                            <p>Minutes</p>
-                        </div>
-                        <div class="cd-item">
-                            <span>18</span>
-                            <p>Seconds</p>
-                        </div>
-                    </div>
-                    <a href="#" class="primary-btn">Shop now</a>
-                </div>
-            </div>
+
         </div>
     </div>
 </section>
-<!-- Categories Section End -->
+
+
+<section class="latest spad" style="margin-top: 100px">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="section-title">
+                    <span>Giảm giá đặc biệt</span>
+                    <h2>Sản phẩm đang được đặc biệt giảm giá</h2>
+                </div>
+            </div>
+        </div>
+        <div id="carouselExampleControlss" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+                <c:set var="isFirstActive" value="true" />  <!-- Khởi tạo biến kiểm tra item đầu tiên -->
+
+                <c:forEach var="item" items="${results}" varStatus="status">
+                    <c:if test="${item.productDiscount != null}">
+                        <c:if test="${item.productDiscount.isOutStanding == true}">
+                            <div class="carousel-item ${isFirstActive == true ? 'active' : ''}">
+                                <section class="categories spad">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-lg-3">
+                                                <div class="categories__text">
+                                                    <h2>Clothings<br /> <span>Products are discounted</span> <br /> Accessories <br /> Shoe</h2>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <div class="categories__hot__deal">
+                                                    <img src="<c:url value='/api-image?path=${item.photo}'/>" alt="">
+                                                    <div class="hot__deal__sticker">
+                                                        <span>Sale Of</span>
+                                                        <h5>$${item.getDiscountedPrice()}</h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 offset-lg-1">
+                                                <div class="categories__deal__countdown">
+                                                    <span>Giảm giá đặc biệt</span>
+                                                    <h2>${item.name}</h2>
+                                                    <h5>Giá gốc: $${item.price}</h5>
+                                                    <span style="margin-top: 10px">${item.productDiscount.discountPercentage}% giảm</span>
+                                                    <c:if test="${status.index == 0}">
+                                                        <div class="categories__deal__countdown__timer" id="countdown">
+                                                            <div class="cd-item">
+                                                                <span>${item.productDiscount.getRemainingDates()}</span>
+                                                                <p>Days</p>
+                                                            </div>
+                                                            <div class="cd-item">
+                                                                <span>${item.productDiscount.getRemainingHours()}</span>
+                                                                <p>Hours</p>
+                                                            </div>
+                                                            <div class="cd-item">
+                                                                <span>${item.productDiscount.getRemainingMinutes()}</span>
+                                                                <p>Minutes</p>
+                                                            </div>
+                                                            <div class="cd-item">
+                                                                <span>${item.productDiscount.getRemainingSeconds()}</span>
+                                                                <p>Seconds</p>
+                                                            </div>
+                                                        </div>
+                                                    </c:if>
+                                                    <c:if test="${status.index != 0}">
+                                                        <div class="instagram__text" style="padding: 0">
+                                                            <span>Kết thúc vào ngày: </span>
+                                                            <h2>${item.productDiscount.getStringEndDate()}</h2>
+                                                        </div>
+                                                    </c:if>
+                                                    <a href="/san-pham?id=${item.id}" class="primary-btn">Mua ngay</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                            <!-- Đặt biến isFirstActive thành false sau khi lần đầu tiên item được chọn -->
+                            <c:set var="isFirstActive" value="false" />
+                        </c:if>
+                    </c:if>
+                </c:forEach>
+            </div>
+
+            <a class="carousel-control-prev" href="#carouselExampleControlss" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleControlss" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+
+    </div>
+</section>
+
+
 
 <!-- Instagram Section Begin -->
 <section class="instagram spad">

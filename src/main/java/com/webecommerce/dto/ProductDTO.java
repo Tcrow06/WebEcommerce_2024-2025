@@ -7,6 +7,8 @@ import com.webecommerce.entity.discount.ProductDiscountEntity;
 import com.webecommerce.utils.PairUtils;
 
 import javax.servlet.http.Part;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,6 +77,10 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
             return price;
         }
         return 0;
+    }
+
+    public double getOriginalPrice() {
+        return price;
     }
 
     public void setPrice(double price) {
@@ -179,5 +185,11 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
 
     public void setProductDiscount(ProductDiscountDTO productDiscount) {
         this.productDiscount = productDiscount;
+    }
+    public double getDiscountedPrice() {
+        if (this.productDiscount == null) return price;
+        return new BigDecimal(
+                price - (price / 100) * productDiscount.getDiscountPercentage()
+        ).setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
 }

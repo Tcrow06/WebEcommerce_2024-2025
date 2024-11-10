@@ -77,32 +77,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.10.2/mdb.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-
-<%--started Sales list--%>
-<%--<script src="<c:url value='/static/admin/assets/js/jquery-3.6.0.min.js'/>"></script>--%>
-<%--<script src="<c:url value='/static/admin/assets/js/feather.min.js'/>"></script>--%>
-<%--<script src="<c:url value='/static/admin/assets/js/jquery.slimscroll.min.js'/>"></script>--%>
-<%--<script src="<c:url value='/static/admin/assets/js/jquery.dataTables.min.js'/>"></script>--%>
-<%--<script src="<c:url value='/static/admin/assets/js/dataTables.bootstrap4.min.js'/>"></script>--%>
 <script src="<c:url value='/static/admin/assets/js/bootstrap.bundle.min.js'/>"></script>
-<%--<script src="<c:url value='/static/admin/assets/plugins/select2/js/select2.min.js'/>"></script>--%>
-<%--<script src="<c:url value='/static/admin/assets/js/moment.min.js'/>"></script>--%>
-<%--<script src="<c:url value='/static/admin/assets/js/bootstrap-datetimepicker.min.js'/>"></script>--%>
-<%--<script src="<c:url value='/static/admin/assets/plugins/sweetalert/sweetalert2.all.min.js'/>"></script>--%>
-<%--<script src="<c:url value='/static/admin/assets/plugins/sweetalert/sweetalerts.min.js'/>"></script>--%>
-<%--<script src="<c:url value='/static/admin/assets/js/script.js'/>"></script>--%>
-<%--started Sales list--%>
-
-
-
 <script src="<c:url value='/static/web/js/token/refreshToken.js'/> "></script>
-
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 8d0c568a30b8607e9c26c2f3381d71e768d97ca9
 </body>
 
 </html>

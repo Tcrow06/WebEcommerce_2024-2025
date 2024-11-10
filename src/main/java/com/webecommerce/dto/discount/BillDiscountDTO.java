@@ -36,7 +36,6 @@ public class BillDiscountDTO extends DiscountDTO {
         this.minimumInvoiceAmount = minimumInvoiceAmount;
     }
 
-
     public String getCode() {
         return code;
     }
