@@ -91,7 +91,7 @@
                     <div class="col-md-5 col-sm-12 col-xs-12">
                         <div class="product-image">
                             <div class="item active">
-                                <img src="https://www.bootdey.com/image/700x400/FFB6C1/000000" class="img-responsive" alt="Product Image">
+                                <img src="<c:url value='/static/img/product/404.jpg'/>" class="img-responsive" alt="Product Image">
                             </div>
                         </div>
                     </div>
@@ -128,7 +128,7 @@
                                 <div class="form-group">
                                     <label> Product Image</label>
                                     <div class="image-upload">
-                                        <input type="file">
+                                        <input type="file" accept="image/jpeg">
                                         <div class="image-uploads">
                                             <img src="/static/admin/assets/img/icons/upload.svg" alt="img">
                                             <h4>Drag and drop a file to upload</h4>

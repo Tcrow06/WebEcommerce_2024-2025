@@ -36,8 +36,8 @@ public class ProductVariantMapper implements GenericMapper <ProductVariantDTO, P
         entity.setPrice(productVariantDTO.getPrice());
         entity.setStatus(productVariantDTO.getStatus());
         entity.setImageUrl(productVariantDTO.getImageUrl());
-        entity.setColor(productVariantDTO.getColor());
-        entity.setSize(productVariantDTO.getSize());
+        entity.setColor(productVariantDTO.getColor().trim().replaceAll("\\s+", " ").toUpperCase());
+        entity.setSize(productVariantDTO.getSize().trim().replaceAll("\\s+", " ").toUpperCase());
         entity.setQuantity(productVariantDTO.getQuantity());
 
 

@@ -78,6 +78,24 @@ public class ProductService implements IProductService {
         return productMapper.toDTO(productDAO.insert(productEntity));
     }
 
+    private ProductDTO getProduct (ProductEntity product) {
+        ProductDTO productDTO = productMapper.toDTO(product);
+        //lấy discount cho từng sản phâm
+        ProductDiscountEntity productDiscountEntity = product.getProductDiscount();
+        if (productDiscountEntity != null) {
+            if (productDiscountEntity.getEndDate().isAfter(LocalDateTime.now()) && productDiscountEntity.getStartDate().isBefore(LocalDateTime.now())) {
+                productDTO.setProductDiscount(
+                        productDiscountMapper.toDTO(productDiscountEntity)
+                );
+            }
+        }
+        productDTO.setProductVariants(
+                productVariantMapper.toDTOList(product.getProductVariants())
+        );
+
+        return productDTO;
+    }
+
     // dùng để lấy discout, price mà không cần lay het product variant -> load nhanh hơn
     private List <ProductDTO> getProduct (List<ProductEntity> productEntities) {
         List <ProductDTO> productDTOS = new ArrayList<ProductDTO>();
@@ -153,15 +171,16 @@ public class ProductService implements IProductService {
 
     public ProductDTO getProductById(Long id) {
         ProductEntity productEntity = productDAO.findById(id);
+        return getProduct(productEntity);
 
-        ProductDTO productDTO = productMapper.toDTO(productEntity);
-        for (ProductVariantEntity productVariant : productEntity.getProductVariants()) {
-            productDTO.getProductVariants().add(
-                    productVariantMapper.toDTO(productVariant)
-            );
-        }
+//        ProductDTO productDTO = productMapper.toDTO(productEntity);
+//        for (ProductVariantEntity productVariant : productEntity.getProductVariants()) {
+//            productDTO.getProductVariants().add(
+//                    productVariantMapper.toDTO(productVariant)
+//            );
+//        }
 
-        return productDTO;
+//        return productDTO;
     }
 
     public List<String> getListColorBySize (String size, Long productId) {

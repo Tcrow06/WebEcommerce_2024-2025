@@ -59,6 +59,7 @@
                                 <span class="fa fa-2x"><h5>(109) Votes</h5></span>
                                 <a href="javascript:void(0);">109 customer reviews</a>
                             </h2>
+                            <div id="isDiscountProduct" style="font-size: 12px; color: red"></div>
                             <hr />
                             <h3 class="price-container">
                                 $129.54
@@ -152,6 +153,7 @@
                                                data-discountstartdate="${item.productDiscount.startDate}"
                                                data-discountenddate="${item.productDiscount.endDate}"
                                                data-discountpercentage="${item.productDiscount.discountPercentage}"
+                                               data-isOutStanding = ${item.productDiscount.isOutStanding}
                                         </c:if>
                                         >
                                     </td>
@@ -200,6 +202,31 @@
                     );
                     $('.product-content .price-container').html(`$` + productPrice + ` <small>*price</small>`);
                     $('.product-content .product-image img').attr('src', "<c:url value='/api-image?path=' />" + productPhoto);
+
+                    // Kiểm tra nếu sản phẩm có discount
+                    const discountName = selectedProduct.data('productdiscountname');
+                    const discountStartDate = selectedProduct.data('discountstartdate');
+                    const discountEndDate = selectedProduct.data('discountenddate');
+                    const discountPercentage = selectedProduct.data('discountpercentage');
+                    const isOutStanding = selectedProduct.data('isoutstanding');
+
+                    if (discountName && discountStartDate && discountEndDate && discountPercentage !== undefined) {
+                        // Gán giá trị cho các ô input tương ứng
+                        $('#discountName').val(discountName);
+                        $('#startTime-discount').val(discountStartDate);
+                        $('#endTime-discount').val(discountEndDate);
+                        $('#discountPercentage').val(discountPercentage);
+                        $('#isOutstanding').prop('checked', isOutStanding === true);
+                        $('#isDiscountProduct').text("");
+                    } else {
+                        // Xóa các giá trị nếu sản phẩm không có discount
+                        $('#discountName').val('');
+                        $('#startTime-discount').val('');
+                        $('#endTime-discount').val('');
+                        $('#discountPercentage').val('');
+                        $('#isOutstanding').prop('checked', false);
+                        $('#isDiscountProduct').text("Sản phẩm này chưa được thiết lập giảm giá !");
+                    }
 
                     // Hiển thị phần tử .product-content
                     $('.main-product').show();
