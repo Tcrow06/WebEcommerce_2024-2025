@@ -34,7 +34,7 @@
 
                 <div class="product-content product-wrap clearfix product-deatil">
                     <div class="row">
-                        <div class="col-md-5 col-sm-12 col-xs-12">
+                        <div class="col-md-6 col-sm-12 col-xs-12">
                             <div class="product-image">
                                 <div id="myCarousel-2" class="carousel slide">
                                     <div class="carousel-inner">
@@ -66,6 +66,7 @@
                             </h3>
                             <hr />
                             <form>
+                                <input type="hidden" id="id-product-discount">
                                 <div class="mb-3">
                                     <label for="discountName" class="form-label">Tên chương trình khuyến mãi</label>
                                     <input type="text" class="form-control" id="discountName" placeholder="Nhập tên chương trình khuyến mãi" maxlength="150">
@@ -90,6 +91,11 @@
                                 <div class="form-check mb-3">
                                     <input class="form-check-input" type="checkbox" id="isOutstanding">
                                     <label class="form-check-label" for="isOutstanding">Nổi bật mã giảm giá này</label>
+                                </div>
+
+                                <!-- Confirm and Cancel Buttons -->
+                                <div class="mt-3 d-flex justify-content-end">
+                                    <button id="cancel-button" class="btn btn-secondary">Dừng giảm giá</button>
                                 </div>
 
                             </form>
@@ -149,6 +155,7 @@
                                                data-name="${item.name}" data-price="${item.price}"
                                                data-brand="${item.brand}"
                                         <c:if test="${item.productDiscount != null}">
+                                                data-productdiscountid="${item.productDiscount.id}"
                                                data-productdiscountname="${item.productDiscount.name}"
                                                data-discountstartdate="${item.productDiscount.startDate}"
                                                data-discountenddate="${item.productDiscount.endDate}"
@@ -209,6 +216,9 @@
                     const discountEndDate = selectedProduct.data('discountenddate');
                     const discountPercentage = selectedProduct.data('discountpercentage');
                     const isOutStanding = selectedProduct.data('isoutstanding');
+                    const discountId = selectedProduct.data('productdiscountid')
+
+                    console.log(discountId)
 
                     if (discountName && discountStartDate && discountEndDate && discountPercentage !== undefined) {
                         // Gán giá trị cho các ô input tương ứng
@@ -217,7 +227,9 @@
                         $('#endTime-discount').val(discountEndDate);
                         $('#discountPercentage').val(discountPercentage);
                         $('#isOutstanding').prop('checked', isOutStanding === true);
+                        $('#cancel-button').show()
                         $('#isDiscountProduct').text("");
+                        $('#id-product-discount').val(discountId)
                     } else {
                         // Xóa các giá trị nếu sản phẩm không có discount
                         $('#discountName').val('');
@@ -225,7 +237,9 @@
                         $('#endTime-discount').val('');
                         $('#discountPercentage').val('');
                         $('#isOutstanding').prop('checked', false);
+                        $('#cancel-button').hide()
                         $('#isDiscountProduct').text("Sản phẩm này chưa được thiết lập giảm giá !");
+                        $('#id-product-discount').val(undefined)
                     }
 
                     // Hiển thị phần tử .product-content
@@ -241,6 +255,18 @@
                     alert("Vui lòng chọn sản phẩm để xác nhận.");
                 }
             });
+
+            $('#cancel-button').click(function (){
+                const productDiscountId = $('#id-product-discount').val();
+
+                if (productDiscountId == undefined) return
+
+                const data = {
+                    id: productDiscountId
+                };
+                sendAPI(data,'/api-huy-giam-gia')
+            })
+
 
             $('#submit-button').click(function () {
                 if (!checkInput()) return
@@ -263,19 +289,23 @@
                     }
                 };
 
+                sendAPI(data,'/api-product-discount')
+            });
+
+            function sendAPI (data,url) {
                 $.ajax({
-                    url: '/api-product-discount',
+                    url: url,
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify(data),
                     success: function (response) {
-                        alert("Đã gửi thông tin thành công!");
+                        alert("Đã gửi thông tin thành công!" + response);
                     },
                     error: function (xhr, status, error) {
                         alert("Lỗi: " + error);
                     }
                 });
-            });
+            }
 
 
             function checkInput() {

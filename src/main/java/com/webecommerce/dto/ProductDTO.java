@@ -193,13 +193,13 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
     }
     
     public double getDiscountedPrice() {
-        if (this.productDiscount == null) return price;
         if (price == 0) {
             for (ProductVariantDTO productVariantDTO : this.productVariants) {
                 if (price == 0 || productVariantDTO.getPrice() < productVariantDTO.getPrice())
                     price = productVariantDTO.getPrice();
             }
         }
+        if (this.productDiscount == null) return price;
         return new BigDecimal(
                 price - (price / 100) * productDiscount.getDiscountPercentage()
         ).setScale(2, RoundingMode.HALF_UP).doubleValue();
