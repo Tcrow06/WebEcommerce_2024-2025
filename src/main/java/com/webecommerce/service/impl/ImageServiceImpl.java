@@ -122,7 +122,7 @@ public class ImageServiceImpl extends HttpServlet implements ImageService {
             path.write(getFile().getAbsolutePath());
             this.width = this.width > 0 ? this.width : getBufferedImage().getWidth();
             this.height = this.height > 0 ? this.height : getBufferedImage().getWidth();
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.out.println(e.getMessage());
         }
     }

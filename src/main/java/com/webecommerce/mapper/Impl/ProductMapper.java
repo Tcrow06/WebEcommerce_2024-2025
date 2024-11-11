@@ -38,6 +38,7 @@ public class ProductMapper implements GenericMapper <ProductDTO, ProductEntity> 
 
         dto.setBrand(entity.getBrand());
         dto.setDescription(entity.getDescription());
+        dto.setSizeConversionTableUrl(entity.getSizeConversionTableUrl());
 
         return dto;
     }
@@ -60,6 +61,7 @@ public class ProductMapper implements GenericMapper <ProductDTO, ProductEntity> 
         CategoryEntity category = new CategoryEntity();
         category.setId(dto.getId());
         entity.setCategory(category); // Assuming CategoryEntity is already set
+        entity.setSizeConversionTableUrl(dto.getSizeConversionTableUrl());
 
         // Convert ProductVariantDTOs to ProductVariantEntities
         List<ProductVariantEntity> productVariants =
