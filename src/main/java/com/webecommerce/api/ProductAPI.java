@@ -78,6 +78,7 @@ public class ProductAPI extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8"); // Thiết lập mã hóa UTF-8 cho phản hồi
 
         try {
 
@@ -123,8 +124,11 @@ public class ProductAPI extends HttpServlet {
                 product.setRealPathFile(getServletContext().getRealPath("/"));
                 product = productService.save(product);
                 if(product != null) {
-                    objectMapper.writeValue(response.getWriter(), product);
-                } else objectMapper.writeValue(response.getWriter(), "error");
+                    objectMapper.writeValue(response.getWriter(), "Thêm sản phẩm thành công !");
+                } else {
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST); // 400 Bad Request
+                    objectMapper.writeValue(response.getWriter(), "Có lỗi trong khi thêm sản phẩm !");
+                }
             }
         } catch (NumberFormatException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST); // 400 Bad Request

@@ -98,7 +98,10 @@
                             <i class="fa fa-star-o"></i>
                             <span> - 5 Reviews</span>
                         </div>
-                        <h3 id="price-product">$${model.price} <span>70.00</span></h3>
+                        <h3 id="price-product">$${model.getDiscountedPrice()}
+                            <c:if test="${model.productDiscount != null}">
+                                <span class="discounted-price">${item.price}</span>
+                            </c:if></h3>
                         <p>${model.brand}.</p>
                         <div class="container mt-5 product__details__option">
                             <span>Size:</span>

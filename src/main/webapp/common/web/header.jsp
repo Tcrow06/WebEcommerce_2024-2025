@@ -1,5 +1,33 @@
 <!-- Header Section Begin -->
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<style>
+    .container .dropdown-item {
+        position: relative;
+        text-decoration: none;
+    }
+
+    .container .dropdown-item.selected::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 2px;
+        background-color: #000;
+    }
+
+    .container .dropdown-item:hover::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 2px;
+        background-color: #ddd;
+    }
+
+
+</style>
 <header class="header">
     <div class="header__top">
         <div class="container">
@@ -62,26 +90,52 @@
                 <div class="header__nav__option">
                     <a href="<c:url value="/gio-hang"/>"><img src="<c:url value="/static/img/icon/cart.png"/>" alt=""> <span>0</span></a>
                 </div>
+<%--                <c:if test="${not empty user}">--%>
+<%--                    <div class="header__menu mobile-menu">--%>
+<%--                        <ul class="d-flex align-items-center">--%>
+<%--                            <li>--%>
+<%--                                <a href="#">--%>
+<%--                                    <c:if test="${not empty user.avatar}">--%>
+<%--                                        <img src="${user.avatar}" alt="mdo" width="32" height="32" class="rounded-circle">--%>
+<%--                                    </c:if>--%>
+<%--                                    <c:if test="${empty user.avatar}">--%>
+<%--                                        <img src='<c:url value = "/static/img/avatar/user.png"/>' alt="mdo" width="32" height="32" class="rounded-circle">--%>
+<%--                                    </c:if>--%>
+<%--                                </a>--%>
+<%--                                <ul class="dropdown" style="width:165px">--%>
+<%--                                    <li><a href="<c:url value="#"/>">Thông tin cá nhân</a></li>--%>
+<%--                                    <li><a href="<c:url value="#"/>">Lịch sử mua hàng</a></li>--%>
+<%--                                </ul>--%>
+<%--                            </li>--%>
+<%--                        </ul>--%>
+<%--                    </div>--%>
+<%--                </c:if>--%>
+
                 <c:if test="${not empty user}">
                     <div class="header__menu mobile-menu">
                         <ul class="d-flex align-items-center">
                             <li>
-                                <a href="#">
+                                <a href="#" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                     <c:if test="${not empty user.avatar}">
-                                        <img src="${user.avatar}" alt="mdo" width="32" height="32" class="rounded-circle">
+                                        <img src="${user.avatar}" alt="User Profile" width="32" height="32" class="rounded-circle user-avatar">
                                     </c:if>
                                     <c:if test="${empty user.avatar}">
-                                        <img src='<c:url value = "/static/img/avatar/user.png"/>' alt="mdo" width="32" height="32" class="rounded-circle">
+                                        <img src='<c:url value="/static/img/avatar/user.png"/>' alt="User Profile" width="32" height="32" class="rounded-circle user-avatar">
                                     </c:if>
                                 </a>
-                                <ul class="dropdown" style="width:165px">
-                                    <li><a href="<c:url value="#"/>">Thông tin cá nhân</a></li>
-                                    <li><a href="<c:url value="#"/>">Lịch sử mua hàng</a></li>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown" style="width:165px">
+                                    <li><a class="dropdown-item" href="#">Thông tin tài khoản</a></li>
+                                    <li><a class="dropdown-item" href="#">Đơn hàng của tôi</a></li>
+                                    <li><a class="dropdown-item" href="#">Danh sách yêu thích</a></li>
+                                    <li><a class="dropdown-item" href="#">Cài đặt</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="#">Đăng xuất</a></li>
                                 </ul>
                             </li>
                         </ul>
                     </div>
                 </c:if>
+
             </div>
 
 

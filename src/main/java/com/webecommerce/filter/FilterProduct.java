@@ -4,10 +4,20 @@ public class FilterProduct {
     private int filterCategory;
 
     private String filterBrand;
+    private String tag;
 
-    public FilterProduct(int filterCategory, String filterBrand) {
+    public FilterProduct(int filterCategory, String filterBrand, String tag) {
         this.filterCategory = filterCategory;
         this.filterBrand = filterBrand;
+        this.tag = tag;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 
     public String getFilterBrand() {

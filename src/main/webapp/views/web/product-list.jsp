@@ -58,6 +58,13 @@
         color: black !important; /* Màu chữ khi hover */
     }
 
+    .discounted-price {
+        text-decoration: line-through;  /* Gạch ngang */
+        font-size: 0.9em;               /* Giảm kích thước font */
+        color: darkgray;                   /* Làm mờ màu sắc */
+        opacity: 0.6;                  /* Làm mờ thêm */
+    }
+
 
     .suggestions-dropdown {
         position: absolute;
@@ -110,7 +117,7 @@
                             <button type="button" id ="btnSearch"><span class="icon_search"></span></button>
                         </form>
                     </div>
-<%--                    Thử filter--%>
+                    <%--                    Thử filter--%>
 
                     <div class="shop__sidebar__accordion">
                         <div class="accordion" id="accordionExample">
@@ -175,9 +182,9 @@
                                 <div id="collapseSix" class="collapse show" data-parent="#accordionExample">
                                     <div class="card-body">
                                         <div class="shop__sidebar__tags">
-                                            <a href="#">New</a>
-                                            <a href="#">Sale</a>
-                                            <a href="#">Others</a>
+                                            <a href="javascript:void(0);" onclick="selectTag('new')">Hàng mới</a>
+                                            <a href="javascript:void(0);" onclick="selectTag('sale')">Giảm giá</a>
+                                            <a href="javascript:void(0);" onclick="selectTag('other')">Khác</a>
                                         </div>
                                     </div>
                                 </div>
@@ -197,11 +204,11 @@
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-6">
                             <div class="shop__product__option__right">
-                                <p>Sort by Price:</p>
-                                <select>
-                                    <option value="">Low To High</option>
-                                    <option value="">$0 - $55</option>
-                                    <option value="">$55 - $100</option>
+                                <p>Sắp xếp theo giá:</p>
+                                <select onchange="selectSort(this)">
+                                    <option value="none">Mặc định</option>
+                                    <option value="desc">Giảm dần</option>
+                                    <option value="asc">Tăng dần</option>
                                 </select>
                             </div>
                         </div>
@@ -209,8 +216,6 @@
                 </div>
                 <div class="row">
                     <c:forEach var="item" items="${model.resultList}">
-
-
                         <div class="col-lg-4 col-md-6 col-sm-6">
                             <div class="product__item sale">
 <%--                                <div class="product__item__pic set-bg" data-setbg="<c:url value="${item.photo}"/>">--%>
@@ -230,7 +235,7 @@
                                 </div>
                                 <div class="product__item__text">
                                     <h6>${item.name}</h6>
-<%--                                    <a href="<c:url value="/them-gio-hang?id=${item.id}"/>" class="add-cart">View Detail</a>--%>
+                                        <%--                                    <a href="<c:url value="/them-gio-hang?id=${item.id}"/>" class="add-cart">View Detail</a>--%>
                                     <a href="san-pham?id=${item.id}" class="add-cart">View Detail</a>
                                     <div class="rating">
                                         <i class="fa fa-star-o"></i>
@@ -239,7 +244,11 @@
                                         <i class="fa fa-star-o"></i>
                                         <i class="fa fa-star-o"></i>
                                     </div>
-                                    <h5>$ ${item.price}</h5>
+                                    <h5>$${item.getDiscountedPrice()}
+                                        <c:if test="${item.productDiscount != null}">
+                                            <span class="discounted-price">${item.price}</span>
+                                        </c:if>
+                                    </h5>
                                     <div class="product__color__select">
                                         <label for="pc-4">
                                             <input type="radio" id="pc-4">
@@ -266,11 +275,19 @@
                     <input type="hidden" name="brand" id="brand">
                     <input type="hidden" name="minPrice" id="minPrice">
                     <input type="hidden" name="maxPrice" id="maxPrice">
+                    <input type="hidden" name="tag" id="tag">
+                    <input type="hidden" name="sort" id="sort">
                 </form>
 
             </div>
         </div>
     </div>
+
+    <script>
+        document.getElementById("add-to-cart btn").addEventListener("click", function() {
+            window.location.href = "/danh-sach-san-pham?page=1&maxPageItem=9";
+        });
+    </script>
 
     <script>
         window.addEventListener('DOMContentLoaded', function () {
@@ -326,6 +343,16 @@
                 document.getElementById('maxPrice').removeAttribute('name');
             }
 
+            const previousTag = sessionStorage.getItem('selectedTag');
+            if (!previousTag) {
+                document.getElementById('tag').removeAttribute('name');
+            }
+
+            const previousSort = sessionStorage.getItem('selectedSort');
+            if (!previousSort) {
+                document.getElementById('sort').removeAttribute('name');
+            }
+
             updatePageInfo();
             submitFilterForm()
         }
@@ -352,6 +379,16 @@
             const previousMax = sessionStorage.getItem('selectedMaxPrice');
             if (!previousMax) {
                 document.getElementById('maxPrice').removeAttribute('name');
+            }
+
+            const previousTag = sessionStorage.getItem('selectedTag');
+            if (!previousTag) {
+                document.getElementById('tag').removeAttribute('name');
+            }
+
+            const previousSort = sessionStorage.getItem('selectedSort');
+            if (!previousSort) {
+                document.getElementById('sort').removeAttribute('name');
             }
 
             updatePageInfo();
@@ -381,10 +418,96 @@
                 document.getElementById('category').removeAttribute('name');
             }
 
+            const previousTag = sessionStorage.getItem('selectedTag');
+            if (!previousTag) {
+                document.getElementById('tag').removeAttribute('name');
+            }
+
+            const previousSort = sessionStorage.getItem('selectedSort');
+            if (!previousSort) {
+                document.getElementById('sort').removeAttribute('name');
+            }
+
             updatePageInfo();
             submitFilterForm();
         }
 
+        function selectTag(tagName) {
+            if (tagName) {
+                document.getElementById('tag').value = tagName;
+                sessionStorage.setItem('selectedTag', tagName); // Store selected tag
+            } else {
+                document.getElementById('tag').value = '';
+                sessionStorage.removeItem('selectedTag'); // Remove if no tag is selected
+            }
+
+            const previousCategory = sessionStorage.getItem('selectedCategory');
+            if (!previousCategory) {
+                document.getElementById('category').removeAttribute('name');
+            }
+
+            const previousBrand = sessionStorage.getItem('selectedBrand');
+            if (!previousBrand) {
+                document.getElementById('brand').removeAttribute('name');
+            }
+
+            const previousMin = sessionStorage.getItem('selectedMinPrice');
+            if (!previousMin) {
+                document.getElementById('minPrice').removeAttribute('name');
+            }
+            const previousMax = sessionStorage.getItem('selectedMaxPrice');
+            if (!previousMax) {
+                document.getElementById('maxPrice').removeAttribute('name');
+            }
+
+            const previousSort = sessionStorage.getItem('selectedSort');
+            if (!previousSort) {
+                document.getElementById('sort').removeAttribute('name');
+            }
+
+            updatePageInfo();
+            submitFilterForm();
+        }
+
+        function selectSort(sortBy) {
+            var sortByValue = sortBy.value;
+
+            if (sortByValue) {
+                document.getElementById('sort').value = sortByValue;
+                sessionStorage.setItem('selectedSort', sortByValue); // Store selected tag
+            } else {
+                document.getElementById('sort').value = '';
+                sessionStorage.removeItem('selectedSort'); // Remove if no tag is selected
+            }
+
+            const previousCategory = sessionStorage.getItem('selectedCategory');
+            if (!previousCategory) {
+                document.getElementById('category').removeAttribute('name');
+            }
+
+            const previousBrand = sessionStorage.getItem('selectedBrand');
+            if (!previousBrand) {
+                document.getElementById('brand').removeAttribute('name');
+            }
+
+            const previousMin = sessionStorage.getItem('selectedMinPrice');
+            if (!previousMin) {
+                document.getElementById('minPrice').removeAttribute('name');
+            }
+
+            const previousMax = sessionStorage.getItem('selectedMaxPrice');
+            if (!previousMax) {
+                document.getElementById('maxPrice').removeAttribute('name');
+            }
+
+            const previousTag = sessionStorage.getItem('selectedTag');
+            if (!previousTag) {
+                document.getElementById('tag').removeAttribute('name');
+            }
+
+            updatePageInfo();
+            submitFilterForm();
+        }
 
         function updatePageInfo() {
             document.getElementById('page').value = currentPage;
@@ -399,6 +522,8 @@
             const storedBrand = sessionStorage.getItem('selectedBrand');
             const storedMinPrice = sessionStorage.getItem('selectedMinPrice');
             const storedMaxPrice = sessionStorage.getItem('selectedMaxPrice');
+            const storedTag = sessionStorage.getItem('selectedTag');
+            const storedSort = sessionStorage.getItem('selectedSort');
 
             if (storedCategory) {
                 document.getElementById('category').value = storedCategory;
@@ -411,6 +536,12 @@
             }
             if (storedMaxPrice) {
                 document.getElementById('maxPrice').value = storedMaxPrice;
+            }
+            if (storedTag) {
+                document.getElementById('tag').value = storedTag;
+            }
+            if(storedSort) {
+                document.getElementById('sort').value = storedSort;
             }
 
             document.getElementById('formSubmit').submit();
@@ -434,18 +565,18 @@
             document.getElementById('brand').value = urlParams.get('brand') || '';
             document.getElementById('minPrice').value = urlParams.get('minPrice') || '';
             document.getElementById('maxPrice').value = urlParams.get('maxPrice') || '';
+            document.getElementById('tag').value = urlParams.get('tag') || '';
+            document.getElementById('sort').value = urlParams.get('sort') || '';
         });
         var totalPages = ${model.totalPage};
         var currentPage = ${model.page};
         var limit = ${model.maxPageItem};
 
-
-
         $(function () {
             window.pagObj = $('#pagination').twbsPagination({
                 totalPages: totalPages,
                 visiblePages: 5,
-                startPage: currentPage, // Trang bắt đầu khi load
+                startPage: currentPage,
                 onPageClick: function (event, page) {
                     if (currentPage != page) {
                         $('#maxPageItem').val(limit);
@@ -460,18 +591,6 @@
             });
         });
     </script>
-
-<%--    <script>--%>
-<%--        window.addEventListener('beforeunload', function() {--%>
-<%--            // Xóa các giá trị lọc trong sessionStorage khi người dùng rời khỏi trang--%>
-<%--            sessionStorage.removeItem('selectedMinPrice');--%>
-<%--            sessionStorage.removeItem('selectedMaxPrice');--%>
-<%--            sessionStorage.removeItem('selectedBrand');--%>
-<%--            sessionStorage.removeItem('selectedCategory');--%>
-<%--        });--%>
-<%--    </script>--%>
-
-
 
 </section>
 

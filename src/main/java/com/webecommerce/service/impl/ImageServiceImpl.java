@@ -80,20 +80,39 @@ public class ImageServiceImpl extends HttpServlet implements ImageService {
 
     @Override
     public File getFile() {
-        return new File(getFolderUpload()  + File.separator + this.id + DOT_EXTENDS);
+           return new File(getFolderUpload()  + File.separator + this.id + DOT_EXTENDS);
     }
 
     @Override
     public String getFolderUpload() {
-        return realPath + File.separator + "static"+ File.separator + "img" +  File.separator + "product";
+         String path = realPath + File.separator + "static"+ File.separator + "img" +  File.separator + "product";
+        String path1 = realPath + "static"+ File.separator + "img" +  File.separator + "product";
+        return realPath + "static"+ File.separator + "img" +  File.separator + "product";
     }
 
     private BufferedImage getBufferedImage() {
         try {
-            return ImageIO.read(getFile());
+            File file = getFile();
+            if (file == null || !file.exists()) {
+                System.out.println("File không tồn tại hoặc là null.");
+                return null; // hoặc xử lý theo ý muốn
+            }
 
+
+            if (!file.canRead()) {
+                System.out.println("Không có quyền đọc file tại đường dẫn: " + file.getAbsolutePath());
+                return null;
+            }
+
+            BufferedImage bufferedImage = ImageIO.read(file);
+            if (bufferedImage == null) {
+                System.out.println("Không thể đọc file ảnh hoặc định dạng ảnh không hợp lệ.");
+                return null; // hoặc xử lý theo ý muốn
+            }
+
+            return bufferedImage;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Lỗi khi đọc file ảnh: " + e.getMessage(), e);
         }
     }
 
@@ -103,7 +122,7 @@ public class ImageServiceImpl extends HttpServlet implements ImageService {
             path.write(getFile().getAbsolutePath());
             this.width = this.width > 0 ? this.width : getBufferedImage().getWidth();
             this.height = this.height > 0 ? this.height : getBufferedImage().getWidth();
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
