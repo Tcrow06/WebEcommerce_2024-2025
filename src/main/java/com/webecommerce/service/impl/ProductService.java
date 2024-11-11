@@ -1,5 +1,6 @@
 package com.webecommerce.service.impl;
 
+import com.webecommerce.constant.EnumProductStatus;
 import com.webecommerce.dao.product.ICategoryDAO;
 import com.webecommerce.dao.product.IProductDAO;
 import com.webecommerce.dao.product.IProductVariantDAO;
@@ -53,8 +54,13 @@ public class ProductService implements IProductService {
     @Transactional
     public ProductDTO save(ProductDTO product) {
         try { // tiến hành lưu ảnh
+            imageServiceImpl.setRealPath(product.getRealPathFile());
+            imageServiceImpl.setPath(product.getSizeConversionTable());
+            imageServiceImpl.saveImageToDisk();
+            product.setSizeConversionTableUrl(imageServiceImpl.getId());
+
             for (ProductVariantDTO productVariant : product.getProductVariants()) {
-                imageServiceImpl.setRealPath(product. getRealPathFile());
+                imageServiceImpl.setRealPath(product.getRealPathFile());
                 imageServiceImpl.setPath(productVariant.getImage());
                 imageServiceImpl.saveImageToDisk();
                 productVariant.setImageUrl(imageServiceImpl.getId());
@@ -66,6 +72,7 @@ public class ProductService implements IProductService {
         ProductEntity productEntity = productMapper.toEntity(product);
         if (productEntity == null) return null;
 
+        productEntity.setStatus(EnumProductStatus.SELLING);
         productEntity.setIsNew(LocalDateTime.now());
 
         productEntity.setCategory(
