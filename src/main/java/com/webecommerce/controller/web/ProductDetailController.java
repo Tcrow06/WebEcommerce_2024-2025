@@ -2,7 +2,6 @@ package com.webecommerce.controller.web;
 
 import com.webecommerce.constant.ModelConstant;
 import com.webecommerce.dto.ProductDTO;
-import com.webecommerce.service.ICategoryService;
 import com.webecommerce.service.IProductService;
 
 import javax.inject.Inject;

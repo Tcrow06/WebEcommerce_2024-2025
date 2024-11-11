@@ -68,12 +68,13 @@
                                         <h6>${item.productVariant.name}</h6>
                                         <h6>Size: ${item.productVariant.size}</h6>
                                         <h6>Color: ${item.productVariant.color}</h6>
+                                        <h6>Price: ${item.productVariant.price}</h6>
                                     </div>
                                 </td>
                                 <td class="quantity__item">
                                     <div class="quantity">
                                         <div class="pro-qty-2">
-                                            <input type="text" value="${item.quantity}" data-product-id="${item.productVariant.id}">
+                                            <input onchange="updateTotalPrice(this)" type="text" value="${item.quantity}" data-product-id="${item.productVariant.id}">
                                         </div>
                                     </div>
                                 </td>
@@ -121,7 +122,7 @@
                         <li>Subtotal <span>$ 0</span></li>
                         <li>Total <span id="total-price">$ ${sessionScope.totalPrice}</span></li>
                     </ul>
-                    <a href="<c:url value='/' />" class="primary-btn">Proceed to checkout</a>
+                    <a href="<c:url value='/' />" class="primary-btn"  id="PlacedOrder">Proceed to checkout</a>
                 </div>
             </div>
         </div>
@@ -198,6 +199,14 @@
                 alert("Không thể tải giỏ hàng.");
             }
         });
+    }
+
+    function  updateTotalPrice(inputElement){
+        const productVariantId = $(inputElement).data('product-id');
+        let quantity = parseInt($(inputElement).val());
+
+
+
     }
 
     // // Hàm khởi tạo hiệu ứng tăng giảm số lượng
