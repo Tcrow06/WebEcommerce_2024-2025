@@ -91,7 +91,9 @@ public class ProductAPI extends HttpServlet {
             CategoryDTO categoryDTO = new CategoryDTO();
             categoryDTO.setId(categoryId);
 
-            ProductDTO product = new ProductDTO(name,highlight,brand,description,categoryDTO);
+            Part sizeTableImagePart = request.getPart("product.sizeConversionTable");
+
+            ProductDTO product = new ProductDTO(name,highlight,brand,description,categoryDTO,sizeTableImagePart);
 
             // Duyệt qua từng variant trong request và xử lý ảnh
             for (Part part : request.getParts()) {

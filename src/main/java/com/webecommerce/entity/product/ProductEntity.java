@@ -41,6 +41,9 @@ public class ProductEntity {
     @Column(name = "description",columnDefinition = "TEXT")
     private String description;
 
+    @Column(name = "size_conversion_table_url")
+    private String sizeConversionTableUrl;
+
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private CategoryEntity category;
@@ -127,4 +130,11 @@ public class ProductEntity {
         this.description = description;
     }
 
+    public String getSizeConversionTableUrl() {
+        return sizeConversionTableUrl;
+    }
+
+    public void setSizeConversionTableUrl(String sizeConversionTableUrl) {
+        this.sizeConversionTableUrl = sizeConversionTableUrl;
+    }
 }

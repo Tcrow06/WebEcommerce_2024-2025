@@ -18,12 +18,13 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
 
     private String name;
 
-    public ProductDTO(String name, boolean highlight, String brand, String description, CategoryDTO category) {
+    public ProductDTO(String name, boolean highlight, String brand, String description, CategoryDTO category, Part sizeConversionTable) {
         this.name = name;
         this.highlight = highlight;
         this.brand = brand;
         this.description = description;
         this.category = category;
+        this.sizeConversionTable = sizeConversionTable;
     }
 
     public ProductDTO () {}
@@ -40,6 +41,8 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
     private String brand;
 
     private String description;
+
+    private String sizeConversionTableUrl;
 
     private CategoryDTO category;
 
@@ -160,6 +163,8 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
         this.productVariants = productVariants;
     }
 
+    private Part sizeConversionTable;
+
 
     public List<String> getColorList() {
         List<String> colorList = new ArrayList<>();
@@ -198,5 +203,21 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
         return new BigDecimal(
                 price - (price / 100) * productDiscount.getDiscountPercentage()
         ).setScale(2, RoundingMode.HALF_UP).doubleValue();
+    }
+
+    public String getSizeConversionTableUrl() {
+        return sizeConversionTableUrl;
+    }
+
+    public void setSizeConversionTableUrl(String sizeConversionTableUrl) {
+        this.sizeConversionTableUrl = sizeConversionTableUrl;
+    }
+
+    public Part getSizeConversionTable() {
+        return sizeConversionTable;
+    }
+
+    public void setSizeConversionTable(Part sizeConversionTable) {
+        this.sizeConversionTable = sizeConversionTable;
     }
 }
