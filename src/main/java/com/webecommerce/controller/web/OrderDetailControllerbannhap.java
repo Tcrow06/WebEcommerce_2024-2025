@@ -11,15 +11,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(urlPatterns = {"/ve-chung-toi"})
-public class AboutController extends HttpServlet {
+@WebServlet(urlPatterns = {"/danh-sach-don-hang"})
+public class OrderDetailControllerbannhap extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-        request.getRequestDispatcher("/views/web/contact.jsp").forward(request,response);
+        request.getRequestDispatcher("/views/web/order-detail (ban nhap).jsp").forward(request,response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
 
     }
 }
