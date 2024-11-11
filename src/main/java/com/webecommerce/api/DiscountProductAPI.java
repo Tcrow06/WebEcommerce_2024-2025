@@ -14,26 +14,43 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet ("/api-product-discount")
+@WebServlet ({"/api-product-discount","/api-huy-giam-gia"})
 public class DiscountProductAPI extends HttpServlet {
     @Inject
     IProductDiscountService productDiscountService;
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setCharacterEncoding("UTF-8");
-        resp.setContentType("application/json");
+    ObjectMapper mapper = new ObjectMapper();
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        HttpUtils httpUtils =  HttpUtils.of(req.getReader());
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json");
+
+        HttpUtils httpUtils =  HttpUtils.of(request.getReader());
         ProductDiscountDTO productDiscount = httpUtils.toModel(ProductDiscountDTO.class);
 
         if(productDiscount != null) {
-            productDiscount = productDiscountService.save(productDiscount);
-            if(productDiscount != null) {
-                mapper.writeValue(resp.getWriter(), productDiscount);
-            } else mapper.writeValue(resp.getWriter(), "error");
+            String action = request.getServletPath();
+            if (action.equals("/api-product-discount")) {
+                addProductDiscount(request, response,productDiscount);
+            } else if (action.equals("/api-huy-giam-gia")) {
+                cancelProductDiscount(request, response, productDiscount);
+            }
         }
+        else response.setStatus(HttpServletResponse.SC_BAD_REQUEST); // 400 Bad Request
+    }
+
+    private void addProductDiscount(HttpServletRequest req, HttpServletResponse resp, ProductDiscountDTO productDiscount) throws IOException {
+        productDiscount = productDiscountService.save(productDiscount);
+        if(productDiscount != null) {
+            mapper.writeValue(resp.getWriter(), "Thêm giảm giá thành công !");
+        } else mapper.writeValue(resp.getWriter(), "error");
+    }
+
+    private void cancelProductDiscount(HttpServletRequest req, HttpServletResponse resp, ProductDiscountDTO productDiscount) throws IOException {
+        productDiscount = productDiscountService.cancelProductDiscount(productDiscount.getId());
+        if(productDiscount != null) {
+            mapper.writeValue(resp.getWriter(), "Hủy giảm gi thành công !");
+        } else mapper.writeValue(resp.getWriter(), "error");
     }
 }

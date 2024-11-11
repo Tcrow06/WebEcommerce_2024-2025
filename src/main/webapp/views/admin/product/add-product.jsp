@@ -14,14 +14,6 @@
         margin-top: 10px;
         background-color: #f9f9f9; /* Màu nền của vùng viền */
     }
-
-    /*.custom-legend {*/
-    /*    font-size: 12px;*/
-    /*    font-weight: bold;*/
-    /*    background-color: #f9f9f9; !* Màu nền của nhãn *!*/
-    /*    position: absolute;*/
-    /*    top: -10px;*/
-    /*}*/
     .error-message {
         color: red;
         font-size: 12px;
