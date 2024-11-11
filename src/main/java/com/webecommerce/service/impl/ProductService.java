@@ -212,5 +212,10 @@ public class ProductService implements IProductService {
         return (int) Math.ceil((double) totalItem / maxPageItem);
     }
 
+    @Override
+    public List<String> getAllProductName() {
+        return productDAO.getAllProductName();
+    }
+
 
 }

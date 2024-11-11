@@ -29,7 +29,7 @@ public class ProductController extends HttpServlet {
 
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        List<String> listNames = productService.getAllProductName();
         ProductDTO product = new ProductDTO();
 
         String category = request.getParameter("category");
@@ -53,8 +53,8 @@ public class ProductController extends HttpServlet {
             System.out.println(e);
         }
 
-        double minPrice = 0;
-        double maxPrice = 9999;
+        double minPrice = Integer.MIN_VALUE;
+        double maxPrice = Integer.MAX_VALUE;
         if(maxPriceStr != null && !maxPriceStr.isEmpty()) {
             maxPrice = Double.parseDouble(maxPriceStr);
         }
@@ -81,6 +81,7 @@ public class ProductController extends HttpServlet {
         request.setAttribute(ModelConstant.MODEL1, categoryService.findAll());
 
         request.setAttribute(ModelConstant.MODEL,product);
+        request.setAttribute("listNames", listNames);
         request.getRequestDispatcher("/views/web/product-list.jsp").forward(request, response);
     }
 }
