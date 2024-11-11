@@ -90,26 +90,6 @@
                 <div class="header__nav__option">
                     <a href="<c:url value="/gio-hang"/>"><img src="<c:url value="/static/img/icon/cart.png"/>" alt=""> <span>0</span></a>
                 </div>
-<%--                <c:if test="${not empty user}">--%>
-<%--                    <div class="header__menu mobile-menu">--%>
-<%--                        <ul class="d-flex align-items-center">--%>
-<%--                            <li>--%>
-<%--                                <a href="#">--%>
-<%--                                    <c:if test="${not empty user.avatar}">--%>
-<%--                                        <img src="${user.avatar}" alt="mdo" width="32" height="32" class="rounded-circle">--%>
-<%--                                    </c:if>--%>
-<%--                                    <c:if test="${empty user.avatar}">--%>
-<%--                                        <img src='<c:url value = "/static/img/avatar/user.png"/>' alt="mdo" width="32" height="32" class="rounded-circle">--%>
-<%--                                    </c:if>--%>
-<%--                                </a>--%>
-<%--                                <ul class="dropdown" style="width:165px">--%>
-<%--                                    <li><a href="<c:url value="#"/>">Thông tin cá nhân</a></li>--%>
-<%--                                    <li><a href="<c:url value="#"/>">Lịch sử mua hàng</a></li>--%>
-<%--                                </ul>--%>
-<%--                            </li>--%>
-<%--                        </ul>--%>
-<%--                    </div>--%>
-<%--                </c:if>--%>
 
                 <c:if test="${not empty user}">
                     <div class="header__menu mobile-menu">
