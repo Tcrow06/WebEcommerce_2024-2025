@@ -126,6 +126,7 @@
 ></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 <script>
+    $(document).ready(function () {
     const host = "https://provinces.open-api.vn/api/";
     var callAPI = (api) => {
         return axios.get(api).then((response) => {
@@ -199,4 +200,6 @@
             $("#result").text(result);
         }
     };
+
+    });
 </script>

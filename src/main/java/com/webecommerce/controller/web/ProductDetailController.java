@@ -36,5 +36,4 @@ public class ProductDetailController extends HttpServlet {
         }
         response.sendRedirect("/danh-sach-san-pham");
     }
-
 }

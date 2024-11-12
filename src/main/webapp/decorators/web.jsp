@@ -73,7 +73,7 @@
 <script src="<c:url value="/static/js/jquery.nicescroll.min.js"/>"></script>
 <script src="<c:url value="/static/js/jquery.magnific-popup.min.js"/>"></script>
 <script src="<c:url value="/static/js/jquery.countdown.min.js"/>"></script>
-<%--<script src="<c:url value="/static/js/jquery.slicknav.js"/>"></script>--%>
+<script src="<c:url value="/static/js/jquery.slicknav.js"/>"></script>
 <script src="<c:url value="/static/js/mixitup.min.js"/>"></script>
 <script src="<c:url value="/static/js/owl.carousel.min.js"/>"></script>
 <script src="<c:url value="/static/js/main.js"/>"></script>
@@ -83,20 +83,20 @@
 
 
 
-<%
-    // Lấy URI của trang hiện tại
-    String currentPage = request.getRequestURI();
+<%--<%--%>
+<%--    // Lấy URI của trang hiện tại--%>
+<%--    String currentPage = request.getRequestURI();--%>
 
-    // Danh sách các trang không cần jquery.slicknav.js
-    List<String> excludedPages = Arrays.asList("/payment.jsp");
+<%--    // Danh sách các trang không cần jquery.slicknav.js--%>
+<%--    List<String> excludedPages = Arrays.asList("/payment.jsp");--%>
 
-    // Nếu trang không nằm trong danh sách loại bỏ, thì thêm script slicknav
-    if (!excludedPages.contains(currentPage)) {
-%>
-<script src="js/jquery.slicknav.js"></script>
-<%
-    }
-%>
+<%--    // Nếu trang không nằm trong danh sách loại bỏ, thì thêm script slicknav--%>
+<%--    if (!excludedPages.contains(currentPage)) {--%>
+<%--%>--%>
+<%--<script src="js/jquery.slicknav.js"></script>--%>
+<%--<%--%>
+<%--    }--%>
+<%--%>--%>
 
 </body>
 
