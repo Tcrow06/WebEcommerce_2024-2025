@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface IBillDiscountDAO extends GenericDAO<BillDiscountEntity> {
     List<BillDiscountEntity> getBillDiscountByOutStanding(boolean outstanding);
+
+
 }

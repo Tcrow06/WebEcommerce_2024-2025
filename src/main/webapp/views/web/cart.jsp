@@ -74,7 +74,7 @@
                                 <td class="quantity__item">
                                     <div class="quantity">
                                         <div class="pro-qty-2">
-                                            <input onchange="updateTotalPrice(this)" type="text" value="${item.quantity}" data-product-id="${item.productVariant.id}">
+                                            <input type="text" value="${item.quantity}" data-product-id="${item.productVariant.id}">
                                         </div>
                                     </div>
                                 </td>
@@ -111,7 +111,7 @@
             <div class="col-lg-4">
                 <div class="cart__discount">
                     <h6>Discount codes</h6>
-                    <form action="#">
+                    <form>
                         <input type="text" placeholder="Coupon code">
                         <button type="submit">Apply</button>
                     </form>
@@ -122,7 +122,9 @@
                         <li>Subtotal <span>$ 0</span></li>
                         <li>Total <span id="total-price">$ ${sessionScope.totalPrice}</span></li>
                     </ul>
-                    <a href="<c:url value='/' />" class="primary-btn"  id="PlacedOrder">Proceed to checkout</a>
+                    <a href="javascript:void(0);" class="primary-btn"  id="ProceedToCheckout">Proceed to checkout</a>
+<%--                    <a href="javascript:void(0);" class="primary-btn"  onclick="checkOut()">Proceed to checkout</a>--%>
+
                 </div>
             </div>
         </div>
@@ -201,13 +203,13 @@
         });
     }
 
-    function  updateTotalPrice(inputElement){
-        const productVariantId = $(inputElement).data('product-id');
-        let quantity = parseInt($(inputElement).val());
-
-
-
-    }
+    // function  updateTotalPrice(inputElement){
+    //     const productVariantId = $(inputElement).data('product-id');
+    //     let quantity = parseInt($(inputElement).val());
+    //
+    //
+    //
+    // }
 
     // // Hàm khởi tạo hiệu ứng tăng giảm số lượng
     // function initQuantityButtons() {
@@ -232,5 +234,137 @@
     //         });
     //     });
     // }
+
+
+
+    $('#ProceedToCheckout').click(function (event) {
+
+        event.preventDefault();
+        // alert("vo");
+        // selectedProducts=[];
+        const selectedProducts = getSelectedProducts();
+        const billDiscountCode = $('#discount-code').val();
+
+        if (selectedProducts.length === 0) {
+            alert("Vui lòng chọn ít nhất một sản phẩm để thanh toán.");
+            return;
+        }
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = "/check-out";
+
+        // Tạo input ẩn để gửi danh sách sản phẩm
+        const productInput = document.createElement("input");
+        productInput.type = "hidden";
+        productInput.name = "listSelectedProductsId";
+        productInput.value = JSON.stringify(selectedProducts);
+        form.appendChild(productInput);
+
+        // Tạo input ẩn để gửi mã giảm giá
+        const discountInput = document.createElement("input");
+        discountInput.type = "hidden";
+        discountInput.name = "billDiscountCode";
+        discountInput.value = billDiscountCode;
+        form.appendChild(discountInput);
+
+        // Thêm form vào body và submit
+        document.body.appendChild(form);
+        form.submit();
+    });
+
+
+    function getSelectedProducts() {
+        const selectedProducts = [];
+        $('#cart-container tbody tr').each(function() {
+            const checkbox = $(this).find('input[type="checkbox"]');
+            if (checkbox.is(':checked')) {
+                const productVariantId = $(this).find('input[type="text"]').data('product-id');
+                const quantity = $(this).find('input[type="text"]').val();
+                if (productVariantId && quantity) {
+                    selectedProducts.push({
+                        productVariantId: productVariantId,
+                        quantity: parseInt(quantity, 10)
+                    });
+                }
+            }
+        });
+        return selectedProducts;
+    }
+
+
 </script>
 <!-- Shopping Cart Section End -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+    $(document).ready(function() {
+
+
+
+
+        $('#ProceedToCheckout').click(function (event) {
+
+            event.preventDefault();
+            alert("vo");
+            // selectedProducts=[];
+            const selectedProducts = getSelectedProducts();
+            const discountCode = $('#discount-code').val();
+
+            if (selectedProducts.length === 0) {
+                alert("Vui lòng chọn ít nhất một sản phẩm để thanh toán.");
+                return;
+            }
+            alert("vo");
+            $.ajax({
+                type: "POST",
+                url: "/thanh-toan",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    products: selectedProducts,
+                    discountCode: discountCode
+                }),
+                success: function(response) {
+                    // Chuyển đến URL thanh toán hoặc xử lý tiếp
+                    window.location.href = response.redirectUrl;
+                },
+                error: function(xhr) {
+                    alert("Không thể thực hiện thanh toán.");
+                }
+            });
+        });
+
+
+    function getSelectedProducts() {
+        const selectedProducts = [];
+        $('#cart-container tbody tr').each(function() {
+            const checkbox = $(this).find('input[type="checkbox"]');
+            if (checkbox.is(':checked')) {
+                const productVariantId = $(this).find('input[type="text"]').data('product-id');
+                const quantity = $(this).find('input[type="text"]').val();
+                if (productVariantId && quantity) {
+                    selectedProducts.push({
+                        productVariantId: productVariantId,
+                        quantity: parseInt(quantity, 10)
+                    });
+                }
+            }
+        });
+        return selectedProducts;
+    }
+    });
+</script>

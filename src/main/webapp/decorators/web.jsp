@@ -1,3 +1,5 @@
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Arrays" %>
 <%@ include file="/common/taglib.jsp"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -71,7 +73,7 @@
 <script src="<c:url value="/static/js/jquery.nicescroll.min.js"/>"></script>
 <script src="<c:url value="/static/js/jquery.magnific-popup.min.js"/>"></script>
 <script src="<c:url value="/static/js/jquery.countdown.min.js"/>"></script>
-<script src="<c:url value="/static/js/jquery.slicknav.js"/>"></script>
+<%--<script src="<c:url value="/static/js/jquery.slicknav.js"/>"></script>--%>
 <script src="<c:url value="/static/js/mixitup.min.js"/>"></script>
 <script src="<c:url value="/static/js/owl.carousel.min.js"/>"></script>
 <script src="<c:url value="/static/js/main.js"/>"></script>
@@ -80,6 +82,21 @@
 <%--<script src="<c:url value='/static/auth/js/sendDirection.js'/> " type="text/javascript"></script>--%>
 
 
+
+<%
+    // Lấy URI của trang hiện tại
+    String currentPage = request.getRequestURI();
+
+    // Danh sách các trang không cần jquery.slicknav.js
+    List<String> excludedPages = Arrays.asList("/payment.jsp");
+
+    // Nếu trang không nằm trong danh sách loại bỏ, thì thêm script slicknav
+    if (!excludedPages.contains(currentPage)) {
+%>
+<script src="js/jquery.slicknav.js"></script>
+<%
+    }
+%>
 
 </body>
 
