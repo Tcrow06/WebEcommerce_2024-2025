@@ -76,7 +76,6 @@ public class AuthController extends HttpServlet {
                         cart.put(cartItemDTO.getId(), cartItemDTO);
                     }
                     request.getSession().setAttribute("cart", cart);
-                    response.sendRedirect(request.getContextPath() + "/trang-chu");
                     jwtToken = JWTUtil.generateToken(user);
                     path="/trang-chu";
                 }

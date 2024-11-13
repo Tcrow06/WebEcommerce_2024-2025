@@ -3,6 +3,56 @@
 
 <style>
 
+    /* Lightbox container (ẩn mặc định) */
+    #lightbox {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8); /* Nền mờ đen */
+    }
+
+    /* Close button */
+    .close {
+        position: absolute;
+        top: 20px;
+        right: 35px;
+        color: #fff;
+        font-size: 30px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    /* Lightbox image */
+    .lightbox-content {
+        display: block;
+        max-width: 90%;
+        max-height: 90%;
+        margin: auto;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+
+    .product__details__tab__content__image {
+        display: flex;
+        justify-content: center;
+        margin-top: 15px;
+    }
+
+    .product__details__tab__content__image img {
+        max-width: 100%;
+        height: auto;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 10px;
+    }
+
     /* CSS cho radio button khi ở trạng thái disabled */
     input[type="radio"]:disabled + label {
         opacity: 0.5;  /* Giảm độ trong suốt */
@@ -58,8 +108,11 @@
                     <ul class="nav nav-tabs" role="tablist">
                         <c:forEach var="item" items="${model.productVariants}" varStatus="status">
                             <li class="nav-item">
-                                <a class="nav-link <c:if test="${status.index == 0}">active</c:if>" data-toggle="tab" href="#tabs-${status.index + 1}" role="tab" data-image="${item.imageUrl}">
-                                    <div class="product__thumb__pic set-bg" data-setbg="<c:url value='${item.imageUrl}'/>">
+                                <a class="nav-link <c:if test="${status.index == 0}">active</c:if>"
+                                   data-toggle="tab" href="#tabs-${status.index + 1}"
+                                   role="tab"
+                                   data-image="<c:url value='/api-image?path=${item.imageUrl}'/>">
+                                    <div class="product__thumb__pic set-bg" data-setbg="<c:url value='/api-image?path=${item.imageUrl}'/>">
                                     </div>
                                 </a>
                             </li>
@@ -72,7 +125,7 @@
                         <c:forEach var="item" items="${model.productVariants}" varStatus="status">
                             <div class="tab-pane <c:if test="${status.index == 0}">active</c:if>" id="tabs-${status.index + 1}" role="tabpanel">
                                 <div class="product__details__pic__item">
-                                    <img src="<c:url value='${item.imageUrl}'/>" alt="" id="detail-image">
+                                    <img src="<c:url value='/api-image?path=${item.imageUrl}'/>" alt="" id="detail-image">
                                 </div>
                             </div>
                         </c:forEach>
@@ -95,7 +148,10 @@
                             <i class="fa fa-star-o"></i>
                             <span> - 5 Reviews</span>
                         </div>
-                        <h3 id="price-product">$${model.price} <span>70.00</span></h3>
+                        <h3 id="price-product">$${model.getDiscountedPrice()}
+                            <c:if test="${model.productDiscount != null}">
+                                <span class="discounted-price">${model.price}</span>
+                            </c:if></h3>
                         <p>${model.brand}.</p>
                         <div class="container mt-5 product__details__option">
                             <span>Size:</span>
@@ -153,17 +209,24 @@
                     <div class="product__details__tab">
                         <ul class="nav nav-tabs" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#tabs-6" role="tab">Customer
-                                    Previews(5)</a>
+                                <a class="nav-link active" data-toggle="tab" href="#tabs-5"
+                                   role="tab">Mô tả</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#tabs-6" role="tab">Đánh giá khách hàng</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#tabs-7" role="tab">Bảng size</a>
                             </li>
                         </ul>
                         <div class="tab-content">
-                            <div class="tab-pane active" id="tabs-6" role="tabpanel">
+                            <div class="tab-pane active" id="tabs-5" role="tabpanel">
                                 <div class="product__details__tab__content">
-                                    <p class="note">Nam tempus turpis at metus scelerisque placerat nulla deumantos
-                                        solicitud felis. Pellentesque diam dolor, elementum etos lobortis des mollis
-                                        ut risus. Sedcus faucibus an sullamcorper mattis drostique des commodo
-                                        pharetras loremos.</p>
+                                    ${model.description}
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="tabs-6" role="tabpanel">
+                                <div class="product__details__tab__content">
                                     <div class="product__details__tab__content__item">
                                         <h5>Products Infomation</h5>
                                         <p>A Pocket PC is a handheld computer, which features many of the same
@@ -192,6 +255,22 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="tab-pane" id="tabs-7" role="tabpanel">
+                                <div class="product__details__tab__content">
+                                    <h5>Bảng size sản phẩm</h5>
+                                    <p>Vui lòng tham khảo bảng size dưới đây để chọn kích cỡ phù hợp cho bạn:</p>
+                                    <div class="product__details__tab__content__image">
+                                        <img src="<c:url value='/api-image?path=${model.sizeConversionTableUrl}'/>" alt="Bảng size sản phẩm thời trang" onclick="openLightbox()" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Lightbox -->
+                            <div id="lightbox" onclick="closeLightbox()">
+                                <span class="close">&times;</span>
+                                <img class="lightbox-content" id="lightbox-img" src="<c:url value='/api-image?path=${model.sizeConversionTableUrl}'/>" alt="Bảng size lớn">
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -352,6 +431,17 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        // Mở lightbox
+        function openLightbox() {
+            $("#lightbox").fadeIn();
+        }
+
+        // Đóng lightbox
+        function closeLightbox() {
+            $("#lightbox").fadeOut();
+        }
+
+
         $(document).ready(function () {
             // Lắng nghe sự kiện click trên các tab
             $('.nav-link').on('click', function () {

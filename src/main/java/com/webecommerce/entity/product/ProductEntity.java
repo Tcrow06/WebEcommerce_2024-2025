@@ -38,8 +38,11 @@ public class ProductEntity {
     @Column(name = "brand")
     private String brand;
 
-    @Column(name = "description")
+    @Column(name = "description",columnDefinition = "TEXT")
     private String description;
+
+    @Column(name = "size_conversion_table_url")
+    private String sizeConversionTableUrl;
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
@@ -47,6 +50,10 @@ public class ProductEntity {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductVariantEntity> productVariants = new ArrayList<>();
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "product_discount_id", referencedColumnName = "id")
+    private ProductDiscountEntity productDiscount ;
 
     public ProductDiscountEntity getProductDiscount() {
         return productDiscount;
@@ -56,9 +63,7 @@ public class ProductEntity {
         this.productDiscount = productDiscount;
     }
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_discount_id", referencedColumnName = "id")
-    private ProductDiscountEntity productDiscount ;
+
 
     public CategoryEntity getCategory() {
         return category;
@@ -125,4 +130,11 @@ public class ProductEntity {
         this.description = description;
     }
 
+    public String getSizeConversionTableUrl() {
+        return sizeConversionTableUrl;
+    }
+
+    public void setSizeConversionTableUrl(String sizeConversionTableUrl) {
+        this.sizeConversionTableUrl = sizeConversionTableUrl;
+    }
 }

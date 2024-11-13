@@ -81,8 +81,9 @@ public abstract class AbstractDAO<T> implements GenericDAO<T> {
         trans.begin();
         try {
             em.persist(entity);  // Insert the object
+            em.flush();  // Đảm bảo dữ liệu được ghi vào DB
+            em.clear();  // Làm trống bộ nhớ đệm sau khi ghi
             trans.commit();      // Commit the transaction
-
             LOGGER.log(Level.INFO, "Inserted object: {0}", entity);
             return entity;
         } catch (Exception e) {
@@ -102,6 +103,10 @@ public abstract class AbstractDAO<T> implements GenericDAO<T> {
         trans.begin();
         try {
             T mergedEntity = em.merge(entity);  // Update the object
+            em.flush();
+            em.clear();
+
+
             trans.commit();
 
             LOGGER.log(Level.INFO, "Updated object: {0}", mergedEntity);
@@ -125,6 +130,8 @@ public abstract class AbstractDAO<T> implements GenericDAO<T> {
             T entity = em.find(entityClass, id);
             if (entity != null) {
                 em.remove(entity);  // Delete the object
+                em.flush();
+                em.clear();
                 trans.commit();
                 LOGGER.log(Level.INFO, "Deleted object with ID: {0}", id);
                 return true;

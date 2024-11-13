@@ -6,6 +6,9 @@ import com.webecommerce.dto.discount.ProductDiscountDTO;
 import com.webecommerce.entity.discount.ProductDiscountEntity;
 import com.webecommerce.utils.PairUtils;
 
+import javax.servlet.http.Part;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +17,17 @@ import java.util.List;
 public class ProductDTO extends BaseDTO<ProductDTO> {
 
     private String name;
+
+    public ProductDTO(String name, boolean highlight, String brand, String description, CategoryDTO category, Part sizeConversionTable) {
+        this.name = name;
+        this.highlight = highlight;
+        this.brand = brand;
+        this.description = description;
+        this.category = category;
+        this.sizeConversionTable = sizeConversionTable;
+    }
+
+    public ProductDTO () {}
 
     private boolean highlight;
 
@@ -27,6 +41,8 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
     private String brand;
 
     private String description;
+
+    private String sizeConversionTableUrl;
 
     private CategoryDTO category;
 
@@ -64,6 +80,10 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
             return price;
         }
         return 0;
+    }
+
+    public double getOriginalPrice() {
+        return price;
     }
 
     public void setPrice(double price) {
@@ -143,6 +163,8 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
         this.productVariants = productVariants;
     }
 
+    private Part sizeConversionTable;
+
 
     public List<String> getColorList() {
         List<String> colorList = new ArrayList<>();
@@ -168,5 +190,34 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
 
     public void setProductDiscount(ProductDiscountDTO productDiscount) {
         this.productDiscount = productDiscount;
+    }
+    
+    public double getDiscountedPrice() {
+        if (price == 0) {
+            for (ProductVariantDTO productVariantDTO : this.productVariants) {
+                if (price == 0 || productVariantDTO.getPrice() < productVariantDTO.getPrice())
+                    price = productVariantDTO.getPrice();
+            }
+        }
+        if (this.productDiscount == null) return price;
+        return new BigDecimal(
+                price - (price / 100) * productDiscount.getDiscountPercentage()
+        ).setScale(2, RoundingMode.HALF_UP).doubleValue();
+    }
+
+    public String getSizeConversionTableUrl() {
+        return sizeConversionTableUrl;
+    }
+
+    public void setSizeConversionTableUrl(String sizeConversionTableUrl) {
+        this.sizeConversionTableUrl = sizeConversionTableUrl;
+    }
+
+    public Part getSizeConversionTable() {
+        return sizeConversionTable;
+    }
+
+    public void setSizeConversionTable(Part sizeConversionTable) {
+        this.sizeConversionTable = sizeConversionTable;
     }
 }

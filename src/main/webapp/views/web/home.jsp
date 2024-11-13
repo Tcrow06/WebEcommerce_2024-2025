@@ -6,346 +6,302 @@
 
 <%@ include file="../../common/web/banner.jsp"%>
 
+<style>
+    .product__item__pic {
+        position: relative; /* Để chứa các thẻ con có position absolute */
+    }
+
+    .div_label_product {
+        position: absolute;
+        left: 10px;
+        font-size: 14px;
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+
+    /* Nhãn Sale ở phía trên */
+    .div_label_product:nth-child(1) {
+        top: 10px; /* Nhãn Sale nằm ở trên cùng */
+    }
+
+    /* Nhãn New ở phía dưới */
+    .div_label_product:nth-child(2) {
+        top:40px; /* Nhãn New nằm ở dưới cùng */
+    }
+
+    .categories__hot__deal {
+        position: relative;
+    }
+    .hot__deal__sticker {
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 10; /* Giúp cho sticker nằm trên các thành phần khác */
+    }
+
+    .discounted-price {
+        text-decoration: line-through;  /* Gạch ngang */
+        font-size: 0.9em;               /* Giảm kích thước font */
+        color: gray;                   /* Làm mờ màu sắc */
+        opacity: 0.6;                  /* Làm mờ thêm */
+    }
+
+</style>
 <!-- Product Section Begin -->
 <section class="product spad">
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
                 <ul class="filter__controls">
-                    <li class="active" data-filter="*">Sales</li>
-                    <li data-filter=".new-arrivals">News</li>
-                    <li data-filter=".hot-sales">Other</li>
+                    <li class="active" data-filter=".sale">Sales</li>
+                    <li data-filter=".new">News</li>
+                    <li data-filter=".other">Other</li>
                 </ul>
             </div>
         </div>
         <div class="row product__filter">
-            <div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix new-arrivals">
-                <div class="product__item">
-                    <div class="product__item__pic set-bg" data-setbg="<c:url value="/static/img/product/product-1.jpg"/>">
-                        <span class="label">New</span>
-                        <ul class="product__hover">
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/heart.png"/>" alt=""></a></li>
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/compare.png"/>" alt=""> <span>Compare</span></a></li>
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/search.png"/>" alt=""></a></li>
-                        </ul>
-                    </div>
-                    <div class="product__item__text">
-                        <h6>Piqué Biker Jacket</h6>
-                        <a href="#" class="add-cart">+ Add To Cart</a>
-                        <div class="rating">
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
+            <c:forEach var="item" items="${results}">
+                <c:set var="saleNewClass" value=" " />
+                <c:if test="${item.productDiscount != null}">
+                    <c:set var="saleNewClass" value="${saleNewClass} sale " />
+                </c:if>
+                <c:if test="${item.isNew}">
+                    <c:set var="saleNewClass" value="${saleNewClass} new " />
+                </c:if>
+                <c:if test="${item.productDiscount == null && !item.isNew}">
+                    <c:set var="saleNewClass" value="${saleNewClass} other " />
+                </c:if>
+                <div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix ${saleNewClass}">
+                    <div class="product__item sale">
+
+
+                        <div class="product__item__pic set-bg" data-setbg="<c:url value='/api-image?path=${item.photo}'/>">
+                            <c:if test="${item.productDiscount != null}">
+                                <div class="div_label_product"><span class="label">Sale_${item.productDiscount.discountPercentage}%</span></div>
+                            </c:if>
+                            <c:if test="${item.isNew}">
+                                <div class="div_label_product"><span class="label">New</span></div>
+                            </c:if>
+                            <ul class="product__hover">
+                                <li><a href="#"><img src="<c:url value='/static/img/icon/heart.png'/>" alt=""></a></li>
+                                <li><a href="#"><img src="<c:url value='/static/img/icon/compare.png'/>" alt=""> <span>Compare</span></a></li>
+                                <li><a href="#"><img src="<c:url value='/static/img/icon/search.png'/>" alt=""></a></li>
+                            </ul>
                         </div>
-                        <h5>$67.24</h5>
-                        <div class="product__color__select">
-                            <label for="pc-1">
-                                <input type="radio" id="pc-1">
-                            </label>
-                            <label class="active black" for="pc-2">
-                                <input type="radio" id="pc-2">
-                            </label>
-                            <label class="grey" for="pc-3">
-                                <input type="radio" id="pc-3">
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix hot-sales">
-                <div class="product__item">
-                    <div class="product__item__pic set-bg" data-setbg="<c:url value="/static/img/product/product-2.jpg"/>">
-                        <ul class="product__hover">
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/heart.png"/>" alt=""></a></li>
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/compare.png"/>" alt=""> <span>Compare</span></a></li>
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/search.png"/>" alt=""></a></li>
-                        </ul>
-                    </div>
-                    <div class="product__item__text">
-                        <h6>Piqué Biker Jacket</h6>
-                        <a href="#" class="add-cart">+ Add To Cart</a>
-                        <div class="rating">
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                        </div>
-                        <h5>$67.24</h5>
-                        <div class="product__color__select">
-                            <label for="pc-4">
-                                <input type="radio" id="pc-4">
-                            </label>
-                            <label class="active black" for="pc-5">
-                                <input type="radio" id="pc-5">
-                            </label>
-                            <label class="grey" for="pc-6">
-                                <input type="radio" id="pc-6">
-                            </label>
+                        <div class="product__item__text">
+                            <h6>${item.name}</h6>
+                            <a href="<c:url value='san-pham?id=${item.id}'/> " class="add-cart">View Detail</a>
+                            <div class="rating">
+                                <i class="fa fa-star-o"></i>
+                                <i class="fa fa-star-o"></i>
+                                <i class="fa fa-star-o"></i>
+                                <i class="fa fa-star-o"></i>
+                                <i class="fa fa-star-o"></i>
+                            </div>
+<%--                            <h5>$ ${item.price}</h5>--%>
+                            <h5>$${item.getDiscountedPrice()}
+                                <c:if test="${item.productDiscount != null}">
+                                    <span class="discounted-price">${item.price}</span>
+                                </c:if>
+                            </h5>
+<%--                            đây nha--%>
+                            <div class="product__color__select">
+                                <label for="pc-1">
+                                    <input type="radio" id="pc-1">
+                                </label>
+                                <label class="active black" for="pc-2">
+                                    <input type="radio" id="pc-2">
+                                </label>
+                                <label class="grey" for="pc-3">
+                                    <input type="radio" id="pc-3">
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix new-arrivals">
-                <div class="product__item sale">
-                    <div class="product__item__pic set-bg" data-setbg="<c:url value="/static/img/product/product-3.jpg"/>">
-                        <span class="label">Sale</span>
-                        <ul class="product__hover">
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/heart.png"/>" alt=""></a></li>
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/compare.png"/>" alt=""> <span>Compare</span></a></li>
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/search.png"/>" alt=""></a></li>
-                        </ul>
-                    </div>
-                    <div class="product__item__text">
-                        <h6>Multi-pocket Chest Bag</h6>
-                        <a href="#" class="add-cart">+ Add To Cart</a>
-                        <div class="rating">
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star-o"></i>
-                        </div>
-                        <h5>$43.48</h5>
-                        <div class="product__color__select">
-                            <label for="pc-7">
-                                <input type="radio" id="pc-7">
-                            </label>
-                            <label class="active black" for="pc-8">
-                                <input type="radio" id="pc-8">
-                            </label>
-                            <label class="grey" for="pc-9">
-                                <input type="radio" id="pc-9">
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix hot-sales">
-                <div class="product__item">
-                    <div class="product__item__pic set-bg" data-setbg="<c:url value="/static/img/product/product-4.jpg"/>">
-                        <ul class="product__hover">
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/heart.png"/>" alt=""></a></li>
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/compare.png"/>" alt=""> <span>Compare</span></a></li>
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/search.png"/>" alt=""></a></li>
-                        </ul>
-                    </div>
-                    <div class="product__item__text">
-                        <h6>Diagonal Textured Cap</h6>
-                        <a href="#" class="add-cart">+ Add To Cart</a>
-                        <div class="rating">
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                        </div>
-                        <h5>$60.9</h5>
-                        <div class="product__color__select">
-                            <label for="pc-10">
-                                <input type="radio" id="pc-10">
-                            </label>
-                            <label class="active black" for="pc-11">
-                                <input type="radio" id="pc-11">
-                            </label>
-                            <label class="grey" for="pc-12">
-                                <input type="radio" id="pc-12">
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix new-arrivals">
-                <div class="product__item">
-                    <div class="product__item__pic set-bg" data-setbg="<c:url value="/static/img/product/product-5.jpg"/>">
-                        <ul class="product__hover">
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/heart.png"/>" alt=""></a></li>
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/compare.png"/>" alt=""> <span>Compare</span></a></li>
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/search.png"/>" alt=""></a></li>
-                        </ul>
-                    </div>
-                    <div class="product__item__text">
-                        <h6>Lether Backpack</h6>
-                        <a href="#" class="add-cart">+ Add To Cart</a>
-                        <div class="rating">
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                        </div>
-                        <h5>$31.37</h5>
-                        <div class="product__color__select">
-                            <label for="pc-13">
-                                <input type="radio" id="pc-13">
-                            </label>
-                            <label class="active black" for="pc-14">
-                                <input type="radio" id="pc-14">
-                            </label>
-                            <label class="grey" for="pc-15">
-                                <input type="radio" id="pc-15">
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix hot-sales">
-                <div class="product__item sale">
-                    <div class="product__item__pic set-bg" data-setbg="<c:url value="/static/img/product/product-6.jpg"/>">
-                        <span class="label">Sale</span>
-                        <ul class="product__hover">
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/heart.png"/>" alt=""></a></li>
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/compare.png"/>" alt=""> <span>Compare</span></a></li>
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/search.png"/>" alt=""></a></li>
-                        </ul>
-                    </div>
-                    <div class="product__item__text">
-                        <h6>Ankle Boots</h6>
-                        <a href="#" class="add-cart">+ Add To Cart</a>
-                        <div class="rating">
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star-o"></i>
-                        </div>
-                        <h5>$98.49</h5>
-                        <div class="product__color__select">
-                            <label for="pc-16">
-                                <input type="radio" id="pc-16">
-                            </label>
-                            <label class="active black" for="pc-17">
-                                <input type="radio" id="pc-17">
-                            </label>
-                            <label class="grey" for="pc-18">
-                                <input type="radio" id="pc-18">
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix new-arrivals">
-                <div class="product__item">
-                    <div class="product__item__pic set-bg" data-setbg="<c:url value="/static/img/product/product-7.jpg"/>">
-                        <ul class="product__hover">
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/heart.png"/>" alt=""></a></li>
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/compare.png"/>" alt=""> <span>Compare</span></a></li>
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/search.png"/>" alt=""></a></li>
-                        </ul>
-                    </div>
-                    <div class="product__item__text">
-                        <h6>T-shirt Contrast Pocket</h6>
-                        <a href="#" class="add-cart">+ Add To Cart</a>
-                        <div class="rating">
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                        </div>
-                        <h5>$49.66</h5>
-                        <div class="product__color__select">
-                            <label for="pc-19">
-                                <input type="radio" id="pc-19">
-                            </label>
-                            <label class="active black" for="pc-20">
-                                <input type="radio" id="pc-20">
-                            </label>
-                            <label class="grey" for="pc-21">
-                                <input type="radio" id="pc-21">
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix hot-sales">
-                <div class="product__item">
-                    <div class="product__item__pic set-bg" data-setbg="<c:url value="/static/img/product/product-8.jpg"/>">
-                        <ul class="product__hover">
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/heart.png"/>" alt=""></a></li>
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/compare.png"/>" alt=""> <span>Compare</span></a></li>
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/search.png"/>" alt=""></a></li>
-                        </ul>
-                    </div>
-                    <div class="product__item__text">
-                        <h6>Basic Flowing Scarf</h6>
-                        <a href="#" class="add-cart">+ Add To Cart</a>
-                        <div class="rating">
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                        </div>
-                        <h5>$26.28</h5>
-                        <div class="product__color__select">
-                            <label for="pc-22">
-                                <input type="radio" id="pc-22">
-                            </label>
-                            <label class="active black" for="pc-23">
-                                <input type="radio" id="pc-23">
-                            </label>
-                            <label class="grey" for="pc-24">
-                                <input type="radio" id="pc-24">
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            </c:forEach>
         </div>
     </div>
 </section>
 <!-- Product Section End -->
 
-<!-- Categories Section Begin -->
-<section class="categories spad">
+
+<c:forEach var="item" items="${results}">
+    <c:if test="${item.productDiscount != null}">
+        <c:set var="saleNewClass" value="${saleNewClass} sale " />
+    </c:if>
+</c:forEach>
+
+
+<section class="latest spad">
     <div class="container">
         <div class="row">
-            <div class="col-lg-3">
-                <div class="categories__text">
-                    <h2>Clothings Hot <br /> <span>Shoe Collection</span> <br /> Accessories</h2>
+            <div class="col-lg-12">
+                <div class="section-title">
+                    <span>Giảm giá đặc biệt</span>
+                    <h2>Giảm giá cho từng đơn hàng</h2>
                 </div>
             </div>
-            <div class="col-lg-4">
-                <div class="categories__hot__deal">
-                    <img src="<c:url value="/static/img/product-sale.png"/>" alt="">
-                    <div class="hot__deal__sticker">
-                        <span>Sale Of</span>
-                        <h5>$29.99</h5>
+                <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+                    <div class="carousel-inner">
+                        <c:set var="isFirstActive" value="true" />  <!-- Khởi tạo biến kiểm tra item đầu tiên -->
+
+                        <c:forEach var="item" items="${model}" varStatus="status">
+                            <c:if test="${item.isOutStanding == true}">
+                                <div class="carousel-item ${isFirstActive == true ? 'active' : ''}">
+                                    <section class="instagram spad" style="padding: 0px">
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col-lg-8">
+                                                    <div class="categories__hot__deal">
+                                                        <div style="padding: 50px">
+                                                            <c:set var="imageIndex" value="${status.index % 3}" />
+                                                            <img src="<c:url value='/static/img/instagram/ig-${imageIndex}.jpg'/>" alt="">
+                                                            <div class="hot__deal__sticker">
+                                                                <span>Giảm</span>
+                                                                <h5>${item.discountPercentage}%</h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-4">
+                                                    <div class="instagram__text">
+                                                        <span>Chỉ dành cho thành viên trên ${item.loyaltyPointsRequired} điểm !</span>
+                                                        <h3>Giảm giá cho đơn hàng trên ${item.minimumInvoiceAmount}$</h3>
+                                                        <p>Giảm tối thiểu $${item.maximumAmount}.</p>
+                                                        <div class="instagram__text" style="padding: 0">
+                                                            <span>Bắt đầu vào ngày: </span>
+                                                            <h2>${item.getStringStartDate()}</h2>
+                                                        </div>
+                                                        <div class="instagram__text" style="padding: 0">
+                                                            <span>Kết thúc vào ngày: </span>
+                                                            <h2>${item.getStringEndDate()}</h2>
+                                                        </div>
+                                                        <p>Số lượng có hạn, chỉ có ${item.minimumPurchaseQuantity} vé</p>
+                                                        <h2>#Male_Fashion</h2>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div>
+                                <!-- Đặt biến isFirstActive thành false sau khi lần đầu tiên item được chọn -->
+                                <c:set var="isFirstActive" value="false" />
+                            </c:if>
+                        </c:forEach>
                     </div>
+
+                    <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
                 </div>
-            </div>
-            <div class="col-lg-4 offset-lg-1">
-                <div class="categories__deal__countdown">
-                    <span>Deal Of The Week</span>
-                    <h2>Multi-pocket Chest Bag Black</h2>
-                    <div class="categories__deal__countdown__timer" id="countdown">
-                        <div class="cd-item">
-                            <span>3</span>
-                            <p>Days</p>
-                        </div>
-                        <div class="cd-item">
-                            <span>1</span>
-                            <p>Hours</p>
-                        </div>
-                        <div class="cd-item">
-                            <span>50</span>
-                            <p>Minutes</p>
-                        </div>
-                        <div class="cd-item">
-                            <span>18</span>
-                            <p>Seconds</p>
-                        </div>
-                    </div>
-                    <a href="#" class="primary-btn">Shop now</a>
-                </div>
-            </div>
+
         </div>
     </div>
 </section>
-<!-- Categories Section End -->
+
+
+<section class="latest spad" style="margin-top: 100px">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="section-title">
+                    <span>Giảm giá đặc biệt</span>
+                    <h2>Sản phẩm đang được đặc biệt giảm giá</h2>
+                </div>
+            </div>
+        </div>
+        <div id="carouselExampleControlss" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+                <c:set var="isFirstActive" value="true" />  <!-- Khởi tạo biến kiểm tra item đầu tiên -->
+
+                <c:forEach var="item" items="${results}" varStatus="status">
+                    <c:if test="${item.productDiscount != null}">
+                        <c:if test="${item.productDiscount.isOutStanding == true}">
+                            <div class="carousel-item ${isFirstActive == true ? 'active' : ''}">
+                                <section class="categories spad">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-lg-3">
+                                                <div class="categories__text">
+                                                    <h2>Clothings<br /> <span>Products are discounted</span> <br /> Accessories <br /> Shoe</h2>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <div class="categories__hot__deal">
+                                                    <img src="<c:url value='/api-image?path=${item.photo}'/>" alt="">
+                                                    <div class="hot__deal__sticker">
+                                                        <span>Sale Of</span>
+                                                        <h5>$${item.getDiscountedPrice()}</h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 offset-lg-1">
+                                                <div class="categories__deal__countdown">
+                                                    <span>Giảm giá đặc biệt</span>
+                                                    <h2>${item.name}</h2>
+                                                    <h5>Giá gốc: $${item.price}</h5>
+                                                    <span style="margin-top: 10px">${item.productDiscount.discountPercentage}% giảm</span>
+                                                    <c:if test="${status.index == 0}">
+                                                        <div class="categories__deal__countdown__timer" id="countdown">
+                                                            <div class="cd-item">
+                                                                <span>${item.productDiscount.getRemainingDates()}</span>
+                                                                <p>Days</p>
+                                                            </div>
+                                                            <div class="cd-item">
+                                                                <span>${item.productDiscount.getRemainingHours()}</span>
+                                                                <p>Hours</p>
+                                                            </div>
+                                                            <div class="cd-item">
+                                                                <span>${item.productDiscount.getRemainingMinutes()}</span>
+                                                                <p>Minutes</p>
+                                                            </div>
+                                                            <div class="cd-item">
+                                                                <span>${item.productDiscount.getRemainingSeconds()}</span>
+                                                                <p>Seconds</p>
+                                                            </div>
+                                                        </div>
+                                                    </c:if>
+                                                    <c:if test="${status.index != 0}">
+                                                        <div class="instagram__text" style="padding: 0">
+                                                            <span>Kết thúc vào ngày: </span>
+                                                            <h2>${item.productDiscount.getStringEndDate()}</h2>
+                                                        </div>
+                                                    </c:if>
+                                                    <a href="/san-pham?id=${item.id}" class="primary-btn">Mua ngay</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                            <!-- Đặt biến isFirstActive thành false sau khi lần đầu tiên item được chọn -->
+                            <c:set var="isFirstActive" value="false" />
+                        </c:if>
+                    </c:if>
+                </c:forEach>
+            </div>
+
+            <a class="carousel-control-prev" href="#carouselExampleControlss" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleControlss" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+
+    </div>
+</section>
+
+
 
 <!-- Instagram Section Begin -->
 <section class="instagram spad">
@@ -420,3 +376,11 @@
     </div>
 </section>
 <!-- Latest Blog Section End -->
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $(".product__filter .mix").not(".sale").hide();
+    });
+</script>
+

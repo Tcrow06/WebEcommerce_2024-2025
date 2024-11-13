@@ -2,6 +2,8 @@ package com.webecommerce.dto;
 
 import com.webecommerce.constant.EnumProductStatus;
 
+import javax.servlet.http.Part;
+
 
 public class ProductVariantDTO extends BaseDTO <ProductVariantDTO> {
     private Long id;
@@ -19,6 +21,8 @@ public class ProductVariantDTO extends BaseDTO <ProductVariantDTO> {
     private int quantity;
 
     private String name;
+
+    private Part image;
 
     @Override
     public Long getId() {
@@ -88,5 +92,13 @@ public class ProductVariantDTO extends BaseDTO <ProductVariantDTO> {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public Part getImage() {
+        return image;
+    }
+
+    public void setImage(Part image) {
+        this.image = image;
     }
 }

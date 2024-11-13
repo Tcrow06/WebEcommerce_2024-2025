@@ -8,6 +8,8 @@ import com.webecommerce.entity.product.ProductEntity;
 import java.util.List;
 import java.util.logging.Level;
 
+import java.util.List;
+
 public class BillDiscountDAO extends AbstractDAO<BillDiscountEntity> implements IBillDiscountDAO {
 
     public BillDiscountDAO() {
@@ -26,6 +28,10 @@ public class BillDiscountDAO extends AbstractDAO<BillDiscountEntity> implements 
             LOGGER.log(Level.SEVERE, "Lỗi khi lấy bill có minimumInvoiceAmount < loyaltyPoint của khách hàng với ID: " + idUser, e);
             return null;
         }
+    }
+
+    public List<BillDiscountEntity> getBillDiscountByOutStanding(boolean outstanding) {
+        return super.findByAttribute("isOutStanding", outstanding);
     }
 
 }

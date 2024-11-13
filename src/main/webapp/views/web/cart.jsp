@@ -5,6 +5,24 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
 
+
+<style>
+    input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%; /* Bo tròn */
+        border: 2px solid #ccc; /* Đường viền nhạt */
+        appearance: none; /* Ẩn giao diện mặc định */
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    input[type="checkbox"]:checked {
+        background-color: black; /* Màu đen khi được chọn */
+        border-color: black;
+    }
+</style>
+
 <!-- Breadcrumb Section Begin -->
 <section class="breadcrumb-option">
     <div class="container">
@@ -72,6 +90,51 @@
                                     </td>
                                 </tr>
                             </c:forEach>
+                        <tr>
+                            <th>Sản phẩm</th>
+                            <th>Số lượng</th>
+                            <th>Tổng tiền</th>
+                            <th></th>
+                            <th>Chọn</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <c:forEach var="entry" items="${sessionScope.cart}">
+                            <c:set var="itemId" value="${entry.key}" />
+                            <c:set var="item" value="${entry.value}" />
+                            <tr>
+                                <td class="product__cart__item">
+                                    <div class="product__cart__item__pic">
+                                        <img style="width: 100px" src="<c:url value='/static/img/product/aothun1-gray.png'/>" alt="${item.productVariant.name}">
+<%--                                        <img src="<c:url value='/api-image?path=${item.productVariant.imageUrl}'/>" alt="${item.productVariant.name}">--%>
+                                    </div>
+                                    <div class="product__cart__item__text">
+                                        <h6>${item.productVariant.name}</h6>
+                                        <h6>Size: ${item.productVariant.size}</h6>
+                                        <h6>Color: ${item.productVariant.color}</h6>
+                                        <h6>Price: ${item.productVariant.price}</h6>
+                                    </div>
+                                </td>
+                                <td class="quantity__item">
+                                    <div class="quantity">
+                                        <div class="pro-qty-2">
+                                            <input type="text" value="${item.quantity}" data-product-id="${item.productVariant.id}">
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="cart__price">$ ${item.productVariant.price * item.quantity}</td>
+
+                                <td></td>
+                                <td class="cart__close">
+                                    <div style="display: flex; align-items: center; justify-content: center; gap: 10px">
+                                        <input type="checkbox" />
+                                        <a href="javascript:void(0);" onclick="removeFromCart(${item.productVariant.id})">
+                                            <i class="fa fa-close"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </c:forEach>
                         </tbody>
                     </table>
                 </div>
@@ -240,7 +303,7 @@
                         <li>Subtotal <span>$ 0</span></li>
                         <li>Total <span id="total-price">$ ${sessionScope.totalPrice}</span></li>
                     </ul>
-                    <a href="<c:url value='/' />" class="primary-btn">Proceed to checkout</a>
+                    <a href="<c:url value='/' />" class="primary-btn"  id="PlacedOrder">Proceed to checkout</a>
                 </div>
             </div>
         </div>
@@ -248,9 +311,66 @@
 </section>
 
 <script>
+<<<<<<< HEAD
     $(document).ready(function () {
         initQuantityButtons();
+=======
+
+    $(document).ready(function () {
+
+        // Sự kiện click vào nút tăng/giảm số lượng
+        $(document).on('click', '.pro-qty-2 .qtybtn', function () {
+            let $button = $(this);
+            let $input = $button.siblings('input');
+            let oldValue = parseInt($input.val(), 10);
+
+            if (isNaN(oldValue)) {
+                oldValue = 1;
+            }
+
+            if (!$button.hasClass('inc')) {
+                oldValue = (oldValue > 1) ? oldValue : 1;
+            }
+            $input.val(oldValue);
+
+            updateTotalPrice($input);
+        });
+
+
+        // Sự kiện chọn checkbox
+        $('input[type="checkbox"]').on('change', function () {
+            calculateTotalPrice();
+        });
+
+        // Hàm cập nhật giá cho từng sản phẩm
+        function updateTotalPrice(inputElement) {
+            const productVariantId = $(inputElement).data('product-id');
+            const quantity = parseInt($(inputElement).val(), 10);
+            const pricePerUnit = parseFloat(
+                $(inputElement).closest('tr').find('.product__cart__item__text h6:last').text().replace(/[^\d.]/g, '')
+            );
+
+            const totalPrice = (quantity * pricePerUnit).toFixed(2);
+            $(inputElement).closest('tr').find('.cart__price').text('$ ' + totalPrice);
+
+            // Cập nhật tổng giá
+            calculateTotalPrice();
+        }
+
+        // Hàm tính tổng giá khi chọn các sản phẩm
+        function calculateTotalPrice() {
+            let total = 0;
+            $('input[type="checkbox"]:checked').each(function () {
+                const priceText = $(this).closest('tr').find('.cart__price').text();
+                const price = parseFloat(priceText.replace(/[^\d.]/g, ''));
+                total += price;
+            });
+            $('#total-price').text('$ ' + total.toFixed(2));
+        }
+>>>>>>> ef76205ce7b20f08253bb0423e86c8b114e5c770
     });
+
+
     function updateCart() {
         const cartData = getCartData();
 
@@ -310,8 +430,7 @@
             success: function (response) {
                 $('#cart-container').html($(response).find('#cart-container').html());
                 $('#total-price').text('$ ' + response.totalPrice);
-
-                initQuantityButtons();
+                location.reload();
             },
             error: function (xhr) {
                 alert("Không thể tải giỏ hàng.");
@@ -319,28 +438,5 @@
         });
     }
 
-    // Hàm khởi tạo hiệu ứng tăng giảm số lượng
-    function initQuantityButtons() {
-        $('.pro-qty-2').each(function () {
-            // Khởi tạo lại hiệu ứng tăng giảm số lượng, có thể cần chỉnh sửa theo plugin bạn đang dùng
-            $(this).prepend('<span class="dec qtybtn">-</span>');
-            $(this).append('<span class="inc qtybtn">+</span>');
-
-            // Sự kiện click để tăng giảm số lượng
-            $(this).on('click', '.qtybtn', function () {
-                let $button = $(this);
-                let oldValue = $button.siblings('input').val();
-                let newVal = parseInt(oldValue, 10);
-
-                if ($button.hasClass('inc')) {
-                    newVal++;
-                } else {
-                    newVal = (newVal > 1) ? newVal - 1 : 1;
-                }
-
-                $button.siblings('input').val(newVal);
-            });
-        });
-    }
 </script>
 <!-- Shopping Cart Section End -->

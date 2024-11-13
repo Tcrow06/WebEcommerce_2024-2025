@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/api-billdiscount")
+@WebServlet("/api-bill-discount")
 public class BillDiscountAPI extends HttpServlet {
 
     @Inject

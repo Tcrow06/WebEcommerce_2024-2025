@@ -5,6 +5,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.webecommerce.constant.EnumRole;
 import com.webecommerce.dto.response.people.CustomerResponse;
 import com.webecommerce.dto.response.people.UserResponse;
+import com.webecommerce.service.IOwnerService;
 import com.webecommerce.service.impl.CustomerService;
 import com.webecommerce.utils.JWTUtil;
 
@@ -21,6 +22,9 @@ public class AuthorizationFilter implements Filter {
 
     @Inject
     private CustomerService customerService;
+
+    @Inject
+    private IOwnerService ownerService;
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
     }
@@ -60,6 +64,9 @@ public class AuthorizationFilter implements Filter {
         UserResponse userResponse = null;
         if(role.equals(EnumRole.CUSTOMER.toString())){
             userResponse = customerService.findById(id);
+        }
+        if(role.equals(EnumRole.OWNER.toString())){
+            userResponse = ownerService.findById(id);
         }
         if(userResponse == null){
             request.setAttribute("status", 404);
@@ -108,7 +115,7 @@ public class AuthorizationFilter implements Filter {
     }
 
     private boolean checkURLForNoToken(String url) {
-        return !url.startsWith("/admin");
+        return !url.startsWith("/chu-doanh-nghiep");
     }
 
     @Override

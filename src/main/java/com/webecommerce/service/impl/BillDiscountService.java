@@ -8,6 +8,7 @@ import com.webecommerce.service.IBillDiscountService;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BillDiscountService implements IBillDiscountService {
@@ -32,8 +33,15 @@ public class BillDiscountService implements IBillDiscountService {
     }
 
     @Override
-    public List<BillDiscountDTO> getAllDiscountEligible(Long idUser){
+    public List<BillDiscountDTO> getAllDiscountEligible(Long idUser) {
         List<BillDiscountEntity> list = billDiscountDAO.getAllDiscountEligible(idUser);
         return billDiscountMapper.toDTOList(list);
+    }
+
+    public List<BillDiscountDTO> findAllOutStanding () {
+        List<BillDiscountEntity> billDiscountEntities = billDiscountDAO.getBillDiscountByOutStanding(true);
+        if (billDiscountEntities == null)
+            return new ArrayList<>();
+        return billDiscountMapper.toDTOList(billDiscountEntities);
     }
 }

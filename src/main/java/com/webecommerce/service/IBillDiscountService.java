@@ -9,4 +9,5 @@ public interface IBillDiscountService {
     List<BillDiscountDTO> findAll();
 
     List<BillDiscountDTO> getAllDiscountEligible(Long idUser);
+    List<BillDiscountDTO> findAllOutStanding ();
 }

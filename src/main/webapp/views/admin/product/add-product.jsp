@@ -1,7 +1,53 @@
 <%@include file="/common/taglib.jsp"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-
 <link rel="stylesheet" href="<c:url value='/static/admin/add-product/style.css'/> ">
+
+<style>
+    .error-message {
+        color: red;
+        font-size: 0.875em;
+        margin-top: 5px;
+    }
+    .custom-fieldset {
+        padding: 15px;
+        position: relative;
+        margin-top: 10px;
+        background-color: #f9f9f9; /* Màu nền của vùng viền */
+    }
+    .error-message {
+        color: red;
+        font-size: 12px;
+        margin-top: 5px;
+    }
+
+    .custom-fieldset {
+        padding: 15px;
+        position: relative;
+        margin-top: 10px;
+        background-color: #f9f9f9;
+    }
+
+    .custom-legend {
+        font-size: 12px;
+        font-weight: bold;
+        background-color: #f9f9f9;
+        position: absolute;
+        top: -10px;
+        left: 20px;
+    }
+
+    .d-flex {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .form-control {
+        border-radius: 4px;
+        padding: 8px;
+        box-sizing: border-box;
+    }
+</style>
 
 
 <div class="content">
@@ -22,6 +68,7 @@
                                 <div data-mdb-input-init class="form-outline">
                                     <input type="text" name="firstName" id="productName" class="custom-input form-control form-control-lg" />
                                     <label class="form-label" for="productName">Tên sản phẩm</label>
+                                    <div class="error-message" id="productNameError" style="font-size: 12px"></div>
                                 </div>
                             </div>
                         </div>
@@ -32,6 +79,7 @@
                                 <div data-mdb-input-init class="form-outline">
                                     <input type="text" name="firstName" id="productBrand" class="custom-input form-control form-control-lg" />
                                     <label class="form-label" for="productBrand">Hãng sản phẩm</label>
+                                    <div class="error-message" id="productBrandError" style="font-size: 12px"></div>
                                 </div>
                             </div>
                         </div>
@@ -45,7 +93,7 @@
                 <label>Category</label>
                 <select class="select" id="categorySelect">
                     <c:forEach var="item" items="${model}">
-                        <option data-id=${item.id}" value="${item.code}">${item.name}</option>
+                        <option data-id=${item.id} value="${item.code}">${item.name}</option>
                     </c:forEach>
                 </select>
                 <div class="certified">
@@ -56,9 +104,14 @@
                         <li>
                             <a href="javascript:void(0);">Code: <span id="categoryCode">--</span></a>
                         </li>
-                        <input type="hidden" name="category" id="category" class="custom-input form-control form-control-lg" />
+                        <input type="hidden" name="category" id="category"
+                                <c:if test="${not empty item}">
+                                    value="${item[0].id}"
+                                </c:if>
+                               class="custom-input form-control form-control-lg" />
                     </ul>
                 </div>
+
             </div>
             <hr />
             <div class="description description-tabs">
@@ -70,6 +123,29 @@
                     </div>
                 </div>
             </div>
+            <hr/>
+            <div class="size-table">
+                <br />
+                <strong>Up ảnh bảng size</strong>
+                    <div class="product-image">
+                        <div class="item active">
+                            <img src="<c:url value='/static/img/product/404.jpg'/>" class="img-responsive" alt="Product Image" id = "previewSizeTable">
+                        </div>
+                    </div>
+                    <div class="form-group" style="max-width: 360px; max-height: 200px">
+                        <label>Product Image</label>
+                        <div class="image-upload">
+                            <input type="file" accept="image/jpeg" id="imageInputSizeTable">
+                            <div class="image-uploads">
+                                <img src="/static/admin/assets/img/icons/upload.svg" alt="img">
+                                <h4>Drag and drop a file to upload</h4>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+<%--            </div>--%>
+            <hr/>
+            <hr/>
         </div>
     </div>
 
@@ -81,56 +157,85 @@
                     <div class="col-md-5 col-sm-12 col-xs-12">
                         <div class="product-image">
                             <div class="item active">
-                                <img src="https://www.bootdey.com/image/700x400/FFB6C1/000000" class="img-responsive" alt="Product Image">
+                                <img src="<c:url value='/static/img/product/404.jpg'/>" class="img-responsive" alt="Product Image">
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6 col-md-offset-1 col-sm-12 col-xs-12">
-                        <div class="row">
-                            <div class="col-lg-3 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <label>Color</label>
-                                    <input type="text" placeholder="Color" class="form-control variant-color">
+                    <div class="col-md-7 col-md-offset-1 col-sm-12 col-xs-12 row">
+                        <div class="col">
+                            <div class="input-group input-group-sm mb-3" id="input-name">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text btn-primary" id="inputGroup-sizing-sm" style="color: white;" >Color</span>
                                 </div>
+                                <input type="text" class="form-control variant-color" name="name" aria-label="Small" aria-describedby="inputGroup-sizing-sm" value="" style="max-width: 150px;">
+                                <div class="error-message"></div>
                             </div>
-                            <div class="col-lg-3 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <label>Size</label>
-                                    <input type="text" placeholder="Size" class="form-control variant-size">
-                                </div>
-                            </div>
-                            <div class="col-lg-3 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <label>Quantity</label>
-                                    <input type="number" class="form-control variant-quantity">
-                                </div>
-                            </div>
-                            <div class="col-lg-3 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <label>Price</label>
-                                    <input type="text" placeholder="Price" class="form-control variant-price">
-                                </div>
-                            </div>
-                            <div class="col-lg-12">
-                                <div class="form-group">
-                                    <label> Product Image</label>
-                                    <div class="image-upload">
-                                        <input type="file">
-                                        <div class="image-uploads">
-                                            <img src="/static/admin/assets/img/icons/upload.svg" alt="img">
-                                            <h4>Drag and drop a file to upload</h4>
-                                        </div>
+                        </div>
+                        <div class="w-100"></div>
+                        <div class="row size-container">
+                            <!-- Các ô Size, Quantity và Price sẽ được thêm vào đây -->
+                        </div>
+                        <button type="button" class="col btn btn-primary add-size-btn mt-3" style="max-width: 200px; max-height: 40px;" onclick="addSize(this)">Thêm Size</button>
+                        <div class="w-100"></div>
+                        <div class="col" style="margin-top: 20px;">
+                            <div class="form-group">
+                                <label> Product Image</label>
+                                <div class="image-upload">
+                                    <input type="file" accept="image/jpeg">
+                                    <div class="image-uploads">
+                                        <img src="/static/admin/assets/img/icons/upload.svg" alt="img">
+                                        <h4>Drag and drop a file to upload</h4>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
     </template>
 
-    <div id="productVariantsContainer" class="row mt-4"></div>
+
+    <template id="sizeQuantityPriceTemplate">
+        <fieldset class="custom-fieldset border-bottom" style="max-height: 80px; margin: 10px">
+            <legend class="custom-legend">Phân loại hàng</legend>
+            <div class="d-flex align-items-center mb-2 single-size-row">
+
+                <!-- Ô Size lớn hơn -->
+                <div class="flex-fill me-2" style="max-width: 40%; position: relative;">
+                    <input type="text" name="variantSize" placeholder="Size" class="form-control variant-size">
+                    <div class="error-message" style="position: absolute; bottom: -18px; left: 0; font-size: 12px;"></div>
+                </div>
+
+                <!-- Ô Quantity nhỏ hơn -->
+                <div class="flex-fill me-2" style="max-width: 20%; position: relative;">
+                    <input type="number" name="variantQuantity" placeholder="Quantity" class="form-control variant-quantity">
+                    <div class="error-message" style="position: absolute; bottom: -18px; left: 0; font-size: 12px;"></div>
+                </div>
+
+                <!-- Ô Price lớn hơn -->
+                <div class="flex-fill me-2" style="max-width: 40%; position: relative;">
+                    <input type="text" name="variantPrice" placeholder="Price" class="form-control variant-price">
+                    <div class="error-message" style="position: absolute; bottom: -18px; left: 0; font-size: 12px;"></div>
+                </div>
+
+                <!-- Nút Xóa -->
+                <div class="d-flex align-items-center justify-content-center">
+                    <button type="button" class="btn btn-danger btn-sm remove-row-btn ms-2" style="font-size: 0.8rem;" onclick="removeSizeRow(this)">🗑</button>
+                </div>
+            </div>
+        </fieldset>
+    </template>
+
+
+
+
+
+    <div id="productVariantsContainer" class="row mt-4">
+        <br>
+        <strong>Chi tiết sản phẩm </strong>
+    </div>
 
 
     <div class="product-content product-wrap clearfix product-deatil">
@@ -146,13 +251,57 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <!-- MDBootstrap CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.0.0/mdb.min.css">
+
+    <!-- MDBootstrap JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.0.0/mdb.min.js"></script>
+
 
     <script>
+
+        function removeSizeRow(button) {
+            // Xóa phần tử fieldset chứa size, quantity, price
+            $(button).closest('.custom-fieldset').remove();
+        }
+
+        function addSize (button) {
+            // Lấy nội dung của template sizeQuantityPriceTemplate
+            var sizeTemplate = $($('#sizeQuantityPriceTemplate').html()); // Tạo đối tượng jQuery từ template HTML
+
+            // Thêm hiệu ứng fade-in vào template
+            sizeTemplate.addClass("fade-in");
+
+            // Thêm vào container chứa các size
+            $(button).siblings('.size-container').first().append(sizeTemplate);
+
+            // Thêm hiệu ứng hiển thị chậm
+            setTimeout(() => {
+                sizeTemplate.addClass("show");
+            }, 100); // 100ms cho hiệu ứng chậm
+        }
+
+        var quill
         $(document).ready(function() {
-            var quill = new Quill('#productDescription', {
+            quill = new Quill('#productDescription', {
                 theme: 'snow'
             });
 
+            $('#imageInputSizeTable').on('change', function(event) {
+                // Kiểm tra xem có file được chọn không
+                var file = event.target.files[0];
+                if (file) {
+                    // Tạo URL đối tượng từ file ảnh
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        // Gán URL vào thuộc tính src của thẻ img
+                        $('#previewSizeTable').attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            updateProductCards()
             $("#categorySelect").change(function() {
                 var selectedOption = $(this).find("option:selected");
                 var categoryName = selectedOption.text();  // Lấy tên category
@@ -165,10 +314,68 @@
                 $("#categoryCode").text(categoryCode);
                 $("#category").val(categoryId);
             });
-
-            updateProductCards()
             $('#add-product-btn').click(addProduct);
         });
+
+
+        function checkInput () {
+            let isValid = true;
+
+            const productName = $('#productName').val();
+            if (!productName) {
+                $('#productNameError').text('Vui lòng nhập tên sản phẩm.');
+                isValid = false;
+            } else {
+                $('#productNameError').text('');
+            }
+
+            const productBrand = $('#productBrand').val();
+            if (!productBrand) {
+                $('#productBrandError').text('Vui lòng nhập hãng sản phẩm.');
+                isValid = false;
+            } else {
+                $('#productBrandError').text('');
+            }
+
+            $('#productVariantsContainer .product-variant-card').each(function(index) {
+                const color = $(this).find('.variant-color').val();
+
+                if (!color) {
+                    $(this).find('.variant-color').next('.error-message').text('Vui lòng nhập màu.');
+                    isValid = false;
+                } else {
+                    $(this).find('.variant-color').next('.error-message').text('');
+                }
+
+                $(this).find('.single-size-row').each(function() {
+                    const price = $(this).find('.variant-price').val();
+                    const quantity = $(this).find('.variant-quantity').val();
+                    const size = $(this).find('.variant-size').val();
+
+                    if (!size) {
+                        $(this).find('.variant-size').next('.error-message').text('Vui lòng nhập kích cỡ.');
+                        isValid = false;
+                    } else {
+                        $(this).find('.variant-size').next('.error-message').text('');
+                    }
+
+                    if (!quantity || isNaN(quantity) || parseInt(quantity) <= 0) {
+                        $(this).find('.variant-quantity').next('.error-message').text('Vui lòng nhập số lượng hợp lệ.');
+                        isValid = false;
+                    } else {
+                        $(this).find('.variant-quantity').next('.error-message').text('');
+                    }
+
+                    if (!price || isNaN(price) || parseFloat(price) <= 0) {
+                        $(this).find('.variant-price').next('.error-message').text('Vui lòng nhập giá hợp lệ.');
+                        isValid = false;
+                    } else {
+                        $(this).find('.variant-price').next('.error-message').text('');
+                    }
+                });
+            });
+            return isValid
+        }
 
 
         function updateProductCards() {
@@ -201,48 +408,77 @@
             });
         }
 
-        function addProduct () {
+        function addProduct() {
+            if (!checkInput()) return;
+
+            const formData = new FormData();
 
             var product = {
                 name: $('#productName').val(),
                 highlight: $('#highlight').is(':checked'),
                 status: 'SELLING',
                 brand: $('#productBrand').val(),
-                description: $('#productDescription').val(),
+                description: quill.root.innerHTML,
                 category: {
                     id: $('#category').val(),
                 },
-                productVariants: []
             };
 
-            // Gather product variants
+            formData.append('product.name', product.name);
+            formData.append('product.highlight', product.highlight);
+            formData.append('product.status', product.status);
+            formData.append('product.brand', product.brand);
+            formData.append('product.description', product.description);
+            formData.append('product.category.id', product.category.id);
+
+            const sizeTableImage = $("#imageInputSizeTable")[0];
+            if (sizeTableImage) {
+                formData.append(`product.sizeConversionTable`, sizeTableImage.files[0]);
+            }
+
+
+            let index = 0;
+
             $('#productVariantsContainer .product-variant-card').each(function() {
-                var variant = {
-                    price: parseFloat($(this).find('.variant-price').val()),
-                    status: 'SELLING', // This can be adjusted based on your need
-                    imageUrl: '/static/img/product/product-10.jpg', // Assuming a static image URL
-                    color: $(this).find('.variant-color').val(),
-                    size: $(this).find('.variant-size').val(),
-                    quantity: parseInt($(this).find('.variant-quantity').val())
-                };
-                product.productVariants.push(variant);
+                const color = $(this).find('.variant-color').val();
+                const fileInput = $(this).find(".image-upload input[type='file']")[0];
+
+                $(this).find('.single-size-row').each(function() {
+                    const variant = {
+                        price: parseFloat($(this).find('.variant-price').val()),
+                        size: $(this).find('.variant-size').val(),
+                        quantity: parseInt($(this).find('.variant-quantity').val()),
+                    };
+
+                    formData.append(`productVariants[` + index + `].price`, variant.price);
+                    formData.append(`productVariants[` + index + `].color`, color);
+                    formData.append(`productVariants[` + index + `].size`, variant.size);
+                    formData.append(`productVariants[` + index + `].quantity`, variant.quantity);
+
+                    if (fileInput && fileInput.files[0]) {
+                        formData.append(`productVariants[` + index + `].image`, fileInput.files[0]);
+                    }
+
+                    index += 1;
+                });
             });
 
-            // Send product data to server as JSON
+
+            // Gửi dữ liệu lên server
             $.ajax({
-                url: '/api-product',  // Your API endpoint
+                url: '/api-product',
                 type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(product),
+                data: formData,
+                processData: false,  // Không xử lý dữ liệu
+                contentType: false,  // Để trình duyệt tự xử lý content-type
                 success: function(response) {
-                    alert('Product added successfully');
-                    // Optionally, reload page or update UI
+                    alert(response);
                 },
                 error: function(xhr, status, error) {
-                    alert('Failed to add product: ' + error);
+                    const errorMessage = xhr.responseJSON ? xhr.responseJSON.message : error;
+                    alert("Failed to add product: " + errorMessage);
                 }
             });
-
         }
 
     </script>

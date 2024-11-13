@@ -10,6 +10,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Male-Fashion | Template</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
@@ -27,6 +29,12 @@
     <link rel="stylesheet" href="<c:url value="/static/css/owl.carousel.min.css"/>" type="text/css">
     <link rel="stylesheet" href="<c:url value="/static/css/slicknav.min.css"/>" type="text/css">
     <link rel="stylesheet" href="<c:url value="/static/css/style.css"/>" type="text/css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <script src="<c:url value='/template/web/assets/js/jquery.2.1.1.min.js' />"></script>
+    <script type='text/javascript' src='<c:url value="/template/web/js/jquery-2.2.3.min.js" />'></script>
+
+    <script src="<c:url value='/template/paging/jquery.twbsPagination.js' />"></script>
 
 
 </head>
@@ -58,7 +66,6 @@
 
 <!-- Js Plugins -->
 <script src="<c:url value='/static/web/js/token/refreshToken.js'/> "></script>
-<script src="<c:url value="/static/js/jquery-3.3.1.min.js"/>"></script>
 <script src="<c:url value="/static/js/bootstrap.min.js"/>"></script>
 <script src="<c:url value="/static/js/jquery.nice-select.min.js"/>"></script>
 <script src="<c:url value="/static/js/jquery.nicescroll.min.js"/>"></script>
@@ -69,7 +76,11 @@
 <script src="<c:url value="/static/js/owl.carousel.min.js"/>"></script>
 <script src="<c:url value="/static/js/main.js"/>"></script>
 
+
 <%--<script src="<c:url value='/static/auth/js/sendDirection.js'/> " type="text/javascript"></script>--%>
+
+
+
 </body>
 
 </html>

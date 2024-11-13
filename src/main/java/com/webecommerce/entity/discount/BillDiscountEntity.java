@@ -20,11 +20,34 @@ public class BillDiscountEntity extends DiscountEntity {
     @Column(name = "minimum_invoice_amount")
     private double minimumInvoiceAmount;
 
-    @Column(name = "invoice_type")
-    private String invoiceType;
+
+    @Column(name = "loyaltyPointsRequired")
+    private int loyaltyPointsRequired;
 
     @Column(name = "code")
     private String code;
+
+    public double getMaximumAmount() {
+        return maximumAmount;
+    }
+
+    public void setMaximumAmount(double maximumAmount) {
+        this.maximumAmount = maximumAmount;
+    }
+
+    public int getMinimumPurchaseQuantity() {
+        return minimumPurchaseQuantity;
+    }
+
+    public void setMinimumPurchaseQuantity(int minimumPurchaseQuantity) {
+        this.minimumPurchaseQuantity = minimumPurchaseQuantity;
+    }
+
+    @Column(name = "maximum_amount")
+    private double maximumAmount;
+
+    @Column(name = "minimum_purchase_quantity")
+    private int minimumPurchaseQuantity;
 
     public List<OrderEntity> getOrders() {
         return orders;
@@ -46,19 +69,19 @@ public class BillDiscountEntity extends DiscountEntity {
         this.minimumInvoiceAmount = minimumInvoiceAmount;
     }
 
-    public String getInvoiceType() {
-        return invoiceType;
-    }
-
-    public void setInvoiceType(String invoiceType) {
-        this.invoiceType = invoiceType;
-    }
-
     public String getCode() {
         return code;
     }
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public int getLoyaltyPointsRequired() {
+        return loyaltyPointsRequired;
+    }
+
+    public void setLoyaltyPointsRequired(int loyaltyPointsRequired) {
+        this.loyaltyPointsRequired = loyaltyPointsRequired;
     }
 }
