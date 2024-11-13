@@ -7,4 +7,6 @@ import java.util.List;
 public interface IBillDiscountService {
     BillDiscountDTO save(BillDiscountDTO discount);
     List<BillDiscountDTO> findAll();
+
+    List<BillDiscountDTO> getAllDiscountEligible(Long idUser);
 }

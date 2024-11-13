@@ -50,7 +50,7 @@
                                 <li><a href="<c:url value="/thanh-toan"/>">Check Out</a></li>
                             </ul>
                         </li>
-                        <li><a href="<c:url value="/blog"/>">Blog</a></li>
+                        <li><a href="views/web/blog/blog-main.jsp">Blog</a></li>
                         <li><a href="./contact.html">Contacts</a></li>
                     </ul>
                 </nav>

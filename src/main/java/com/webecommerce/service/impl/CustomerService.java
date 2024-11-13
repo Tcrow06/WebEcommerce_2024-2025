@@ -30,6 +30,13 @@ public class CustomerService implements ICustomerService {
     }
 
     @Override
+    public int getPointLoyaltyCustomer(Long id) {
+        CustomerEntity customerEntity = customerDAO.findById(id);
+        int p = customerEntity.getLoyaltyPoint();
+        return p;
+    }
+
+    @Override
     public CustomerResponse findByEmail(String email) {
         CustomerEntity customerEntity = customerDAO.findByEmail(email);
         return customerMapper.toCustomerResponse(customerEntity);
