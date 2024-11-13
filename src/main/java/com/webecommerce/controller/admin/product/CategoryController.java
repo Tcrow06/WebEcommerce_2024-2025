@@ -16,7 +16,6 @@ public class CategoryController extends HttpServlet {
     @Inject
     ICategoryService categoryService;
 
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute(ModelConstant.MODEL, categoryService.findAll());

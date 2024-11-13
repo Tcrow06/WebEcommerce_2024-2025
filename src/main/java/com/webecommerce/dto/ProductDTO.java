@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.webecommerce.constant.EnumProductStatus;
 import com.webecommerce.dto.discount.ProductDiscountDTO;
 
+import javax.servlet.http.Part;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;

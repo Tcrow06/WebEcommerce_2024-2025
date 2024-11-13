@@ -1,8 +1,9 @@
 package com.webecommerce.controller.web;
 
-import com.webecommerce.constant.ModelConstant;
-import com.webecommerce.dto.ProductDTO;
+import com.webecommerce.dto.OrderDetailDTO;
+import com.webecommerce.service.IOrderDetailService;
 
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -13,7 +14,12 @@ import java.util.List;
 
 @WebServlet(urlPatterns = {"/danh-sach-don-hang"})
 public class OrderDetailControllerbannhap extends HttpServlet {
+
+    @Inject
+    private IOrderDetailService orderDetailService;
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        List<OrderDetailDTO> result = orderDetailService.findAllByOrderId(1L);
+        request.setAttribute("orderitemList", result);
         request.getRequestDispatcher("/views/web/order-detail (ban nhap).jsp").forward(request,response);
     }
 

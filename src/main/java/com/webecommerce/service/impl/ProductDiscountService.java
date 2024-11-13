@@ -41,4 +41,11 @@ public class ProductDiscountService implements IProductDiscountService {
 
         return null;
     }
+
+    @Override
+    public ProductDiscountDTO findById(Long id) {
+        ProductDiscountEntity productDiscountEntity = productDiscountDAO.findById(id);
+
+        return productDiscountMapper.toDTO(productDiscountEntity);
+    }
 }

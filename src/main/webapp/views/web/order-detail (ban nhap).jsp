@@ -13,47 +13,50 @@
 
 <section>
   <div class="table-container">
-    <table class="table table-bordered table-hover">
-      <thead class="thead-dark">
-      <tr>
-        <th><input type="checkbox" id="select-all"></th>
-        <th>ID</th>
-        <th>Quantity</th>
-        <th>Order ID</th>
-        <th>Product Discount ID</th>
-        <th>Product Variant ID</th>
-      </tr>
-      </thead>
-      <tbody>
-      <!-- Example rows, replace with dynamic rows if fetching data from backend -->
-      <c:forEach var="item-return" items="${model}">
+    <form id="return-form" action="/tra-san-pham" method="POST">
+      <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
         <tr>
-          <td><input type="checkbox" id="checkbox_${item.id}" value="${item.id}"></td>
-          <td>${item.quantity}</td>
-          <td>${item.orderId}</td>
-          <td>${item.orderId}</td>
-          <td>${item.orderId}</td>
+          <th><input type="checkbox" id="select-all"></th>
+          <th>ID</th>
+          <th>Quantity</th>
+          <th>Product Discount ID</th>
+          <th>Product Variant ID</th>
         </tr>
-      </c:forEach>
-      <!-- Add more rows as needed -->
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+        <c:forEach var="orderitem" items="${orderitemList}">
+          <tr>
+            <td>
+              <input type="checkbox" class="item-checkbox" name="orderitems" value="${orderitem.id}">
+              <!-- Hidden fields for quantity, productDiscount, and productVariant -->
+              <input type="hidden" name="quantity-${orderitem.id}" value="${orderitem.quantity}">
+              <input type="hidden" name="productDiscount-${orderitem.id}" value="${orderitem.productDiscount.id}">
+              <input type="hidden" name="productVariant-${orderitem.id}" value="${orderitem.productVariant.id}">
+            </td>
+            <td>${orderitem.id}</td>
+            <td>${orderitem.quantity}</td>
+            <td>${orderitem.productDiscount.id}</td>
+            <td>${orderitem.productVariant.id}</td>
+          </tr>
+        </c:forEach>
+        </tbody>
+      </table>
+
+      <div style="text-align: center;">
+        <button type="submit" class="primary-btn">Trả sản phẩm</button>
+      </div>
+    </form>
   </div>
 </section>
 
-<script>
-  // Select/Deselect all checkboxes based on the "select-all" checkbox
-  document.getElementById('select-all').addEventListener('change', function () {
-    const checkboxes = document.querySelectorAll('.row-checkbox');
-    checkboxes.forEach(checkbox => checkbox.checked = this.checked);
-  });
 
-  // Optionally, keep the "select-all" checkbox in sync when row checkboxes are changed
-  const rowCheckboxes = document.querySelectorAll('.row-checkbox');
-  rowCheckboxes.forEach(checkbox => {
-    checkbox.addEventListener('change', function () {
-      document.getElementById('select-all').checked =
-              Array.from(rowCheckboxes).every(cb => cb.checked);
+<script>
+  document.getElementById('select-all').addEventListener('change', function() {
+    const checkboxes = document.querySelectorAll('.item-checkbox');
+    const isChecked = this.checked;
+    checkboxes.forEach(checkbox => {
+      checkbox.checked = isChecked;
     });
   });
 </script>
