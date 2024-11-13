@@ -18,12 +18,9 @@ public class OrderDetailDTO {
 
     private ProductVariantDTO productVariant;
 
-
     private ProductDiscountDTO productDiscount;
 
-
     private List<ProductReviewDTO> productReviews;
-
     public Long getId() {
         return id;
     }

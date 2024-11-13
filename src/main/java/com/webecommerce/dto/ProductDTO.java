@@ -3,8 +3,6 @@ package com.webecommerce.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.webecommerce.constant.EnumProductStatus;
 import com.webecommerce.dto.discount.ProductDiscountDTO;
-import com.webecommerce.entity.discount.ProductDiscountEntity;
-import com.webecommerce.utils.PairUtils;
 
 import javax.servlet.http.Part;
 import java.math.BigDecimal;
