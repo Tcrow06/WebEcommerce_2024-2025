@@ -67,7 +67,8 @@ public class ProductService implements IProductService {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return null;}
+            return null;
+        }
 
         ProductEntity productEntity = productMapper.toEntity(product);
         if (productEntity == null) return null;
@@ -156,15 +157,6 @@ public class ProductService implements IProductService {
     public ProductDTO getProductById(Long id) {
         ProductEntity productEntity = productDAO.findById(id);
         return getProduct(productEntity);
-
-//        ProductDTO productDTO = productMapper.toDTO(productEntity);
-//        for (ProductVariantEntity productVariant : productEntity.getProductVariants()) {
-//            productDTO.getProductVariants().add(
-//                    productVariantMapper.toDTO(productVariant)
-//            );
-//        }
-
-//        return productDTO;
     }
 
     public List<String> getListColorBySize (String size, Long productId) {

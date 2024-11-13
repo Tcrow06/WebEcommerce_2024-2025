@@ -33,15 +33,15 @@ public class DiscountController extends HttpServlet {
         productDTO.setResultList(productService.findAll());
 
         request.setAttribute(ModelConstant.MODEL, productDTO);
-        request.getRequestDispatcher("/views/admin/product/add-product-discount.jsp").forward(request, response);
+        request.getRequestDispatcher("/views/admin/discount/add-product-discount.jsp").forward(request, response);
     }
 
     private void billDiscount (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("/views/admin/product/add-bill-discount.jsp").forward(request, response);
+        request.getRequestDispatcher("/views/admin/discount/add-bill-discount.jsp").forward(request, response);
     }
 
     private void discountList (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("/views/admin/product/discount-list.jsp").forward(request, response);
+        request.getRequestDispatcher("/views/admin/discount/discount-list.jsp").forward(request, response);
     }
 
 }
