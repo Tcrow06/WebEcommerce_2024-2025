@@ -9,4 +9,6 @@ public interface IAccountService {
     UserResponse findByUserNameAndPasswordAndStatus(String userName, String password, String status);
 
     CustomerResponse save(CustomerRequest customerRequest);
+    boolean sendOTPToEmail(String email, long id);
+    int verifyOTP(String email, String otp);
 }
