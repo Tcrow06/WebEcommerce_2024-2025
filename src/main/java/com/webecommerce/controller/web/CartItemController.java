@@ -36,14 +36,18 @@ public class CartItemController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Long id = JWTUtil.getIdUser(request);
-        List<BillDiscountDTO> billDiscountDTOS = billDiscountService.getAllDiscountEligible(id);
-        request.setAttribute("discountList", billDiscountDTOS);
-        String path = request.getServletPath();
-        if (path.equals("/gio-hang")) {
-            request.getRequestDispatcher("/views/web/cart.jsp").forward(request, response);
-        } else {
-            response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "Không thể thực hiện thao tác này.");
+        try {
+            Long id = JWTUtil.getIdUser(request);
+            List<BillDiscountDTO> billDiscountDTOS = billDiscountService.getAllDiscountEligible(id);
+            request.setAttribute("discountList", billDiscountDTOS);
+            String path = request.getServletPath();
+            if (path.equals("/gio-hang")) {
+                request.getRequestDispatcher("/views/web/cart.jsp").forward(request, response);
+            } else {
+                response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "Không thể thực hiện thao tác này.");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
