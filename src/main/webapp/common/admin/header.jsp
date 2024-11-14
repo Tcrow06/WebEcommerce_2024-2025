@@ -163,7 +163,7 @@
                         </div>
                     </div>
                     <hr class="m-0">
-                    <a class="dropdown-item" href="profile.html"> <i class="me-2" data-feather="user"></i> My Profile</a>
+                    <a class="dropdown-item" href="<c:url value="/chu-cua-hang/quan-ly-trang-ca-nhan"/>"> <i class="me-2" data-feather="user"></i> My Profile</a>
                     <a class="dropdown-item" href="generalsettings.html"><i class="me-2" data-feather="settings"></i>Settings</a>
                     <hr class="m-0">
                     <a class="dropdown-item logout pb-0" href="signin.html"><img src="../static/admin/assets/img/icons/log-out.svg" class="me-2" alt="img">Logout</a>
