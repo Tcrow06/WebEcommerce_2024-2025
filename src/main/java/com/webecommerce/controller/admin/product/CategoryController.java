@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(urlPatterns = {"/aadmin/them-chung-loai"})
+@WebServlet(urlPatterns = {"/chu-cua-hang/them-chung-loai"})
 public class CategoryController extends HttpServlet {
     @Inject
     ICategoryService categoryService;

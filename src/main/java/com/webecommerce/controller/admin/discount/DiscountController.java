@@ -12,18 +12,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(urlPatterns = {"/aadmin/giam-gia-cho-san-pham","/aadmin/giam-gia-cho-don-hang","/aadmin/danh-sach-ma-giam-gia"})
+@WebServlet(urlPatterns = {"/chu-cua-hang/giam-gia-cho-san-pham","/chu-cua-hang/giam-gia-cho-don-hang","/chu-cua-hang/danh-sach-ma-giam-gia"})
 public class DiscountController extends HttpServlet {
     @Inject
     IProductService productService;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getServletPath();
-        if (action.equals("/aadmin/giam-gia-cho-san-pham")) {
+        if (action.equals("/chu-cua-hang/giam-gia-cho-san-pham")) {
             productDiscount(request,response);
-        } else if (action.equals("/aadmin/giam-gia-cho-don-hang")) {
+        } else if (action.equals("/chu-cua-hang/giam-gia-cho-don-hang")) {
            billDiscount(request,response);
-        } else if (action.equals("/aadmin/danh-sach-ma-giam-gia")) {
+        } else if (action.equals("/chu-cua-hang/danh-sach-ma-giam-gia")) {
             discountList(request,response);
         }
     }
