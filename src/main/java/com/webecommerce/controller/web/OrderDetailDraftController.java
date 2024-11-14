@@ -13,14 +13,14 @@ import java.io.IOException;
 import java.util.List;
 
 @WebServlet(urlPatterns = {"/danh-sach-don-hang"})
-public class OrderDetailControllerbannhap extends HttpServlet {
+public class OrderDetailDraftController extends HttpServlet {
 
     @Inject
     private IOrderDetailService orderDetailService;
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<OrderDetailDTO> result = orderDetailService.findAllByOrderId(1L);
         request.setAttribute("orderitemList", result);
-        request.getRequestDispatcher("/views/web/order-detail (ban nhap).jsp").forward(request,response);
+        request.getRequestDispatcher("/views/web/order-detail-draft.jsp").forward(request,response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
