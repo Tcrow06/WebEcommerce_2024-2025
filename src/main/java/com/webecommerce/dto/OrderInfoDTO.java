@@ -13,8 +13,17 @@ public class OrderInfoDTO {
 
     private String phone;
 
+    private int isDefault;
 
     private AddressDTO address;
+
+    public int getIsDefault() {
+        return isDefault;
+    }
+
+    public void setIsDefault(int isDefault) {
+        this.isDefault = isDefault;
+    }
 
     public Long getId() {
         return id;
