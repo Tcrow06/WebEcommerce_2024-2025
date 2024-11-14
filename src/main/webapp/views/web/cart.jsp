@@ -61,7 +61,7 @@
                             <tr>
                                 <td class="product__cart__item">
                                     <div class="product__cart__item__pic">
-                                        <img style="width: 100px" src="<c:url value='/static/img/product/aothun1-gray.png'/>" alt="${item.productVariant.name}">
+                                        <img style="width: 100px" src="<c:url value='/api-image?path=${item.productVariant.imageUrl}'/>" alt="${item.productVariant.name}">
 <%--                                        <img src="<c:url value='/api-image?path=${item.productVariant.imageUrl}'/>" alt="${item.productVariant.name}">--%>
                                     </div>
                                     <div class="product__cart__item__text">
@@ -126,7 +126,7 @@
                         <li>Subtotal <span>$ 0</span></li>
                         <li>Total <span id="total-price">$ ${sessionScope.totalPrice}</span></li>
                     </ul>
-                    <a href="<c:url value='/' />" class="primary-btn"  id="PlacedOrder">Proceed to checkout</a>
+                    <a href="javascript:void(0);" class="primary-btn"  id="ProceedToCheckout">Proceed to checkout</a>
                 </div>
             </div>
         </div>
@@ -254,6 +254,58 @@
                 alert("Không thể tải giỏ hàng.");
             }
         });
+    }
+
+    $('#ProceedToCheckout').click(function (event) {
+
+        event.preventDefault();
+        const selectedProducts = getSelectedProducts();
+        const billDiscountCode = $('#discount-code').val();
+
+        if (selectedProducts.length === 0) {
+            alert("Vui lòng chọn ít nhất một sản phẩm để thanh toán.");
+            return;
+        }
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = "/check-out";
+
+        // Tạo input ẩn để gửi danh sách sản phẩm
+        const productInput = document.createElement("input");
+        productInput.type = "hidden";
+        productInput.name = "listSelectedProductsId";
+        productInput.value = JSON.stringify(selectedProducts);
+        form.appendChild(productInput);
+
+        // Tạo input ẩn để gửi mã giảm giá
+        const discountInput = document.createElement("input");
+        discountInput.type = "hidden";
+        discountInput.name = "billDiscountCode";
+        discountInput.value = billDiscountCode;
+        form.appendChild(discountInput);
+
+        // Thêm form vào body và submit
+        document.body.appendChild(form);
+        form.submit();
+    });
+
+
+    function getSelectedProducts() {
+        const selectedProducts = [];
+        $('#cart-container tbody tr').each(function() {
+            const checkbox = $(this).find('input[type="checkbox"]');
+            if (checkbox.is(':checked')) {
+                const productVariantId = $(this).find('input[type="text"]').data('product-id');
+                const quantity = $(this).find('input[type="text"]').val();
+                if (productVariantId && quantity) {
+                    selectedProducts.push({
+                        productVariantId: productVariantId,
+                        quantity: parseInt(quantity, 10)
+                    });
+                }
+            }
+        });
+        return selectedProducts;
     }
 
 </script>

@@ -3,8 +3,13 @@ package com.webecommerce.controller.login;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.webecommerce.constant.EnumRole;
+import com.webecommerce.dao.people.ICustomerDAO;
+import com.webecommerce.dto.CartItemDTO;
 import com.webecommerce.dto.request.people.CustomerRequest;
 import com.webecommerce.dto.response.people.CustomerResponse;
+import com.webecommerce.entity.cart.CartEntity;
+import com.webecommerce.entity.cart.CartItemEntity;
+import com.webecommerce.mapper.Impl.CartItemMapper;
 import com.webecommerce.service.ICustomerService;
 import com.webecommerce.service.ISocialAccountService;
 import com.webecommerce.service.impl.CustomerService;
@@ -14,13 +19,11 @@ import javax.inject.Inject;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 
 @WebServlet(urlPatterns = {"/three-party-login","/dang-xuat"})
 public class ThreePartyLoginController extends HttpServlet {
@@ -31,6 +34,12 @@ public class ThreePartyLoginController extends HttpServlet {
 
     @Inject
     private CustomerService customerService;
+
+    @Inject
+    private ICustomerDAO customerDAO;
+
+    @Inject
+    private CartItemMapper cartItemMapper;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String code = request.getParameter("code");
@@ -82,6 +91,7 @@ public class ThreePartyLoginController extends HttpServlet {
     }
     public void handleUserLogin(CustomerRequest customerRequest, String provider, String sendDirection, HttpServletRequest request, HttpServletResponse response)
             throws IOException {
+        HttpSession session = request.getSession();
         CustomerResponse existingUser;
         if (provider.equals("google")) {
 
@@ -109,6 +119,15 @@ public class ThreePartyLoginController extends HttpServlet {
         System.out.println("Generated JWT Token: " + jwtToken);
 
         Cookie cookie = new Cookie("token", jwtToken);
+
+        CartEntity cartEntity = customerDAO.findById(existingUser.getId()).getCart();
+
+        HashMap<Long, CartItemDTO> cart = new HashMap<>();
+        for (CartItemEntity cartItemEntity : cartEntity.getCartItems()) {
+            CartItemDTO cartItemDTO = cartItemMapper.toDTO(cartItemEntity);
+            cart.put(cartItemDTO.getId(), cartItemDTO);
+        }
+        request.getSession().setAttribute("cart", cart);
 //        cookie.setPath("/");
 //        cookie.setHttpOnly(true);
         response.addCookie(cookie);
