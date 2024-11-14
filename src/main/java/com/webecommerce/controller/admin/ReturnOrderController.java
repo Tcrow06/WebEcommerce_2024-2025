@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(urlPatterns = {"/aadmin/danh-sach-tra"})
+@WebServlet(urlPatterns = {"/chu-cua-hang/danh-sach-tra"})
 public class ReturnOrderController extends HttpServlet {
     @Inject
     private IReturnOrderService returnOrderService;
