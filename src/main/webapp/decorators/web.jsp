@@ -72,6 +72,7 @@
 <!-- Search End -->
 
 <!-- Js Plugins -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="<c:url value='/static/web/js/token/refreshToken.js'/> "></script>
 <script src="<c:url value="/static/js/bootstrap.min.js"/>"></script>
 <script src="<c:url value="/static/js/jquery.nice-select.min.js"/>"></script>

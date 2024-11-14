@@ -93,7 +93,7 @@
                             </ul>
                         </li>
                         <li><a href="<c:url value="/blog"/>">Blog</a></li>
-                        <li><a href="./contact.html">Contacts</a></li>
+                        <li><a href="<c:url value="/ve-chung-toi"/>">Contacts</a></li>
                     </ul>
                 </nav>
             </div>

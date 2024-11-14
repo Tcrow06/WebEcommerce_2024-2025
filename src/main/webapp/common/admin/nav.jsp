@@ -27,7 +27,7 @@
                     <a href="javascript:void(0);"><img src="../static/admin/assets/img/icons/sales1.svg" alt="img"><span>Đơn hàng</span> <span class="menu-arrow"></span></a>
                     <ul>
                         <li><a href="<c:url value='/admin/danh-sach-don-hang'/> ">Danh sách đơn hàng</a></li>
-                        <li><a href="pos.html">Xác nhận đơn hàng</a></li>
+                        <li><a href="<c:url value='/aadmin/danh-sach-tra'/> ">Xác nhận đơn hàng</a></li>
                         <li><a href="salesreturnlists.html">Đơn hoàn trả</a></li>
                         <li><a href="createsalesreturns.html">New Sales Return</a></li>
                     </ul>
