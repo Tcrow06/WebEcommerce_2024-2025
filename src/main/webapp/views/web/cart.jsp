@@ -114,12 +114,116 @@
             </div>
             <div class="col-lg-4">
                 <div class="cart__discount">
-                    <h6>Discount codes</h6>
-                    <form action="#">
-                        <input type="text" placeholder="Coupon code">
+                    <h6 style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#form2Modal">Discount codes</h6>
+                    <form action="#" onsubmit="applyCoupon(event)">
+                        <input type="text" id="couponCode" placeholder="Coupon code">
                         <button type="submit">Apply</button>
                     </form>
                 </div>
+
+
+                <div id="discountContent" style="display: none;">
+                    <div class="row text-info d-flex align-items-center">
+                        <div class="col-1">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                        <div class="col-2 text-info">
+                            <input type="text" id="title" style="border: none; color:#17a2b8;" data-bs-toggle="modal"
+                                   data-bs-target="#form2Modal" readonly>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-1 text-info">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                        <div class="col-5">
+                            <input type="text" id="descriptionCoupon"
+                                   style="border: none; background: transparent; pointer-events: none; font-weight: bold"
+                                   readonly>
+                        </div>
+                        <div class="col-1 text-info fw-bold">
+                            <input type="text" id="percentCoupon"
+                                   style="border: none; background: transparent; pointer-events: none; font-weight: bold; color: #17a2b8;"
+                                   readonly>
+                        </div>
+                    </div>
+                    <div class="row text-info d-flex align-items-center mb-5">
+                        <div class="col-1">
+                            <i class="fas fa-ticket"></i>
+                        </div>
+                        <div class="col-2 text-info">
+                            <input type="text" id="title1" style="border: none; color:#17a2b8; cursor: pointer;"
+                                   data-bs-toggle="modal" data-bs-target="#form2Modal" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <%-- Áp dụng mã giảm giá --%>
+                <div class="modal fade" id="form2Modal" tabindex="-1" aria-labelledby="form2ModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content shadow">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="form2ModalLabel">Chọn mã giảm giá</h4>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+                                <c:forEach items="${discountList}" var="o">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <div class="row ps-1">
+                                                <h5>${o.description}</h5>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-2">
+                                                    <div class="fs-3 text-dark pb-2">
+                                                        <i class="fas fa-ticket"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="col-10">
+                                                    <strong>${o.code}</strong><br>
+                                                    <p class="text-secondary-emphasis">Hạn sử dụng: ${o.endDate}</p>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <h6>• Giảm ${o.discountPercentage}%</h6>
+                                            </div>
+                                            <div id="extraContent${o.code}" class="collapse">
+                                                <h6>• Áp dụng với đơn hàng trên ${o.minimumPurchaseQuantity} sản phẩm.</h6>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-8">
+                                                    <!-- Sử dụng data-bs-target với id riêng biệt -->
+                                                    <button type="button" class="btn btn-link p-0 text-decoration-none"
+                                                            data-bs-toggle="collapse"
+                                                            data-bs-target="#extraContent${o.code}" aria-expanded="false"
+                                                            aria-controls="extraContent${o.code}"
+                                                    >Xem chi tiết ⬎</button>
+                                                </div>
+                                                <div class="col-4">
+                                                    <button type="button" class="btn btn-dark w-100"
+                                                            data-bs-dismiss="modal"
+                                                            data-code="${o.code}" data-description="${o.description}"
+                                                            data-percentCoupon="${o.discountPercentage}">Áp dụng</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </c:forEach>
+                            </div>
+                            <div class="modal-footer d-flex justify-content-center">
+                                <button type="button" class="btn btn-link p-0 text-decoration-none"
+                                        data-bs-toggle="collapse" data-bs-target="#extraContent2" aria-expanded="false"
+                                        aria-controls="extraContent" ></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
                 <div class="cart__total">
                     <h6>Cart total</h6>
                     <ul>
@@ -306,6 +410,24 @@
             }
         });
         return selectedProducts;
+    // Phần quản lý mã giảm giá
+    function toggleButtonText(button) {
+        if (button.textContent === "Xem chi tiết ⬎") {
+            button.textContent = "Thu gọn ⬏";
+        } else {
+            button.textContent = "Xem chi tiết ⬎";
+        }
+    }
+    function applyCoupon(button) {
+        var couponCode = button.getAttribute("data-code");
+        var descriptionCoupon = button.getAttribute("data-description");
+        var percentCoupon = button.getAttribute("data-percentCoupon");
+        document.getElementById("title").value = "Áp dụng thành công!";
+        document.getElementById("title1").value = "Xem thêm";
+        document.getElementById("couponCode").value = couponCode;
+        document.getElementById("descriptionCoupon").value = descriptionCoupon + ":";
+        document.getElementById("percentCoupon").value = "-" + percentCoupon + "%";
+        document.getElementById("discountContent").style.display = "block";
     }
 
 </script>

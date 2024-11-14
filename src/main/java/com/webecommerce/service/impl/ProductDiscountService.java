@@ -58,9 +58,15 @@ public class ProductDiscountService implements IProductDiscountService {
         return null;
     }
 
+    @Override
+    public ProductDiscountDTO findById(Long id) {
+        ProductDiscountEntity productDiscountEntity = productDiscountDAO.findById(id);
+
+        return productDiscountMapper.toDTO(productDiscountEntity);
+    }
 
     private List <ProductDiscountDTO> getProductDiscountDTOList(List<ProductDiscountEntity> productDiscountEntities) {
-        List <ProductDiscountDTO> productDiscountDTOList = new ArrayList<>();
+        List<ProductDiscountDTO> productDiscountDTOList = new ArrayList<>();
 
         for (ProductDiscountEntity productDiscountEntity : productDiscountEntities) {
             ProductDiscountDTO productDiscountDTO = productDiscountMapper.toDTO(productDiscountEntity);
