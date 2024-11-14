@@ -6,5 +6,5 @@ import com.webecommerce.entity.discount.BillDiscountEntity;
 import java.util.List;
 
 public interface IBillDiscountDAO extends GenericDAO<BillDiscountEntity> {
-    List<BillDiscountEntity> getBillDiscountByOutStanding(boolean outstanding);
+    List<BillDiscountEntity> getAllDiscountEligible(Long idUser);
 }

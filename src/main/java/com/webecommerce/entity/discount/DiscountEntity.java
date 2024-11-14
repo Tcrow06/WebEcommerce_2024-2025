@@ -10,8 +10,8 @@ public abstract class DiscountEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "description")
+    private String description;
 
     @Column(name = "start_date")
     private LocalDateTime startDate;
@@ -22,16 +22,11 @@ public abstract class DiscountEntity {
     @Column(name = "discount_percentage")
     private int discountPercentage;
 
-    @Column (name = "is_outStanding")
-    private boolean isOutStanding ;
+    @Column(name = "maximum_amount")
+    private double maximumAmount;
 
-    public boolean isOutStanding() {
-        return isOutStanding;
-    }
-
-    public void setOutStanding(boolean outStanding) {
-        isOutStanding = outStanding;
-    }
+    @Column(name = "minimum_purchase_quantity")
+    private int minimumPurchaseQuantity;
 
     public Long getId() {
         return id;
@@ -41,14 +36,13 @@ public abstract class DiscountEntity {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getDescription() {
+        return description;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setDescription(String description) {
+        this.description = description;
     }
-
 
     public LocalDateTime getStartDate() {
         return startDate;
@@ -74,4 +68,19 @@ public abstract class DiscountEntity {
         this.discountPercentage = discountPercentage;
     }
 
+    public double getMaximumAmount() {
+        return maximumAmount;
+    }
+
+    public void setMaximumAmount(double maximumAmount) {
+        this.maximumAmount = maximumAmount;
+    }
+
+    public int getMinimumPurchaseQuantity() {
+        return minimumPurchaseQuantity;
+    }
+
+    public void setMinimumPurchaseQuantity(int minimumPurchaseQuantity) {
+        this.minimumPurchaseQuantity = minimumPurchaseQuantity;
+    }
 }

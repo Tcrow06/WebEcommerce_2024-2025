@@ -1,61 +1,60 @@
+<!-- Offcanvas Menu Begin -->
+<div class="offcanvas-menu-overlay"></div>
+<div class="offcanvas-menu-wrapper">
+    <div class="offcanvas__option">
+        <div class="offcanvas__links">
+            <a href="#">Sign in</a>
+            <a href="#">FAQs</a>
+        </div>
+        <div class="offcanvas__top__hover">
+            <span>Usd <i class="arrow_carrot-down"></i></span>
+            <ul>
+                <li>USD</li>
+                <li>EUR</li>
+                <li>USD</li>
+            </ul>
+        </div>
+    </div>
+    <div class="offcanvas__nav__option">
+        <a href="#" class="search-switch"><img src="<c:url value="/static/img/icon/search.png"/>" alt=""></a>
+        <a href="#"><img src="<c:url value="/static/img/icon/heart.png"/>" alt=""></a>
+        <a href="#"><img src="<c:url value="/static/img/icon/cart.png"/>" alt=""> <span>0</span></a>
+        <div class="price">$0.00</div>
+    </div>
+    <div id="mobile-menu-wrap"></div>
+    <div class="offcanvas__text">
+        <p>Free shipping, 30-day return or refund guarantee.</p>
+    </div>
+</div>
+<!-- Offcanvas Menu End -->
+
 <!-- Header Section Begin -->
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<style>
-    .container .dropdown-item {
-        position: relative;
-        text-decoration: none;
-    }
-
-    .container .dropdown-item.selected::after {
-        content: "";
-        position: absolute;
-        left: 0;
-        bottom: 0;
-        width: 100%;
-        height: 2px;
-        background-color: #000;
-    }
-
-    .container .dropdown-item:hover::after {
-        content: "";
-        position: absolute;
-        left: 0;
-        bottom: 0;
-        width: 100%;
-        height: 2px;
-        background-color: #ddd;
-    }
-
-
-</style>
 <header class="header">
     <div class="header__top">
         <div class="container">
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="header__top__left">
-                    <c:if test="${not empty user}">
-                        <p>Chào mừng ${user.name} đến với Eleven Store</p>
-                    </c:if>
+            <div class="row">
+                <div class="col-lg-6 col-md-7">
+                    <div class="header__top__left">
+                        <p>Free shipping, 30-day return or refund guarantee.</p>
+                    </div>
                 </div>
-                <div class="header__top__right d-flex align-items-center">
-                    <div class="header__top__links">
-                        <c:if test="${not empty user}">
-                            <form action="<c:url value='/dang-xuat'/>" method="post" class="d-inline">
-                                <button class="btn-dang-xuat btn btn-link" type="submit">Đăng xuất</button>
-                            </form>
-                        </c:if>
-                        <c:if test="${empty user}">
-                            <a href="<c:url value='/dang-nhap'/>">Đăng nhập</a>
-                        </c:if>
-                        <a href="#">FAQs</a>
+                <div class="col-lg-6 col-md-5">
+                    <div class="header__top__right">
+                        <div class="header__top__links">
+                            <a href="<c:url value="/dang-nhap"/>">Sign in</a>
+                            <a href="#">FAQs</a>
+                        </div>
+                        <div class="header__top__hover">
+                            <span>Usd <i class="arrow_carrot-down"></i></span>
+                            <ul>
+                                <li>USD</li>
+                                <li>EUR</li>
+                                <li>USD</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-
         </div>
     </div>
     <div class="container">
@@ -69,7 +68,7 @@
                 <nav class="header__menu mobile-menu">
                     <ul>
                         <li class="active"><a href="<c:url value="/trang-chu"/>">Home</a></li>
-                        <li><a href="<c:url value="/danh-sach-san-pham?page=1&maxPageItem=9"/>">Shop</a></li>
+                        <li><a href="<c:url value="/danh-sach-san-pham"/>">Shop</a></li>
                         <li><a href="#">Pages</a>
                             <ul class="dropdown">
                                 <li><a href="<c:url value="/ve-chung-toi"/>">About Us</a></li>
@@ -83,45 +82,16 @@
                     </ul>
                 </nav>
             </div>
-            <div class="col-lg-3 col-md-3 d-flex justify-content-end align-items-center gap-4" >
+            <div class="col-lg-3 col-md-3">
                 <div class="header__nav__option">
                     <a href="#" class="search-switch"><img src="<c:url value="/static/img/icon/search.png"/>" alt=""></a>
-                </div>
-                <div class="header__nav__option">
+                    <a href="<c:url value="/thong-bao"/>"><img src="<c:url value="/static/img/icon/bell.png"/>" alt=""></a>
                     <a href="<c:url value="/gio-hang"/>"><img src="<c:url value="/static/img/icon/cart.png"/>" alt=""> <span>0</span></a>
+                    <div class="price">$0.00</div>
                 </div>
-
-                <c:if test="${not empty user}">
-                    <div class="header__menu mobile-menu">
-                        <ul class="d-flex align-items-center">
-                            <li>
-                                <a href="#" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <c:if test="${not empty user.avatar}">
-                                        <img src="${user.avatar}" alt="User Profile" width="32" height="32" class="rounded-circle user-avatar">
-                                    </c:if>
-                                    <c:if test="${empty user.avatar}">
-                                        <img src='<c:url value="/static/img/avatar/user.png"/>' alt="User Profile" width="32" height="32" class="rounded-circle user-avatar">
-                                    </c:if>
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown" style="width:165px">
-                                    <li><a class="dropdown-item" href="#">Thông tin tài khoản</a></li>
-                                    <li><a class="dropdown-item" href="#">Đơn hàng của tôi</a></li>
-                                    <li><a class="dropdown-item" href="#">Danh sách yêu thích</a></li>
-                                    <li><a class="dropdown-item" href="#">Cài đặt</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="#">Đăng xuất</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-                </c:if>
-
             </div>
-
-
         </div>
         <div class="canvas__open"><i class="fa fa-bars"></i></div>
     </div>
-
 </header>
 <!-- Header Section End -->
