@@ -84,4 +84,24 @@ public class BillDiscountEntity extends DiscountEntity {
     public void setLoyaltyPointsRequired(int loyaltyPointsRequired) {
         this.loyaltyPointsRequired = loyaltyPointsRequired;
     }
+
+    @Override
+    public LocalDateTime getStartDate() {
+        return startDate;
+    }
+
+    @Override
+    public void setStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
+    }
+
+    @Override
+    public LocalDateTime getEndDate() {
+        return endDate;
+    }
+
+    @Override
+    public void setEndDate(LocalDateTime endDate) {
+        this.endDate = endDate;
+    }
 }

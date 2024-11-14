@@ -17,7 +17,7 @@ public class BillDiscountDAO extends AbstractDAO<BillDiscountEntity> implements 
     }
     public List<BillDiscountEntity> getAllDiscountEligible(Long idUser) {
         String query = "SELECT b FROM BillDiscountEntity b, CustomerEntity c " +
-                "WHERE b.minimumInvoiceAmount < c.loyaltyPoint " +
+                "WHERE b.loyaltyPointsRequired < c.loyaltyPoint " +
                 "AND c.id = :idUser " +
                 "AND CURRENT_TIMESTAMP BETWEEN b.startDate AND b.endDate";
         try {
@@ -25,7 +25,7 @@ public class BillDiscountDAO extends AbstractDAO<BillDiscountEntity> implements 
                     .setParameter("idUser", idUser)
                     .getResultList();
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Lỗi khi lấy bill có minimumInvoiceAmount < loyaltyPoint của khách hàng với ID: " + idUser, e);
+            LOGGER.log(Level.SEVERE, "Lỗi khi lấy bill có loyaltyPointsRequired < loyaltyPoint của khách hàng với ID: " + idUser, e);
             return null;
         }
     }
