@@ -1,7 +1,24 @@
 package com.webecommerce.service.impl;
 
+import com.webecommerce.dao.impl.order.OrderDetailDAO;
+import com.webecommerce.dto.OrderDetailDTO;
+import com.webecommerce.entity.order.OrderDetailEntity;
+import com.webecommerce.mapper.Impl.OrderDetailMapper;
 import com.webecommerce.service.IOrderDetailService;
 
-public class OrderDetailService implements IOrderDetailService {
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
+public class OrderDetailService implements IOrderDetailService {
+    @Inject
+    private OrderDetailDAO orderDetailDAO;
+
+    @Inject
+    private OrderDetailMapper orderDetailMapper;
+    @Override
+    public List<OrderDetailDTO> findAllByOrderId(Long orderId) {
+        List<OrderDetailEntity> orderDetailEntities = orderDetailDAO.findAllByOrderId(orderId);
+        return orderDetailMapper.toDTOList(orderDetailEntities);
+    }
 }

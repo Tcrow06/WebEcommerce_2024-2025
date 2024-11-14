@@ -9,6 +9,7 @@ import java.util.List;
 public interface IProductDiscountService {
 
     ProductDiscountDTO save (ProductDiscountDTO discount);
+    ProductDiscountDTO findById(Long id);
 
     ProductDiscountDTO cancelProductDiscount(Long id);
 

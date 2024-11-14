@@ -67,7 +67,8 @@ public class ProductService implements IProductService {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return null;}
+            return null;
+        }
 
         ProductEntity productEntity = productMapper.toEntity(product);
         if (productEntity == null) return null;
