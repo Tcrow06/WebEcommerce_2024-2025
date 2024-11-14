@@ -160,7 +160,6 @@
 
                 </div>
 
-                <!-- hiển thị nội dung discount -->
 
                 <div id="discountContent" style="display: none;">
                     <div class="row text-info d-flex align-items-center">
@@ -172,7 +171,6 @@
                                    data-bs-target="#form2Modal" readonly>
                         </div>
                     </div>
-
 
                     <div class="row">
                         <div class="col-1 text-info">
@@ -199,10 +197,6 @@
                         </div>
                     </div>
                 </div>
-                <!--  -->
-
-                <!-- hiển thị danh sách voucher -->
-
                 <div class="modal fade" id="form2Modal" tabindex="-1" aria-labelledby="form2ModalLabel"
                      aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
@@ -422,6 +416,26 @@
     })
 
 
+
+    // Phần quản lý mã giảm giá
+    function toggleButtonText(button) {
+        if (button.textContent === "Xem chi tiết ⬎") {
+            button.textContent = "Thu gọn ⬏";
+        } else {
+            button.textContent = "Xem chi tiết ⬎";
+        }
+    }
+    function applyCoupon(button) {
+        var couponCode = button.getAttribute("data-code");
+        var descriptionCoupon = button.getAttribute("data-description");
+        var percentCoupon = button.getAttribute("data-percentCoupon");
+        document.getElementById("title").value = "Áp dụng thành công!";
+        document.getElementById("title1").value = "Xem thêm";
+        document.getElementById("couponCode").value = couponCode;
+        document.getElementById("descriptionCoupon").value = descriptionCoupon + ":";
+        document.getElementById("percentCoupon").value = "-" + percentCoupon + "%";
+        document.getElementById("discountContent").style.display = "block";
+    }
 
 </script>
 

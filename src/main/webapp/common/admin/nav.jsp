@@ -10,24 +10,24 @@
                 <li class="submenu">
                     <a href="javascript:void(0);"><img src="../static/admin/assets/img/icons/product.svg" alt="img"><span> Sản phẩm</span> <span class="menu-arrow"></span></a>
                     <ul>
-                        <li><a href="/aadmin/danh-sach-san-pham">Danh sách sản phẩm</a></li>
-                        <li><a href="/aadmin/them-san-pham">Thêm sản phẩm</a></li>
-                        <li><a href="/aadmin/them-chung-loai">Thêm loại sản phẩm</a></li>
+                        <li><a href="/chu-cua-hang/danh-sach-san-pham">Danh sách sản phẩm</a></li>
+                        <li><a href="/chu-cua-hang/them-san-pham">Thêm sản phẩm</a></li>
+                        <li><a href="/chu-cua-hang/them-chung-loai">Thêm loại sản phẩm</a></li>
                     </ul>
                 </li>
                 <li class="submenu">
                     <a href="javascript:void(0);"><img src="../static/admin/assets/img/icons/product.svg" alt="img"><span> Marketing</span> <span class="menu-arrow"></span></a>
                     <ul>
-                        <li><a href="/aadmin/danh-sach-ma-giam-gia">Danh sách giảm giá</a></li>
-                        <li><a href="/aadmin/giam-gia-cho-san-pham">Thêm giảm giá cho sản phẩm</a></li>
-                        <li><a href="/aadmin/giam-gia-cho-don-hang">Thêm giảm giá cho đơn hàng</a></li>
+                        <li><a href="/chu-cua-hang/danh-sach-ma-giam-gia">Danh sách giảm giá</a></li>
+                        <li><a href="/chu-cua-hang/giam-gia-cho-san-pham">Thêm giảm giá cho sản phẩm</a></li>
+                        <li><a href="/chu-cua-hang/giam-gia-cho-don-hang">Thêm giảm giá cho đơn hàng</a></li>
                     </ul>
                 </li>
                 <li class="submenu">
                     <a href="javascript:void(0);"><img src="../static/admin/assets/img/icons/sales1.svg" alt="img"><span>Đơn hàng</span> <span class="menu-arrow"></span></a>
                     <ul>
                         <li><a href="<c:url value='/admin/danh-sach-don-hang'/> ">Danh sách đơn hàng</a></li>
-                        <li><a href="pos.html">Xác nhận đơn hàng</a></li>
+                        <li><a href="<c:url value='/chu-cua-hang/danh-sach-tra'/> ">Xác nhận đơn hàng</a></li>
                         <li><a href="salesreturnlists.html">Đơn hoàn trả</a></li>
                         <li><a href="createsalesreturns.html">New Sales Return</a></li>
                     </ul>
