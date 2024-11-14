@@ -28,7 +28,7 @@
 
                 <!-- Voucher Type -->
                 <div class="btn-group btn-group-toggle mb-4" data-toggle="buttons">
-                    <label class="btn btn-outline-secondary active">
+                    <label class="btn btn-primary active">
                         Voucher toàn Shop
                     </label>
                 </div>
@@ -118,14 +118,6 @@
                             <div class="error-message" id="maximumAmountError" style="font-size: 12px"></div>
                         </div>
 
-                        <!-- Usage Limit -->
-                        <div class="form-group">
-                            <label for="usageLimit">Lượt sử dụng tối đa</label>
-                            <input type="text" class="form-control" id="minimumPurchaseQuantity" placeholder="Nhập vào">
-                            <small class="form-text text-muted" id="maximumAmountQuantity" >Tổng số Mã giảm giá có thể sử dụng</small>
-                            <div class="error-message" id="minimumPurchaseQuantityError" style="font-size: 12px"></div>
-                        </div>
-
                     </div>
 
                 </form>
@@ -210,13 +202,6 @@
                     isValid = false;
                 }
 
-                // Validate Minimum Purchase Quantity
-                const minimumPurchaseQuantity = $('#minimumPurchaseQuantity').val();
-                if (!minimumPurchaseQuantity) {
-                    $('#minimumPurchaseQuantityError').text('Lượt sử dụng tối đa không được để trống.');
-                    isValid = false;
-                }
-
                 return isValid;
             }
 
@@ -229,7 +214,6 @@
                 const discountPercentage = $('#discountPercentage').val();
                 const minOrderValue = $('#minOrderValue').val();
                 const usageLimit = $('#usageLimit').val();
-                const minimumPurchaseQuantity = $('#minimumPurchaseQuantity').val();
                 const isOutstanding = $('#isOutstanding').is(':checked');
 
                 // Determine the custom score based on category select value
@@ -255,7 +239,6 @@
                     endDate: endDate,
                     discountPercentage: discountPercentage,
                     maximumAmount: usageLimit,
-                    minimumPurchaseQuantity: minimumPurchaseQuantity,
                     code: voucherCode,
                     isOutStanding: isOutstanding,
                     loyaltyPointsRequired: loyaltyPointsRequired // Send the selected or custom score

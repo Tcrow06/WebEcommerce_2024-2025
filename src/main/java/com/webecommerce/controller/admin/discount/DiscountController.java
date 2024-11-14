@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(urlPatterns = {"/chu-cua-hang/giam-gia-cho-san-pham","/chu-cua-hang/giam-gia-cho-don-hang","/chu-cua-hang/danh-sach-ma-giam-gia"})
+@WebServlet(urlPatterns = {"/chu-cua-hang/giam-gia-cho-san-pham","/chu-cua-hang/giam-gia-cho-don-hang","/chu-cua-hang/tao-giam-gia-cho-san-pham","/chu-cua-hang/tao-giam-gia-cho-don-hang"})
 public class DiscountController extends HttpServlet {
     @Inject
     IProductService productService;
@@ -20,11 +20,13 @@ public class DiscountController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getServletPath();
         if (action.equals("/chu-cua-hang/giam-gia-cho-san-pham")) {
-            productDiscount(request,response);
+            productDiscountList(request,response);
         } else if (action.equals("/chu-cua-hang/giam-gia-cho-don-hang")) {
-           billDiscount(request,response);
-        } else if (action.equals("/chu-cua-hang/danh-sach-ma-giam-gia")) {
-            discountList(request,response);
+           billDiscountList(request,response);
+        } else if (action.equals("/chu-cua-hang/tao-giam-gia-cho-san-pham")) {
+            productDiscount(request,response);
+        } else if (action.equals("/chu-cua-hang/tao-giam-gia-cho-don-hang")) {
+            billDiscount(request,response);
         }
     }
 
@@ -40,8 +42,11 @@ public class DiscountController extends HttpServlet {
         request.getRequestDispatcher("/views/admin/discount/add-bill-discount.jsp").forward(request, response);
     }
 
-    private void discountList (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("/views/admin/discount/discount-list.jsp").forward(request, response);
+    private void billDiscountList (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("/views/admin/discount/bill-discount-list.jsp").forward(request, response);
     }
 
+    private void productDiscountList (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("/views/admin/discount/product-discount-list.jsp").forward(request, response);
+    }
 }

@@ -10,7 +10,7 @@
 
     <div class="container my-5">
         <!-- Phần tiêu đề -->
-        <h3 class="mb-4">Mã Giảm Giá Của Shop</h3>
+        <h3 class="mb-4">Mã Giảm Giá Của Shop - Giảm giá cho từng đơn hàng</h3>
 
         <!-- Danh sách mã giảm giá -->
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -25,13 +25,13 @@
 
         <!-- Tabs -->
         <ul class="nav nav-tabs mb-3" role="tablist">
-            <li class="nav-item">
+            <li class="nav-item btn-primary">
                 <a class="nav-link active" data-mdb-toggle="tab" href="#ongoing">Đang diễn ra</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item btn-primary">
                 <a class="nav-link" data-mdb-toggle="tab" href="#upcoming">Sắp diễn ra</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item btn-primary">
                 <a class="nav-link" data-mdb-toggle="tab" href="#ended">Đã kết thúc</a>
             </li>
         </ul>
@@ -46,7 +46,6 @@
                     <th>Người mua mục tiêu</th>
                     <th>Giảm giá</th>
                     <th>Tổng số mã giảm giá có thể sử dụng</th>
-                    <th>Đã dùng</th>
                     <th>Thao tác</th>
                 </tr>
                 </thead>
@@ -57,7 +56,6 @@
                     <td>Tất cả Người mua</td>
                     <td>₫5,000</td>
                     <td>5000</td>
-                    <td>2</td>
                     <td>
                         <span class="badge bg-success">Đang diễn ra</span><br>
                         22:17 16/08/2022 - 22:25 16/02/2023
