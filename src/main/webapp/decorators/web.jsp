@@ -26,7 +26,7 @@
 
     <!-- Css Styles -->
     <link rel="stylesheet" href="<c:url value="/static/css/bootstrap.min.css"/>" type="text/css">
-<%--    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.2.0/mdb.min.js"></script>--%>
+    <script src="<c:url value="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.2.0/mdb.min.js"/>"></script>
     <link rel="stylesheet" href="<c:url value="/static/css/font-awesome.min.css"/>" type="text/css">
     <link rel="stylesheet" href="<c:url value="/static/css/elegant-icons.css"/>" type="text/css">
     <link rel="stylesheet" href="<c:url value="/static/css/magnific-popup.css"/>" type="text/css">
@@ -72,7 +72,7 @@
 <!-- Search End -->
 
 <!-- Js Plugins -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="<c:url value="https://code.jquery.com/jquery-3.6.0.min.js"/>"></script>
 <script src="<c:url value='/static/web/js/token/refreshToken.js'/> "></script>
 <script src="<c:url value="/static/js/bootstrap.min.js"/>"></script>
 <script src="<c:url value="/static/js/jquery.nice-select.min.js"/>"></script>

@@ -1,18 +1,25 @@
 package com.webecommerce.service;
 
+import com.webecommerce.dto.OrderInfoDTO;
 import com.webecommerce.entity.order.OrderInfoEntity;
 
 import java.util.List;
 
 public interface IOrderInfoService {
 
-    OrderInfoEntity addOrderInfo(OrderInfoEntity orderInfo);
+    OrderInfoDTO getOrderInfoById(Long orderInfoId);
 
-    OrderInfoEntity updateOrderInfo(OrderInfoEntity orderInfo);
+    OrderInfoDTO addOrderInfo(OrderInfoDTO orderInfo);
 
-    OrderInfoEntity getOrderInfoDefault(Long id);
+    OrderInfoDTO updateOrderInfo(OrderInfoDTO orderInfo);
 
-    boolean deleteOrderInfo(Long id);
+    OrderInfoDTO getOrderInfoDefault(Long customerId);
 
-    List<OrderInfoEntity> getAllOrderInfos();
+    boolean deleteOrderInfo(Long orderInfoId);
+
+    boolean setOrderInfoDefault(OrderInfoDTO orderInfo);
+
+    List<OrderInfoDTO> getAllOrderInfos();
+
+    List<OrderInfoDTO> getOrderInfoByCustomerId(Long customerId);
 }
