@@ -18,6 +18,7 @@ import com.webecommerce.service.IAccountService;
 import com.webecommerce.service.ICacheService;
 import com.webecommerce.utils.EmailUtils;
 import com.webecommerce.utils.RandomUtils;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -61,7 +62,23 @@ public class AccountService implements IAccountService {
     }
 
     @Override
-    public boolean sendOTPToEmail(String email, long id) {
+    public void setPassword(long id, String password) {
+        AccountEntity accountEntity = accountDAO.findById(id);
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        accountEntity.setPassword(passwordEncoder.encode(password));
+        accountDAO.update(accountEntity);
+    }
+
+    @Override
+    public boolean existsUsernameAndEmail(String username, String email) {
+        if (accountDAO.existsByUsername(username) && accountDAO.existsByEmail(email)) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean sendOTPToEmail(String email, long id, String purpose) {
         try {
             int otp = RandomUtils.generateSixDigit();
 
@@ -74,13 +91,22 @@ public class AccountService implements IAccountService {
             cacheService.setKey(keyCount, "0", 60 * 3);
 
             // Send Email
-            String subject = "Mã xác thực (OTP) để hoàn tất đăng ký tài khoản của bạn";
-            String body = "Xin chào,\n\n"
-                    + "Cảm ơn bạn đã đăng ký tài khoản của chúng tôi! "
-                    + "Để hoàn tất quá trình đăng ký, vui lòng nhập mã xác thực OTP dưới đây:\n\n"
-                    + "Mã OTP của bạn là: " + otp + "\n\n"
-                    + "Lưu ý: Mã OTP này sẽ hết hạn sau 3 phút.\n\n";
-//            EmailUtils.sendEmail(email, subject, body);
+            String subject = null;
+            String body = null;
+            if (purpose == "register") {
+                subject = "Mã xác thực (OTP) để hoàn tất đăng ký tài khoản của bạn";
+                body = "Xin chào,\n\n"
+                        + "Cảm ơn bạn đã đăng ký tài khoản của chúng tôi! "
+                        + "Để hoàn tất quá trình đăng ký, vui lòng nhập mã xác thực OTP dưới đây:\n\n"
+                        + "Mã OTP của bạn là: " + otp + "\n\n"
+                        + "Lưu ý: Mã OTP này sẽ hết hạn sau 3 phút.\n\n";
+            } else {
+                subject = "Mã xác thực (OTP) để đặt lại mật khẩu của bạn";
+                body = "Mã OTP của bạn là: " + otp + "\n\n"
+                        + "Lưu ý: Mã OTP này sẽ hết hạn sau 3 phút.\n\n";
+            }
+
+            EmailUtils.sendEmail(email, subject, body);
             return true;
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -10,8 +10,8 @@ public class EmailUtils {
     private static final String SMTP_SERVER = "smtp.gmail.com";
     private static final String SMTP_PORT = "587";
     private static final String EMAIL_FROM = "webecommerce@gmail.com";
-    private static final String USERNAME = "your-email@gmail.com";
-    private static final String PASSWORD = "your-email-password";
+    private static final String USERNAME = "elevenfashionshop11@gmail.com";
+    private static final String PASSWORD = "zjka rzbm wojx mwqq";
 
     public static void sendEmail(String toEmail, String subject, String body) {
         Properties properties = new Properties();

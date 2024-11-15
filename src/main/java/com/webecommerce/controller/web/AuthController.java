@@ -109,7 +109,7 @@ public class AuthController extends HttpServlet {
                 CustomerResponse customerResponse = accountService.save(customerRequest);
                 if (customerResponse != null) {
                     // Send otp to email with expiration time in 3 minutes
-                    boolean ok = accountService.sendOTPToEmail(customerResponse.getEmail(), customerResponse.getId());
+                    boolean ok = accountService.sendOTPToEmail(customerResponse.getEmail(), customerResponse.getId(), "register");
                     if (ok) {
                         response.sendRedirect(request.getContextPath() + "/dang-ky?action=verify&id=" + customerResponse.getId());
                     } else {
