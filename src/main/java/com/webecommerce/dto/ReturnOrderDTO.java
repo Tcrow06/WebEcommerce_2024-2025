@@ -1,10 +1,7 @@
 package com.webecommerce.dto;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import java.time.LocalDate;
+import java.util.List;
 
 public class ReturnOrderDTO extends BaseDTO<ReturnOrderDTO> {
 //    private Long id;
@@ -16,7 +13,6 @@ public class ReturnOrderDTO extends BaseDTO<ReturnOrderDTO> {
     private int status;
     private Long orderDetailId;
     private Long quantityReturn;
-
     public ReturnOrderDTO(){
     }
 

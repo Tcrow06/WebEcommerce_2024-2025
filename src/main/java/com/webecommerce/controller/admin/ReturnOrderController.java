@@ -23,7 +23,19 @@ public class ReturnOrderController extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-        //request.getRequestDispatcher("/views/admin/transfer/transfer-list.jsp").forward(request,response);
+        String orderDetailReturnId = request.getParameter("orderDetailReturnId");
+        Long orderDetailId = -1L;
+        if(orderDetailReturnId != null) {
+            orderDetailId = Long.valueOf(orderDetailReturnId);
+        }
+        //boolean updateStatus = returnOrderService.updateStatus(orderDetailId);
+        //boolean updateProductVariantQuantity = returnOrderService.updateProductVariantQuantity(orderDetailId);
+        boolean updateStatusOrder = returnOrderService.updateStatusOrder(orderDetailId);
+        if(updateStatusOrder) {
+            System.out.println("aloaloalaoalo");
+        }
+        List<TransferListDTO> listDTOList = returnOrderService.getData();
+        request.setAttribute("lstProductReturn", listDTOList);
+        request.getRequestDispatcher("/views/admin/transfer/transfer-list.jsp").forward(request,response);
     }
 }

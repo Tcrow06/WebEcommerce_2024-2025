@@ -124,7 +124,6 @@
     $('#submit-button').click(function () {
         // Tạo một mảng chứa dữ liệu hoàn trả của các sản phẩm
         const returnOrders = [];
-
         // Duyệt qua tất cả các phần tử sản phẩm
         $('.section-wrapper').each(function () {
             const section = $(this);
@@ -146,7 +145,7 @@
         });
 
         const data = {
-            resultList: returnOrders
+            resultList: returnOrders,
         };
         $.ajax({
             url: '/api-return-order',
