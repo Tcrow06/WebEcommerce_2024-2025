@@ -26,6 +26,21 @@
             <div class="card p-4">
                 <h5 class="card-title">Thông tin cơ bản</h5>
 
+                <c:if test="${model != null}">
+                    <input type="hidden" name="billDiscount" id = "billDiscountSelected"
+                           data-id="${model.id}"
+                           data-name = "${model.name}"
+                           data-startDate="${model.startDate}"
+                           data-endDate="${model.endDate}"
+                           data-discountPercentage="${model.discountPercentage}"
+                           data-isOutStanding="${model.isOutStanding}"
+                           data-minimumInvoiceAmount = "${model.minimumInvoiceAmount}"
+                           data-loyaltyPointsRequired = "${model.loyaltyPointsRequired}"
+                           data-code = "${model.code}"
+                           data-maximumAmount = ${model.maximumAmount}
+                    >
+                </c:if>
+
                 <!-- Voucher Type -->
                 <div class="btn-group btn-group-toggle mb-4" data-toggle="buttons">
                     <label class="btn btn-primary active">
@@ -36,8 +51,8 @@
                 <!-- Discount Program Name -->
                 <div class="form-group">
                     <label for="discountProgram">Tên chương trình giảm giá</label>
-                    <input type="text" class="form-control" id="discountProgram" placeholder="km1">
-                    <small class="form-text text-muted">Tên Voucher sẽ không được hiển thị cho Người mua</small>
+                    <input type="text" class="form-control" id="discountProgram" placeholder="Tên của chương trình">
+                    <small class="form-text text-muted">Tên Voucher</small>
                     <div class="error-message" id="nameError" style="font-size: 12px"></div>
                 </div>
 

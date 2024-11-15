@@ -27,6 +27,10 @@ public class BillDiscountService implements IBillDiscountService {
                 billDiscountDAO.insert(billDiscount));
     }
 
+    public BillDiscountDTO findById(Long id) {
+        return billDiscountMapper.toDTO(billDiscountDAO.findById(id));
+    }
+
     public List<BillDiscountDTO> findAll() {
         List<BillDiscountEntity> list = billDiscountDAO.findAll();
         return billDiscountMapper.toDTOList(list);
@@ -38,4 +42,17 @@ public class BillDiscountService implements IBillDiscountService {
             return new ArrayList<>();
         return billDiscountMapper.toDTOList(billDiscountEntities);
     }
+
+    public List <BillDiscountDTO> findBillDiscountUpComming () {
+        return billDiscountMapper.toDTOList(billDiscountDAO.findBillDiscountUpComming());
+    }
+
+    public List <BillDiscountDTO> findExpiredBillDiscount () {
+        return billDiscountMapper.toDTOList(billDiscountDAO.findExpiredBillDiscount());
+    }
+
+    public List <BillDiscountDTO> findBillDiscountValid () {
+        return billDiscountMapper.toDTOList(billDiscountDAO.findBillDiscountValid());
+    }
+
 }

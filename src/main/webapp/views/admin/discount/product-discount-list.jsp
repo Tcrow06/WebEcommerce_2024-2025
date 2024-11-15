@@ -17,6 +17,12 @@
     </div>
 
     <div class="product-discount-list">
+
+        <c:if test="${model != null}">
+
+        </c:if>
+
+
         <!-- Phần tiêu đề -->
         <h3 class="mb-4">Mã Giảm Giá Của Shop - Giảm giá cho từng sản phẩm</h3>
 
@@ -32,43 +38,61 @@
         </div>
 
         <!-- Tabs -->
-        <ul class="nav nav-tabs mb-3" role="tablist">
+        <ul class="nav nav-tabs mb-3">
             <li class="nav-item btn-primary">
-                <a class="nav-link active" data-mdb-toggle="tab" href="#ongoing">Đang diễn ra</a>
+                <a class="nav-link
+                    <c:if test="${dangdienra == true}">
+                            active
+                    </c:if>
+                    " href="/chu-cua-hang/giam-gia-cho-san-pham">Đang diễn ra</a>
             </li>
             <li class="nav-item btn-primary">
-                <a class="nav-link" data-mdb-toggle="tab" href="#upcoming">Sắp diễn ra</a>
-            </li>
-            <li class="nav-item btn-primary">
-                <a class="nav-link" data-mdb-toggle="tab" href="#ended">Đã kết thúc</a>
+                <a class="nav-link
+                <c:if test="${dangdienra == false}">
+                            active
+                </c:if>
+                " href="?type=sap-dien-ra">Sắp diễn ra</a>
             </li>
         </ul>
 
         <!-- Bảng mã giảm giá -->
         <div class="productList">
 
+            <c:forEach var="item" items="${model}">
+                <div class="row mb-4 d-flex align-items-center">
+                    <div class="col-md-2 col-lg-2 col-xl-2">
+                        <c:if test="${item.product != null}">
+                            <img src="<c:url value='/api-image?path=${item.product.photo}'/>" class="img-fluid rounded-3" alt="Sản phảm">
+                        </c:if>
+                        <c:if test="${item.product == null}">
+                            <img src="<c:url value='/api-image?path=404'/>" class="img-fluid rounded-3" alt="Sản phảm">
+                        </c:if>
+                    </div>
+                    <div class="col-md-3">
+                        <h6 class="text-muted fw-bold">${item.name}</h6>
+                        <c:if test="${item.product != null}">
+                            <h6 class="mb-0">${item.product.name}</h6>
+                        </c:if>
+                        <h6 class="mb-0">
+                            <span style="text-decoration: line-through; color: grey;">7,99 $</span>
+                            Giảm giá ${item.discountPercentage} %
+                        </h6>
+                    </div>
+                    <div class="col-md-3">
+                        <c:if test="${dangdienra == true}">
+                            <span class="badge bg-success">Đang diễn ra</span><br>
+                        </c:if>
+                        <c:if test="${dangdienra == false}">
+                            <span class="badge bg-danger">Sắp diễn ra</span><br>
+                        </c:if>
+                        ${item.getStringStartDate()} - ${item.getStringEndDate()}
+                    </div>
+                    <div class="col-md-3 offset-lg-1 text-end"> <!-- Thêm text-end -->
+                        <button type="submit" class="btn btn-dark add-to-cart" >Chỉnh sửa</button>
+                    </div>
+                </div>
 
-
-            <div class="row mb-4 d-flex align-items-center">
-                <div class="col-md-2 col-lg-2 col-xl-2">
-                    <img src="https://m.media-amazon.com/images/I/81NmdZFyncL._UF350,350_QL50_.jpg" class="img-fluid rounded-3" alt="Cotton T-shirt">
-                </div>
-                <div class="col-md-3 col-lg-3 col-xl-3">
-                    <h6 class="text-muted fw-bold">Tên khuyến mãi</h6>
-                    <h6 class="mb-0">Tên sản phẩm</h6>
-                    <h6 class="mb-0">
-                        <span style="text-decoration: line-through; color: grey;">7,99 $</span>
-                        5,99 $
-                    </h6>
-                </div>
-                <div class="col-md-3 col-lg-3 col-xl-2">
-                    <span class="badge bg-danger">Đang diễn ra</span><br>
-                    22:17 16/08/2022 - 22:25 16/02/2023
-                </div>
-                <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1 text-end"> <!-- Thêm text-end -->
-                    <button type="submit" class="btn btn-dark add-to-cart" >Chỉnh sửa</button>
-                </div>
-            </div>
+            </c:forEach>
 
 
         </div>

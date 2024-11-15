@@ -1,11 +1,14 @@
 package com.webecommerce.service.impl;
 
 import com.webecommerce.dao.discount.IProductDiscountDAO;
+import com.webecommerce.dao.impl.discount.ProductDiscountDAO;
+import com.webecommerce.dao.impl.product.ProductVariantDAO;
 import com.webecommerce.dao.product.IProductDAO;
 import com.webecommerce.dto.ProductDTO;
 import com.webecommerce.dto.discount.ProductDiscountDTO;
 import com.webecommerce.entity.discount.ProductDiscountEntity;
 import com.webecommerce.entity.product.ProductEntity;
+import com.webecommerce.entity.product.ProductVariantEntity;
 import com.webecommerce.mapper.GenericMapper;
 import com.webecommerce.service.IProductDiscountService;
 
@@ -27,6 +30,9 @@ public class ProductDiscountService implements IProductDiscountService {
 
     @Inject
     GenericMapper <ProductDTO, ProductEntity> productMapper;
+
+    @Inject
+    ProductVariantDAO productVariantDAO;
 
     @Transactional
     public ProductDiscountDTO cancelProductDiscount(Long id) {
@@ -58,6 +64,25 @@ public class ProductDiscountService implements IProductDiscountService {
         return null;
     }
 
+    @Transactional
+    public ProductDiscountDTO update(ProductDiscountDTO productDiscount) {
+
+        ProductDiscountEntity productDiscountEntity = productDiscountDAO.findById(productDiscount.getId());
+        if (productDiscountEntity != null) {
+            if (productDiscountEntity.getStartDate().isAfter(LocalDateTime.now())) { // chỉ chỉnh sửa những discount chưa diễn ra
+
+                productDiscountEntity.setName(productDiscount.getName());
+                productDiscountEntity.setStartDate(productDiscount.getStartDate());
+                productDiscountEntity.setEndDate(productDiscount.getEndDate());
+                productDiscountEntity.setDiscountPercentage(productDiscount.getDiscountPercentage());
+                productDiscountEntity.setOutStanding(productDiscount.getIsOutStanding());
+
+                return productDiscountMapper.toDTO(productDiscountDAO.update(productDiscountEntity));
+            }
+        }
+        return null;
+    }
+
     @Override
     public ProductDiscountDTO findById(Long id) {
         ProductDiscountEntity productDiscountEntity = productDiscountDAO.findById(id);
@@ -69,10 +94,24 @@ public class ProductDiscountService implements IProductDiscountService {
         List<ProductDiscountDTO> productDiscountDTOList = new ArrayList<>();
 
         for (ProductDiscountEntity productDiscountEntity : productDiscountEntities) {
+            if (productDiscountEntity.getEndDate().isBefore(LocalDateTime.now())) {
+                continue; // bỏ những product discount đã hết hạn
+            }
+
             ProductDiscountDTO productDiscountDTO = productDiscountMapper.toDTO(productDiscountEntity);
-            productDiscountDTO.setProduct(
-                    productMapper.toDTO(productDiscountEntity.getProduct())
-            );
+
+            ProductEntity productEntity = productDiscountEntity.getProduct();
+            if (productEntity != null) {
+                ProductVariantEntity productVariant = productVariantDAO.getProductVariantByProduct(productEntity);
+                productDiscountDTO.setProduct(
+                        productMapper.toDTO(productDiscountEntity.getProduct())
+                );
+                if (productVariant != null) {
+                    productDiscountDTO.getProduct().setPhoto(productVariant.getImageUrl());
+                    productDiscountDTO.getProduct().setPrice(productVariant.getPrice());
+                }
+            }
+
             productDiscountDTOList.add(productDiscountDTO);
         }
 
@@ -81,7 +120,7 @@ public class ProductDiscountService implements IProductDiscountService {
 
     // lấy những discount có sẵn
     public List<ProductDiscountDTO> getProductDiscountValid() {
-        List <ProductDiscountEntity> productDiscountEntities = productDiscountDAO.findDiscountByDate(LocalDateTime.now());
+        List <ProductDiscountEntity> productDiscountEntities = productDiscountDAO.findDiscounthaveProductByDate();
 
         if (productDiscountEntities == null)
             return new ArrayList<>();
@@ -90,8 +129,10 @@ public class ProductDiscountService implements IProductDiscountService {
     }
 
     // lâấy những discout đã hết hạn
-    public List <ProductDiscountDTO> getExpiredProductDiscount () {
-        List <ProductDiscountEntity> productDiscountEntities = productDiscountDAO.findDiscountByDate(LocalDateTime.MIN, LocalDateTime.now().minusMinutes(1));
+    public List <ProductDiscountDTO> getUpcommingProductDiscount () {
+        List <ProductDiscountEntity> productDiscountEntities = productDiscountDAO.findDiscounthaveProductByDate(
+                LocalDateTime.now().plusHours(1)
+        );
 
         if (productDiscountEntities == null)
             return new ArrayList<>();
@@ -99,13 +140,4 @@ public class ProductDiscountService implements IProductDiscountService {
         return getProductDiscountDTOList(productDiscountEntities);
     }
 
-    // lấy những discount sắp diễn ra
-    public List <ProductDiscountDTO> getCommingProductDiscount () {
-        List <ProductDiscountEntity> productDiscountEntities = productDiscountDAO.findDiscountByDate(LocalDateTime.now().plusMinutes(1), LocalDateTime.MAX);
-
-        if (productDiscountEntities == null)
-            return new ArrayList<>();
-
-        return getProductDiscountDTOList(productDiscountEntities);
-    }
 }

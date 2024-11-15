@@ -105,6 +105,40 @@ public class ProductService implements IProductService {
 
         return productDTO;
     }
+    // -----------------------------
+
+    // dùng hàm này thì hỏi lại t nha @phamtienanh
+    private List <ProductDTO> getProductsWithDiscount (List<ProductEntity> productEntities) {
+        List <ProductDTO> productDTOS = new ArrayList<ProductDTO>();
+        for (ProductEntity product : productEntities) {
+            ProductDTO productDTO = productMapper.toDTO(product);
+            //lấy discount cho từng sản phâm
+            ProductDiscountEntity productDiscountEntity = product.getProductDiscount();
+            if (productDiscountEntity != null) {
+                if (productDiscountEntity.getEndDate().isAfter(LocalDateTime.now())) {
+                    productDTO.setProductDiscount(
+                            productDiscountMapper.toDTO(productDiscountEntity)
+                    );
+                }
+            }
+
+            // lấy productvariant để lấy ảnh và giá (lấy product variant rẻ nhất)
+            ProductVariantEntity productVariant = productVariantDAO.getProductVariantByProduct(product);
+            if (productVariant != null) {
+                productDTO.setPhoto(productVariant.getImageUrl());
+                productDTO.setPrice(productVariant.getPrice());
+            }
+            productDTOS.add(productDTO);
+        }
+        return productDTOS;
+    }
+
+    // dùng cho controller productdiscount @phamtienanh
+    public List <ProductDTO> getProductsFromDiscount () {
+        List <ProductEntity> products = productDAO.findAll();
+        return getProductsWithDiscount(products);
+    }
+    //------------------------------------------------------------------
 
     // dùng để lấy discout, price mà không cần lay het product variant -> load nhanh hơn
     private List <ProductDTO> getProduct (List<ProductEntity> productEntities) {

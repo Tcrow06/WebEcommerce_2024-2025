@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 public interface IProductDiscountDAO extends GenericDAO<ProductDiscountEntity> {
-    List<ProductDiscountEntity> findDiscountByDate(LocalDateTime startDate, LocalDateTime endDate);
-    List<ProductDiscountEntity> findDiscountByDate(LocalDateTime startDate);
+    List<ProductDiscountEntity> findDiscounNotProduct();
+    List<ProductDiscountEntity> findDiscounthaveProductByDate (LocalDateTime start);
+    List<ProductDiscountEntity> findDiscounthaveProductByDate();
 }

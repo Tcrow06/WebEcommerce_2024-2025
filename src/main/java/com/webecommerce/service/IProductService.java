@@ -10,6 +10,7 @@ public interface IProductService {
     List<String> getBrands();
     List<ProductDTO> findProductsByBrand(String brand);
     List<ProductDTO> findAll (Pageable pageable);
+    List <ProductDTO> getProductsFromDiscount ();
 
     List<ProductDTO> findAll();
     ProductDTO save(ProductDTO product);
