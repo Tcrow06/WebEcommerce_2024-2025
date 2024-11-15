@@ -9,7 +9,7 @@ public class OrderStatusService implements IOrderStatusService {
     @Inject
     private IOrderStatusDAO orderStatusDAO;
     @Override
-    public boolean changeStatus(Long orderId) {
-        return orderStatusDAO.changeStatus(orderId);
+    public boolean changeStatus(Long orderDetailId) {
+        return orderStatusDAO.changeStatus(orderDetailId);
     }
 }

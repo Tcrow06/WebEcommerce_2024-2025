@@ -34,13 +34,23 @@ public class ReturnOrderAPI extends HttpServlet {
         try {
             HttpUtils httpUtils = HttpUtils.of(req.getReader());
             ReturnOrderDTO returnOrderList = httpUtils.toModel(ReturnOrderDTO.class);
-
             if (returnOrderList != null) {
                 List<ReturnOrderDTO> returnOrders = returnOrderList.getResultList();
                 for (ReturnOrderDTO returnOrder : returnOrders) {
                     returnOrderService.save(returnOrder);
                 }
+                //lay 1 order detail id
+                Long orderDetailId = returnOrders.get(0).getOrderDetailId();
+                if (orderDetailId != null) {
+                    boolean checked = orderStatusService.changeStatus(orderDetailId);
+                }
+                //load lai trang
+
                 objectMapper.writeValue(resp.getWriter(), "Return requests have been sent");
+
+                List<OrderDetailDTO> result = orderDetailService.findAllByOrderId(2L);
+                req.setAttribute("orderitemList", result);
+                req.getRequestDispatcher("/views/web/order-detail-draft.jsp").forward(req,resp);
             } else {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 objectMapper.writeValue(resp.getWriter(), "Invalid return order data");
@@ -50,19 +60,6 @@ public class ReturnOrderAPI extends HttpServlet {
             objectMapper.writeValue(resp.getWriter(), "{\"error\": \"Server error: " + e.getMessage() + "\"}");
         }
 
-        // cap nhat trang thai va load lai trang
-        String[] selectedItems = req.getParameterValues("productList");
-        String orderIdStr = selectedItems[0];
-        if (orderIdStr != null) {
-            Long orderId = Long.valueOf(orderIdStr);
-            boolean checked = orderStatusService.changeStatus(orderId);
-            if(checked) {
-                System.out.println("Thanh cong");
-            }
-        }
 
-        List<OrderDetailDTO> result = orderDetailService.findAllByOrderId(2L);
-        req.setAttribute("orderitemList", result);
-        req.getRequestDispatcher("/views/web/order-detail-draft.jsp").forward(req,resp);
     }
 }

@@ -5,6 +5,7 @@ import com.webecommerce.dao.impl.AbstractDAO;
 import com.webecommerce.dao.order.IOrderStatusDAO;
 import com.webecommerce.entity.order.OrderStatusEntity;
 
+import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 
 public class OrderStatusDAO extends AbstractDAO<OrderStatusEntity> implements IOrderStatusDAO {
@@ -13,15 +14,30 @@ public class OrderStatusDAO extends AbstractDAO<OrderStatusEntity> implements IO
     }
 
     @Override
-    public boolean changeStatus(Long orderId) {
-        String query = "UPDATE OrderStatusEntity os SET os.status = 'WAITING', os.date = CURRENT_DATE WHERE os.id = :orderId";
-        Query jpqlQuery = entityManager.createQuery(query);
+    public boolean changeStatus(Long orderDetailId) {
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            String findOrderIdQuery = "SELECT od.order.id FROM OrderDetailEntity od WHERE od.id = :orderDetailId";
+            Query findOrderId = entityManager.createQuery(findOrderIdQuery);
+            findOrderId.setParameter("orderDetailId", orderDetailId);
 
-        jpqlQuery.setParameter("orderId", orderId);
+            Long orderId = (Long) findOrderId.getSingleResult(); // Lấy orderId
 
-        int rowsUpdated = jpqlQuery.executeUpdate();
+            String query = "UPDATE OrderStatusEntity os SET os.status = 'WAITING', os.date = CURRENT_DATE WHERE os.id = :orderId";
+            Query jpqlQuery = entityManager.createQuery(query);
 
-        return rowsUpdated > 0;
+            jpqlQuery.setParameter("orderId", orderId);
+
+            int rowsUpdated = jpqlQuery.executeUpdate();
+            transaction.commit();
+            return rowsUpdated > 0;
+        } catch (Exception e) {
+            transaction.rollback();
+            e.printStackTrace();
+            return false;
+        }
+
 
     }
 }

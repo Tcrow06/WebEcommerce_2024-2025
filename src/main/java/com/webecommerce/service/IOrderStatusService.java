@@ -1,5 +1,5 @@
 package com.webecommerce.service;
 
 public interface IOrderStatusService {
-    boolean changeStatus(Long orderId);
+    boolean changeStatus(Long orderDetailId);
 }
