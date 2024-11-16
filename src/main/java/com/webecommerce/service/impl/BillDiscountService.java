@@ -83,6 +83,12 @@ public class BillDiscountService implements IBillDiscountService {
         return billDiscountMapper.toDTOList(list);
     }
 
+    @Override
+    public List<BillDiscountDTO> getAllDiscountEligible(Long idUser) {
+        List<BillDiscountEntity> list = billDiscountDAO.getAllDiscountEligible(idUser);
+        return billDiscountMapper.toDTOList(list);
+    }
+
     public List<BillDiscountDTO> findAllOutStanding () {
         List<BillDiscountEntity> billDiscountEntities = billDiscountDAO.getBillDiscountByOutStanding(true);
         if (billDiscountEntities == null)

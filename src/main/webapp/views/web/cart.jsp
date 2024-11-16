@@ -1,5 +1,8 @@
-<%@include file="/common/taglib.jsp"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@include file="/common/taglib.jsp" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
 
 
 <style>
@@ -27,8 +30,10 @@
                 <div class="breadcrumb__text">
                     <h4>Shopping Cart</h4>
                     <div class="breadcrumb__links">
-                        <a href="<c:url value="/trang-chu"/>">Home</a>
-                        <a href="<c:url value="/san-pham"/>">Shop</a>
+                        <a href="<c:url value='/trang-chu' />">Home</a>
+
+                        <a href="<c:url value='/san-pham' />">Shop</a>
+
                         <span>Shopping Cart</span>
                     </div>
                 </div>
@@ -47,11 +52,10 @@
                     <table>
                         <thead>
                         <tr>
-                            <th>Sản phẩm</th>
-                            <th>Số lượng</th>
-                            <th>Tổng tiền</th>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
                             <th></th>
-                            <th>Chọn</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -62,7 +66,6 @@
                                 <td class="product__cart__item">
                                     <div class="product__cart__item__pic">
                                         <img style="width: 100px" src="<c:url value='/api-image?path=${item.productVariant.imageUrl}'/>" alt="${item.productVariant.name}">
-<%--                                        <img src="<c:url value='/api-image?path=${item.productVariant.imageUrl}'/>" alt="${item.productVariant.name}">--%>
                                     </div>
                                     <div class="product__cart__item__text">
                                         <h6>${item.productVariant.name}</h6>
@@ -103,10 +106,12 @@
                     <div class="col-lg-6 col-md-6 col-sm-6">
                         <div class="continue__btn update__btn">
                             <c:if test="${empty cookie.token}">
-                                <a href="<c:url value="/dang-nhap"/>"><i class="fa fa-spinner"></i> Update cart</a>
+                                <a href="<c:url value="/dang-nhap" />"><i class="fa fa-spinner"></i> Update
+                                    cart</a>
                             </c:if>
                             <c:if test="${not empty cookie.token}">
-                                <a href="javascript:void(0);" onclick="updateCart()"><i class="fa fa-spinner"></i> Update cart</a>
+                                <a href="javascript:void(0);" onclick="updateCart()"><i class="fa fa-spinner"></i>
+                                    Update cart</a>
                             </c:if>
                         </div>
                     </div>
@@ -115,10 +120,11 @@
             <div class="col-lg-4">
                 <div class="cart__discount">
                     <h6 style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#form2Modal">Discount codes</h6>
-                    <form action="#" onsubmit="applyCoupon(event)">
+                    <form action="#">
                         <input type="text" id="couponCode" placeholder="Coupon code">
                         <button type="submit">Apply</button>
                     </form>
+
                 </div>
 
 
@@ -128,7 +134,7 @@
                             <i class="fa-solid fa-check"></i>
                         </div>
                         <div class="col-2 text-info">
-                            <input type="text" id="title" style="border: none; color:#17a2b8;" data-bs-toggle="modal"
+                            <input type="text" id="title" style="border: none; color:#17a2b8 ;" data-bs-toggle="modal"
                                    data-bs-target="#form2Modal" readonly>
                         </div>
                     </div>
@@ -153,13 +159,11 @@
                             <i class="fas fa-ticket"></i>
                         </div>
                         <div class="col-2 text-info">
-                            <input type="text" id="title1" style="border: none; color:#17a2b8; cursor: pointer;"
+                            <input type="text" id="title1" style="border: none; color:#17a2b8 ; cursor: pointer;"
                                    data-bs-toggle="modal" data-bs-target="#form2Modal" readonly>
                         </div>
                     </div>
                 </div>
-
-                <%-- Áp dụng mã giảm giá --%>
                 <div class="modal fade" id="form2Modal" tabindex="-1" aria-labelledby="form2ModalLabel"
                      aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
@@ -174,7 +178,7 @@
                                     <div class="card mb-3">
                                         <div class="card-body">
                                             <div class="row ps-1">
-                                                <h5>${o.description}</h5>
+                                                <h5 class="fw-bold">${o.name}</h5>
                                             </div>
                                             <div class="row">
                                                 <div class="col-2">
@@ -191,7 +195,8 @@
                                                 <h6>• Giảm ${o.discountPercentage}%</h6>
                                             </div>
                                             <div id="extraContent${o.code}" class="collapse">
-                                                <h6>• Áp dụng với đơn hàng trên ${o.minimumPurchaseQuantity} sản phẩm.</h6>
+                                                <h6>• Áp dụng với đơn hàng trên ${o.minimumPurchaseQuantity} sản phẩm.
+                                                </h6>
                                             </div>
 
                                             <div class="row">
@@ -201,12 +206,12 @@
                                                             data-bs-toggle="collapse"
                                                             data-bs-target="#extraContent${o.code}" aria-expanded="false"
                                                             aria-controls="extraContent${o.code}"
-                                                    >Xem chi tiết ⬎</button>
+                                                            onclick="toggleButtonText(this)">Xem chi tiết ⬎</button>
                                                 </div>
                                                 <div class="col-4">
                                                     <button type="button" class="btn btn-dark w-100"
-                                                            data-bs-dismiss="modal"
-                                                            data-code="${o.code}" data-description="${o.description}"
+                                                            data-bs-dismiss="modal" onclick="applyCoupon(this)"
+                                                            data-code="${o.code}" data-description="${o.name}"
                                                             data-percentCoupon="${o.discountPercentage}">Áp dụng</button>
                                                 </div>
                                             </div>
@@ -214,15 +219,31 @@
                                     </div>
                                 </c:forEach>
                             </div>
-                            <div class="modal-footer d-flex justify-content-center">
-                                <button type="button" class="btn btn-link p-0 text-decoration-none"
-                                        data-bs-toggle="collapse" data-bs-target="#extraContent2" aria-expanded="false"
-                                        aria-controls="extraContent" ></button>
-                            </div>
                         </div>
                     </div>
                 </div>
+                <script>
+                    function toggleButtonText(button) {
+                        if (button.textContent === "Xem chi tiết ⬎") {
+                            button.textContent = "Thu gọn ⬏";
+                        } else {
+                            button.textContent = "Xem chi tiết ⬎";
+                        }
+                    }
+                    function applyCoupon(button) {
+                        var couponCode = button.getAttribute("data-code");
+                        var descriptionCoupon = button.getAttribute("data-description");
+                        var percentCoupon = button.getAttribute("data-percentCoupon");
+                        document.getElementById("title").value = "Áp dụng thành công!";
+                        document.getElementById("title1").value = "Xem thêm";
+                        document.getElementById("couponCode").value = couponCode;
+                        document.getElementById("descriptionCoupon").value = descriptionCoupon + ":";
+                        document.getElementById("percentCoupon").value = "-" + percentCoupon + "%";
+                        document.getElementById("discountContent").style.display = "block";
+                    }
 
+                </script>
+                <!---->
 
                 <div class="cart__total">
                     <h6>Cart total</h6>
@@ -238,127 +259,130 @@
 </section>
 
 <script>
-
     $(document).ready(function () {
+        initQuantityButtons();
 
-        // Sự kiện click vào nút tăng/giảm số lượng
-        $(document).on('click', '.pro-qty-2 .qtybtn', function () {
-            let $button = $(this);
-            let $input = $button.siblings('input');
-            let oldValue = parseInt($input.val(), 10);
+        $(document).ready(function () {
 
-            if (isNaN(oldValue)) {
-                oldValue = 1;
-            }
+            // Sự kiện click vào nút tăng/giảm số lượng
+            $(document).on('click', '.pro-qty-2 .qtybtn', function () {
+                let $button = $(this);
+                let $input = $button.siblings('input');
+                let oldValue = parseInt($input.val(), 10);
 
-            if (!$button.hasClass('inc')) {
-                oldValue = (oldValue > 1) ? oldValue : 1;
-            }
-            $input.val(oldValue);
+                if (isNaN(oldValue)) {
+                    oldValue = 1;
+                }
 
-            updateTotalPrice($input);
-        });
+                if (!$button.hasClass('inc')) {
+                    oldValue = (oldValue > 1) ? oldValue : 1;
+                }
+                $input.val(oldValue);
 
-
-        // Sự kiện chọn checkbox
-        $('input[type="checkbox"]').on('change', function () {
-            calculateTotalPrice();
-        });
-
-        // Hàm cập nhật giá cho từng sản phẩm
-        function updateTotalPrice(inputElement) {
-            const productVariantId = $(inputElement).data('product-id');
-            const quantity = parseInt($(inputElement).val(), 10);
-            const pricePerUnit = parseFloat(
-                $(inputElement).closest('tr').find('.product__cart__item__text h6:last').text().replace(/[^\d.]/g, '')
-            );
-
-            const totalPrice = (quantity * pricePerUnit).toFixed(2);
-            $(inputElement).closest('tr').find('.cart__price').text('$ ' + totalPrice);
-
-            // Cập nhật tổng giá
-            calculateTotalPrice();
-        }
-
-        // Hàm tính tổng giá khi chọn các sản phẩm
-        function calculateTotalPrice() {
-            let total = 0;
-            $('input[type="checkbox"]:checked').each(function () {
-                const priceText = $(this).closest('tr').find('.cart__price').text();
-                const price = parseFloat(priceText.replace(/[^\d.]/g, ''));
-                total += price;
+                updateTotalPrice($input);
             });
-            $('#total-price').text('$ ' + total.toFixed(2));
-        }
-    });
+            // Sự kiện chọn checkbox
+            $('input[type="checkbox"]').on('change', function () {
+                calculateTotalPrice();
+            });
 
+            // Hàm cập nhật giá cho từng sản phẩm
+            function updateTotalPrice(inputElement) {
+                const productVariantId = $(inputElement).data('product-id');
+                const quantity = parseInt($(inputElement).val(), 10);
+                const pricePerUnit = parseFloat(
+                    $(inputElement).closest('tr').find('.product__cart__item__text h6:last').text().replace(/[^\d.]/g, '')
+                );
 
-    function updateCart() {
-        const cartData = getCartData();
+                const totalPrice = (quantity * pricePerUnit).toFixed(2);
+                $(inputElement).closest('tr').find('.cart__price').text('$ ' + totalPrice);
 
-        $.ajax({
-            type: "POST",
-            url: "/sua-gio-hang",
-            contentType: "application/json",
-            data: JSON.stringify({
-                cartItems: cartData
-            }),
-            success: function(response) {
-                alert("Cập nhật giỏ hàng thành công.");
-                refreshCart();
-            },
-            error: function(xhr) {
-                alert("Không thể cập nhật giỏ hàng.");
+                // Cập nhật tổng giá
+                calculateTotalPrice();
             }
-        });
-    }
 
-    function removeFromCart(productVariantId) {
-        console.log("Deleting productVariantId: ", productVariantId);
-        $.ajax({
-            type: "POST",
-            url: "/xoa-gio-hang",
-            data: { productVariantId: productVariantId },
-            success: function(response) {
-                alert("Xóa sản phẩm khỏi giỏ hàng thành công.");
-                refreshCart();
-            },
-            error: function(xhr) {
-                alert("Không thể xóa sản phẩm khỏi giỏ hàng.");
-            }
-        });
-    }
-
-    function getCartData() {
-        const cartData = [];
-        $('#cart-container tbody tr').each(function() {
-            const productVariantId = $(this).find('input').data('product-id');
-            const quantity = $(this).find('input').val();
-
-            if (productVariantId && quantity) {
-                cartData.push({
-                    productVariantId: productVariantId,
-                    quantity: parseInt(quantity, 10)
+            // Hàm tính tổng giá khi chọn các sản phẩm
+            function calculateTotalPrice() {
+                let total = 0;
+                $('input[type="checkbox"]:checked').each(function () {
+                    const priceText = $(this).closest('tr').find('.cart__price').text();
+                    const price = parseFloat(priceText.replace(/[^\d.]/g, ''));
+                    total += price;
                 });
+                $('#total-price').text('$ ' + total.toFixed(2));
             }
         });
-        return cartData;
-    }
 
-    function refreshCart() {
-        $.ajax({
-            type: "GET",
-            url: "/gio-hang",
-            success: function(response) {
-                $('#cart-container').html($(response).find('#cart-container').html());
-                $('#total-price').text('$ ' + response.totalPrice);
-                location.reload();
-            },
-            error: function(xhr) {
-                alert("Không thể tải giỏ hàng.");
-            }
-        });
-    }
+
+        function updateCart() {
+            const cartData = getCartData();
+
+            $.ajax({
+                type: "POST",
+                url: "/sua-gio-hang",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    cartItems: cartData
+                }),
+                success: function (response) {
+                    alert("Cập nhật giỏ hàng thành công.");
+                    refreshCart();
+                },
+                error: function (xhr) {
+                    alert("Không thể cập nhật giỏ hàng.");
+                }
+            });
+        }
+
+        function removeFromCart(productVariantId) {
+            console.log("Deleting productVariantId: ", productVariantId);
+            $.ajax({
+                type: "POST",
+                url: "/xoa-gio-hang",
+                data: {productVariantId: productVariantId},
+                success: function (response) {
+                    alert("Xóa sản phẩm khỏi giỏ hàng thành công.");
+                    refreshCart();
+                },
+                error: function (xhr) {
+                    alert("Không thể xóa sản phẩm khỏi giỏ hàng.");
+                }
+            });
+        }
+
+        function getCartData() {
+            const cartData = [];
+            $('#cart-container tbody tr').each(function () {
+                const productVariantId = $(this).find('input').data('product-id');
+                const quantity = $(this).find('input').val();
+
+                if (productVariantId && quantity) {
+                    cartData.push({
+                        productVariantId: productVariantId,
+                        quantity: parseInt(quantity, 10)
+                    });
+                }
+            });
+            return cartData;
+        }
+
+        function refreshCart() {
+            $.ajax({
+                type: "GET",
+                url: "/gio-hang",
+                success: function (response) {
+                    $('#cart-container').html($(response).find('#cart-container').html());
+                    $('#total-price').text('$ ' + response.totalPrice);
+                    location.reload();
+                },
+                error: function (xhr) {
+                    alert("Không thể tải giỏ hàng.");
+                }
+            });
+        }
+    })
+
+
 
     $('#ProceedToCheckout').click(function (event) {
 
@@ -431,4 +455,4 @@
     }
 
 </script>
-<!-- Shopping Cart Section End -->
+
