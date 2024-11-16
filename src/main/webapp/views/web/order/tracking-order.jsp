@@ -156,6 +156,7 @@
         <a href="#" id="pending" onclick="showOrders('PENDING')">Chờ xác nhận</a>
         <a href="#" id="delivered" onclick="showOrders('DELIVERED')">Đã vận chuyển</a>
         <a href="#" id="waiting" onclick="showOrders('WAITING')">Đang xử lý</a>
+        <a href="#" id="processed" onclick="showOrders('PROCESSED')">Đã xử lý</a>
         <a href="#" id="received" onclick="showOrders('RECEIVED')">Đã nhận</a>
         <a href="#" id="cancelled" onclick="showOrders('CANCELLED')">Đã hủy</a>
     </div>
@@ -178,7 +179,7 @@
                     <strong>Tổng số lượng sản phẩm:</strong> ${order.allQuantity} sản phẩm
                 </div>
                 <div class="order-actions">
-                    <a href="order-detail.html?id=${order.id}" target="_blank">Xem chi tiết</a>
+                    <a href="/trang-chu/don-hang/danh-sach-don-hang?id=${order.id}" target="_blank">Xem chi tiết</a>
                 </div>
             </div>
         </c:forEach>
