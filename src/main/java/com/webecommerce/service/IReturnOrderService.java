@@ -15,6 +15,5 @@ public interface IReturnOrderService {
     CustomerResponse getCustomerData(Long returnOrderId);
     ProductReturnDTO getProductReturnData(Long returnOrderId);
     boolean updateStatus(Long returnOrderId);
-    boolean updateProductVariantQuantity(Long returnOrderId);
     boolean updateStatusOrder(Long returnOrderId);
 }

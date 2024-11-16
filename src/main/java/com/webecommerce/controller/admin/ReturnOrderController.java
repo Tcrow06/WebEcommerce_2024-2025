@@ -28,12 +28,11 @@ public class ReturnOrderController extends HttpServlet {
         if(orderDetailReturnId != null) {
             orderDetailId = Long.valueOf(orderDetailReturnId);
         }
-        //boolean updateStatus = returnOrderService.updateStatus(orderDetailId);
-        //boolean updateProductVariantQuantity = returnOrderService.updateProductVariantQuantity(orderDetailId);
         boolean updateStatusOrder = returnOrderService.updateStatusOrder(orderDetailId);
         if(updateStatusOrder) {
-            System.out.println("aloaloalaoalo");
+            System.out.println("aaaaa");
         }
+        boolean updateStatusProcess = returnOrderService.updateStatus(orderDetailId);
         List<TransferListDTO> listDTOList = returnOrderService.getData();
         request.setAttribute("lstProductReturn", listDTOList);
         request.getRequestDispatcher("/views/admin/transfer/transfer-list.jsp").forward(request,response);

@@ -67,11 +67,6 @@ public class ReturnOrderService implements IReturnOrderService {
     }
 
     @Override
-    public boolean updateProductVariantQuantity(Long returnOrderId) {
-        return returnOrderDAO.updateProductVariantQuantity(returnOrderId);
-    }
-
-    @Override
     public boolean updateStatusOrder(Long returnOrderId) {
         return returnOrderDAO.updateStatusOrder(returnOrderId);
     }
