@@ -51,4 +51,9 @@ public class AccountService implements IAccountService {
         accountDAO.insert(accountEntity);
         return customerMapper.toCustomerResponse(accountEntity.getCustomer());
     }
+
+    public AccountResponse findByCustomerId(Long idCustomer) {
+        AccountEntity accountEntity = accountDAO.findByCustomerId(idCustomer);
+        return accountMapper.toAccountResponse(accountEntity);
+    }
 }

@@ -78,7 +78,7 @@
               </div>
             </div>
             <div class="profile-contentname">
-              <h2 style="margin-top: 15px">Nguyễn Công Quý</h2>
+              <h2 style="margin-top: 15px">${userResponse.name}</h2>
               <h4>Cập nhật thông tin cá nhân và chi tiết địa chỉ của bạn.</h4>
               <a href="javascript:void(0);"
                  type="button" class="btn-address"
@@ -93,13 +93,13 @@
         <div class="col-lg-6 col-sm-12">
           <div class="form-group">
             <label class="title-box">Họ và Tên</label>
-            <input type="text" placeholder="Nguyễn Công Quý">
+            <input type="text" placeholder="Nguyễn Công Quý" value="${userResponse.name}">
           </div>
         </div>
         <div class="col-lg-6 col-sm-12">
           <div class="form-group">
             <label class="title-box">Email</label>
-            <input type="text" placeholder="nguyencongquy296@gmail.com">
+            <input type="text" placeholder="nguyencongquy296@gmail.com" value="${userResponse.email}">
           </div>
         </div>
         <div class="col-lg-6 col-sm-12">
@@ -111,20 +111,20 @@
         <div class="col-lg-6 col-sm-12">
           <div class="form-group">
             <label class="title-box">Điện thoại</label>
-            <input type="text" placeholder="+976870127">
+            <input type="text" placeholder="+976870127" value="${userResponse.phone}">
           </div>
         </div>
         <div class="col-lg-6 col-sm-12">
           <div class="form-group">
             <label class="title-box">Tên đăng nhập</label>
-            <input type="text" placeholder="+1452 876 5432">
+            <input type="text" placeholder="+1452 876 5432" value="${accountResponse.userName}" readonly>
           </div>
         </div>
         <div class="col-lg-6 col-sm-12">
           <div class="form-group">
             <label class="title-box">Mật khẩu</label>
-            <div class="pass-group">
-              <input type="password" class=" pass-input">
+            <div class="passs-group">
+              <input type="password" class=" pass-input" placeholder="Thịnh kêu sang hash rồi nên không hiện mật khẩu chỗ này">
             </div>
           </div>
         </div>
