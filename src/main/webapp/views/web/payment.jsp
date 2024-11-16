@@ -1,6 +1,19 @@
 <%@include file="/common/taglib.jsp"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<style>
+    .checkout__input > input{
+        color: #0b0b0b;
+        font-weight: bold;
+    }
+    .change__address{
+        font-weight: normal;
+        color: silver;
+        text-transform: lowercase;
+    }
+</style>
+
 <!-- Breadcrumb Section Begin -->
 <section class="breadcrumb-option">
     <div class="container">
@@ -33,14 +46,22 @@
                                 Sản phẩm <span>Tổng tiền</span>
                             </div>
                             <ul class="checkout__total__products">
-                                <li>01. Vanilla salted caramel <span>$ 300.0</span></li>
-                                <li>02. German chocolate <span>$ 170.0</span></li>
-                                <li>03. Sweet autumn <span>$ 170.0</span></li>
-                                <li>04. Cluten free mini dozen <span>$ 110.0</span></li>
+                                <c:forEach items="${orderDTO.orderDetails}" var="order">
+                                    <li>- ${order.productVariant.name} ${order.productVariant.size} ${order.productVariant.color} x${order.quantity}<span><fmt:formatNumber type = "number" maxFractionDigits = "3" value="${order.total}" /> VND</span></li>
+                                </c:forEach>
                             </ul>
                             <ul class="checkout__total__all">
-                                <li>Số tiền được giảm <span>$750.99</span></li>
-                                <li>Tổng tiền <span>$750.99</span></li>
+                                <li>Tổng tiền <span><fmt:formatNumber type = "number" maxFractionDigits = "3" value = "${orderDTO.total}" /> VND</span></li>
+                                <c:if test="${not empty orderDTO.billDiscount}">
+                                    <c:set var="percent" value="${orderDTO.billDiscount.discountPercentage}"/>
+                                    <li>Số tiền được giảm (${percent}% tối đa: <fmt:formatNumber type = "number" maxFractionDigits = "3" value="${orderDTO.billDiscount.maximumAmount}"/> VND)<span><fmt:formatNumber type = "number" maxFractionDigits = "3" value="${orderDTO.maximumDiscount}" /> VND</span></li>
+
+                                    <li>Tổng thanh toán <span><fmt:formatNumber type = "number" maxFractionDigits = "3" value="${orderDTO.total-orderDTO.maximumDiscount}" /> VND</span></li>
+                                </c:if>
+                                <c:if test="${empty orderDTO.billDiscount}">
+                                    <li>Số tiền được giảm <span>0 VND</span></li>
+                                    <li>Tổng thanh toán <span><fmt:formatNumber type = "number" maxFractionDigits = "3" value="${orderDTO.total}"/> VND</span></li>
+                                </c:if>
                             </ul>
                             <div class="form-check">
                                 <input
@@ -65,53 +86,81 @@
                                 </label>
                             </div>
                             <br />
-                            <button type="submit" class="site-btn">Đặt hàng</button>
+
+                            <a href="javascript:void(0);" id="placed-order" class="site-btn d-flex justify-content-center align-items-center">Đặt hàng</a>
+
                         </div>
                     </div>
-                    <div class="col-lg-4 col-md-6">
-                        <h6 class="checkout__title">Thông tin giao hàng</h6>
-                        <!-- <div class="row"> -->
-                        <!-- <div class="col-lg-8"> -->
-                        <div class="checkout__input">
-                            <p>Họ và tên<span>*</span></p>
-                            <input class="" type="text" />
-                            <!-- </div> -->
-                            <!-- </div> -->
+                    <c:if test="${not empty orderDTO.orderInfoDTO }">
+                        <div class="col-lg-4 col-md-6">
+                            <div class="checkout__title">
+                                <h6 class="col-lg-8">Thông tin giao hàng</h6>
+                                <div class="col-lg-8 change__address" >thay đổi địa chỉ</div>
+                            </div>
+                            <div class="checkout__input">
+                                <p>Họ và tên<span>*</span></p>
+                                <input class="" type="text" id="recipient" readonly value="${orderDTO.orderInfoDTO.recipient}"/>
+                            </div>
+                            <div class="checkout__input">
+                                <p>Số điện thoại<span>*</span></p>
+                                <input type="text" id="phone" readonly value="${orderDTO.orderInfoDTO.phone}" />
+                            </div>
+                            <div class="checkout__input">
+                                <p>Tỉnh/Thành phố<span>*</span></p>
+                                <input type="text" id="city" readonly value="${orderDTO.orderInfoDTO.address.city}" />
+                            </div>
+                            <div class="checkout__input">
+                                <p>Quận/Huyện<span>*</span></p>
+                                <input type="text" id="district" readonly value="${orderDTO.orderInfoDTO.address.district}" />
+                            </div>
+                            <div class="checkout__input">
+                                <p>Phường/Xã<span>*</span></p>
+                                <input type="text" id="commune" readonly value="${orderDTO.orderInfoDTO.address.commune}" />
+                            </div>
+                            <div class="checkout__input">
+                                <p>Số nhà, tên đường<span>*</span></p>
+                                <input type="text" id="concrete" readonly value="${orderDTO.orderInfoDTO.address.concrete}"/>
+                            </div>
                         </div>
-                        <!-- <div class="row"> -->
-                        <!-- <div class="col-lg-8"> -->
-                        <div class="checkout__input">
-                            <p>Số điện thoại<span>*</span></p>
-                            <input type="text" />
-                            <!-- </div> -->
-                            <!-- </div> -->
+                    </c:if>
+                    <c:if test="${empty orderDTO.orderInfoDTO }">
+                        <div class="col-lg-4 col-md-6">
+                            <div class="checkout__title">
+                                <h6 class="col-lg-8">Thông tin giao hàng</h6>
+                                <div class="col-lg-8 change__address" >thay đổi địa chỉ</div>
+                            </div>
+                            <div class="checkout__input">
+                                <p>Họ và tên<span>*</span></p>
+                                <input class="" type="text" id="recipient" value="" placeholder="Nhập họ và tên"/>
+                                <small class="feedback error-message"></small>
+                            </div>
+                            <div class="checkout__input">
+                                <p>Số điện thoại<span>*</span></p>
+                                <input type="text" id="phone" value="" placeholder="Nhập số điện thoại"/>
+                                <small class="feedback error-message"></small>
+                            </div>
+                            <div class="checkout__input">
+                                <p>Tỉnh/Thành phố<span>*</span></p>
+                                <input type="text" id="city" value="" placeholder="Nhập tỉnh/thành phố" />
+                                <small class="feedback error-message"></small>
+                            </div>
+                            <div class="checkout__input">
+                                <p>Quận/Huyện<span>*</span></p>
+                                <input type="text" id="district"  value="" placeholder="Nhập quận/huyện"/>
+                                <small class="feedback error-message"></small>
+                            </div>
+                            <div class="checkout__input">
+                                <p>Phường/Xã<span>*</span></p>
+                                <input type="text" id="commune"  value="" placeholder="Nhập phường xã"/>
+                                <small class="feedback error-message"></small>
+                            </div>
+                            <div class="checkout__input">
+                                <p>Số nhà, tên đường<span>*</span></p>
+                                <input type="text" id="concrete" value="" placeholder="Nhập số nhà, tên đường"/>
+                                <small class="feedback error-message"></small>
+                            </div>
                         </div>
-                        <div class="checkout__input">
-                            <p>Tỉnh/Thành phố<span>*</span></p>
-                            <select id="city" class="col-lg-12 py-2">
-                                <option value="" selected>Chọn tỉnh thành</option>
-                            </select>
-                        </div>
-                        <br />
-                        <div class="checkout__input">
-                            <p>Quận/Huyện<span>*</span></p>
-                            <select id="district" class="col-lg-12 py-2">
-                                <option value="" selected>Chọn quận huyện</option>
-                            </select>
-                        </div>
-                        <br />
-                        <div class="checkout__input">
-                            <p>Phường/Xã<span>*</span></p>
-                            <select id="ward" class="col-lg-12 py-2">
-                                <option value="" selected>Chọn phường xã</option>
-                            </select>
-                        </div>
-                        <br />
-                        <div class="checkout__input">
-                            <p>Số nhà, tên đường<span>*</span></p>
-                            <input type="text" />
-                        </div>
-                    </div>
+                    </c:if>
                 </div>
             </form>
         </div>
@@ -200,6 +249,89 @@
             $("#result").text(result);
         }
     };
+
+    });
+
+    var currentUrl = window.location.href;
+
+    // Kiểm tra nếu URL có tham số 'state'
+    if (currentUrl.indexOf('state=') !== -1) {
+        // Tạo URL mới không có tham số 'state'
+        var newUrl = currentUrl.replace(/([?&])state=[^&]+/, '$1').replace(/&$/, '').replace(/\?$/, '');
+
+        // Chuyển hướng đến URL mới
+        window.history.replaceState({}, document.title, newUrl);
+    }
+
+
+    $('#placed-order').click(function (event) {
+
+        let isValid= true;
+        const inputs = document.querySelectorAll('.checkout__input input');
+        inputs.forEach(input => {
+
+            const feedback = input.nextElementSibling; // Tìm thẻ <small> gần nhất
+            if (input.value.trim() === '') {
+                feedback.textContent = 'Vui lòng nhập thông tin này!';
+                feedback.style.color = 'red';
+                isValid = false;
+            } else {
+                feedback.textContent = ''; // Xóa thông báo lỗi
+            }
+        });
+
+
+        alert("deo");
+        if (isValid){
+            alert("deo vao");
+            let order = JSON.parse('${orderDTOJson}');
+            let recipient= document.getElementById("recipient").value;
+            let phone= document.getElementById("phone").value;
+            let address= {
+                city: document.getElementById("city").value,
+                district: document.getElementById("district").value,
+                commune: document.getElementById("commune").value,
+                concrete: document.getElementById("concrete").value
+            }
+            const paymentMethod = document.querySelector('input[name="payment"]:checked').nextElementSibling.textContent.trim();
+
+
+            delete order.orderInfoDTO;
+            order.orderInfoDTO = {
+                recipient: recipient,
+                phone: phone,
+                address: address,
+
+            };
+            // payment: paymentMethod
+
+
+            event.preventDefault();
+            $.ajax({
+                type: "POST",
+                url: "/thanh-toan",
+                contentType: "application/json",
+                data: JSON.stringify(order),
+                success: function(response) {
+                    if(response.status ==="success"){
+                        alert(response.message);
+                        window.location.href = response.redirectUrl.toString() ;
+
+                    }else if(response.status ==="error"){
+                        alert(response.message);
+                        window.location.href = response.redirectUrl.toString() ;
+
+                    }
+                },
+                error: function(xhr, status, error) {
+                    window.location.href = response.redirectUrl.toString() ;
+                    // Xử lý khi có lỗi
+                    console.error("Lỗi: ", error);
+                    alert("Có lỗi xảy ra, vui lòng thử lại.");
+                }
+            });
+        }
+
 
     });
 </script>

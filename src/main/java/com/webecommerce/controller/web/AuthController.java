@@ -2,6 +2,7 @@ package com.webecommerce.controller.web;
 
 import com.webecommerce.dao.people.ICustomerDAO;
 import com.webecommerce.dto.CartItemDTO;
+import com.webecommerce.dto.PlacedOrder.CheckOutRequestDTO;
 import com.webecommerce.dto.request.other.AccountRequest;
 import com.webecommerce.dto.request.people.CustomerRequest;
 import com.webecommerce.dto.response.people.CustomerResponse;
@@ -11,6 +12,8 @@ import com.webecommerce.entity.cart.CartItemEntity;
 import com.webecommerce.exception.DuplicateFieldException;
 import com.webecommerce.mapper.Impl.CartItemMapper;
 import com.webecommerce.service.IAccountService;
+import com.webecommerce.service.ICartItemService;
+import com.webecommerce.service.impl.CartItemService;
 import com.webecommerce.utils.FormUtils;
 import com.webecommerce.utils.JWTUtil;
 import com.webecommerce.utils.SessionUtil;
@@ -34,8 +37,17 @@ public class AuthController extends HttpServlet {
 
     @Inject
     private CartItemMapper cartItemMapper;
+    @Inject
+    private ICartItemService cartItemService;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        String send_direction = request.getParameter("send-direction");
+        if(send_direction!=null){
+            session.setAttribute("send-direction",send_direction);
+        }
+
+
         String action = request.getParameter("action");
         if (action != null && (action.equals("login") || (action.equals("register")))) {
             String message = request.getParameter("message");
@@ -53,6 +65,7 @@ public class AuthController extends HttpServlet {
         request.setCharacterEncoding("utf-8");
         response.setCharacterEncoding("utf-8");
         String action = request.getParameter("action");
+        CheckOutRequestDTO checkOutRequestDTO =(CheckOutRequestDTO) session.getAttribute("orderNotHandler");
         if(action != null && action.equals("login")) {
             AccountRequest account = FormUtils.toModel(AccountRequest.class, request);
             UserResponse user = accountService.findByUserNameAndPasswordAndStatus(account.getUserName(), account.getPassword(), "ACTIVE");
@@ -67,17 +80,37 @@ public class AuthController extends HttpServlet {
                     path = "/chu-doanh-nghiep";
                 }
                 else if(user.getRole().equals("CUSTOMER")) {
-                    // Khách hàng đăng nhập thành công thì hệ thống sẽ load dữ liệu giỏ hàng
-                    CartEntity cartEntity = customerDAO.findById(user.getId()).getCart();
-
                     HashMap<Long, CartItemDTO> cart = new HashMap<>();
-                    for (CartItemEntity cartItemEntity : cartEntity.getCartItems()) {
-                        CartItemDTO cartItemDTO = cartItemMapper.toDTO(cartItemEntity);
-                        cart.put(cartItemDTO.getId(), cartItemDTO);
+                    if(checkOutRequestDTO!=null){
+                        cart = cartItemService.updateCartWhenBuy(user.getId(),checkOutRequestDTO);
+                    }else{
+                        CartEntity cartEntity = customerDAO.findById(user.getId()).getCart();
+
+                        for (CartItemEntity cartItemEntity : cartEntity.getCartItems()) {
+                            CartItemDTO cartItemDTO = cartItemMapper.toDTO(cartItemEntity);
+                            cart.put(cartItemDTO.getId(), cartItemDTO);
+                        }
                     }
+
+
+                    // Khách hàng đăng nhập thành công thì hệ thống sẽ load dữ liệu giỏ hàng
+//                    CartEntity cartEntity = customerDAO.findById(user.getId()).getCart();
+//
+//                    HashMap<Long, CartItemDTO> cart = new HashMap<>();
+//                    for (CartItemEntity cartItemEntity : cartEntity.getCartItems()) {
+//
+//                        CartItemDTO cartItemDTO = cartItemMapper.toDTO(cartItemEntity);
+//                        cart.put(cartItemDTO.getId(), cartItemDTO);
+//                    }
                     request.getSession().setAttribute("cart", cart);
                     jwtToken = JWTUtil.generateToken(user);
                     path="/trang-chu";
+                    if(session.getAttribute("send-direction")!=null){
+
+                        path = session.getAttribute("send-direction").toString();
+                        session.removeAttribute("send-direction");
+                    }
+
                 }
                 System.out.println("Generated JWT Token: " + jwtToken);
 

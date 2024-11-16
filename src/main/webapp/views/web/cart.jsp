@@ -89,7 +89,7 @@
                                 <td></td>
                                 <td class="cart__close">
                                     <div style="display: flex; align-items: center; justify-content: center; gap: 10px">
-                                        <input type="checkbox" />
+                                            <input type="checkbox" ${item.isActive == 1 ? 'checked' : ''}/>
                                         <a href="javascript:void(0);" onclick="removeFromCart(${item.productVariant.id})">
                                             <i class="fa fa-close"></i>
                                         </a>
@@ -122,7 +122,7 @@
                 <div class="cart__discount">
                     <h6>Discount codes</h6>
                     <form action="#">
-                        <input type="text" placeholder="Coupon code">
+                        <input id="discount-code" type="text" placeholder="Coupon code">
                         <button type="submit">Apply</button>
                     </form>
                 </div>
@@ -294,30 +294,33 @@
             alert("Vui lòng chọn ít nhất một sản phẩm để thanh toán.");
             return;
         }
-        const form = document.createElement("form");
-        form.method = "POST";
-        form.action = "/check-out";
-
-
-        // Tạo input ẩn để gửi danh sách sản phẩm
-        const productInput = document.createElement("input");
-        productInput.type = "hidden";
-        productInput.name = "listSelectedProductsId";
-        productInput.value = JSON.stringify(selectedProducts);
-        form.appendChild(productInput);
-
-
-        // Tạo input ẩn để gửi mã giảm giá
-        const discountInput = document.createElement("input");
-        discountInput.type = "hidden";
-        discountInput.name = "billDiscountCode";
-        discountInput.value = billDiscountCode;
-        form.appendChild(discountInput);
-
-
-        // Thêm form vào body và submit
-        document.body.appendChild(form);
-        form.submit();
+        $.ajax({
+            type: "POST",
+            url: "/kiem-tra-san-pham",
+            contentType: "application/json",
+            data: JSON.stringify({
+                selectedProductsId: selectedProducts,
+                billDiscountCode: billDiscountCode
+            }),
+            success: function(response) {
+                if(response.status==="warring"){
+                    window.location.href = response.redirectUrl.toString() ;
+                }
+                else if(response.status==="error"){
+                    alert(response.message.toString());
+                }
+                // Xử lý khi thành công
+                else{
+                    window.location.href = response.redirectUrl.toString() + "?state=" + encodeURIComponent(JSON.stringify(response.state));
+                }
+            },
+            error: function(xhr, status, error) {
+                window.location.href = response.redirectUrl.toString() + "?state=" + encodeURIComponent(JSON.stringify(response.state));
+                // Xử lý khi có lỗi
+                console.error("Lỗi: ", error);
+                alert("Có lỗi xảy ra, vui lòng thử lại.");
+            }
+        });
     });
 
 

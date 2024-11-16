@@ -184,6 +184,29 @@
       <version>2.11.0</version>
     </dependency>
 
+    <dependency>
+      <groupId>com.twelvemonkeys.imageio</groupId>
+      <artifactId>imageio-bmp</artifactId>
+      <version>3.8.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.twelvemonkeys.imageio</groupId>
+      <artifactId>imageio-tiff</artifactId>
+      <version>3.8.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.twelvemonkeys.imageio</groupId>
+      <artifactId>imageio-webp</artifactId>
+      <version>3.8.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jsr310</artifactId>
+      <version>2.13.0</version> <!-- Hoặc phiên bản Jackson phù hợp với dự án của bạn -->
+    </dependency>
+
+
   </dependencies>
   <build>
     <finalName>FashionWebEcommerce</finalName>

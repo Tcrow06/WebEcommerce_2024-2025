@@ -3,8 +3,10 @@ package com.webecommerce.controller.login;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.webecommerce.constant.EnumRole;
+import com.webecommerce.dto.CartItemDTO;
 import com.webecommerce.dto.request.people.CustomerRequest;
 import com.webecommerce.dto.response.people.CustomerResponse;
+import com.webecommerce.service.ICartItemService;
 import com.webecommerce.service.ICustomerService;
 import com.webecommerce.service.ISocialAccountService;
 import com.webecommerce.service.impl.CustomerService;
@@ -21,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 
 @WebServlet(urlPatterns = {"/three-party-login","/dang-xuat"})
 public class ThreePartyLoginController extends HttpServlet {
@@ -31,6 +34,9 @@ public class ThreePartyLoginController extends HttpServlet {
 
     @Inject
     private CustomerService customerService;
+
+    @Inject
+    private  ICartItemService cartItemService;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String code = request.getParameter("code");
@@ -82,6 +88,7 @@ public class ThreePartyLoginController extends HttpServlet {
     }
     public void handleUserLogin(CustomerRequest customerRequest, String provider, String sendDirection, HttpServletRequest request, HttpServletResponse response)
             throws IOException {
+        HashMap<Long, CartItemDTO> cart = new HashMap<>();
         CustomerResponse existingUser;
         if (provider.equals("google")) {
 
@@ -97,12 +104,15 @@ public class ThreePartyLoginController extends HttpServlet {
             existingUser = socialAccountService.save(customerRequest);
         }
         existingUser.setRole("CUSTOMER");
+
         //Neu da ton tai thi tien hanh update chua xu ly
 //        else {
 //            existingUser = new CustomerResponse();
 ////            userModel.setId(existingUser.getId());
 ////            userModel = customerService.update(userModel);
 //        }
+        cart=cartItemService.LoadCart(JWTUtil.getIdUser(request));
+        request.getSession().setAttribute("cart", cart);
         response.setContentType("application/json");
         String jwtToken = JWTUtil.generateToken(existingUser);
 
@@ -119,6 +129,7 @@ public class ThreePartyLoginController extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         JWTUtil.destroyToken(request, response);
+        request.getSession().removeAttribute("cart");
         response.sendRedirect(request.getContextPath() + "/trang-chu");
     }
 

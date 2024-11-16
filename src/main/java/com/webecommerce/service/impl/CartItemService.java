@@ -1,9 +1,11 @@
 package com.webecommerce.service.impl;
 
-import com.webecommerce.dao.impl.cart.CartDAO;
+import com.webecommerce.dao.cart.ICartItemDAO;
+import com.webecommerce.dao.impl.cart.CartItemDAO;
 import com.webecommerce.dao.impl.people.CustomerDAO;
 import com.webecommerce.dao.product.IProductVariantDAO;
 import com.webecommerce.dto.CartItemDTO;
+import com.webecommerce.dto.PlacedOrder.CheckOutRequestDTO;
 import com.webecommerce.dto.ProductVariantDTO;
 import com.webecommerce.entity.cart.CartEntity;
 import com.webecommerce.entity.cart.CartItemEntity;
@@ -32,6 +34,10 @@ public class CartItemService implements ICartItemService {
 
     @Inject
     private CartItemMapper cartItemMapper;
+
+
+    @Inject
+    private ICartItemDAO cartItemDAO;
 
     @Override
     public HashMap<Long, CartItemDTO> addCart(Long id, int quantity, HashMap<Long, CartItemDTO> cart) {
@@ -125,4 +131,46 @@ public class CartItemService implements ICartItemService {
         }
         return totalPrice;
     }
+
+    @Override
+    public HashMap<Long, CartItemDTO> updateCartWhenBuy(Long idUser, CheckOutRequestDTO checkOutRequestDTO) {
+        CartEntity cartEntity = customerDAO.findById(idUser).getCart();
+        HashMap<Long, CartItemDTO> cart = new HashMap<>();
+
+        for (CartItemEntity cartItemEntity : cartEntity.getCartItems()) {
+            CartItemDTO initialCartItemDTO = cartItemMapper.toDTO(cartItemEntity);
+
+            checkOutRequestDTO.getSelectedProductsId().stream()
+                    .filter(productOrderDTO -> productOrderDTO.getProductVariantId().equals(cartItemEntity.getProductVariant().getId()))
+                    .findFirst()
+                    .ifPresent(productOrderDTO -> {
+                        cartItemEntity.setQuantity(productOrderDTO.getQuantity());
+                        cartItemDAO.update(cartItemEntity);
+
+                        // Tạo mới một DTO để thêm vào `cart`
+                        CartItemDTO updatedCartItemDTO = cartItemMapper.toDTO(cartItemEntity);
+                        updatedCartItemDTO.setIsActive(1);
+                        cart.put(updatedCartItemDTO.getId(), updatedCartItemDTO);
+                    });
+
+            // Nếu không tìm thấy sản phẩm tương ứng trong `checkOutRequestDTO`, thêm DTO ban đầu
+            cart.putIfAbsent(initialCartItemDTO.getId(), initialCartItemDTO);
+        }
+
+        return cart;
+    }
+
+    @Override
+    public HashMap<Long, CartItemDTO> LoadCart(Long idUser) {
+        CartEntity cartEntity = customerDAO.findById(idUser).getCart();
+        HashMap<Long, CartItemDTO> cart = new HashMap<>();
+        for (CartItemEntity cartItemEntity : cartEntity.getCartItems()) {
+            CartItemDTO cartItemDTO = cartItemMapper.toDTO(cartItemEntity);
+            cartItemDTO.setIsActive(1);
+            cart.put(cartItemDTO.getId(), cartItemDTO);
+        }
+        return cart;
+    }
+
+
 }

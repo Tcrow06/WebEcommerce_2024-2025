@@ -1,8 +1,12 @@
 package com.webecommerce.dto.PlacedOrder;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CheckOutRequestDTO {
+    private Long idUser;
     private List<ProductOrderDTO> selectedProductsId;
     private String billDiscountCode;
 
@@ -14,6 +18,15 @@ public class CheckOutRequestDTO {
         this.billDiscountCode = billDiscountCode;
     }
 // Getters và Setters
+
+
+    public Long getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(Long idUser) {
+        this.idUser = idUser;
+    }
 
     public List<ProductOrderDTO> getSelectedProductsId() {
         return selectedProductsId;

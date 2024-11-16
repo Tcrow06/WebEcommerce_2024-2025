@@ -27,8 +27,12 @@ public class OrderInfoEntity {
     private AddressEntity address;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id", nullable = false)
+    @JoinColumn(name = "customer_id")
     private CustomerEntity customer;
+
+
+    @Column(name = "is_default")
+    private int isDefault;
 
     public OrderEntity getOrder() {
         return order;
