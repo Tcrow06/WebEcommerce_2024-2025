@@ -27,12 +27,10 @@ public class ReturnOrderController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String[] selectedItems = request.getParameterValues("orderitems");
 
-        // List to store selected order items with additional data
         List<OrderDetailDTO> selectedOrderItems = new ArrayList<>();
 
         if (selectedItems != null) {
             for (String itemId : selectedItems) {
-                // Retrieve the additional data for each selected item using the item ID
                 String quantity = request.getParameter("quantity-" + itemId);
                 String productDiscountId = request.getParameter("productDiscount-" + itemId);
                 String productVariantId = request.getParameter("productVariant-" + itemId);
@@ -46,10 +44,8 @@ public class ReturnOrderController extends HttpServlet {
             }
         }
 
-        // Set the list of selected order items as a request attribute to be accessed in JSP
         request.setAttribute("productList", selectedOrderItems);
 
-        // Forward the request to the return-order.jsp page
         request.getRequestDispatcher("/views/web/return-order.jsp").forward(request, response);
     }
 }

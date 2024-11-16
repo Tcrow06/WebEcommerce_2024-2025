@@ -11,8 +11,10 @@
         console.error("Error parsing state parameter:", error);
         }
     }
+    let sendDirectionParam = urlParams.get("send-direction")
     let googleLogin = document.getElementById("google-id");
     let facebookLogin = document.getElementById("facebook-id");
+    let login= document.getElementById("btn-login")
     if(googleLogin){
         googleLogin.addEventListener('click', function (event){
             event.preventDefault();
@@ -25,6 +27,13 @@
         facebookLogin.addEventListener('click',function (event){
             event.preventDefault();
             let stateParam = (JSON.stringify({"send-direction": sendDirection, provider:'facebook'}))
+            let newHref = this.href + "&state=" + stateParam;
+            window.location.href = newHref;
+        })
+    }
+    if(login){
+        login.addEventListener('click',function (event){
+            let stateParam = (JSON.stringify({"send-direction": sendDirection}))
             let newHref = this.href + "&state=" + stateParam;
             window.location.href = newHref;
         })

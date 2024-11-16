@@ -9,6 +9,7 @@ public class CartItemDTO extends BaseDTO<CartItemDTO> {
     private double totalPrice;
 
     private ProductVariantDTO productVariant;
+    private int isActive=0;
 
     public double getTotalPrice() {
         return totalPrice;
@@ -40,5 +41,13 @@ public class CartItemDTO extends BaseDTO<CartItemDTO> {
 
     public void setProductVariant(ProductVariantDTO productVariant) {
         this.productVariant = productVariant;
+    }
+
+    public int getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(int isActive) {
+        this.isActive = isActive;
     }
 }

@@ -1,23 +1,25 @@
 package com.webecommerce.service.impl;
 
-import com.webecommerce.dao.impl.cart.CartDAO;
+import com.webecommerce.dao.cart.ICartItemDAO;
+import com.webecommerce.dao.impl.cart.CartItemDAO;
 import com.webecommerce.dao.impl.people.CustomerDAO;
 import com.webecommerce.dao.product.IProductVariantDAO;
 import com.webecommerce.dto.CartItemDTO;
+import com.webecommerce.dto.PlacedOrder.CheckOutRequestDTO;
+import com.webecommerce.dto.PlacedOrder.ProductOrderDTO;
 import com.webecommerce.dto.ProductVariantDTO;
 import com.webecommerce.entity.cart.CartEntity;
 import com.webecommerce.entity.cart.CartItemEntity;
 import com.webecommerce.entity.people.CustomerEntity;
+import com.webecommerce.entity.product.ProductVariantEntity;
 import com.webecommerce.mapper.Impl.CartItemMapper;
 import com.webecommerce.mapper.Impl.ProductVariantMapper;
 import com.webecommerce.service.ICartItemService;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class CartItemService implements ICartItemService {
 
@@ -32,6 +34,10 @@ public class CartItemService implements ICartItemService {
 
     @Inject
     private CartItemMapper cartItemMapper;
+
+
+    @Inject
+    private ICartItemDAO cartItemDAO;
 
     @Override
     public HashMap<Long, CartItemDTO> addCart(Long id, int quantity, HashMap<Long, CartItemDTO> cart) {
@@ -125,4 +131,52 @@ public class CartItemService implements ICartItemService {
         }
         return totalPrice;
     }
+
+    @Override
+    public HashMap<Long, CartItemDTO> updateCartWhenBuy(Long idUser, CheckOutRequestDTO checkOutRequestDTO) {
+        CartEntity cartEntity = customerDAO.findById(idUser).getCart();
+        HashMap<Long, CartItemDTO> cart = new HashMap<>();
+
+        for (ProductOrderDTO productOrderDTO : checkOutRequestDTO.getSelectedProductsId()) {
+            cartEntity.getCartItems().stream()
+                    .filter(cartItemEntity -> cartItemEntity.getProductVariant().getId().equals(productOrderDTO.getProductVariantId()))
+                    .findFirst()
+                    .ifPresentOrElse(cartItemEntity -> {
+                        cartItemEntity.setQuantity(productOrderDTO.getQuantity());
+                        cartItemDAO.update(cartItemEntity);
+                        CartItemDTO updatedCartItemDTO = cartItemMapper.toDTO(cartItemEntity);
+                        updatedCartItemDTO.setIsActive(1);
+                        cart.put(updatedCartItemDTO.getId(), updatedCartItemDTO);
+                    }, () -> {
+                        CartItemEntity cartItem = new CartItemEntity();
+                        ProductVariantEntity productVariantEntity = productVariantDAO.findById(productOrderDTO.getProductVariantId());
+                        cartItem.setQuantity(productOrderDTO.getQuantity());
+                        cartItem.setProductVariant(productVariantEntity);
+                        cartItemDAO.insert(cartItem);
+                        CartItemDTO updatedCartItemDTO = cartItemMapper.toDTO(cartItem);
+                        updatedCartItemDTO.setIsActive(1);
+                        cart.put(updatedCartItemDTO.getId(), updatedCartItemDTO);
+                    });
+        }
+        LinkedHashMap<Long, CartItemDTO> sortedCart = new LinkedHashMap<>();
+        cart.entrySet().stream()
+                .sorted((entry1, entry2) -> Integer.compare(entry2.getValue().getIsActive(), entry1.getValue().getIsActive()))
+                .forEachOrdered(entry -> sortedCart.put(entry.getKey(), entry.getValue()));
+
+        return sortedCart;
+    }
+
+    @Override
+    public HashMap<Long, CartItemDTO> LoadCart(Long idUser) {
+        CartEntity cartEntity = customerDAO.findById(idUser).getCart();
+        HashMap<Long, CartItemDTO> cart = new HashMap<>();
+        for (CartItemEntity cartItemEntity : cartEntity.getCartItems()) {
+            CartItemDTO cartItemDTO = cartItemMapper.toDTO(cartItemEntity);
+            cartItemDTO.setIsActive(1);
+            cart.put(cartItemDTO.getId(), cartItemDTO);
+        }
+        return cart;
+    }
+
+
 }

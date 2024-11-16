@@ -1,6 +1,7 @@
 package com.webecommerce.service.impl;
 
 import com.webecommerce.service.ImageService;
+import org.springframework.security.core.parameters.P;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletConfig;
@@ -119,11 +120,19 @@ public class ImageServiceImpl extends HttpServlet implements ImageService {
     @Override
     public void saveImageToDisk() {
         try {
+
             path.write(getFile().getAbsolutePath());
-            this.width = this.width > 0 ? this.width : getBufferedImage().getWidth();
-            this.height = this.height > 0 ? this.height : getBufferedImage().getWidth();
+
+            BufferedImage bufferedImage = getBufferedImage();
+
+            if (bufferedImage != null) {
+                this.width = this.width > 0 ? this.width : bufferedImage.getWidth();
+                this.height = this.height > 0 ? this.height : bufferedImage.getHeight(); // Lưu ý: getHeight() thay vì getWidth()
+            } else {
+                System.out.println("Lỗi: Không thể tải ảnh từ " + getFile().getAbsolutePath());
+            }
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            System.out.println("IOException: " + e.getMessage());
         }
     }
 

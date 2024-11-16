@@ -3,6 +3,8 @@ package com.webecommerce.controller.web;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.webecommerce.dto.CartItemDTO;
+import com.webecommerce.dto.discount.BillDiscountDTO;
+import com.webecommerce.service.IBillDiscountService;
 import com.webecommerce.service.impl.CartItemService;
 import com.webecommerce.service.impl.ProductVariantService;
 import com.webecommerce.utils.JWTUtil;
@@ -29,13 +31,23 @@ public class CartItemController extends HttpServlet {
     @Inject
     private ProductVariantService productVariantService;
 
+    @Inject
+    private IBillDiscountService billDiscountService;
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String path = request.getServletPath();
-        if (path.equals("/gio-hang")) {
-            request.getRequestDispatcher("/views/web/cart.jsp").forward(request, response);
-        } else {
-            response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "Không thể thực hiện thao tác này.");
+        try {
+            Long id = JWTUtil.getIdUser(request);
+            List<BillDiscountDTO> billDiscountDTOS = billDiscountService.getAllDiscountEligible(id);
+            request.setAttribute("discountList", billDiscountDTOS);
+            String path = request.getServletPath();
+            if (path.equals("/gio-hang")) {
+                request.getRequestDispatcher("/views/web/cart.jsp").forward(request, response);
+            } else {
+                response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "Không thể thực hiện thao tác này.");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 

@@ -32,7 +32,7 @@ public class DiscountProductAPI extends HttpServlet {
         if(productDiscount != null) {
             String action = request.getServletPath();
             if (action.equals("/api-product-discount")) {
-                addProductDiscount(request, response,productDiscount);
+                updateProductDiscount(request, response,productDiscount);
             } else if (action.equals("/api-huy-giam-gia")) {
                 cancelProductDiscount(request, response, productDiscount);
             }
@@ -40,17 +40,25 @@ public class DiscountProductAPI extends HttpServlet {
         else response.setStatus(HttpServletResponse.SC_BAD_REQUEST); // 400 Bad Request
     }
 
-    private void addProductDiscount(HttpServletRequest req, HttpServletResponse resp, ProductDiscountDTO productDiscount) throws IOException {
-        productDiscount = productDiscountService.save(productDiscount);
-        if(productDiscount != null) {
-            mapper.writeValue(resp.getWriter(), "Thêm giảm giá thành công !");
-        } else mapper.writeValue(resp.getWriter(), "error");
+    private void updateProductDiscount(HttpServletRequest req, HttpServletResponse resp, ProductDiscountDTO productDiscount) throws IOException {
+        if (productDiscount.getId() == null) {
+            productDiscount = productDiscountService.save(productDiscount);
+            if(productDiscount != null) {
+                mapper.writeValue(resp.getWriter(), "Thêm giảm giá thành công !");
+            } else mapper.writeValue(resp.getWriter(), "error");
+        }
+        else {
+            productDiscount = productDiscountService.update(productDiscount);
+            if(productDiscount != null) {
+                mapper.writeValue(resp.getWriter(), "Cập nhật giảm giá thành công !");
+            } else mapper.writeValue(resp.getWriter(), "error");
+        }
     }
 
     private void cancelProductDiscount(HttpServletRequest req, HttpServletResponse resp, ProductDiscountDTO productDiscount) throws IOException {
         productDiscount = productDiscountService.cancelProductDiscount(productDiscount.getId());
         if(productDiscount != null) {
-            mapper.writeValue(resp.getWriter(), "Hủy giảm gi thành công !");
+            mapper.writeValue(resp.getWriter(), "Hủy giảm giá thành công !");
         } else mapper.writeValue(resp.getWriter(), "error");
     }
 }

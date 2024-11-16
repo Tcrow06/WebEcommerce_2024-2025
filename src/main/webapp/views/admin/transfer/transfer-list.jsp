@@ -53,7 +53,7 @@
                     <div class="row">
                         <div class="col-lg-2 col-sm-6 col-12">
                             <div class="form-group">
-                                <input type="text" class="datetimepicker cal-icon"
+                                <input type="datetime-local" class=""
                                        placeholder="Choose Date">
                             </div>
                         </div>
@@ -115,7 +115,7 @@
                                 </c:choose>
                             </td>
                             <td>
-                                <a class="me-3" href="edittransfer.html?id=${productReturn.id}">
+                                <a class="me-3" href="/chu-cua-hang/danh-sach-tra/tra-san-pham?id=${productReturn.id}">
                                     <img src="/static/admin/assets/img/icons/transfer1.svg" alt="img">
                                 </a>
                             </td>

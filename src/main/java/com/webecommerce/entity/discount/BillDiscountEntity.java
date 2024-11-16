@@ -5,11 +5,18 @@ import com.webecommerce.entity.order.ReturnOrderEntity;
 import org.hibernate.criterion.Order;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Table(name = "bill_discount")
 public class BillDiscountEntity extends DiscountEntity {
+    @Column(name = "start_date")
+    private LocalDateTime startDate;
+
+    @Column(name = "end_date")
+    private LocalDateTime endDate;
 
     @Column(name = "minimum_invoice_amount")
     private double minimumInvoiceAmount;
@@ -20,6 +27,10 @@ public class BillDiscountEntity extends DiscountEntity {
 
     @Column(name = "code")
     private String code;
+    @OneToMany(mappedBy = "billDiscount")
+    private List<OrderEntity> orders = new ArrayList<>();
+
+
 
     public double getMaximumAmount() {
         return maximumAmount;
@@ -29,19 +40,10 @@ public class BillDiscountEntity extends DiscountEntity {
         this.maximumAmount = maximumAmount;
     }
 
-    public int getMinimumPurchaseQuantity() {
-        return minimumPurchaseQuantity;
-    }
-
-    public void setMinimumPurchaseQuantity(int minimumPurchaseQuantity) {
-        this.minimumPurchaseQuantity = minimumPurchaseQuantity;
-    }
 
     @Column(name = "maximum_amount")
     private double maximumAmount;
 
-    @Column(name = "minimum_purchase_quantity")
-    private int minimumPurchaseQuantity;
 
     public List<OrderEntity> getOrders() {
         return orders;
@@ -51,8 +53,7 @@ public class BillDiscountEntity extends DiscountEntity {
         this.orders = orders;
     }
 
-    @OneToMany(mappedBy = "billDiscount")
-    private List<OrderEntity> orders;
+
 
 
     public double getMinimumInvoiceAmount() {
@@ -77,5 +78,25 @@ public class BillDiscountEntity extends DiscountEntity {
 
     public void setLoyaltyPointsRequired(int loyaltyPointsRequired) {
         this.loyaltyPointsRequired = loyaltyPointsRequired;
+    }
+
+    @Override
+    public LocalDateTime getStartDate() {
+        return startDate;
+    }
+
+    @Override
+    public void setStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
+    }
+
+    @Override
+    public LocalDateTime getEndDate() {
+        return endDate;
+    }
+
+    @Override
+    public void setEndDate(LocalDateTime endDate) {
+        this.endDate = endDate;
     }
 }
