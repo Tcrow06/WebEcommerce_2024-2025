@@ -8,6 +8,16 @@ public class UserResponse {
     private  String avatar;
     private String role;
 
+    public UserResponse() {
+    }
+
+    public UserResponse(Long id, String name, String phone, String email) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+    }
+
     public String getRole() {
         return role;
     }
