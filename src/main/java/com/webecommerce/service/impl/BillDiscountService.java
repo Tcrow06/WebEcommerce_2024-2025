@@ -26,6 +26,7 @@ public class BillDiscountService implements IBillDiscountService {
     @Transactional
     public BillDiscountDTO save (BillDiscountDTO billDiscountDTO) {
         BillDiscountEntity billDiscount = billDiscountMapper.toEntity(billDiscountDTO);
+
         return billDiscountMapper.toDTO(
                 billDiscountDAO.insert(billDiscount));
     }
@@ -96,6 +97,15 @@ public class BillDiscountService implements IBillDiscountService {
         return billDiscountMapper.toDTOList(billDiscountEntities);
     }
 
+    @Override
+    public BillDiscountDTO findBillDiscountByCode(String code) {
+        return billDiscountMapper.toDTO(billDiscountDAO.findBillDiscountByCode(code));
+    }
+
+    @Override
+    public BillDiscountDTO findBillDiscountByCodeAndValid(String code) {
+        return billDiscountMapper.toDTO(billDiscountDAO.findBillDiscountByCodeAndValid(code));
+    }
     public List <BillDiscountDTO> findBillDiscountUpComming () {
         return billDiscountMapper.toDTOList(billDiscountDAO.findBillDiscountUpComming());
     }

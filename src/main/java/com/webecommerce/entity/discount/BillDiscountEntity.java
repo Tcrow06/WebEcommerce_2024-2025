@@ -5,6 +5,7 @@ import com.webecommerce.entity.order.ReturnOrderEntity;
 import org.hibernate.criterion.Order;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -26,6 +27,10 @@ public class BillDiscountEntity extends DiscountEntity {
 
     @Column(name = "code")
     private String code;
+    @OneToMany(mappedBy = "billDiscount")
+    private List<OrderEntity> orders = new ArrayList<>();
+
+
 
     public double getMaximumAmount() {
         return maximumAmount;
@@ -48,8 +53,7 @@ public class BillDiscountEntity extends DiscountEntity {
         this.orders = orders;
     }
 
-    @OneToMany(mappedBy = "billDiscount")
-    private List<OrderEntity> orders;
+
 
 
     public double getMinimumInvoiceAmount() {

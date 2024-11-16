@@ -1,8 +1,10 @@
 package com.webecommerce.dto.discount;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.procedure.spi.ParameterRegistrationImplementor;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BillDiscountDTO extends DiscountDTO {
     private double minimumInvoiceAmount;
     private int loyaltyPointsRequired;

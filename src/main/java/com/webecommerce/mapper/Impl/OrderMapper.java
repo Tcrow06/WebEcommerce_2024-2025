@@ -1,36 +1,47 @@
 package com.webecommerce.mapper.Impl;
 
 import com.webecommerce.dto.OrderDTO;
-import com.webecommerce.dto.OrderDetailDTO;
 import com.webecommerce.entity.order.OrderEntity;
 import com.webecommerce.mapper.GenericMapper;
 
 import javax.inject.Inject;
 import java.util.List;
 
-public class OrderMapper implements GenericMapper<OrderDTO, OrderEntity> {
-
+public class OrderMapper implements GenericMapper<OrderDTO,OrderEntity> {
     @Inject
     private OrderInfoMapper orderInfoMapper;
+
     @Inject
     private OrderDetailMapper orderDetailMapper;
+
+    @Inject
+    private BillDiscountMapper billDiscountMapper;
     @Inject
     private OrderStatusMapper orderStatusMapper;
+
+
     @Override
     public OrderDTO toDTO(OrderEntity orderEntity) {
-        OrderDTO dto = new OrderDTO();
-        dto.setId(orderEntity.getId());
-        dto.setOrderInfoDTO(orderInfoMapper.toDTO(orderEntity.getOrderInfo()));
-        dto.setOrderDetails(orderDetailMapper.toDTOList(orderEntity.getOrderDetails()));
-        dto.setOrderStatuses(orderStatusMapper.toDTOList(orderEntity.getOrderStatuses()));
-        dto.setBillDiscount(orderEntity.getBillDiscount());
-        dto.setShippingFee(orderEntity.getShippingFee());
-        return dto;
+        if (orderEntity == null) return null;
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setOrderInfoDTO(orderInfoMapper.toDTO(orderEntity.getOrderInfo()));
+        orderDTO.setOrderDetails(orderDetailMapper.toDTOList(orderEntity.getOrderDetails()));
+        orderDTO.setBillDiscount(billDiscountMapper.toDTO(orderEntity.getBillDiscount()));
+        orderDTO.setOrderStatuses(orderStatusMapper.toDTOList(orderEntity.getOrderStatuses()));
+        orderDTO.setShippingFee(orderEntity.getShippingFee());
+        return orderDTO;
     }
+
 
     @Override
     public OrderEntity toEntity(OrderDTO orderDTO) {
-        return null;
+        if (orderDTO == null) return null;
+        OrderEntity orderEntity = new OrderEntity();
+        orderEntity.setOrderInfo(orderInfoMapper.toEntity(orderDTO.getOrderInfoDTO()));
+        orderEntity.setOrderDetails(orderDetailMapper.toEntityList(orderDTO.getOrderDetails()));
+        orderEntity.setBillDiscount(billDiscountMapper.toEntity(orderDTO.getBillDiscount()));
+        orderEntity.setShippingFee(orderEntity.getShippingFee());
+        return orderEntity;
     }
 
     @Override

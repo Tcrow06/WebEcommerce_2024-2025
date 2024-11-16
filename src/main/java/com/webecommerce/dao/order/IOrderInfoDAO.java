@@ -6,5 +6,5 @@ import com.webecommerce.entity.order.OrderEntity;
 import com.webecommerce.entity.order.OrderInfoEntity;
 
 public interface IOrderInfoDAO extends GenericDAO <OrderInfoEntity> {
-
+    OrderInfoEntity findDefaultOrderInfoByUserId(Long idUser);
 }

@@ -1,6 +1,7 @@
 package com.webecommerce.service;
 
 import com.webecommerce.dto.discount.BillDiscountDTO;
+import com.webecommerce.entity.discount.BillDiscountEntity;
 
 import java.util.List;
 
@@ -12,6 +13,11 @@ public interface IBillDiscountService {
     List<BillDiscountDTO> getAllDiscountEligible(Long idUser);
 
     List<BillDiscountDTO> findAllOutStanding ();
+
+    BillDiscountDTO findBillDiscountByCode(String code);
+
+    BillDiscountDTO findBillDiscountByCodeAndValid(String code);
+
 
     List <BillDiscountDTO> findBillDiscountUpComming () ;
 
