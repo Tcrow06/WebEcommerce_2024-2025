@@ -254,12 +254,17 @@
 
     var currentUrl = window.location.href;
 
-    // Kiểm tra nếu URL có tham số 'state'
-    if (currentUrl.indexOf('state=') !== -1) {
-        // Tạo URL mới không có tham số 'state'
-        var newUrl = currentUrl.replace(/([?&])state=[^&]+/, '$1').replace(/&$/, '').replace(/\?$/, '');
+    // Kiểm tra xem URL có tham số 'state' hay không
+    var stateMatch = currentUrl.match(/[?&]order=([^&]+)/);
+    if (stateMatch) {
+        // Lấy giá trị của tham số 'state'
+        var stateValue = stateMatch[1];
 
-        // Chuyển hướng đến URL mới
+        // Lưu giá trị 'state' vào sessionStorage
+        sessionStorage.setItem('order', stateValue);
+
+        // Xóa tham số 'state' khỏi URL hiển thị trên trình duyệt
+        var newUrl = currentUrl.replace(/([?&])order=[^&]+/, '$1').replace(/&$/, '').replace(/\?$/, '');
         window.history.replaceState({}, document.title, newUrl);
     }
 
@@ -269,21 +274,20 @@
         let isValid= true;
         const inputs = document.querySelectorAll('.checkout__input input');
         inputs.forEach(input => {
-
             const feedback = input.nextElementSibling; // Tìm thẻ <small> gần nhất
             if (input.value.trim() === '') {
                 feedback.textContent = 'Vui lòng nhập thông tin này!';
                 feedback.style.color = 'red';
                 isValid = false;
             } else {
-                feedback.textContent = ''; // Xóa thông báo lỗi
+                if(feedback){
+                    feedback.textContent = '';
+                }
             }
         });
 
 
-        alert("deo");
         if (isValid){
-            alert("deo vao");
             let order = JSON.parse('${orderDTOJson}');
             let recipient= document.getElementById("recipient").value;
             let phone= document.getElementById("phone").value;
@@ -294,7 +298,6 @@
                 concrete: document.getElementById("concrete").value
             }
             const paymentMethod = document.querySelector('input[name="payment"]:checked').nextElementSibling.textContent.trim();
-
 
             delete order.orderInfoDTO;
             order.orderInfoDTO = {
@@ -321,6 +324,9 @@
                         alert(response.message);
                         window.location.href = response.redirectUrl.toString() ;
 
+                    }else if( response.status==="warning"){
+                        alert(response.message);
+                        window.location.reload();
                     }
                 },
                 error: function(xhr, status, error) {

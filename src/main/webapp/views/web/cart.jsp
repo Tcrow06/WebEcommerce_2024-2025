@@ -311,11 +311,11 @@
                 }
                 // Xử lý khi thành công
                 else{
-                    window.location.href = response.redirectUrl.toString() + "?state=" + encodeURIComponent(JSON.stringify(response.state));
+                    window.location.href = response.redirectUrl.toString() + "?order=" + encodeURIComponent(JSON.stringify(response.order));
                 }
             },
             error: function(xhr, status, error) {
-                window.location.href = response.redirectUrl.toString() + "?state=" + encodeURIComponent(JSON.stringify(response.state));
+                window.location.href = response.redirectUrl.toString() + "?order=" + encodeURIComponent(JSON.stringify(response.order));
                 // Xử lý khi có lỗi
                 console.error("Lỗi: ", error);
                 alert("Có lỗi xảy ra, vui lòng thử lại.");

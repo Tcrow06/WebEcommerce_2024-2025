@@ -169,8 +169,8 @@ public class OrderService implements IOrderService {
                     }
                 }
                 if(productVariantEntity.getQuantity()<orderDetailDTO.getQuantity()){
-                    if(status == null ){
-                        status="error";
+                    if(status == null ||status.equals("warning")){
+                        status="waring+error";
                     }
                     message.append(productVariantEntity.getProduct().getName())
                             .append(" ")
@@ -243,7 +243,7 @@ public class OrderService implements IOrderService {
                orderDetailEntity.setProductVariant(productVariantEntity);
 
                ProductDiscountEntity productDiscountEntity = productVariantEntity.getProduct().getProductDiscount();
-               if ((productDiscountEntity.getStartDate().isBefore(LocalDateTime.now()) ||
+               if (productDiscountEntity!=null&&(productDiscountEntity.getStartDate().isBefore(LocalDateTime.now()) ||
                        productDiscountEntity.getStartDate().isEqual(LocalDateTime.now()))
                        && (productDiscountEntity.getEndDate().isAfter(LocalDateTime.now()) ||
                        productDiscountEntity.getEndDate().isEqual(LocalDateTime.now()))) {

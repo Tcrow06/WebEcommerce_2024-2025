@@ -61,7 +61,7 @@ public class PlacedOrderController extends HttpServlet {
                 jsonResponse.put("status","error");
             }else{
                 jsonResponse.put("redirectUrl", "/thanh-toan");
-                jsonResponse.put("state",orderDTO);
+                jsonResponse.put("order",orderDTO);
                 jsonResponse.put("status","success");
             }
 

@@ -6,20 +6,20 @@ import com.webecommerce.dao.impl.people.CustomerDAO;
 import com.webecommerce.dao.product.IProductVariantDAO;
 import com.webecommerce.dto.CartItemDTO;
 import com.webecommerce.dto.PlacedOrder.CheckOutRequestDTO;
+import com.webecommerce.dto.PlacedOrder.ProductOrderDTO;
 import com.webecommerce.dto.ProductVariantDTO;
 import com.webecommerce.entity.cart.CartEntity;
 import com.webecommerce.entity.cart.CartItemEntity;
 import com.webecommerce.entity.people.CustomerEntity;
+import com.webecommerce.entity.product.ProductVariantEntity;
 import com.webecommerce.mapper.Impl.CartItemMapper;
 import com.webecommerce.mapper.Impl.ProductVariantMapper;
 import com.webecommerce.service.ICartItemService;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class CartItemService implements ICartItemService {
 
@@ -137,27 +137,33 @@ public class CartItemService implements ICartItemService {
         CartEntity cartEntity = customerDAO.findById(idUser).getCart();
         HashMap<Long, CartItemDTO> cart = new HashMap<>();
 
-        for (CartItemEntity cartItemEntity : cartEntity.getCartItems()) {
-            CartItemDTO initialCartItemDTO = cartItemMapper.toDTO(cartItemEntity);
-
-            checkOutRequestDTO.getSelectedProductsId().stream()
-                    .filter(productOrderDTO -> productOrderDTO.getProductVariantId().equals(cartItemEntity.getProductVariant().getId()))
+        for (ProductOrderDTO productOrderDTO : checkOutRequestDTO.getSelectedProductsId()) {
+            cartEntity.getCartItems().stream()
+                    .filter(cartItemEntity -> cartItemEntity.getProductVariant().getId().equals(productOrderDTO.getProductVariantId()))
                     .findFirst()
-                    .ifPresent(productOrderDTO -> {
+                    .ifPresentOrElse(cartItemEntity -> {
                         cartItemEntity.setQuantity(productOrderDTO.getQuantity());
                         cartItemDAO.update(cartItemEntity);
-
-                        // Tạo mới một DTO để thêm vào `cart`
                         CartItemDTO updatedCartItemDTO = cartItemMapper.toDTO(cartItemEntity);
                         updatedCartItemDTO.setIsActive(1);
                         cart.put(updatedCartItemDTO.getId(), updatedCartItemDTO);
+                    }, () -> {
+                        CartItemEntity cartItem = new CartItemEntity();
+                        ProductVariantEntity productVariantEntity = productVariantDAO.findById(productOrderDTO.getProductVariantId());
+                        cartItem.setQuantity(productOrderDTO.getQuantity());
+                        cartItem.setProductVariant(productVariantEntity);
+                        cartItemDAO.insert(cartItem);
+                        CartItemDTO updatedCartItemDTO = cartItemMapper.toDTO(cartItem);
+                        updatedCartItemDTO.setIsActive(1);
+                        cart.put(updatedCartItemDTO.getId(), updatedCartItemDTO);
                     });
-
-            // Nếu không tìm thấy sản phẩm tương ứng trong `checkOutRequestDTO`, thêm DTO ban đầu
-            cart.putIfAbsent(initialCartItemDTO.getId(), initialCartItemDTO);
         }
+        LinkedHashMap<Long, CartItemDTO> sortedCart = new LinkedHashMap<>();
+        cart.entrySet().stream()
+                .sorted((entry1, entry2) -> Integer.compare(entry2.getValue().getIsActive(), entry1.getValue().getIsActive()))
+                .forEachOrdered(entry -> sortedCart.put(entry.getKey(), entry.getValue()));
 
-        return cart;
+        return sortedCart;
     }
 
     @Override

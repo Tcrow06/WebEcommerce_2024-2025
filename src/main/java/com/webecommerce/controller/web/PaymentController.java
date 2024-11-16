@@ -38,7 +38,14 @@ public class PaymentController extends HttpServlet {
     private IOrderService orderService;
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        String state = request.getParameter("state");
+        String state = request.getParameter("order");
+        HttpSession session = request.getSession();
+        if(state==null){
+            state = session.getAttribute("order").toString();
+        }else{
+            session.removeAttribute("order");
+            session.setAttribute("order",state);
+        }
         // Giải mã dữ liệu
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -66,11 +73,16 @@ public class PaymentController extends HttpServlet {
         OrderDTO orderDTO =  HttpUtils.of(request.getReader()).toModel(OrderDTO.class);
         Map<String, Object> jsonResponse = new HashMap<>();
         orderDTO = orderService.findInfoPayment(orderDTO, JWTUtil.getIdUser(request));
-        if(orderDTO.getStatus().equals("error")){
+        if(orderDTO.getStatus().contains("error")){
             jsonResponse.put("redirectUrl", "/gio-hang");
             jsonResponse.put("message",orderDTO.getMessage().toString());
             jsonResponse.put("status","error");
-        }else{
+        }else if (orderDTO.getStatus().contains("warning")){
+            jsonResponse.put("message",orderDTO.getMessage().toString());
+            jsonResponse.put("status","warning");
+        }
+        else
+        {
             jsonResponse.put("redirectUrl", "/gio-hang");
             jsonResponse.put("message",orderDTO.getMessage().toString());
             jsonResponse.put("status","success");
