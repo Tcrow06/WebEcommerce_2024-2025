@@ -1,13 +1,10 @@
 package com.webecommerce.mapper.Impl;
 
 import com.webecommerce.dto.OrderDTO;
-import com.webecommerce.dto.OrderDetailDTO;
-import com.webecommerce.entity.order.OrderDetailEntity;
 import com.webecommerce.entity.order.OrderEntity;
 import com.webecommerce.mapper.GenericMapper;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 
 public class OrderMapper implements GenericMapper<OrderDTO,OrderEntity> {
@@ -19,6 +16,9 @@ public class OrderMapper implements GenericMapper<OrderDTO,OrderEntity> {
 
     @Inject
     private BillDiscountMapper billDiscountMapper;
+    @Inject
+    private OrderStatusMapper orderStatusMapper;
+
 
     @Override
     public OrderDTO toDTO(OrderEntity orderEntity) {
@@ -27,9 +27,11 @@ public class OrderMapper implements GenericMapper<OrderDTO,OrderEntity> {
         orderDTO.setOrderInfoDTO(orderInfoMapper.toDTO(orderEntity.getOrderInfo()));
         orderDTO.setOrderDetails(orderDetailMapper.toDTOList(orderEntity.getOrderDetails()));
         orderDTO.setBillDiscount(billDiscountMapper.toDTO(orderEntity.getBillDiscount()));
+        orderDTO.setOrderStatuses(orderStatusMapper.toDTOList(orderEntity.getOrderStatuses()));
         orderDTO.setShippingFee(orderEntity.getShippingFee());
         return orderDTO;
     }
+
 
     @Override
     public OrderEntity toEntity(OrderDTO orderDTO) {

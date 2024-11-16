@@ -92,16 +92,6 @@ public class AuthController extends HttpServlet {
                         }
                     }
 
-
-                    // Khách hàng đăng nhập thành công thì hệ thống sẽ load dữ liệu giỏ hàng
-//                    CartEntity cartEntity = customerDAO.findById(user.getId()).getCart();
-//
-//                    HashMap<Long, CartItemDTO> cart = new HashMap<>();
-//                    for (CartItemEntity cartItemEntity : cartEntity.getCartItems()) {
-//
-//                        CartItemDTO cartItemDTO = cartItemMapper.toDTO(cartItemEntity);
-//                        cart.put(cartItemDTO.getId(), cartItemDTO);
-//                    }
                     request.getSession().setAttribute("cart", cart);
                     jwtToken = JWTUtil.generateToken(user);
                     path="/trang-chu";

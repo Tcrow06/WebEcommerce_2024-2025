@@ -20,9 +20,20 @@ public class ReturnOrderEntity {
     @Column(name = "status")
     private int status;
 
+    @Column(name = "quantity_return")
+    private Long quantityReturn;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "order_detail_id", referencedColumnName = "id")
     private OrderDetailEntity orderDetail;
+
+    public Long getQuantityReturn() {
+        return quantityReturn;
+    }
+
+    public void setQuantityReturn(Long quantityReturn) {
+        this.quantityReturn = quantityReturn;
+    }
 
     public OrderDetailEntity getOrderDetail() {
         return orderDetail;

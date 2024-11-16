@@ -22,17 +22,24 @@ public class OrderInfoEntity {
     @OneToOne(mappedBy = "orderInfo")
     private OrderEntity order;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     private AddressEntity address;
+
+    @Column(name = "is_default")
+    private int isDefault;
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private CustomerEntity customer;
 
+    public int getIsDefault() {
+        return isDefault;
+    }
 
-    @Column(name = "is_default")
-    private int isDefault;
+    public void setIsDefault(int isDefault) {
+        this.isDefault = isDefault;
+    }
 
     public OrderEntity getOrder() {
         return order;

@@ -19,9 +19,7 @@ public class OrderDetailDTO {
 
     private ProductVariantDTO productVariant;
 
-
     private ProductDiscountDTO productDiscount;
-
 
     private List<ProductReviewDTO> productReviews;
 

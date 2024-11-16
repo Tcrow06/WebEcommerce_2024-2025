@@ -18,17 +18,7 @@ public class BillDiscountDTO extends DiscountDTO {
     public void setMaximumAmount(double maximumAmount) {
         this.maximumAmount = maximumAmount;
     }
-
-    public int getMinimumPurchaseQuantity() {
-        return minimumPurchaseQuantity;
-    }
-
-    public void setMinimumPurchaseQuantity(int minimumPurchaseQuantity) {
-        this.minimumPurchaseQuantity = minimumPurchaseQuantity;
-    }
-
     private double maximumAmount;
-    private int minimumPurchaseQuantity;
 
     public double getMinimumInvoiceAmount() {
         return minimumInvoiceAmount;

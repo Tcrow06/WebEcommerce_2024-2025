@@ -25,7 +25,7 @@ public class OrderDetailEntity {
     private ProductVariantEntity productVariant;
 
 
-    @OneToOne(mappedBy = "orderDetail")
+    @OneToOne(mappedBy = "orderDetail", cascade = CascadeType.ALL)
     private ReturnOrderEntity returnOrder;
 
     @ManyToOne

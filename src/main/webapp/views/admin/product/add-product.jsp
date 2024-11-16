@@ -105,8 +105,8 @@
                             <a href="javascript:void(0);">Code: <span id="categoryCode">--</span></a>
                         </li>
                         <input type="hidden" name="category" id="category"
-                                <c:if test="${not empty item}">
-                                    value="${item[0].id}"
+                                <c:if test="${not empty model}">
+                                    value="${model[0].id}"
                                 </c:if>
                                class="custom-input form-control form-control-lg" />
                     </ul>
@@ -145,7 +145,6 @@
             </div>
 <%--            </div>--%>
             <hr/>
-            <hr/>
         </div>
     </div>
 
@@ -176,6 +175,9 @@
                             <!-- Các ô Size, Quantity và Price sẽ được thêm vào đây -->
                         </div>
                         <button type="button" class="col btn btn-primary add-size-btn mt-3" style="max-width: 200px; max-height: 40px;" onclick="addSize(this)">Thêm Size</button>
+                        <div class="mt-3 d-flex justify-content-end">
+                            <button class="btn btn-secondary" onclick="removeProductVariantCard(this)" >Hủy</button>
+                        </div>
                         <div class="w-100"></div>
                         <div class="col" style="margin-top: 20px;">
                             <div class="form-group">
@@ -251,14 +253,20 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-    <!-- MDBootstrap CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.0.0/mdb.min.css">
 
     <!-- MDBootstrap JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.0.0/mdb.min.js"></script>
 
 
     <script>
+        function removeProductVariantCard(buttonElement) {
+            var productCard = $(buttonElement).closest('.product-variant-card');
+
+            productCard.fadeOut(500, function() {
+                productCard.remove();
+            });
+        }
+
 
         function removeSizeRow(button) {
             // Xóa phần tử fieldset chứa size, quantity, price
@@ -466,7 +474,7 @@
 
             // Gửi dữ liệu lên server
             $.ajax({
-                url: '/api-product',
+                url: '/api-add-product',
                 type: 'POST',
                 data: formData,
                 processData: false,  // Không xử lý dữ liệu

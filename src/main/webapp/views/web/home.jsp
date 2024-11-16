@@ -178,7 +178,7 @@
                                                             <span>Kết thúc vào ngày: </span>
                                                             <h2>${item.getStringEndDate()}</h2>
                                                         </div>
-                                                        <p>Số lượng có hạn, chỉ có ${item.minimumPurchaseQuantity} vé</p>
+                                                        <p>Nhanh tay sử dụng nào !</p>
                                                         <h2>#Male_Fashion</h2>
                                                     </div>
                                                 </div>
@@ -344,31 +344,32 @@
         <div class="row">
             <div class="col-lg-4 col-md-6 col-sm-6">
                 <div class="blog__item">
-                    <div class="blog__item__pic set-bg" data-setbg="<c:url value="/static/img/blog/blog-1.jpg"/>"></div>
+                    <div class="blog__item__pic set-bg" data-setbg="<c:url value='/static/img/blog/blog-m-4.jpg'/>"></div>
                     <div class="blog__item__text">
-                        <span><img src="<c:url value="/static/img/icon/calendar.png"/>" alt=""> 16 February 2020</span>
-                        <h5>What Curling Irons Are The Best Ones</h5>
-                        <a href="#">Read More</a>
+                        <span><img src="<c:url value='/static/img/blog/blog-m-4.jpg'/>" alt="">11/09/2024</span>
+                        <h5>Thời Trang Thể Thao: Sự Kết Hợp Hoàn Hảo Giữa Phong Cách và Tiện
+                                                                Ích</h5>
+                        <a href="<c:url value='/views/web/blog/blog-4.jsp'/>">Read More</a>
                     </div>
                 </div>
             </div>
             <div class="col-lg-4 col-md-6 col-sm-6">
                 <div class="blog__item">
-                    <div class="blog__item__pic set-bg" data-setbg="<c:url value="/static/img/blog/blog-2.jpg"/>"></div>
+                    <div class="blog__item__pic set-bg" data-setbg="<c:url value='/static/img/blog/blog-m-2.jpg'/>"></div>
                     <div class="blog__item__text">
-                        <span><img src="<c:url value="/static/img/icon/calendar.png"/>" alt=""> 21 February 2020</span>
-                        <h5>Eternity Bands Do Last Forever</h5>
-                        <a href="#">Read More</a>
+                        <span><img src="<c:url value='/static/img/blog/blog-m-2.jpg'/>" alt=""> 11/09/2024</span>
+                        <h5>Để Tôi Chỉ Cho Cách Mặc Sơ Mi Đúng Cách: Tự Tin Và Lịch Lãm</h5>
+                        <a href="<c:url value='/views/web/blog/blog-2.jsp'/>">Read More</a>
                     </div>
                 </div>
             </div>
             <div class="col-lg-4 col-md-6 col-sm-6">
                 <div class="blog__item">
-                    <div class="blog__item__pic set-bg" data-setbg="<c:url value="/static/img/blog/blog-3.jpg"/>"></div>
+                    <div class="blog__item__pic set-bg" data-setbg="<c:url value='/static/img/blog/blog-m-3.jpg'/>"></div>
                     <div class="blog__item__text">
-                        <span><img src="<c:url value="/static/img/icon/calendar.png"/>" alt=""> 28 February 2020</span>
-                        <h5>The Health Benefits Of Sunglasses</h5>
-                        <a href="#">Read More</a>
+                        <span><img src="<c:url value='/static/img/blog/blog-m-3.jpg'/>" alt=""> 11/09/2024</span>
+                        <h5>Phối Màu Quần Áo: Nghệ Thuật Tạo Dựng Phong Cách Cá Nhân</h5>
+                        <a href="<c:url value='/views/web/blog/blog-3.jsp'/>">Read More</a>
                     </div>
                 </div>
             </div>

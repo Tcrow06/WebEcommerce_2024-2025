@@ -5,11 +5,14 @@ import com.webecommerce.entity.order.OrderDetailEntity;
 import com.webecommerce.mapper.GenericMapper;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderDetailMapper implements GenericMapper<OrderDetailDTO, OrderDetailEntity> {
     @Inject
     private ProductDiscountMapper productDiscountMapper;
+    @Inject
+    private ProductVariantMapper productVariantMapper;
 
     @Override
     public OrderDetailDTO toDTO(OrderDetailEntity orderDetailEntity) {
@@ -20,6 +23,7 @@ public class OrderDetailMapper implements GenericMapper<OrderDetailDTO, OrderDet
         orderDetailDTO.setProductDiscount(productDiscountMapper.toDTO(orderDetailEntity.getProductDiscount()));
         return orderDetailDTO;
     }
+
 
     @Override
     public OrderDetailEntity toEntity(OrderDetailDTO orderDetailDTO) {
@@ -33,7 +37,13 @@ public class OrderDetailMapper implements GenericMapper<OrderDetailDTO, OrderDet
 
     @Override
     public List<OrderDetailDTO> toDTOList(List<OrderDetailEntity> orderDetailEntities) {
-        return GenericMapper.super.toDTOList(orderDetailEntities);
+//        return GenericMapper.super.toDTOList(orderDetailEntities);
+        List<OrderDetailDTO> orderDetailDTOS = new ArrayList<>();
+        for (OrderDetailEntity entity : orderDetailEntities) {
+            OrderDetailDTO orderDetailDTO = toDTO(entity);
+            orderDetailDTOS.add(orderDetailDTO);
+        }
+        return orderDetailDTOS;
     }
 
     @Override

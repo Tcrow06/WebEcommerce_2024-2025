@@ -7,7 +7,11 @@ import java.util.List;
 
 public interface IBillDiscountService {
     BillDiscountDTO save(BillDiscountDTO discount);
+
     List<BillDiscountDTO> findAll();
+
+    List<BillDiscountDTO> getAllDiscountEligible(Long idUser);
+
     List<BillDiscountDTO> findAllOutStanding ();
 
     BillDiscountDTO findBillDiscountByCode(String code);
@@ -15,6 +19,11 @@ public interface IBillDiscountService {
     BillDiscountDTO findBillDiscountByCodeAndValid(String code);
 
 
+    List <BillDiscountDTO> findBillDiscountUpComming () ;
 
+    List <BillDiscountDTO> findExpiredBillDiscount () ;
 
+    List <BillDiscountDTO> findBillDiscountValid () ;
+
+    BillDiscountDTO findById(Long id);
 }

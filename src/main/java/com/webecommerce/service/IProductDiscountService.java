@@ -10,11 +10,14 @@ public interface IProductDiscountService {
 
     ProductDiscountDTO save (ProductDiscountDTO discount);
 
+    ProductDiscountDTO update(ProductDiscountDTO productDiscount);
+
+    ProductDiscountDTO findById(Long id);
+
     ProductDiscountDTO cancelProductDiscount(Long id);
 
     List<ProductDiscountDTO> getProductDiscountValid();
 
-    List <ProductDiscountDTO> getExpiredProductDiscount ();
+    List <ProductDiscountDTO> getUpcommingProductDiscount ();
 
-    List <ProductDiscountDTO> getCommingProductDiscount ();
 }

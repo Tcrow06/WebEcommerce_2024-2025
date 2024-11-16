@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/chu-doanh-nghiep/danh-sach-don-hang")
+@WebServlet("/chu-cua-hang/danh-sach-don-hang")
 public class SalesController extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

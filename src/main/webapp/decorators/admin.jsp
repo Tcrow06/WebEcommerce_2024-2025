@@ -15,18 +15,7 @@
 
     <link rel="shortcut icon" type="image/x-icon" href="../static/admin/assets/img/favicon.jpg">
 
-    <link rel="stylesheet" href="../static/admin/assets/css/bootstrap.min.css">
-
-<%--    <link rel="stylesheet" href="../static/admin/assets/css/animate.css">--%>
-
-<%--    <link rel="stylesheet" href="../static/admin/assets/plugins/select2/css/select2.min.css">--%>
-
-<%--    <link rel="stylesheet" href="../static/admin/assets/css/dataTables.bootstrap4.min.css">--%>
-
-<%--    <link rel="stylesheet" href="../static/admin/assets/plugins/fontawesome/css/fontawesome.min.css">--%>
-<%--    <link rel="stylesheet" href="../static/admin/assets/plugins/fontawesome/css/all.min.css">--%>
-
-<%--    <link rel="stylesheet" href="../static/admin/assets/css/style.css">--%>
+    <link rel="stylesheet" href="<c:url value="/static/admin/assets/css/bootstrap.min.css"/>">
 
     <%--   started Sales-list--%>
     <link rel="shortcut icon" type="image/x-icon" href="<c:url value='/static/admin/assets/img/favicon.jpg'/>"/>
@@ -37,11 +26,6 @@
     <link rel="stylesheet" href="<c:url value='/static/admin/assets/plugins/fontawesome/css/fontawesome.min.css'/>"/>
     <link rel="stylesheet" href="<c:url value='/static/admin/assets/plugins/fontawesome/css/all.min.css'/>" />
     <link rel="stylesheet" href="<c:url value='/static/admin/assets/css/style.css'/>" />
-
-    <%--   end Sales-list--%>
-
-
-
 
 </head>
 
@@ -64,21 +48,22 @@
 </div>
 
 
-<script src="../static/admin/assets/js/jquery-3.6.0.min.js"></script>
-<script src="../static/admin/assets/js/feather.min.js"></script>
-<script src="../static/admin/assets/js/jquery.slimscroll.min.js"></script>
-<script src="../static/admin/assets/js/jquery.dataTables.min.js"></script>
-<script src="../static/admin/assets/js/dataTables.bootstrap4.min.js"></script>
-<script src="../static/admin/assets/js/bootstrap.bundle.min.js"></script>
-<script src="../static/admin/assets/plugins/select2/js/select2.min.js"></script>
-<script src="../static/admin/assets/plugins/sweetalert/sweetalert2.all.min.js"></script>
-<script src="../static/admin/assets/plugins/sweetalert/sweetalerts.min.js"></script>
-<script src="../static/admin/assets/js/script.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.10.2/mdb.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="<c:url value='/static/admin/assets/js/jquery-3.6.0.min.js'/>"></script>
+<script src="<c:url value='/static/admin/assets/js/feather.min.js'/>"></script>
+<script src="<c:url value='/static/admin/assets/js/jquery.slimscroll.min.js'/>"></script>
+<script src="<c:url value='/static/admin/assets/js/jquery.dataTables.min.js'/>"></script>
+<script src="<c:url value='/static/admin/assets/js/dataTables.bootstrap4.min.js'/>"></script>
+<script src="<c:url value='/static/admin/assets/js/bootstrap.bundle.min.js'/>"></script>
+<script src="<c:url value='/static/admin/assets/plugins/select2/js/select2.min.js'/>"></script>
+<script src="<c:url value='/static/admin/assets/plugins/sweetalert/sweetalert2.all.min.js'/>"></script>
+<script src="<c:url value='/static/admin/assets/plugins/sweetalert/sweetalerts.min.js'/>"></script>
+<script src="<c:url value='/static/admin/assets/js/script.js'/>"></script>
+<script src="<c:url value='https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.10.2/mdb.min.js'/>"></script>
+<script src="<c:url value='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js'/>"></script>
+<script src="<c:url value='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'/>"></script>
 <script src="<c:url value='/static/admin/assets/js/bootstrap.bundle.min.js'/>"></script>
 <script src="<c:url value='/static/web/js/token/refreshToken.js'/> "></script>
+
 </body>
 
 </html>

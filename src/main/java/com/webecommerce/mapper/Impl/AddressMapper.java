@@ -4,6 +4,8 @@ import com.webecommerce.dto.AddressDTO;
 import com.webecommerce.entity.other.AddressEntity;
 import com.webecommerce.mapper.GenericMapper;
 
+import java.util.List;
+
 public class AddressMapper implements GenericMapper<AddressDTO, AddressEntity> {
     @Override
     public AddressDTO toDTO(AddressEntity addressEntity) {
@@ -16,6 +18,7 @@ public class AddressMapper implements GenericMapper<AddressDTO, AddressEntity> {
         return addressDTO;
     }
 
+
     @Override
     public AddressEntity toEntity(AddressDTO addressDTO) {
         AddressEntity addressEntity = new AddressEntity();
@@ -25,5 +28,15 @@ public class AddressMapper implements GenericMapper<AddressDTO, AddressEntity> {
         addressEntity.setDistrict(addressDTO.getDistrict());
         addressEntity.setCity(addressDTO.getCity());
         return addressEntity;
+    }
+
+    @Override
+    public List<AddressDTO> toDTOList(List<AddressEntity> addressEntities) {
+        return GenericMapper.super.toDTOList(addressEntities);
+    }
+
+    @Override
+    public List<AddressEntity> toEntityList(List<AddressDTO> addressDTOS) {
+        return GenericMapper.super.toEntityList(addressDTOS);
     }
 }

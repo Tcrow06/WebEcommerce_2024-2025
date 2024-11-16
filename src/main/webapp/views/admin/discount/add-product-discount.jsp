@@ -45,6 +45,9 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="text-danger small mt-2" id="rule-product-discount">
+                                * Những chương trình giảm giá đang diễn ra không cho phép chỉnh sửa.
+                            </div>
                         </div>
 
                         <div class="col-md-6 col-md-offset-1 col-sm-12 col-xs-12">
@@ -60,6 +63,7 @@
                                 <a href="javascript:void(0);">109 customer reviews</a>
                             </h2>
                             <div id="isDiscountProduct" style="font-size: 12px; color: red"></div>
+                            <span id = "is-going-on-discount" class="badge bg-success">Đang diễn ra</span><br>
                             <hr />
                             <h3 class="price-container">
                                 $129.54
@@ -96,6 +100,10 @@
                                 <!-- Confirm and Cancel Buttons -->
                                 <div class="mt-3 d-flex justify-content-end">
                                     <button id="cancel-button" class="btn btn-secondary">Dừng giảm giá</button>
+                                </div>
+
+                                <div class="mt-3 d-flex justify-content-end">
+                                    <button id="update-button" class="btn btn-primary">Cập nhật</button>
                                 </div>
 
                             </form>
@@ -230,6 +238,28 @@
                         $('#cancel-button').show()
                         $('#isDiscountProduct').text("");
                         $('#id-product-discount').val(discountId)
+                        $('#submit-button').hide()
+
+                        $('#is-going-on-discount').show()
+
+                        const discountStart = new Date(discountStartDate);
+                        const discountEnd = new Date(discountEndDate);
+                        const currentdate = new Date();
+
+                        // If the start date is before the current date, show "Đang diễn ra"
+                        if (discountStart <= currentdate) {
+                            $('#is-going-on-discount').removeClass("bg-danger");
+                            $('#is-going-on-discount').addClass("bg-success");
+                            $('#is-going-on-discount').text("Đang diễn ra");
+                            $('#update-button').hide()
+                            $('#rule-product-discount').text("* Những chương trình giảm giá đang diễn ra không cho phép chỉnh sửa.")
+                        } else {
+                            $('#is-going-on-discount').removeClass("bg-success");
+                            $('#is-going-on-discount').addClass("bg-danger");
+                            $('#is-going-on-discount').text("Sắp diễn ra");
+                            $('#update-button').show()
+                            $('#rule-product-discount').text("")
+                        }
                     } else {
                         // Xóa các giá trị nếu sản phẩm không có discount
                         $('#discountName').val('');
@@ -240,6 +270,7 @@
                         $('#cancel-button').hide()
                         $('#isDiscountProduct').text("Sản phẩm này chưa được thiết lập giảm giá !");
                         $('#id-product-discount').val(undefined)
+                        $('#is-going-on-discount').hide()
                     }
 
                     // Hiển thị phần tử .product-content
@@ -271,6 +302,7 @@
             $('#submit-button').click(function () {
                 if (!checkInput()) return
 
+                const id = $('#id-product-discount').val();
                 const name = $('#discountName').val();
                 const productId = $('#id-productselected').val();
                 const startDate = $('#startTime-discount').val();
@@ -279,6 +311,7 @@
                 const isOutstanding = $('#isOutstanding').is(':checked');
 
                 const data = {
+                    id: id,
                     name: name,
                     startDate: startDate,
                     endDate: endDate,
