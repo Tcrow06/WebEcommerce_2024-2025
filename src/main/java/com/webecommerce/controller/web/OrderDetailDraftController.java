@@ -16,7 +16,6 @@ import java.util.List;
 
 @WebServlet(urlPatterns = {"/danh-sach-don-hang"})
 public class OrderDetailDraftController extends HttpServlet {
-
     @Inject
     private IOrderDetailService orderDetailService;
 

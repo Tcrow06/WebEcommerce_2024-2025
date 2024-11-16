@@ -109,6 +109,14 @@
         background-color: #333;
     }
 
+    .no-order-message {
+        font-size: 24px;
+        color: #666;
+        text-align: center;
+        font-weight: bold;
+        padding: 20px;
+    }
+
     /* Responsive Styles */
     @media (max-width: 768px) {
         .steps {
@@ -154,6 +162,10 @@
 
     <!-- Nội dung đơn hàng -->
     <div class="order-content">
+        <div id="no-orders-message" class="no-order-message" style="display: none;">
+            Không có đơn hàng
+        </div>
+
         <c:forEach var="order" items="${orders}">
             <div class="order-item" data-status="${order.status}">
                 <div class="order-image">
@@ -176,32 +188,37 @@
 
 <script>
     function showOrders(status) {
-        // Lấy tất cả các đơn hàng
         const orders = document.querySelectorAll('.order-item');
+        const noOrdersMessage = document.getElementById('no-orders-message');
+        let hasOrders = false;
 
-        // Nếu trạng thái là 'all', hiển thị tất cả
         if (status === 'ALL') {
             orders.forEach(order => order.style.display = 'flex');
+            hasOrders = true;
         } else {
-            // Ẩn tất cả các đơn hàng
             orders.forEach(order => {
-                // Lọc theo trạng thái
                 if (order.getAttribute('data-status') === status) {
-                    order.style.display = 'flex';  // Hiển thị đơn hàng có trạng thái khớp
+                    order.style.display = 'flex';
+                    hasOrders = true;
                 } else {
-                    order.style.display = 'none';  // Ẩn các đơn hàng không khớp
+                    order.style.display = 'none';
                 }
             });
         }
 
-        // Cập nhật trạng thái của các liên kết thanh trạng thái
+        if (!hasOrders) {
+            noOrdersMessage.style.display = 'block';
+        } else {
+            noOrdersMessage.style.display = 'none';
+        }
+
         const links = document.querySelectorAll('.order-status-bar a');
-        links.forEach(link => link.classList.remove('active'));  // Xóa lớp active của tất cả các liên kết
-        document.getElementById(status).classList.add('active');  // Thêm lớp active vào liên kết tương ứng
+        links.forEach(link => link.classList.remove('active'));
+        document.getElementById(status.toLowerCase()).classList.add('active');
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        showOrders('ALL'); // Hiển thị tất cả đơn hàng mặc định
+        showOrders('ALL');
     });
 
 </script>

@@ -3,30 +3,23 @@ package com.webecommerce.dto.notinentity;
 import com.webecommerce.constant.EnumOrderStatus;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class DisplayOrderDTO {
     private Long id;
-    private String dateTime;
-    private Long totalOrder;
+    private LocalDateTime dateTime;
+    private Double totalOrder;
     private Long allQuantity;
     private String imgUrl;
     private EnumOrderStatus status;
 
-    public DisplayOrderDTO(Long id, String dateTime, Long totalOrder, Long allQuantity, String imgUrl, EnumOrderStatus status) {
+    public DisplayOrderDTO(Long id, LocalDateTime dateTime, Double totalOrder, Long allQuantity, String imgUrl, EnumOrderStatus status) {
         this.id = id;
+        this.status = status;
         this.dateTime = dateTime;
-        this.totalOrder = totalOrder;
         this.allQuantity = allQuantity;
+        this.totalOrder = totalOrder;
         this.imgUrl = imgUrl;
-        this.status = status;
-    }
-
-    public EnumOrderStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(EnumOrderStatus status) {
-        this.status = status;
     }
 
     public Long getId() {
@@ -37,19 +30,19 @@ public class DisplayOrderDTO {
         this.id = id;
     }
 
-    public String getDateTime() {
+    public LocalDateTime getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(String dateTime) {
+    public void setDateTime(LocalDateTime dateTime) {
         this.dateTime = dateTime;
     }
 
-    public Long getTotalOrder() {
+    public Double getTotalOrder() {
         return totalOrder;
     }
 
-    public void setTotalOrder(Long totalOrder) {
+    public void setTotalOrder(Double totalOrder) {
         this.totalOrder = totalOrder;
     }
 
@@ -67,5 +60,13 @@ public class DisplayOrderDTO {
 
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
+    }
+
+    public EnumOrderStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(EnumOrderStatus status) {
+        this.status = status;
     }
 }
