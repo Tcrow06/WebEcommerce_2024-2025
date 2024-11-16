@@ -65,40 +65,7 @@
                             <tr>
                                 <td class="product__cart__item">
                                     <div class="product__cart__item__pic">
-                                        <img src="<c:url value='${item.productVariant.imageUrl}' />" alt="${item.productVariant.name}">
-                                    </div>
-                                    <div class="product__cart__item__text">
-                                        <h6>${item.productVariant.name}</h6>
-                                        <h6>Size: ${item.productVariant.size}</h6>
-                                        <h6>Color: ${item.productVariant.color}</h6>
-                                    </div>
-                                </td>
-                                <td class="quantity__item">
-                                    <div class="quantity">
-                                        <div class="pro-qty-2">
-                                            <input type="text" value="${item.quantity}" data-product-id="${item.productVariant.id}">
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="cart__price">$ ${item.productVariant.price * item.quantity}</td>
-                                <td class="cart__close">
-                                    <a href="javascript:void(0);" onclick="removeFromCart(${item.productVariant.id})">
-                                        <i class="fa fa-close"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        </c:forEach>
-                        </tbody>
-
-                        <tbody>
-                        <c:forEach var="entry" items="${sessionScope.cart}">
-                            <c:set var="itemId" value="${entry.key}" />
-                            <c:set var="item" value="${entry.value}" />
-                            <tr>
-                                <td class="product__cart__item">
-                                    <div class="product__cart__item__pic">
-                                        <img style="width: 100px" src="<c:url value='/static/img/product/aothun1-gray.png'/>" alt="${item.productVariant.name}">
-                                            <%--                                        <img src="<c:url value='/api-image?path=${item.productVariant.imageUrl}'/>" alt="${item.productVariant.name}">--%>
+                                        <img style="width: 100px" src="<c:url value='/api-image?path=${item.productVariant.imageUrl}'/>" alt="${item.productVariant.name}">
                                     </div>
                                     <div class="product__cart__item__text">
                                         <h6>${item.productVariant.name}</h6>
@@ -284,7 +251,7 @@
                         <li>Subtotal <span>$ 0</span></li>
                         <li>Total <span id="total-price">$ ${sessionScope.totalPrice}</span></li>
                     </ul>
-                    <a href="<c:url value='/' />" class="primary-btn"  id="PlacedOrder">Proceed to checkout</a>
+                    <a href="javascript:void(0);" class="primary-btn"  id="ProceedToCheckout">Proceed to checkout</a>
                 </div>
             </div>
         </div>
@@ -417,6 +384,56 @@
 
 
 
+    $('#ProceedToCheckout').click(function (event) {
+
+        event.preventDefault();
+        const selectedProducts = getSelectedProducts();
+        const billDiscountCode = $('#discount-code').val();
+
+        if (selectedProducts.length === 0) {
+            alert("Vui lòng chọn ít nhất một sản phẩm để thanh toán.");
+            return;
+        }
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = "/check-out";
+
+        // Tạo input ẩn để gửi danh sách sản phẩm
+        const productInput = document.createElement("input");
+        productInput.type = "hidden";
+        productInput.name = "listSelectedProductsId";
+        productInput.value = JSON.stringify(selectedProducts);
+        form.appendChild(productInput);
+
+        // Tạo input ẩn để gửi mã giảm giá
+        const discountInput = document.createElement("input");
+        discountInput.type = "hidden";
+        discountInput.name = "billDiscountCode";
+        discountInput.value = billDiscountCode;
+        form.appendChild(discountInput);
+
+        // Thêm form vào body và submit
+        document.body.appendChild(form);
+        form.submit();
+    });
+
+
+    function getSelectedProducts() {
+        const selectedProducts = [];
+        $('#cart-container tbody tr').each(function() {
+            const checkbox = $(this).find('input[type="checkbox"]');
+            if (checkbox.is(':checked')) {
+                const productVariantId = $(this).find('input[type="text"]').data('product-id');
+                const quantity = $(this).find('input[type="text"]').val();
+                if (productVariantId && quantity) {
+                    selectedProducts.push({
+                        productVariantId: productVariantId,
+                        quantity: parseInt(quantity, 10)
+                    });
+                }
+            }
+        });
+        return selectedProducts;
     // Phần quản lý mã giảm giá
     function toggleButtonText(button) {
         if (button.textContent === "Xem chi tiết ⬎") {

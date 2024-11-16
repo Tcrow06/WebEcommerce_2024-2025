@@ -16,7 +16,5 @@ public class ProductDiscountDTO extends DiscountDTO {
         this.product = product;
     }
 
-
-
 }
 

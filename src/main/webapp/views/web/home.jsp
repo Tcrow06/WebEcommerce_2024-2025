@@ -178,7 +178,7 @@
                                                             <span>Kết thúc vào ngày: </span>
                                                             <h2>${item.getStringEndDate()}</h2>
                                                         </div>
-                                                        <p>Số lượng có hạn, chỉ có ${item.minimumPurchaseQuantity} vé</p>
+                                                        <p>Nhanh tay sử dụng nào !</p>
                                                         <h2>#Male_Fashion</h2>
                                                     </div>
                                                 </div>
