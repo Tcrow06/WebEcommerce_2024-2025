@@ -14,6 +14,9 @@
         <div class="page-title">
             <h4>Tạo mã giảm giá cho đơn hàng</h4>
             <h6>Maketing</h6>
+            <div class="text-danger small mt-2" id="rule-product-discount">
+                * Những chương trình giảm giá đang diễn ra và đã kết thúc không cho phép chỉnh sửa.
+            </div>
         </div>
     </div>
 
@@ -48,6 +51,8 @@
                     </label>
                 </div>
 
+                <input type="hidden" id="id-billdiscount">
+
                 <!-- Discount Program Name -->
                 <div class="form-group">
                     <label for="discountProgram">Tên chương trình giảm giá</label>
@@ -67,6 +72,7 @@
                 <!-- Usage Time -->
                 <div class="form-group">
                     <label>Thời gian sử dụng mã</label>
+                    <span style="display: none; margin-bottom: 5px " id = "is-going-on-discount" class="badge bg-success">Đang diễn ra</span><br>
                     <div class="input-group mb-3">
                         <input type="datetime-local" class="form-control" id="startDate">
                         <input type="datetime-local" class="form-control" id="endDate">
@@ -140,14 +146,91 @@
 
             <!-- Buttons -->
             <div class="mt-4">
-                <button type="button" class="btn btn-secondary">Hủy</button>
-                <button type="submit" class="btn btn-primary">Xác nhận</button>
+                <button id="cancel-btn" type="button" class="btn btn-secondary">Dừng Chương trình</button>
+                <button id="add-Product" type="submit" class="btn btn-primary">Xác nhận</button>
             </div>
         </form>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
+
+            const $billDiscountSelected = $('#billDiscountSelected');
+
+            if ($billDiscountSelected.length > 0) {
+                $('.page-header h4').text('Cập nhật mã giảm giá cho đơn hàng');
+                $('.container h2').text('Cập nhật mã giảm giá');
+
+
+                // Lấy dữ liệu từ các thuộc tính data-
+                const id = $billDiscountSelected.data('id');
+                const name = $billDiscountSelected.data('name');
+                const startDate = $billDiscountSelected.data('startdate');
+                const endDate = $billDiscountSelected.data('enddate');
+                const discountPercentage = $billDiscountSelected.data('discountpercentage');
+                const isOutStanding = $billDiscountSelected.data('isoutstanding');
+                const minimumInvoiceAmount = $billDiscountSelected.data('minimuminvoiceamount');
+                const loyaltyPointsRequired = $billDiscountSelected.data('loyaltypointsrequired');
+                const code = $billDiscountSelected.data('code');
+                const maximumAmount = $billDiscountSelected.data('maximumamount');
+
+                const discountStart = new Date(startDate);
+                const discountEnd = new Date(endDate);
+                const currentdate = new Date();
+
+                if (discountStart < currentdate && discountEnd > currentdate) {
+                    $('#is-going-on-discount').removeClass("bg-danger");
+                    $('#is-going-on-discount').removeClass("bg-secondary");
+                    $('#is-going-on-discount').addClass("bg-success");
+                    $('#is-going-on-discount').text("Đang diễn ra");
+
+                } else if (discountStart > currentdate && discountEnd > currentdate) {
+                    $('#is-going-on-discount').removeClass("bg-success");
+                    $('#is-going-on-discount').removeClass("bg-secondary");
+                    $('#is-going-on-discount').addClass("bg-danger");
+                    $('#is-going-on-discount').text("Sắp diễn ra");
+                } else {
+                    $('#is-going-on-discount').removeClass("bg-success");
+                    $('#is-going-on-discount').removeClass("bg-danger");
+                    $('#is-going-on-discount').addClass("bg-secondary");
+                    $('#is-going-on-discount').text("Đã kết thúc");
+                }
+                $('#is-going-on-discount').show()
+
+
+                if (discountStart > currentdate && discountEnd > currentdate) { // chỉ chính sửa những discount chưa diễn ra
+                    $('#add-Product').text("Cập nhật")
+                    $('#add-Product').show()
+                }
+                else $('#add-Product').hide()
+                if (discountEnd < currentdate)
+                    $('#cancel-btn').hide()
+
+                // Gán dữ liệu vào các ô input tương ứng
+                $('#id-billdiscount').val(id)
+                $('#discountProgram').val(name);
+                $('#startDate').val(startDate);
+                $('#endDate').val(endDate);
+                $('#discountPercentage').val(discountPercentage);
+                $('#minOrderValue').val(minimumInvoiceAmount);
+                $('#voucherCode').val(code);
+                $('#usageLimit').val(maximumAmount);
+
+                // Xử lý trường hợp loyaltyPointsRequired
+                if ([50, 100, 200, 500].includes(loyaltyPointsRequired)) {
+                    $('#categorySelect').val(loyaltyPointsRequired);
+                    $('#customScoreInput').hide(); // Ẩn input tùy chỉnh nếu điểm khớp với các giá trị cố định
+                } else {
+                    $('#categorySelect').val('custom');
+                    $('#customScore').val(loyaltyPointsRequired);
+                    $('#customScoreInput').show(); // Hiển thị input tùy chỉnh nếu điểm không khớp
+                }
+
+                // Xử lý checkbox "Nổi bật"
+                $('#isOutstanding').prop('checked', isOutStanding);
+            } else $('#cancel-btn').hide()
+
+
             // Function to toggle custom score input based on category selection
             $('#categorySelect').change(function() {
                 const selectValue = $('#categorySelect').val();
@@ -221,7 +304,8 @@
             }
 
             // Function to send form data via AJAX
-            function sendData() {
+            function updateOrAddBillDiscount() {
+                const idBillDiscount = $('#id-billdiscount').val() ;
                 const discountProgram = $('#discountProgram').val();
                 const voucherCode = $('#voucherCode').val();
                 const startDate = $('#startDate').val();
@@ -248,6 +332,7 @@
 
                 // Prepare data to send
                 const data = {
+                    id : idBillDiscount,
                     minimumInvoiceAmount: minOrderValue,
                     name: discountProgram,
                     startDate: startDate,
@@ -259,14 +344,29 @@
                     loyaltyPointsRequired: loyaltyPointsRequired // Send the selected or custom score
                 };
 
-                // Send the data using AJAX
+                sendData(data,'/api-bill-discount','POST')
+            }
+
+            // Function to send form data via AJAX
+            function cancelBillDiscount() {
+                const idBillDiscount = $('#id-billdiscount').val() ;
+
+                // Prepare data to send
+                const data = {
+                    id : idBillDiscount,
+                };
+
+                sendData(data,'/api-bill-discount','DELETE')
+            }
+
+            function sendData (data,url,method) {
                 $.ajax({
-                    url: '/api-bill-discount',
-                    method: 'POST',
+                    url: url,
+                    method: method,
                     contentType: 'application/json',
                     data: JSON.stringify(data),
                     success: function(response) {
-                        alert('Mã giảm giá đã được tạo thành công!');
+                        alert(response);
                     },
                     error: function(xhr, status, error) {
                         alert('Có lỗi xảy ra khi gửi dữ liệu!');
@@ -275,11 +375,16 @@
             }
 
             // Handle form submission
-            $('button[type="submit"]').click(function(e) {
+            $('#add-Product').click(function(e) {
                 e.preventDefault(); // Prevent default form submission
                 if (checkInput()) {
-                    sendData(); // Send data if inputs are valid
+                    updateOrAddBillDiscount(); // Send data if inputs are valid
                 }
+            });
+
+            $('#cancel-btn').click(function (e) {
+                e.preventDefault();
+                cancelBillDiscount();
             });
         });
 

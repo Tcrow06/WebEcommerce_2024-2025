@@ -62,11 +62,12 @@
         <div class="row">
             <div class="form-group">
                 <h2 class="name">
+                    <input type="hidden" id="product-id" value="${model.id}">
                     <small>Product name @
                         <div class="row">
                             <div class=" mb-4">
                                 <div data-mdb-input-init class="form-outline">
-                                    <input type="text" name="firstName" id="productName" class="custom-input form-control form-control-lg" />
+                                    <input type="text" name="firstName" id="productName" class="custom-input form-control form-control-lg" value="${model.name}" />
                                     <label class="form-label" for="productName">Tên sản phẩm</label>
                                     <div class="error-message" id="productNameError" style="font-size: 12px"></div>
                                 </div>
@@ -77,7 +78,7 @@
                         <div class="row">
                             <div class=" mb-4">
                                 <div data-mdb-input-init class="form-outline">
-                                    <input type="text" name="firstName" id="productBrand" class="custom-input form-control form-control-lg" />
+                                    <input type="text" name="firstName" id="productBrand" class="custom-input form-control form-control-lg" value="${model.brand}" />
                                     <label class="form-label" for="productBrand">Hãng sản phẩm</label>
                                     <div class="error-message" id="productBrandError" style="font-size: 12px"></div>
                                 </div>
@@ -92,8 +93,8 @@
             <div class="form-group">
                 <label>Category</label>
                 <select class="select" id="categorySelect">
-                    <c:forEach var="item" items="${model}">
-                        <option data-id=${item.id} value="${item.code}">${item.name}</option>
+                    <c:forEach var="item" items="${category}">
+                        <option data-id="${item.id}" value="${item.code}">${item.name}</option>
                     </c:forEach>
                 </select>
                 <div class="certified">
@@ -104,14 +105,10 @@
                         <li>
                             <a href="javascript:void(0);">Code: <span id="categoryCode">--</span></a>
                         </li>
-                        <input type="hidden" name="category" id="category"
-                                <c:if test="${not empty model}">
-                                    value="${model[0].id}"
-                                </c:if>
+                        <input type="hidden" name="category" id="category" value="${model.category.id}"
                                class="custom-input form-control form-control-lg" />
                     </ul>
                 </div>
-
             </div>
             <hr />
             <div class="description description-tabs">
@@ -127,23 +124,22 @@
             <div class="size-table">
                 <br />
                 <strong>Up ảnh bảng size</strong>
-                    <div class="product-image">
-                        <div class="item active">
-                            <img src="<c:url value='/static/img/product/404.jpg'/>" class="img-responsive" alt="Product Image" id = "previewSizeTable">
+                <div class="product-image">
+                    <div class="item active">
+                        <img src="<c:url value='/api-image?path=${model.sizeConversionTableUrl}'/>" class="img-responsive" alt="Product Image" id = "previewSizeTable">
+                    </div>
+                </div>
+                <div class="form-group" style="max-width: 360px; max-height: 200px">
+                    <label>Product Image</label>
+                    <div class="image-upload">
+                        <input type="file" accept="image/jpeg" id="imageInputSizeTable">
+                        <div class="image-uploads">
+                            <img src="/static/admin/assets/img/icons/upload.svg" alt="img">
+                            <h4>Drag and drop a file to upload</h4>
                         </div>
                     </div>
-                    <div class="form-group" style="max-width: 360px; max-height: 200px">
-                        <label>Product Image</label>
-                        <div class="image-upload">
-                            <input type="file" accept="image/jpeg" id="imageInputSizeTable">
-                            <div class="image-uploads">
-                                <img src="/static/admin/assets/img/icons/upload.svg" alt="img">
-                                <h4>Drag and drop a file to upload</h4>
-                            </div>
-                        </div>
-                    </div>
+                </div>
             </div>
-<%--            </div>--%>
             <hr/>
         </div>
     </div>
@@ -237,6 +233,89 @@
     <div id="productVariantsContainer" class="row mt-4">
         <br>
         <strong>Chi tiết sản phẩm </strong>
+
+        <c:forEach var="item" items="${model.getProductVariantColorsss()}">
+            <div class="product-variant-card card mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-5 col-sm-12 col-xs-12">
+                            <div class="product-image">
+                                <div class="item active">
+                                    <img src="<c:url value='/api-image?path=${item.imageUrl}'/>" class="img-responsive" alt="Product Image">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-7 col-md-offset-1 col-sm-12 col-xs-12 row">
+                            <div class="col">
+                                <div class="input-group input-group-sm mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text btn-primary" style="color: white;" >Color</span>
+                                    </div>
+                                    <input type="text" class="form-control variant-color" name="name" aria-label="Small" aria-describedby="inputGroup-sizing-sm" value="${item.color}" style="max-width: 150px;">
+                                    <div class="error-message"></div>
+                                </div>
+                            </div>
+                            <div class="w-100"></div>
+                            <div class="row size-container">
+                                <c:forEach var="sizeProduct" items="${item.sizes}">
+                                    <fieldset class="custom-fieldset border-bottom" style="max-height: 80px; margin: 10px">
+                                        <legend class="custom-legend">Phân loại hàng</legend>
+                                        <div class="d-flex align-items-center mb-2 single-size-row">
+
+                                            <input type="hidden" class="variant-id" value="${sizeProduct.id}">
+
+                                            <!-- Ô Size lớn hơn -->
+                                            <div class="flex-fill me-2" style="max-width: 40%; position: relative;">
+                                                <input type="text" name="variantSize" placeholder="Size" class="form-control variant-size" value="${sizeProduct.size}">
+                                                <div class="error-message" style="position: absolute; bottom: -18px; left: 0; font-size: 12px;"></div>
+                                            </div>
+
+                                            <!-- Ô Quantity nhỏ hơn -->
+                                            <div class="flex-fill me-2" style="max-width: 20%; position: relative;">
+                                                <input type="number" name="variantQuantity" placeholder="Quantity" class="form-control variant-quantity" value="${sizeProduct.quantity}">
+                                                <div class="error-message" style="position: absolute; bottom: -18px; left: 0; font-size: 12px;"></div>
+                                            </div>
+
+                                            <!-- Ô Price lớn hơn -->
+                                            <div class="flex-fill me-2" style="max-width: 40%; position: relative;">
+                                                <input type="text" name="variantPrice" placeholder="Price" class="form-control variant-price" value="${sizeProduct.price}">
+                                                <div class="error-message" style="position: absolute; bottom: -18px; left: 0; font-size: 12px;"></div>
+                                            </div>
+
+                                            <!-- Nút Xóa -->
+                                            <div class="d-flex align-items-center justify-content-center">
+                                                <button type="button" class="btn btn-danger btn-sm remove-row-btn ms-2" style="font-size: 0.8rem;" onclick="removeSizeRow(this)">🗑</button>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </c:forEach>
+                            </div>
+                            <button type="button" class="col btn btn-primary add-size-btn mt-3" style="max-width: 200px; max-height: 40px;" onclick="addSize(this)">Thêm Size</button>
+                            <div class="mt-3 d-flex justify-content-end">
+                                <button id="cancel-button" class="btn btn-secondary" onclick="removeProductVariantCard(this)" >Hủy</button>
+                            </div>
+                            <div class="w-100"></div>
+                            <div class="col" style="margin-top: 20px;">
+                                <div class="form-group">
+                                    <label> Product Image</label>
+                                    <div class="image-upload">
+                                        <input type="file" accept="image/jpeg" onchange="previewImage(this)">
+                                        <div class="image-uploads">
+                                            <img src="/static/admin/assets/img/icons/upload.svg" alt="img">
+                                            <h4>Drag and drop a file to upload</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </c:forEach>
+
+
     </div>
 
 
@@ -259,12 +338,31 @@
 
 
     <script>
+
         function removeProductVariantCard(buttonElement) {
             var productCard = $(buttonElement).closest('.product-variant-card');
 
             productCard.fadeOut(500, function() {
                 productCard.remove();
             });
+        }
+
+
+        function previewImage(input) {
+            // Tìm thẻ img nằm trong cùng thẻ cha của input file
+            var parentCard = $(input).closest('.product-variant-card');  // Lấy thẻ cha gần nhất có class 'product-variant-card'
+            var img = parentCard.find('img.img-responsive');  // Tìm thẻ <img> trong thẻ cha đó
+
+            // Kiểm tra xem có tệp được chọn không
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    // Thay đổi src của thẻ img bằng URL tạm thời của hình ảnh đã chọn
+                    img.attr('src', e.target.result);
+                };
+                // Đọc tệp hình ảnh dưới dạng URL
+                reader.readAsDataURL(input.files[0]);
+            }
         }
 
 
@@ -289,11 +387,40 @@
             }, 100); // 100ms cho hiệu ứng chậm
         }
 
+        function updateCategory () {
+            // Giá trị `id` từ input ẩn
+            const selectedCategoryId = $('#category').val();
+
+            // Tìm và đặt tùy chọn phù hợp
+            $('#categorySelect option').each(function () {
+                if ($(this).data('id') == selectedCategoryId) {
+                    $(this).prop('selected', true);
+                    return false; // Thoát vòng lặp
+                }
+            });
+
+            // Cập nhật tên và mã danh mục
+            const selectedOption = $('#categorySelect option:selected');
+            $('#categoryName').text(selectedOption.text());
+            $('#categoryCode').text(selectedOption.val());
+
+            // Lắng nghe sự kiện thay đổi và cập nhật thông tin
+            $('#categorySelect').change(function () {
+                const selectedOption = $(this).find(':selected');
+                $('#categoryName').text(selectedOption.text());
+                $('#categoryCode').text(selectedOption.val());
+            });
+        }
+
         var quill
         $(document).ready(function() {
+            updateCategory()
+
             quill = new Quill('#productDescription', {
                 theme: 'snow'
             });
+
+            quill.root.innerHTML = '${model.description}';
 
             $('#imageInputSizeTable').on('change', function(event) {
                 // Kiểm tra xem có file được chọn không
@@ -309,7 +436,7 @@
                 }
             });
 
-            updateProductCards()
+
             $("#categorySelect").change(function() {
                 var selectedOption = $(this).find("option:selected");
                 var categoryName = selectedOption.text();  // Lấy tên category
@@ -322,7 +449,7 @@
                 $("#categoryCode").text(categoryCode);
                 $("#category").val(categoryId);
             });
-            $('#add-product-btn').click(addProduct);
+            $('#add-product-btn').click(updateProduct);
         });
 
 
@@ -416,12 +543,13 @@
             });
         }
 
-        function addProduct() {
+        function updateProduct() {
             if (!checkInput()) return;
 
             const formData = new FormData();
 
             var product = {
+                id : $('#product-id').val(),
                 name: $('#productName').val(),
                 highlight: $('#highlight').is(':checked'),
                 status: 'SELLING',
@@ -432,6 +560,7 @@
                 },
             };
 
+            formData.append('product.id', product.id);
             formData.append('product.name', product.name);
             formData.append('product.highlight', product.highlight);
             formData.append('product.status', product.status);
@@ -440,7 +569,7 @@
             formData.append('product.category.id', product.category.id);
 
             const sizeTableImage = $("#imageInputSizeTable")[0];
-            if (sizeTableImage) {
+            if (sizeTableImage && sizeTableImage.files[0]) {
                 formData.append(`product.sizeConversionTable`, sizeTableImage.files[0]);
             }
 
@@ -453,11 +582,14 @@
 
                 $(this).find('.single-size-row').each(function() {
                     const variant = {
+                        id : $(this).find('.variant-id').val(),
                         price: parseFloat($(this).find('.variant-price').val()),
                         size: $(this).find('.variant-size').val(),
                         quantity: parseInt($(this).find('.variant-quantity').val()),
                     };
 
+                    formData.append(`productVariants[` + index + `].index`, index);
+                    formData.append(`productVariants[` + index + `].id`, variant.id);
                     formData.append(`productVariants[` + index + `].price`, variant.price);
                     formData.append(`productVariants[` + index + `].color`, color);
                     formData.append(`productVariants[` + index + `].size`, variant.size);
@@ -474,7 +606,7 @@
 
             // Gửi dữ liệu lên server
             $.ajax({
-                url: '/api-add-product',
+                url: '/api-update-product',
                 type: 'POST',
                 data: formData,
                 processData: false,  // Không xử lý dữ liệu

@@ -20,6 +20,7 @@ public class ReturnOrderService implements IReturnOrderService {
 
     @Inject
     private IReturnOrderDAO returnOrderDAO;
+
     @Inject
     private OrderDetailDAO orderDetailDAO;
 

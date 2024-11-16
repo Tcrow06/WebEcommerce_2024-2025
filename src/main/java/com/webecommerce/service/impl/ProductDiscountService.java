@@ -69,7 +69,7 @@ public class ProductDiscountService implements IProductDiscountService {
 
         ProductDiscountEntity productDiscountEntity = productDiscountDAO.findById(productDiscount.getId());
         if (productDiscountEntity != null) {
-            if (productDiscountEntity.getStartDate().isAfter(LocalDateTime.now())) { // chỉ chỉnh sửa những discount chưa diễn ra
+            if (productDiscountEntity.getStartDate().isAfter(LocalDateTime.now()) && productDiscountEntity.getEndDate().isAfter(LocalDateTime.now())) { // chỉ chỉnh sửa những discount chưa diễn ra
 
                 productDiscountEntity.setName(productDiscount.getName());
                 productDiscountEntity.setStartDate(productDiscount.getStartDate());

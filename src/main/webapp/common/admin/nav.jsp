@@ -18,8 +18,8 @@
                 <li class="submenu">
                     <a href="javascript:void(0);"><img src="../static/admin/assets/img/icons/product.svg" alt="img"><span> Marketing</span> <span class="menu-arrow"></span></a>
                     <ul>
-                        <li><a href="/chu-cua-hang/giam-gia-cho-san-pham">Thêm giảm giá cho sản phẩm</a></li>
-                        <li><a href="/chu-cua-hang/giam-gia-cho-don-hang">Thêm giảm giá cho đơn hàng</a></li>
+                        <li><a href="/chu-cua-hang/giam-gia-cho-san-pham">Giảm giá cho sản phẩm</a></li>
+                        <li><a href="/chu-cua-hang/giam-gia-cho-don-hang">Giảm giá cho đơn hàng</a></li>
                     </ul>
                 </li>
                 <li class="submenu">
