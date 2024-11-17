@@ -1,17 +1,20 @@
 package com.webecommerce.service.impl;
 
+import com.webecommerce.dto.MessageDTO;
 import com.webecommerce.service.ImageService;
-import org.springframework.security.core.parameters.P;
+import net.coobird.thumbnailator.Thumbnails;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.Part;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.UUID;
-import javax.servlet.http.HttpServlet;
 
 public class ImageServiceImpl extends HttpServlet implements ImageService {
 
@@ -86,55 +89,70 @@ public class ImageServiceImpl extends HttpServlet implements ImageService {
 
     @Override
     public String getFolderUpload() {
-         String path = realPath + File.separator + "static"+ File.separator + "img" +  File.separator + "product";
-        String path1 = realPath + "static"+ File.separator + "img" +  File.separator + "product";
         return realPath + "static"+ File.separator + "img" +  File.separator + "product";
     }
 
-    private BufferedImage getBufferedImage() {
-        try {
-            File file = getFile();
-            if (file == null || !file.exists()) {
-                System.out.println("File không tồn tại hoặc là null.");
-                return null; // hoặc xử lý theo ý muốn
-            }
-
-
-            if (!file.canRead()) {
-                System.out.println("Không có quyền đọc file tại đường dẫn: " + file.getAbsolutePath());
-                return null;
-            }
-
-            BufferedImage bufferedImage = ImageIO.read(file);
-            if (bufferedImage == null) {
-                System.out.println("Không thể đọc file ảnh hoặc định dạng ảnh không hợp lệ.");
-                return null; // hoặc xử lý theo ý muốn
-            }
-
-            return bufferedImage;
-        } catch (IOException e) {
-            throw new RuntimeException("Lỗi khi đọc file ảnh: " + e.getMessage(), e);
-        }
-    }
-
     @Override
-    public void saveImageToDisk() {
+    public MessageDTO saveImageToDisk() {
+        MessageDTO messageDTO = new MessageDTO();
         try {
+            String mimeType = path.getContentType();
+            System.out.println("MIME Type: " + mimeType);
 
-            path.write(getFile().getAbsolutePath());
-
-            BufferedImage bufferedImage = getBufferedImage();
-
-            if (bufferedImage != null) {
-                this.width = this.width > 0 ? this.width : bufferedImage.getWidth();
-                this.height = this.height > 0 ? this.height : bufferedImage.getHeight(); // Lưu ý: getHeight() thay vì getWidth()
-            } else {
-                System.out.println("Lỗi: Không thể tải ảnh từ " + getFile().getAbsolutePath());
+            if (mimeType == null || !mimeType.startsWith("image")) {
+                System.out.println("Đây không phải là một file ảnh hợp lệ.");
+                messageDTO.setMessage("Đây không phải là một file ảnh hợp lệ.");
+                messageDTO.setStatus("error");
+                return messageDTO;
             }
+
+
+            File tempFile = new File(getFolderUpload() + File.separator + "temp_" + fileName);
+            path.write(tempFile.getAbsolutePath());
+
+
+            File outputFile = getFile();
+            if (mimeType.equals("image/jpeg") || mimeType.equals("image/png")) {
+                try{
+                    BufferedImage image = ImageIO.read(tempFile);
+                    ImageIO.write(image, "jpg", outputFile);
+                    System.out.println("Đã lưu ảnh dưới dạng JPG tại: " + outputFile.getAbsolutePath());
+                    messageDTO.setStatus("success");
+                }catch (Exception e){
+                    System.out.println(e.getMessage());
+                    messageDTO.setMessage("Định dạng ảnh gốc không được hỗ trợ.Có vẻ bạn đã ép kiểu ảnh không hợp lê. Chỉ xử lý ảnh gốc JPG, PNG, WEBP. Vui lòng chọn ảnh khác");
+                    messageDTO.setStatus("error");
+                    return messageDTO;
+                }
+            }
+
+            else if (mimeType.equals("image/webp")) {
+                Thumbnails.of(tempFile)
+                        .outputFormat("jpg")
+                        .toFile(outputFile);
+                System.out.println("Ảnh WebP đã được chuyển đổi và lưu tại: " + outputFile.getAbsolutePath());
+                messageDTO.setStatus("success");
+
+            }
+            else {
+                System.out.println("Định dạng ảnh gốc không được hỗ trợ. Chỉ xử lý JPG, PNG, WEBP. Vui lòng chọn ảnh khác");
+                messageDTO.setMessage("Định dạng ảnh gốc không được hỗ trợ. Chỉ xử lý JPG, PNG, WEBP. Vui lòng chọn ảnh khác");
+                messageDTO.setStatus("error");
+            }
+
+            if (tempFile.exists() && !tempFile.delete()) {
+                System.out.println("Không thể xóa file tạm.");
+            }
+            return messageDTO;
+
         } catch (IOException e) {
-            System.out.println("IOException: " + e.getMessage());
+            System.out.println("Lỗi khi lưu ảnh: " + e.getMessage());
+            messageDTO.setMessage("Định dạng ảnh gốc không được hỗ trợ.Có vẻ bạn đã ép kiểu ảnh không hợp lê. Chỉ xử lý ảnh gốc JPG, PNG, WEBP. Vui lòng chọn ảnh khác");
+            messageDTO.setStatus("error");
+            return messageDTO;
         }
     }
+
 
     @Override
     public boolean delete(String path) {
