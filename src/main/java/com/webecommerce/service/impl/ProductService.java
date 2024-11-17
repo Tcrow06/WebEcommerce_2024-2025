@@ -358,4 +358,11 @@ public class ProductService implements IProductService {
         return productDAO.getTotalItems();
     }
 
+    @Override
+    public List<ProductDTO> searchProductsByName(String name) {
+        List<ProductEntity> products = productDAO.searchProductsByName(name);
+        return products.stream()
+                .map(productMapper::toDTO)
+                .collect(Collectors.toList());
+    }
 }

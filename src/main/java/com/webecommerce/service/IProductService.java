@@ -53,4 +53,6 @@ public interface IProductService {
     List<String> getAllProductName();
 
     Long getTotalItems();
+
+    List<ProductDTO> searchProductsByName(String name);
 }
