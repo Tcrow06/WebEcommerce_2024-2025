@@ -148,7 +148,7 @@
                             <i class="fa fa-star-o"></i>
                             <span> - 5 Reviews</span>
                         </div>
-                        <h3 id="price-product">$${model.getDiscountedPrice()}
+                        <h3 id="price-product">${model.getDiscountedPrice()}
                             <c:if test="${model.productDiscount != null}">
                                 <span class="discounted-price">${model.price}</span>
                             </c:if></h3>

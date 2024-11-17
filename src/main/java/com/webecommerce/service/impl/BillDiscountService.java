@@ -91,7 +91,7 @@ public class BillDiscountService implements IBillDiscountService {
     }
 
     public List<BillDiscountDTO> findAllOutStanding () {
-        List<BillDiscountEntity> billDiscountEntities = billDiscountDAO.getBillDiscountByOutStanding(true);
+        List<BillDiscountEntity> billDiscountEntities = billDiscountDAO.findBillDiscountOutStandingAndStillValid();
         if (billDiscountEntities == null)
             return new ArrayList<>();
         return billDiscountMapper.toDTOList(billDiscountEntities);

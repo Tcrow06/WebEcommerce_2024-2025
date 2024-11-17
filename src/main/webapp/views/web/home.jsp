@@ -100,7 +100,7 @@
                                 <i class="fa fa-star-o"></i>
                             </div>
 <%--                            <h5>$ ${item.price}</h5>--%>
-                            <h5>$${item.getDiscountedPrice()}
+                            <h5>${item.getDiscountedPrice()}
                                 <c:if test="${item.productDiscount != null}">
                                     <span class="discounted-price">${item.price}</span>
                                 </c:if>
@@ -170,6 +170,9 @@
                                                         <span>Chỉ dành cho thành viên trên ${item.loyaltyPointsRequired} điểm !</span>
                                                         <h3>Giảm giá cho đơn hàng trên ${item.minimumInvoiceAmount}$</h3>
                                                         <p>Giảm tối thiểu $${item.maximumAmount}.</p>
+
+                                                        <span class="badge badge-${item.getBootstrapClassStatus()} rounded-pill d-inline">${item.getStatus()}</span>
+
                                                         <div class="instagram__text" style="padding: 0">
                                                             <span>Bắt đầu vào ngày: </span>
                                                             <h2>${item.getStringStartDate()}</h2>
@@ -238,7 +241,7 @@
                                                     <img src="<c:url value='/api-image?path=${item.photo}'/>" alt="">
                                                     <div class="hot__deal__sticker">
                                                         <span>Sale Of</span>
-                                                        <h5>$${item.getDiscountedPrice()}</h5>
+                                                        <h5>${item.getDiscountedPrice()}</h5>
                                                     </div>
                                                 </div>
                                             </div>

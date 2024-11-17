@@ -26,6 +26,8 @@ public class BillDiscountDAO extends AbstractDAO<BillDiscountEntity> implements 
     public BillDiscountDAO() {
         super(BillDiscountEntity.class);
     }
+
+
     public List<BillDiscountEntity> getAllDiscountEligible(Long idUser) {
         String query = "SELECT b FROM BillDiscountEntity b JOIN CustomerEntity c " +
                 "ON b.loyaltyPointsRequired < c.loyaltyPoint " +
@@ -63,6 +65,8 @@ public class BillDiscountDAO extends AbstractDAO<BillDiscountEntity> implements 
         List<BillDiscountEntity> list = findByAttribute("code", code);
         return list.isEmpty()? null : list.get(0);
     }
+
+
     @Override
     public BillDiscountEntity findBillDiscountByCodeAndValid(String code) {
         String query = "SELECT e FROM " + BillDiscountEntity.class.getSimpleName() +
@@ -81,6 +85,26 @@ public class BillDiscountDAO extends AbstractDAO<BillDiscountEntity> implements 
             return null;
         }
     }
+
+    public List <BillDiscountEntity> findBillDiscountOutStandingAndStillValid () {
+        String query = "SELECT b FROM BillDiscountEntity b " +
+                "WHERE b.endDate >= :now and b.isOutStanding = :isOutStanding"; ;
+
+        try {
+            return entityManager.createQuery(query, BillDiscountEntity.class)
+                    .setParameter("now", LocalDateTime.now())
+                    .setParameter("isOutStanding", true)
+                    .getResultList();
+        } catch (NoResultException e) {
+            LOGGER.log(Level.WARNING, "Không tìm thấy biến thể giảm giá nào", e);
+            return null;
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi lấy biến thể giảm giá", e);
+            return null;
+        }
+    }
+
+
     public List <BillDiscountEntity> findBillDiscountValid () {
         String query = "SELECT b FROM BillDiscountEntity b " +
                 "WHERE b.startDate <= :start and b.endDate >= :start"; ;
@@ -97,6 +121,7 @@ public class BillDiscountDAO extends AbstractDAO<BillDiscountEntity> implements 
             return null;
         }
     }
+
 
     public List <BillDiscountEntity> findBillDiscountUpComming () {
         String query = "SELECT b FROM BillDiscountEntity b " +
