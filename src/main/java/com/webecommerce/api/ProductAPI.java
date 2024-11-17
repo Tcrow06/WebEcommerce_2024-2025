@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.webecommerce.dto.CategoryDTO;
 import com.webecommerce.dto.ProductDTO;
 import com.webecommerce.dto.ProductVariantDTO;
+import com.webecommerce.dto.discount.BillDiscountDTO;
 import com.webecommerce.service.IProductService;
 import com.webecommerce.service.IProductVariantService;
 import com.webecommerce.utils.HttpUtils;
@@ -31,6 +32,8 @@ public class ProductAPI extends HttpServlet {
 
     @Inject
     IProductVariantService productVariantService;
+
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -67,7 +70,25 @@ public class ProductAPI extends HttpServlet {
         }
     }
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setCharacterEncoding("UTF-8");
+        resp.setContentType("application/json");
+        req.setCharacterEncoding("UTF-8");
+
+        try {
+            String idProduct = req.getParameter("product.id");
+
+            if (idProduct != null) {
+                Long id = Long.valueOf(idProduct);
+                stopSellingProduct(req,resp,new ProductDTO(id));
+            }
+
+        } catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            objectMapper.writeValue(resp.getWriter(), "Lỗi xử lý: " + e.getMessage());
+        }
+    }
 
     private int getIndexFromParameter(String parameterName) {
         int startIndex = parameterName.indexOf('[') + 1;
@@ -211,6 +232,16 @@ public class ProductAPI extends HttpServlet {
         } catch (ServletException e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); // 500 Internal Server Error
             objectMapper.writeValue(response.getWriter(), "Servlet error");
+        }
+    }
+
+    private void stopSellingProduct (HttpServletRequest request, HttpServletResponse response, ProductDTO productDTO) throws IOException {
+        productDTO = productService.stopSelling(productDTO.getId());
+        if(productDTO != null) {
+            objectMapper.writeValue(response.getWriter(), "Ngừng kinh doanh sản phẩm thành công !");
+        } else {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            objectMapper.writeValue(response.getWriter(), "Ngừng kinh doanh sản phẩm thất bại !");
         }
     }
 

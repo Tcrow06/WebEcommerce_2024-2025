@@ -159,6 +159,17 @@ public class ProductService implements IProductService {
         return productMapper.toDTO(productDAO.insert(productEntity));
     }
 
+    @Transactional
+    public ProductDTO stopSelling (Long productId) {
+
+        ProductEntity productEntity = productDAO.findById(productId);
+        if (productEntity == null) return null;
+
+        productEntity.setStatus(EnumProductStatus.STOP_SELLING);
+
+        return productMapper.toDTO(productDAO.update(productEntity));
+    }
+
     private ProductDTO getProduct (ProductEntity product) {
         ProductDTO productDTO = productMapper.toDTO(product);
         //lấy discount cho từng sản phâm
@@ -171,7 +182,9 @@ public class ProductService implements IProductService {
             }
         }
         productDTO.setProductVariants(
-                productVariantMapper.toDTOList(product.getProductVariants())
+                productVariantMapper.toDTOList(
+                        productVariantDAO.getProductVariantsByProduct(product)
+                )
         );
 
         return productDTO;
@@ -206,9 +219,28 @@ public class ProductService implements IProductService {
 
     // dùng cho controller productdiscount @phamtienanh
     public List <ProductDTO> getProductsFromDiscount () {
-        List <ProductEntity> products = productDAO.findAll();
+        List <ProductEntity> products = productDAO.findProductByStatus(EnumProductStatus.SELLING);
+
+        if (products == null) return new ArrayList<>();
         return getProductsWithDiscount(products);
     }
+
+    // dùng cho controller product admin
+    public List<ProductDTO> findProductSelling() {
+        List <ProductEntity> productEntities = productDAO.findProductByStatus(EnumProductStatus.SELLING);
+        if (productEntities == null) return new ArrayList<>();
+
+        return getProductsWithDiscount(productEntities);
+    }
+
+    // dùng cho controller product admin
+    public List<ProductDTO> findProductStopSelling() {
+        List <ProductEntity> productEntities = productDAO.findProductByStatus(EnumProductStatus.STOP_SELLING);
+        if (productEntities == null) return new ArrayList<>();
+
+        return getProductsWithDiscount(productEntities);
+    }
+
     //------------------------------------------------------------------
 
     // dùng để lấy discout, price mà không cần lay het product variant -> load nhanh hơn
@@ -320,6 +352,5 @@ public class ProductService implements IProductService {
     public List<String> getAllProductName() {
         return productDAO.getAllProductName();
     }
-
 
 }

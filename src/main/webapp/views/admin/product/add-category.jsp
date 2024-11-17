@@ -108,42 +108,88 @@
         </div>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Xác nhận</h5>
+                    <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn thực hiện ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal" id="cancelButton">Hủy</button>
+                    <button type="button" class="btn btn-primary" id="okButton">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $('#submitBtn').click(function() {
-                // Lấy dữ liệu từ form và chuyển thành đối tượng
-                var formData = $("#categoryForm").serializeArray();  // Lấy dữ liệu dưới dạng mảng đối tượng
 
-                // Tạo đối tượng JSON từ dữ liệu form
-                var data = {};
-                $.each(formData, function(i, field) {
-                    data[field.name] = field.value;
+        function showConfirmationModal() {
+            return new Promise((resolve) => {
+                // Hiển thị modal
+                $('#exampleModal').modal('show');
+
+                // Khi người dùng nhấn "OK"
+                $('#okButton').one('click', function () {
+                    resolve(true); // Người dùng đồng ý
+                    $('#exampleModal').modal('hide');
                 });
 
-                // Gửi yêu cầu POST đến server
-                $.ajax({
-                    url: '/api-category',
-                    type: 'POST',
-                    contentType: 'application/json',  // Đảm bảo gửi dữ liệu dưới dạng JSON
-                    data: JSON.stringify(data),  // Chuyển đối tượng thành JSON
-                    dataType: 'json',
-                    success: function(response, textStatus, xhr) {
-                        if (xhr.status === 200) {
-                            alert(response); // Thông báo thành công
-                            // Reload bảng category nếu thành công
-                            var tableBody = $(".datanew tbody");
+                // Khi người dùng nhấn "Cancel"
+                $('#cancelButton').one('click', function () {
+                    resolve(false); // Người dùng hủy
+                    $('#exampleModal').modal('hide');
+                });
+            });
+        }
 
-                            var row = $("<tr>");
-                            row.append("<td class='productimgname'><a href='javascript:void(0);'>" + data.name + "</a></td>");
-                            row.append("<td>" + data.code + "</td>");
-                            tableBody.append(row);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        alert('Failed to add category: ' + error);
+        $(document).ready(function() {
+            $('#submitBtn').click(function() {
+
+                showConfirmationModal().then((result) => {
+                    if (!result) {
+                        console.log("User cancelled the action.");
+                        return; // Người dùng chọn "Cancel", dừng xử lý
                     }
+                    // Lấy dữ liệu từ form và chuyển thành đối tượng
+                    var formData = $("#categoryForm").serializeArray();  // Lấy dữ liệu dưới dạng mảng đối tượng
+
+                    // Tạo đối tượng JSON từ dữ liệu form
+                    var data = {};
+                    $.each(formData, function (i, field) {
+                        data[field.name] = field.value;
+                    });
+
+                    // Gửi yêu cầu POST đến server
+                    $.ajax({
+                        url: '/api-category',
+                        type: 'POST',
+                        contentType: 'application/json',  // Đảm bảo gửi dữ liệu dưới dạng JSON
+                        data: JSON.stringify(data),  // Chuyển đối tượng thành JSON
+                        dataType: 'json',
+                        success: function (response, textStatus, xhr) {
+                            if (xhr.status === 200) {
+                                alert(response); // Thông báo thành công
+                                // Reload bảng category nếu thành công
+                                var tableBody = $(".datanew tbody");
+
+                                var row = $("<tr>");
+                                row.append("<td class='productimgname'><a href='javascript:void(0);'>" + data.name + "</a></td>");
+                                row.append("<td>" + data.code + "</td>");
+                                tableBody.append(row);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            alert('Failed to add category: ' + error);
+                        }
+                    });
                 });
             });
         });
