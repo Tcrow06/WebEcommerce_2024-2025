@@ -291,6 +291,28 @@
             </div>
         </div>
     </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Xác nhận</h5>
+                    <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn thực hiện ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal" id="cancelButton">Hủy</button>
+                    <button type="button" class="btn btn-primary" id="okButton">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
@@ -467,76 +489,102 @@
             });
         }
 
+        function showConfirmationModal() {
+            return new Promise((resolve) => {
+                // Hiển thị modal
+                $('#exampleModal').modal('show');
+
+                // Khi người dùng nhấn "OK"
+                $('#okButton').one('click', function () {
+                    resolve(true); // Người dùng đồng ý
+                    $('#exampleModal').modal('hide');
+                });
+
+                // Khi người dùng nhấn "Cancel"
+                $('#cancelButton').one('click', function () {
+                    resolve(false); // Người dùng hủy
+                    $('#exampleModal').modal('hide');
+                });
+            });
+        }
+
         function addProduct() {
             if (!checkInput()) return;
 
-            const formData = new FormData();
-
-            var product = {
-                name: $('#productName').val(),
-                highlight: $('#highlight').is(':checked'),
-                status: 'SELLING',
-                brand: $('#productBrand').val(),
-                description: quill.root.innerHTML,
-                category: {
-                    id: $('#category').val(),
-                },
-            };
-
-            formData.append('product.name', product.name);
-            formData.append('product.highlight', product.highlight);
-            formData.append('product.status', product.status);
-            formData.append('product.brand', product.brand);
-            formData.append('product.description', product.description);
-            formData.append('product.category.id', product.category.id);
-
-            const sizeTableImage = $("#imageInputSizeTable")[0];
-            if (sizeTableImage) {
-                formData.append(`product.sizeConversionTable`, sizeTableImage.files[0]);
-            }
-
-
-            let index = 0;
-
-            $('#productVariantsContainer .product-variant-card').each(function() {
-                const color = $(this).find('.variant-color').val();
-                const fileInput = $(this).find(".image-upload input[type='file']")[0];
-
-                $(this).find('.single-size-row').each(function() {
-                    const variant = {
-                        price: parseFloat($(this).find('.variant-price').val()),
-                        size: $(this).find('.variant-size').val(),
-                        quantity: parseInt($(this).find('.variant-quantity').val()),
-                    };
-
-                    formData.append(`productVariants[` + index + `].price`, variant.price);
-                    formData.append(`productVariants[` + index + `].color`, color);
-                    formData.append(`productVariants[` + index + `].size`, variant.size);
-                    formData.append(`productVariants[` + index + `].quantity`, variant.quantity);
-
-                    if (fileInput && fileInput.files[0]) {
-                        formData.append(`productVariants[` + index + `].image`, fileInput.files[0]);
-                    }
-
-                    index += 1;
-                });
-            });
-
-
-            // Gửi dữ liệu lên server
-            $.ajax({
-                url: '/api-add-product',
-                type: 'POST',
-                data: formData,
-                processData: false,  // Không xử lý dữ liệu
-                contentType: false,  // Để trình duyệt tự xử lý content-type
-                success: function(response) {
-                    alert(response);
-                },
-                error: function(xhr, status, error) {
-                    const errorMessage = xhr.responseJSON ? xhr.responseJSON.message : error;
-                    alert("Failed to add product: " + errorMessage);
+            showConfirmationModal().then((result) => {
+                if (!result) {
+                    console.log("User cancelled the action.");
+                    return; // Người dùng chọn "Cancel", dừng xử lý
                 }
+
+                const formData = new FormData();
+
+                var product = {
+                    name: $('#productName').val(),
+                    highlight: $('#highlight').is(':checked'),
+                    status: 'SELLING',
+                    brand: $('#productBrand').val(),
+                    description: quill.root.innerHTML,
+                    category: {
+                        id: $('#category').val(),
+                    },
+                };
+
+                formData.append('product.name', product.name);
+                formData.append('product.highlight', product.highlight);
+                formData.append('product.status', product.status);
+                formData.append('product.brand', product.brand);
+                formData.append('product.description', product.description);
+                formData.append('product.category.id', product.category.id);
+
+                const sizeTableImage = $("#imageInputSizeTable")[0];
+                if (sizeTableImage) {
+                    formData.append(`product.sizeConversionTable`, sizeTableImage.files[0]);
+                }
+
+
+                let index = 0;
+
+                $('#productVariantsContainer .product-variant-card').each(function () {
+                    const color = $(this).find('.variant-color').val();
+                    const fileInput = $(this).find(".image-upload input[type='file']")[0];
+
+                    $(this).find('.single-size-row').each(function () {
+                        const variant = {
+                            price: parseFloat($(this).find('.variant-price').val()),
+                            size: $(this).find('.variant-size').val(),
+                            quantity: parseInt($(this).find('.variant-quantity').val()),
+                        };
+
+                        formData.append(`productVariants[` + index + `].price`, variant.price);
+                        formData.append(`productVariants[` + index + `].color`, color);
+                        formData.append(`productVariants[` + index + `].size`, variant.size);
+                        formData.append(`productVariants[` + index + `].quantity`, variant.quantity);
+
+                        if (fileInput && fileInput.files[0]) {
+                            formData.append(`productVariants[` + index + `].image`, fileInput.files[0]);
+                        }
+
+                        index += 1;
+                    });
+                });
+
+
+                // Gửi dữ liệu lên server
+                $.ajax({
+                    url: '/api-add-product',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,  // Không xử lý dữ liệu
+                    contentType: false,  // Để trình duyệt tự xử lý content-type
+                    success: function (response) {
+                        alert(response);
+                    },
+                    error: function (xhr, status, error) {
+                        const errorMessage = xhr.responseJSON ? xhr.responseJSON.message : error;
+                        alert("Failed to add product: " + errorMessage);
+                    }
+                });
             });
         }
 

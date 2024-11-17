@@ -1,6 +1,7 @@
 package com.webecommerce.dao.impl.product;
 
 import antlr.StringUtils;
+import com.webecommerce.constant.EnumProductStatus;
 import com.webecommerce.dao.impl.AbstractDAO;
 import com.webecommerce.dao.product.IProductDAO;
 import com.webecommerce.entity.product.ProductEntity;
@@ -38,11 +39,12 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
     }
 
     public List<String> getListColorBySize (String size, Long productId) {
-        String query = "SELECT p.color FROM ProductVariantEntity p WHERE p.product.id = :id AND p.size = :size";
+        String query = "SELECT p.color FROM ProductVariantEntity p WHERE p.product.id = :id AND p.size = :size AND p.status = : status";
         try {
             return entityManager.createQuery(query, String.class)
                     .setParameter("id", productId)
                     .setParameter("size", size)
+                    .setParameter("status", EnumProductStatus.SELLING)
                     .getResultList();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error fetching product colors by size and product ID: " + productId, e);
@@ -51,11 +53,12 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
     }
 
     public List<String> getListSizeByColor (String color, Long productId) {
-        String query = "SELECT p.size FROM ProductVariantEntity p WHERE p.product.id = :id AND p.color = :color";
+        String query = "SELECT p.size FROM ProductVariantEntity p WHERE p.product.id = :id AND p.color = :color AND p.status = : status";
         try {
             return entityManager.createQuery(query, String.class)
                     .setParameter("id", productId)
                     .setParameter("color", color)
+                    .setParameter("status", EnumProductStatus.SELLING)
                     .getResultList();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error fetching product sizes by size and product ID: " + productId, e);
@@ -129,6 +132,11 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
             LOGGER.log(Level.SEVERE, "Lỗi khi tìm kiếm sản phẩm không có discount hoặc discount đã hết hạn và bán sau 7 ngày", e);
             return null;
         }
+    }
+
+
+    public List<ProductEntity> findProductByStatus(EnumProductStatus status) {
+        return super.findByAttribute("status", status);
     }
 
     public Long getTotalItem() {

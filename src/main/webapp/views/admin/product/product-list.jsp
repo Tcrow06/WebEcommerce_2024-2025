@@ -118,7 +118,12 @@
                                     <p class="mb-0" style="font-weight: 500;">${item.price}</p>
                                 </td>
                                 <td class="align-middle">
-                                    <span class="badge badge-success rounded-pill d-inline">Đang kinh doanh</span>
+                                    <c:if test="${type == 'dang-kinh-doanh'}">
+                                        <span class="badge badge-success rounded-pill d-inline">Đang kinh doanh</span>
+                                    </c:if>
+                                    <c:if test="${type == 'ngung-kinh-doanh'}">
+                                        <span class="badge badge-danger rounded-pill d-inline">Ngừng kinh doanh</span>
+                                    </c:if>
                                 </td>
                                 <td>
                                     <a href="chinh-sua-san-pham?id=${item.id}" type="button" class="btn btn-link btn-sm btn-rounded">

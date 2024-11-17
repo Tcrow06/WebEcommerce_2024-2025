@@ -1,5 +1,6 @@
 package com.webecommerce.service.impl;
 
+import com.webecommerce.constant.EnumProductStatus;
 import com.webecommerce.dto.ProductVariantDTO;
 import com.webecommerce.entity.product.ProductVariantEntity;
 import com.webecommerce.mapper.Impl.ProductVariantMapper;
@@ -27,10 +28,14 @@ public class ProductVariantService implements IProductVariantService {
         ProductVariantEntity productVariant = productVariantDAO.getProductVariantByColorAndSize(productId, color, size);
         ProductVariantDTO productVariantDTO = new ProductVariantDTO();
 
-        if (productVariant == null) {
-            productVariantDTO.setQuantity(0);
-            productVariantDTO.setId(-1L);
-        } else productVariantDTO = productVariantMapper.toDTO(productVariant);
+        if (productVariant != null) {
+            if (productVariant.getStatus() == EnumProductStatus.SELLING) {
+                return productVariantMapper.toDTO(productVariant);
+            }
+        }
+
+        productVariantDTO.setQuantity(0);
+        productVariantDTO.setId(-1L);
 
         return productVariantDTO;
     }
