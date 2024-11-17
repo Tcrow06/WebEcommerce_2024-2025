@@ -1,17 +1,22 @@
 package com.webecommerce.dao.impl.order;
 
-import com.webecommerce.dao.GenericDAO;
+import com.webecommerce.constant.EnumOrderStatus;
 import com.webecommerce.dao.impl.AbstractDAO;
+import com.webecommerce.dao.order.IOrderDAO;
 import com.webecommerce.dao.order.IOrderStatusDAO;
 import com.webecommerce.entity.order.OrderStatusEntity;
 
+import javax.inject.Inject;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
+import java.time.LocalDateTime;
 
 public class OrderStatusDAO extends AbstractDAO<OrderStatusEntity> implements IOrderStatusDAO {
     public OrderStatusDAO() {
         super(OrderStatusEntity.class);
     }
+    @Inject
+    private IOrderDAO orderDAO;
 
     @Override
     public boolean changeStatus(Long orderDetailId) {
@@ -22,23 +27,21 @@ public class OrderStatusDAO extends AbstractDAO<OrderStatusEntity> implements IO
             Query findOrderId = entityManager.createQuery(findOrderIdQuery);
             findOrderId.setParameter("orderDetailId", orderDetailId);
 
-            Long orderId = (Long) findOrderId.getSingleResult(); // Lấy orderId
+            Long orderId = (Long) findOrderId.getSingleResult();
 
-            String query = "UPDATE OrderStatusEntity os SET os.status = 'WAITING', os.date = CURRENT_DATE WHERE os.id = :orderId";
-            Query jpqlQuery = entityManager.createQuery(query);
+            OrderStatusEntity newOrderStatus = new OrderStatusEntity();
+            newOrderStatus.setOrder(orderDAO.findById(orderId));
+            newOrderStatus.setStatus(EnumOrderStatus.valueOf("WAITING"));
+            newOrderStatus.setDate(LocalDateTime.now());
 
-            jpqlQuery.setParameter("orderId", orderId);
-
-            int rowsUpdated = jpqlQuery.executeUpdate();
+            entityManager.persist(newOrderStatus);
             transaction.commit();
-            return rowsUpdated > 0;
+            return true;
         } catch (Exception e) {
             transaction.rollback();
             e.printStackTrace();
             return false;
         }
-
-
     }
 }
 

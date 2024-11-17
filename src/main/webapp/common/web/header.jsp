@@ -120,7 +120,7 @@
 
                                 <ul class="dropdown-menu custom-dropdown-menu" aria-labelledby="userDropdown">
                                     <li><a class="dropdown-item" href="<c:url value="/trang-chu/thong-tin-ca-nhan"/>">Thông tin tài khoản</a></li>
-                                    <li><a class="dropdown-item" href="#">Đơn hàng của tôi</a></li>
+                                    <li><a class="dropdown-item" href="<c:url value="/trang-chu/don-hang"/>">Đơn hàng của tôi</a></li>
                                     <li><a class="dropdown-item" href="#">Danh sách yêu thích</a></li>
                                     <li><a class="dropdown-item" href="#">Cài đặt</a></li>
                                     <hr class="dropdown-divider">

@@ -50,7 +50,7 @@ public class ReturnOrderAPI extends HttpServlet {
 
                 List<OrderDetailDTO> result = orderDetailService.findAllByOrderId(2L);
                 req.setAttribute("orderitemList", result);
-                req.getRequestDispatcher("/views/web/order-detail-draft.jsp").forward(req,resp);
+                req.getRequestDispatcher("/views/web/order-detail.jsp").forward(req,resp);
             } else {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 objectMapper.writeValue(resp.getWriter(), "Invalid return order data");
