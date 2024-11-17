@@ -1,4 +1,5 @@
 <%@include file="/common/taglib.jsp"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,17 +13,22 @@
 <div class="container">
     <div class="forms-container">
         <div class="signin-signup">
-            <form action="#" class="sign-in-form">
+            <form action="<c:url value="/quen-mat-khau"/>" class="sign-in-form" method="post">
+                <c:if test="${not empty message}">
+                    <div class="alert alert-${alert}" role="alert" id="register-error-message">
+                            ${message}
+                    </div>
+                </c:if>
                 <h2 class="title">Quên mật khẩu</h2>
 
                 <div class="input-field">
                     <i class="fas fa-user"></i>
-                    <input type="text" placeholder="Tên đăng nhập" required />
+                    <input type="text" placeholder="Tên đăng nhập" name="username" required />
                 </div>
 
                 <div class="input-field">
                     <i class="fas fa-envelope"></i>
-                    <input type="email" placeholder="Email" required />
+                    <input type="email" placeholder="Email" name="email" required />
                 </div>
 
                 <button class="btn" type="submit">Xác nhận</button>
