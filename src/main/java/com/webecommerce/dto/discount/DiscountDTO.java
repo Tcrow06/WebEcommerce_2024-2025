@@ -66,4 +66,5 @@ public abstract class DiscountDTO extends BaseDTO<DiscountDTO> {
 
     private int minimumPurchaseQuantity;
 
+
 }

@@ -11,18 +11,25 @@ public class OrderInfoMapper implements GenericMapper<OrderInfoDTO, OrderInfoEnt
     @Inject
     private AddressMapper addressMapper;
     @Override
-    public OrderInfoDTO toDTO(OrderInfoEntity entity) {
-        OrderInfoDTO dto = new OrderInfoDTO();
-        dto.setId(entity.getId());
-        dto.setAddress(addressMapper.toDTO(entity.getAddress()));
-        dto.setPhone(entity.getPhone());
-        dto.setRecipient(entity.getRecipient());
-        return dto;
+    public OrderInfoDTO toDTO(OrderInfoEntity orderInfoEntity) {
+        if (orderInfoEntity == null)
+            return null;
+        OrderInfoDTO orderInfoDTO = new OrderInfoDTO();
+        orderInfoDTO.setAddress(addressMapper.toDTO(orderInfoEntity.getAddress()));
+        orderInfoDTO.setId(orderInfoEntity.getId());
+        orderInfoDTO.setRecipient(orderInfoEntity.getRecipient());
+        orderInfoDTO.setPhone(orderInfoEntity.getPhone());
+        return orderInfoDTO;
     }
 
     @Override
     public OrderInfoEntity toEntity(OrderInfoDTO orderInfoDTO) {
-        return null;
+        OrderInfoEntity orderInfoEntity = new OrderInfoEntity();
+        orderInfoEntity.setId(orderInfoDTO.getId());
+        orderInfoEntity.setRecipient(orderInfoDTO.getRecipient());
+        orderInfoEntity.setPhone(orderInfoDTO.getPhone());
+        orderInfoEntity.setAddress(addressMapper.toEntity(orderInfoDTO.getAddress()));
+        return orderInfoEntity;
     }
 
     @Override

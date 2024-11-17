@@ -2,6 +2,7 @@ package com.webecommerce.service.impl;
 
 import com.webecommerce.dao.impl.order.OrderDetailDAO;
 import com.webecommerce.dto.OrderDetailDTO;
+import com.webecommerce.dto.notinentity.DisplayOrderDetailDTO;
 import com.webecommerce.entity.order.OrderDetailEntity;
 import com.webecommerce.mapper.Impl.OrderDetailMapper;
 import com.webecommerce.service.IOrderDetailService;
@@ -24,5 +25,15 @@ public class OrderDetailService implements IOrderDetailService {
     public OrderDetailDTO findProductVariantById(Long orderId){
         OrderDetailEntity orderDetailEntity = orderDetailDAO.findProductVariantById(orderId);
         return orderDetailMapper.toDTO(orderDetailEntity);
+    }
+
+    @Override
+    public List<DisplayOrderDetailDTO> showOrderDetail(Long orderId) {
+        return  orderDetailDAO.showOrderDetail(orderId);
+    }
+
+    @Override
+    public DisplayOrderDetailDTO findOrderDetail(Long orderDetailId) {
+        return orderDetailDAO.findOrderDetail(orderDetailId);
     }
 }

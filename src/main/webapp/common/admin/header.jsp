@@ -4,7 +4,7 @@
 <div class="header">
 
     <div class="header-left active">
-        <a href="/aadmin" class="logo">
+        <a href="/chu-cua-hang" class="logo">
             <img src="../static/admin/assets/img/logo.png" alt="">
         </a>
         <a href="index.html" class="logo-small">
@@ -33,10 +33,10 @@
                     <div class="searchinputs">
                         <input type="text" placeholder="Search Here ...">
                         <div class="search-addon">
-                            <span><img src="../static/admin/assets/img/icons/closes.svg" alt="img"></span>
+                            <span><img src="/static/admin/assets/img/icons/closes.svg" alt="img"></span>
                         </div>
                     </div>
-                    <a class="btn" id="searchdiv"><img src="../static/admin/assets/img/icons/search.svg" alt="img"></a>
+                    <a class="btn" id="searchdiv"><img src="/static/admin/assets/img/icons/search.svg" alt="img"></a>
                 </form>
             </div>
         </li>
@@ -44,20 +44,20 @@
 
         <li class="nav-item dropdown has-arrow flag-nav">
             <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="javascript:void(0);" role="button">
-                <img src="../static/admin/assets/img/flags/us1.png" alt="" height="20">
+                <img src="/static/admin/assets/img/flags/us1.png" alt="" height="20">
             </a>
             <div class="dropdown-menu dropdown-menu-right">
                 <a href="javascript:void(0);" class="dropdown-item">
-                    <img src="../static/admin/assets/img/flags/us.png" alt="" height="16"> English
+                    <img src="/static/admin/assets/img/flags/us.png" alt="" height="16"> English
                 </a>
                 <a href="javascript:void(0);" class="dropdown-item">
-                    <img src="../static/admin/assets/img/flags/fr.png" alt="" height="16"> French
+                    <img src="/static/admin/assets/img/flags/fr.png" alt="" height="16"> French
                 </a>
                 <a href="javascript:void(0);" class="dropdown-item">
-                    <img src="../static/admin/assets/img/flags/es.png" alt="" height="16"> Spanish
+                    <img src="/static/admin/assets/img/flags/es.png" alt="" height="16"> Spanish
                 </a>
                 <a href="javascript:void(0);" class="dropdown-item">
-                    <img src="../static/admin/assets/img/flags/de.png" alt="" height="16"> German
+                    <img src="/static/admin/assets/img/flags/de.png" alt="" height="16"> German
                 </a>
             </div>
         </li>
@@ -65,7 +65,7 @@
 
         <li class="nav-item dropdown">
             <a href="javascript:void(0);" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
-                <img src="../static/admin/assets/img/icons/notification-bing.svg" alt="img"> <span class="badge rounded-pill">4</span>
+                <img src="/static/admin/assets/img/icons/notification-bing.svg" alt="img"> <span class="badge rounded-pill">4</span>
             </a>
             <div class="dropdown-menu notifications">
                 <div class="topnav-dropdown-header">
@@ -75,7 +75,7 @@
                 <div class="noti-content">
                     <ul class="notification-list">
                         <li class="notification-message">
-                            <a href=../static/admin/"activities.html">
+                            <a href=/static/admin/"activities.html">
                                 <div class="media d-flex">
                         <span class="avatar flex-shrink-0">
                           <img alt="" src="../static/admin/assets/img/profiles/avatar-02.jpg">
@@ -88,10 +88,10 @@
                             </a>
                         </li>
                         <li class="notification-message">
-                            <a href="../static/admin/activities.html">
+                            <a href="/static/admin/activities.html">
                                 <div class="media d-flex">
                         <span class="avatar flex-shrink-0">
-                          <img alt="" src="../static/admin/assets/img/profiles/avatar-03.jpg">
+                          <img alt="" src="/static/admin/assets/img/profiles/avatar-03.jpg">
                         </span>
                                     <div class="media-body flex-grow-1">
                                         <p class="noti-details"><span class="noti-title">Tarah Shropshire</span> changed the task name <span class="noti-title">Appointment booking with payment gateway</span></p>
@@ -101,10 +101,10 @@
                             </a>
                         </li>
                         <li class="notification-message">
-                            <a href="../static/admin/activities.html">
+                            <a href="/static/admin/activities.html">
                                 <div class="media d-flex">
                         <span class="avatar flex-shrink-0">
-                          <img alt="" src="../static/admin/assets/img/profiles/avatar-06.jpg">
+                          <img alt="" src="/static/admin/assets/img/profiles/avatar-06.jpg">
                         </span>
                                     <div class="media-body flex-grow-1">
                                         <p class="noti-details"><span class="noti-title">Misty Tison</span> added <span class="noti-title">Domenic Houston</span> and <span class="noti-title">Claire Mapes</span> to project <span class="noti-title">Doctor available module</span></p>
@@ -117,7 +117,7 @@
                             <a href="activities.html">
                                 <div class="media d-flex">
                         <span class="avatar flex-shrink-0">
-                          <img alt="" src="../static/admin/assets/img/profiles/avatar-17.jpg">
+                          <img alt="" src="/static/admin/assets/img/profiles/avatar-17.jpg">
                         </span>
                                     <div class="media-body flex-grow-1">
                                         <p class="noti-details"><span class="noti-title">Rolland Webber</span> completed task <span class="noti-title">Patient and Doctor video conferencing</span></p>
@@ -130,7 +130,7 @@
                             <a href="activities.html">
                                 <div class="media d-flex">
                         <span class="avatar flex-shrink-0">
-                          <img alt="" src="../static/admin/assets/img/profiles/avatar-13.jpg">
+                          <img alt="" src="/static/admin/assets/img/profiles/avatar-13.jpg">
                         </span>
                                     <div class="media-body flex-grow-1">
                                         <p class="noti-details"><span class="noti-title">Bernardo Galaviz</span> added new task <span class="noti-title">Private chat module</span></p>
@@ -149,13 +149,13 @@
 
         <li class="nav-item dropdown has-arrow main-drop">
             <a href="javascript:void(0);" class="dropdown-toggle nav-link userset" data-bs-toggle="dropdown">
-              <span class="user-img"><img src="../static/admin/assets/img/profiles/avator1.jpg" alt="">
+              <span class="user-img"><img src="/static/admin/assets/img/profiles/avator1.jpg" alt="">
                 <span class="status online"></span></span>
             </a>
             <div class="dropdown-menu menu-drop-user">
                 <div class="profilename">
                     <div class="profileset">
-                  <span class="user-img"><img src="../static/admin/assets/img/profiles/avator1.jpg" alt="">
+                  <span class="user-img"><img src="/static/admin/assets/img/profiles/avator1.jpg" alt="">
                     <span class="status online"></span></span>
                         <div class="profilesets">
                             <h6>John Doe</h6>
@@ -166,7 +166,7 @@
                     <a class="dropdown-item" href="<c:url value="/chu-cua-hang/quan-ly-trang-ca-nhan"/>"> <i class="me-2" data-feather="user"></i> My Profile</a>
                     <a class="dropdown-item" href="generalsettings.html"><i class="me-2" data-feather="settings"></i>Settings</a>
                     <hr class="m-0">
-                    <a class="dropdown-item logout pb-0" href="signin.html"><img src="../static/admin/assets/img/icons/log-out.svg" class="me-2" alt="img">Logout</a>
+                    <a class="dropdown-item logout pb-0" href="signin.html"><img src="/static/admin/assets/img/icons/log-out.svg" class="me-2" alt="img">Logout</a>
                 </div>
             </div>
         </li>

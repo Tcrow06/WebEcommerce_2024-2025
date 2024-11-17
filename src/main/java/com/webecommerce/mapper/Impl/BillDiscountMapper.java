@@ -16,6 +16,7 @@ public class BillDiscountMapper extends DiscountMapper implements GenericMapper<
         billDiscountDTO.setMinimumInvoiceAmount(billDiscountEntity.getMinimumInvoiceAmount());
         billDiscountDTO.setInvoiceType(billDiscountEntity.getInvoiceType());
         billDiscountDTO.setCode(billDiscountEntity.getCode());
+        billDiscountDTO.setMaximumAmount(billDiscountEntity.getMaximumAmount());
 
         return billDiscountDTO;
     }
@@ -30,6 +31,7 @@ public class BillDiscountMapper extends DiscountMapper implements GenericMapper<
         billDiscountEntity.setMinimumInvoiceAmount(billDiscountDTO.getMinimumInvoiceAmount());
         billDiscountEntity.setInvoiceType(billDiscountDTO.getInvoiceType());
         billDiscountEntity.setCode(billDiscountDTO.getCode());
+        billDiscountEntity.setMaximumAmount(billDiscountDTO.getMaximumAmount());
 
         return billDiscountEntity;
     }

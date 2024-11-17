@@ -17,10 +17,7 @@ import com.webecommerce.service.IProductService;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 public class ProductService implements IProductService {
@@ -49,6 +46,79 @@ public class ProductService implements IProductService {
     // Lây danh sách brand có trong product -> load giao diện
     public List<String> getBrands() {
         return productDAO.getBrands() != null ? productDAO.getBrands() : Collections.emptyList();
+    }
+
+    private void dtoToEntity(ProductDTO a, ProductEntity b) {
+        b.setName(a.getName());
+        b.setDescription(a.getDescription());
+        b.setBrand(a.getBrand());
+        b.setCategory(categoryDAO.findById(a.getCategory().getId()));
+
+        if (a.getSizeConversionTableUrl() != null && !a.getSizeConversionTableUrl().isEmpty()) {
+            b.setSizeConversionTableUrl(a.getSizeConversionTableUrl());
+        }
+
+        Map<Long, ProductVariantEntity> variantMap = b.getProductVariants().stream()
+                .collect(Collectors.toMap(ProductVariantEntity::getId, v -> v));
+
+        for (Map.Entry<Long, ProductVariantEntity> entry : variantMap.entrySet()) {entry.getValue().setStatus(EnumProductStatus.STOP_SELLING);}
+
+        for (ProductVariantDTO productVariantDTO : a.getProductVariants()) {
+            ProductVariantEntity productVariantEntity = null;
+            if (productVariantDTO.getId() == null) {
+                // Thêm variant mới
+                productVariantEntity = productVariantMapper.toEntity(productVariantDTO);
+                b.getProductVariants().add(productVariantEntity);
+                productVariantEntity.setProduct(b);
+            } else {
+                // Cập nhật variant đã tồn tại
+                productVariantEntity = variantMap.get(productVariantDTO.getId());
+                if (productVariantEntity != null) {
+                    productVariantEntity.setPrice(productVariantDTO.getPrice());
+                    productVariantEntity.setSize(productVariantDTO.getSize().toUpperCase());
+                    productVariantEntity.setColor(productVariantDTO.getColor().toUpperCase());
+                    productVariantEntity.setQuantity(productVariantDTO.getQuantity());
+                    if (productVariantDTO.getImageUrl() != null && !productVariantDTO.getImageUrl().isEmpty()) {
+                        productVariantEntity.setImageUrl(productVariantDTO.getImageUrl());
+                    }
+                }
+            }
+            productVariantEntity.setStatus(EnumProductStatus.SELLING);
+        }
+    }
+
+
+    @Transactional
+    public ProductDTO update(ProductDTO product) {
+        try { // tiến hành lưu ảnh
+
+            if (product.getSizeConversionTable() != null) {
+                imageServiceImpl.setRealPath(product.getRealPathFile());
+                imageServiceImpl.setPath(product.getSizeConversionTable());
+                imageServiceImpl.saveImageToDisk();
+                product.setSizeConversionTableUrl(imageServiceImpl.getId());
+            }
+
+            for (ProductVariantDTO productVariant : product.getProductVariants()) {
+                if (productVariant.getImage() != null) {
+                    imageServiceImpl.setRealPath(product.getRealPathFile());
+                    imageServiceImpl.setPath(productVariant.getImage());
+                    imageServiceImpl.saveImageToDisk();
+                    productVariant.setImageUrl(imageServiceImpl.getId());
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        ProductEntity productEntity = productDAO.findById(product.getId());
+        if (productEntity == null) return null;
+
+        dtoToEntity(product, productEntity);
+
+        return productMapper.toDTO(productDAO.update(productEntity));
     }
 
     @Transactional
@@ -83,6 +153,7 @@ public class ProductService implements IProductService {
         // thiết lập liên kết
         for (ProductVariantEntity productVariant : productEntity.getProductVariants()) {
             productVariant.setProduct(productEntity);
+            productVariant.setStatus(EnumProductStatus.SELLING);
         }
 
         return productMapper.toDTO(productDAO.insert(productEntity));
@@ -105,6 +176,40 @@ public class ProductService implements IProductService {
 
         return productDTO;
     }
+    // -----------------------------
+
+    // dùng hàm này thì hỏi lại t nha @phamtienanh
+    private List <ProductDTO> getProductsWithDiscount (List<ProductEntity> productEntities) {
+        List <ProductDTO> productDTOS = new ArrayList<ProductDTO>();
+        for (ProductEntity product : productEntities) {
+            ProductDTO productDTO = productMapper.toDTO(product);
+            //lấy discount cho từng sản phâm
+            ProductDiscountEntity productDiscountEntity = product.getProductDiscount();
+            if (productDiscountEntity != null) {
+                if (productDiscountEntity.getEndDate().isAfter(LocalDateTime.now())) {
+                    productDTO.setProductDiscount(
+                            productDiscountMapper.toDTO(productDiscountEntity)
+                    );
+                }
+            }
+
+            // lấy productvariant để lấy ảnh và giá (lấy product variant rẻ nhất)
+            ProductVariantEntity productVariant = productVariantDAO.getProductVariantByProduct(product);
+            if (productVariant != null) {
+                productDTO.setPhoto(productVariant.getImageUrl());
+                productDTO.setPrice(productVariant.getPrice());
+            }
+            productDTOS.add(productDTO);
+        }
+        return productDTOS;
+    }
+
+    // dùng cho controller productdiscount @phamtienanh
+    public List <ProductDTO> getProductsFromDiscount () {
+        List <ProductEntity> products = productDAO.findAll();
+        return getProductsWithDiscount(products);
+    }
+    //------------------------------------------------------------------
 
     // dùng để lấy discout, price mà không cần lay het product variant -> load nhanh hơn
     private List <ProductDTO> getProduct (List<ProductEntity> productEntities) {

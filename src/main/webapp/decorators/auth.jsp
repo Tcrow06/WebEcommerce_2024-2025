@@ -45,7 +45,7 @@
                     <a href="#" class="forgot-password" style="color: #bca58c;">Quên mật khẩu?</a>
                 </div>
                 <input type="hidden" name="action" value="login" />
-                <input type="submit" value="Đăng nhập" class="btn solid" />
+                <input id="btn-login" type="submit" value="Đăng nhập" class="btn solid" />
                 <p class="social-text">Hoặc đăng nhập bằng phương thức khác</p>
                 <div class="social-media">
                     <a id="facebook-id" href="https://www.facebook.com/v20.0/dialog/oauth?client_id=1217837109270713&redirect_uri=http://localhost:8080/three-party-login&scope=email,public_profile" class="social-icon">

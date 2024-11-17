@@ -10,4 +10,5 @@ import com.webecommerce.entity.discount.BillDiscountEntity;
 import java.util.List;
 public interface IOrderStatusService {
     List<TransferListOderStatusDTO> getStatusOrders(Long customerId, EnumOrderStatus status);
+    boolean changeStatus(Long orderDetailId);
 }

@@ -63,6 +63,7 @@
 <script src="<c:url value='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'/>"></script>
 <script src="<c:url value='/static/admin/assets/js/bootstrap.bundle.min.js'/>"></script>
 <script src="<c:url value='/static/web/js/token/refreshToken.js'/> "></script>
+
 </body>
 
 </html>

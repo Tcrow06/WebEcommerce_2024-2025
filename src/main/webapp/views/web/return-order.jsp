@@ -50,13 +50,12 @@
                                         <!-- Product image (background image set in CSS) -->
                                     </div>
                                     <div class="product__item__text">
-                                        <h5 class="product__name">Tên sản phẩm: ${product.productVariant.name}</h5>
-                                        <p class="product__size">Size: <span>${product.productVariant.size}</span></p>
-                                        <p class="product__color">Màu: <span>${product.productVariant.color}</span></p>
+                                        <h5 class="product__name">Tên sản phẩm: ${product.productName}</h5>
+                                        <p class="product__size">Size: <span>${product.size}</span></p>
+                                        <p class="product__color">Màu: <span>${product.color}</span></p>
                                         <p class="product__quantity">Số lượng: <span>${product.quantity}</span></p>
-                                        <p class="product__price">Giá: <span>${product.productVariant.price}</span></p>
+                                        <p class="product__price">Giá: <span>${product.price}</span></p>
                                         <p class="product__id" style="display: none"><span>${product.id}</span></p>
-
                                     </div>
                                 </div>
                             </div>
@@ -124,7 +123,6 @@
     $('#submit-button').click(function () {
         // Tạo một mảng chứa dữ liệu hoàn trả của các sản phẩm
         const returnOrders = [];
-
         // Duyệt qua tất cả các phần tử sản phẩm
         $('.section-wrapper').each(function () {
             const section = $(this);
@@ -146,7 +144,7 @@
         });
 
         const data = {
-            resultList: returnOrders
+            resultList: returnOrders,
         };
         $.ajax({
             url: '/api-return-order',

@@ -1,8 +1,11 @@
 package com.webecommerce.controller.web;
 
 import com.webecommerce.dto.OrderDetailDTO;
+import com.webecommerce.dto.notinentity.DisplayOrderDetailDTO;
+import com.webecommerce.service.IOrderDetailService;
 import com.webecommerce.service.IProductDiscountService;
 import com.webecommerce.service.IProductVariantService;
+import com.webecommerce.service.impl.OrderDetailService;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -14,42 +17,28 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet(urlPatterns = {"/tra-san-pham"})
+@WebServlet(urlPatterns = {"/trang-chu/don-hang/danh-sach-don-hang/tra-san-pham"})
 public class ReturnOrderController extends HttpServlet {
     @Inject
-    private IProductDiscountService productDiscountService;
-    @Inject
-    private IProductVariantService productVariantService;
+    private IOrderDetailService orderDetailService;
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //request.getRequestDispatcher("/views/web/return-order.jsp").forward(request,response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String[] selectedItems = request.getParameterValues("orderitems");
+        String[] selectedItems = request.getParameterValues("selectedItems");
 
-        // List to store selected order items with additional data
-        List<OrderDetailDTO> selectedOrderItems = new ArrayList<>();
+        List<DisplayOrderDetailDTO> selectedOrderItems = new ArrayList<>();
 
         if (selectedItems != null) {
-            for (String itemId : selectedItems) {
-                // Retrieve the additional data for each selected item using the item ID
-                String quantity = request.getParameter("quantity-" + itemId);
-                String productDiscountId = request.getParameter("productDiscount-" + itemId);
-                String productVariantId = request.getParameter("productVariant-" + itemId);
-
-                OrderDetailDTO orderItem = new OrderDetailDTO();
-                orderItem.setId(Long.valueOf(itemId));
-                orderItem.setQuantity(Integer.parseInt(quantity));
-                orderItem.setProductDiscount(productDiscountService.findById(Long.valueOf(productDiscountId)));
-                orderItem.setProductVariant(productVariantService.findById(Long.valueOf(productVariantId)));
-                selectedOrderItems.add(orderItem);
+            for (String idStr : selectedItems) {
+                Long id = Long.parseLong(idStr);
+                DisplayOrderDetailDTO dto = orderDetailService.findOrderDetail(id);
+                if(dto != null) {
+                    selectedOrderItems.add(dto);
+                }
             }
         }
-
-        // Set the list of selected order items as a request attribute to be accessed in JSP
         request.setAttribute("productList", selectedOrderItems);
-
-        // Forward the request to the return-order.jsp page
         request.getRequestDispatcher("/views/web/return-order.jsp").forward(request, response);
     }
 }

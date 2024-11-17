@@ -9,4 +9,5 @@ import java.util.List;
 
 public interface IOrderStatusDAO extends GenericDAO<OrderStatusEntity> {
     List<TransferListOderStatusDTO> getStatusOrders(Long idUser, EnumOrderStatus status);
+    boolean changeStatus(Long orderDetailId);
 }

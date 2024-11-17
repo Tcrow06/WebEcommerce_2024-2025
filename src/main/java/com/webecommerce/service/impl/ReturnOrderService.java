@@ -3,7 +3,9 @@ package com.webecommerce.service.impl;
 import com.webecommerce.dao.impl.order.OrderDetailDAO;
 import com.webecommerce.dao.order.IReturnOrderDAO;
 import com.webecommerce.dto.ReturnOrderDTO;
+import com.webecommerce.dto.notinentity.ProductReturnDTO;
 import com.webecommerce.dto.notinentity.TransferListDTO;
+import com.webecommerce.dto.response.people.CustomerResponse;
 import com.webecommerce.entity.order.OrderDetailEntity;
 import com.webecommerce.entity.order.ReturnOrderEntity;
 import com.webecommerce.entity.product.CategoryEntity;
@@ -20,6 +22,7 @@ public class ReturnOrderService implements IReturnOrderService {
 
     @Inject
     private IReturnOrderDAO returnOrderDAO;
+
     @Inject
     private OrderDetailDAO orderDetailDAO;
 
@@ -48,4 +51,26 @@ public class ReturnOrderService implements IReturnOrderService {
     public List<TransferListDTO> getData() {
         return returnOrderDAO.getData();
     }
+
+    @Override
+    public CustomerResponse getCustomerData(Long returnOrderId) {
+        return returnOrderDAO.getCustomerByReturnOrderId(returnOrderId);
+    }
+
+    @Override
+    public ProductReturnDTO getProductReturnData(Long returnOrderId) {
+        return returnOrderDAO.getProductReturnData(returnOrderId);
+    }
+
+    @Override
+    public boolean updateStatus(Long returnOrderId) {
+        return returnOrderDAO.updateStatus(returnOrderId);
+    }
+
+    @Override
+    public boolean updateStatusOrder(Long returnOrderId) {
+        return returnOrderDAO.updateStatusOrder(returnOrderId);
+    }
+
+
 }
