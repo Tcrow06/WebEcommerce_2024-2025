@@ -353,4 +353,9 @@ public class ProductService implements IProductService {
         return productDAO.getAllProductName();
     }
 
+    @Override
+    public Long getTotalItems() {
+        return productDAO.getTotalItems();
+    }
+
 }

@@ -21,6 +21,7 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
 
     @Inject
     private ProductMapper productMapper;
+    private Long totalItem;
     public ProductDAO() {
         super(ProductEntity.class);
     }
@@ -151,7 +152,7 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
                 "SELECT DISTINCT p FROM ProductEntity p " +
                         "JOIN p.productVariants v " +
                         "LEFT JOIN p.productDiscount d " +
-                        "WHERE 1=1"
+                        "WHERE p.status = 'SELLING'"
         );
 
         // Điều kiện lọc
@@ -192,20 +193,34 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
 
         TypedQuery<ProductEntity> query = entityManager.createQuery(jpql.toString(), ProductEntity.class);
 
+        String countJpql = jpql.toString().replace("SELECT DISTINCT p", "SELECT COUNT(DISTINCT p)");
+        TypedQuery<Long> countQuery = entityManager.createQuery(countJpql, Long.class);
+
         if (pageable.getFilterProduct().getFilterCategory() != -1) {
             query.setParameter("categoryId", Long.valueOf(pageable.getFilterProduct().getFilterCategory()));
+
+            countQuery.setParameter("categoryId", Long.valueOf(pageable.getFilterProduct().getFilterCategory()));
+
         }
 
         if (pageable.getFilterProduct().getFilterBrand() != null &&
                 !pageable.getFilterProduct().getFilterBrand().isEmpty()) {
             query.setParameter("brand", pageable.getFilterProduct().getFilterBrand());
+
+            countQuery.setParameter("brand", pageable.getFilterProduct().getFilterBrand());
         }
 
         if (!Double.isNaN(minPrice)) {
             query.setParameter("minPrice", minPrice);
+
+            countQuery.setParameter("minPrice", minPrice);
+
         }
         if (!Double.isNaN(maxPrice)) {
             query.setParameter("maxPrice", maxPrice);
+
+            countQuery.setParameter("maxPrice", maxPrice);
+
         }
 
         // Thực thi truy vấn để lấy danh sách sản phẩm
@@ -223,6 +238,8 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
             }
         }
 
+
+        totalItem = countQuery.getSingleResult();
         // Thực hiện phân trang cho danh sách sản phẩm đã sắp xếp
         int offset = pageable.getOffset() != null ? pageable.getOffset() : 0;
         int limit = pageable.getLimit() != null ? pageable.getLimit() : 9;
@@ -239,5 +256,10 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
             LOGGER.log(Level.SEVERE, "Lỗi khi lấy sản phẩm có discount còn hiệu lực", e);
             return null;
         }
+    }
+
+    @Override
+    public Long getTotalItems() {
+        return totalItem;
     }
 }
