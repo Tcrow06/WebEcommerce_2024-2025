@@ -51,4 +51,6 @@ public interface IProductService {
     int setTotalPage(Long totalItem, int maxPageItem);
 
     List<String> getAllProductName();
+
+    Long getTotalItems();
 }
