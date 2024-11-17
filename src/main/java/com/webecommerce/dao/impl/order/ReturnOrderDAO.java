@@ -38,7 +38,7 @@ public class ReturnOrderDAO extends AbstractDAO<ReturnOrderEntity> implements IR
             String productName = (String) row[5];
 
             // Tạo đối tượng TransferItemDTO từ các trường dữ liệu
-            TransferListDTO item = new TransferListDTO(id, returnDate, productName,color, quantityReturn , status);
+            TransferListDTO item = new TransferListDTO(id, returnDate,color, productName, quantityReturn , status);
             transferItems.add(item);
         }
         return transferItems;

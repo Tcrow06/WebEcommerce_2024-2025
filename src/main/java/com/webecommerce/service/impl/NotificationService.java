@@ -11,14 +11,4 @@ import java.util.List;
 public class NotificationService implements INotificationService {
     @Inject
     INotificationDAO notificationDAO;
-
-//    @Inject
-//    GenericMapper <OrderStatusDTO, OrderStatusEntity> orderStatusMapper;
-//
-//    @Override
-//    public List<OrderStatusDTO> getDeliveredOrdersByCustomerId(Long idUser)
-//    {
-//        List<OrderStatusEntity> orderStatusDTOs = notificationDAO.getDeliveredOrdersByCustomerId(idUser);
-//        return orderStatusMapper.toDTOList(orderStatusDTOs);
-//    }
 }

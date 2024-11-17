@@ -7,7 +7,6 @@ import com.webecommerce.mapper.Impl.OrderDetailMapper;
 import com.webecommerce.service.IOrderDetailService;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 
 public class OrderDetailService implements IOrderDetailService {
@@ -20,5 +19,10 @@ public class OrderDetailService implements IOrderDetailService {
     public List<OrderDetailDTO> findAllByOrderId(Long orderId) {
         List<OrderDetailEntity> orderDetailEntities = orderDetailDAO.findAllByOrderId(orderId);
         return orderDetailMapper.toDTOList(orderDetailEntities);
+    }
+    @Override
+    public OrderDetailDTO findProductVariantById(Long orderId){
+        OrderDetailEntity orderDetailEntity = orderDetailDAO.findProductVariantById(orderId);
+        return orderDetailMapper.toDTO(orderDetailEntity);
     }
 }

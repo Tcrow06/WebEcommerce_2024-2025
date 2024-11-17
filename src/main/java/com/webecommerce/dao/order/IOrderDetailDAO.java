@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface IOrderDetailDAO extends GenericDAO<OrderDetailEntity> {
     List<OrderDetailEntity> findAllByOrderId(Long orderId);
+    OrderDetailEntity findProductVariantById(Long orderId);
 }

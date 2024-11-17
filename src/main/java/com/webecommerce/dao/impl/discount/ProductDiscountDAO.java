@@ -1,14 +1,11 @@
 package com.webecommerce.dao.impl.discount;
 
-import com.webecommerce.dao.GenericDAO;
 import com.webecommerce.dao.discount.IProductDiscountDAO;
 import com.webecommerce.dao.impl.AbstractDAO;
 import com.webecommerce.entity.discount.ProductDiscountEntity;
-import com.webecommerce.entity.product.ProductVariantEntity;
 
 import javax.persistence.NoResultException;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 

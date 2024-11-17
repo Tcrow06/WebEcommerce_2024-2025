@@ -1,6 +1,7 @@
 package com.webecommerce.dao.impl;
 
 import com.webecommerce.dao.GenericDAO;
+import com.webecommerce.entity.order.OrderDetailEntity;
 import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.utils.HibernateUtil;
 

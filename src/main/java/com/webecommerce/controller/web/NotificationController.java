@@ -1,11 +1,11 @@
 package com.webecommerce.controller.web;
 
-import com.webecommerce.dto.OrderStatusDTO;
+import com.webecommerce.constant.EnumOrderStatus;
+import com.webecommerce.dto.notinentity.TransferListOderStatusDTO;
 import com.webecommerce.service.IOrderStatusService;
 import com.webecommerce.utils.JWTUtil;
 
 import javax.inject.Inject;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -24,10 +24,11 @@ public class NotificationController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Long id = JWTUtil.getIdUser(req);
 
-        List<OrderStatusDTO> orderStatusDTOS = orderStatusService.getDeliveredOrdersByCustomerId(id);
-        req.setAttribute("orders", orderStatusDTOS);
+        List<TransferListOderStatusDTO> result = orderStatusService.getStatusOrders(id, EnumOrderStatus.DELIVERED);
 
-        RequestDispatcher dispatcher = req.getRequestDispatcher("/views/web/notification.jsp");
-        dispatcher.forward(req, resp);
+        if (result != null) {
+            req.setAttribute("orders", result);
+        }
+        req.getRequestDispatcher("/views/web/notification.jsp").forward(req, resp);
     }
 }

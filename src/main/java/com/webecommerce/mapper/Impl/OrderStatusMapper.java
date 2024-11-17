@@ -1,7 +1,6 @@
 package com.webecommerce.mapper.Impl;
 
 import com.webecommerce.dto.OrderStatusDTO;
-import com.webecommerce.entity.order.OrderEntity;
 import com.webecommerce.entity.order.OrderStatusEntity;
 import com.webecommerce.mapper.GenericMapper;
 
