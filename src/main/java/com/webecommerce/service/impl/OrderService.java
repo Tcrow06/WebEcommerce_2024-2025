@@ -200,6 +200,12 @@ public class OrderService implements IOrderService {
         return orderDTO;
 
     }
+
+    @Override
+    public boolean changeConfirmStatus(Long orderId) {
+        return orderDAO.changeConfirmStatus(orderId);
+    }
+
     @Transactional
     public OrderEntity createOrder(OrderDTO orderDTO, Long idUser) {
        try {
@@ -220,7 +226,7 @@ public class OrderService implements IOrderService {
            List<OrderStatusEntity> orderStatusEntities = new ArrayList<>();
            OrderStatusEntity orderStatusEntity = new OrderStatusEntity();
            orderStatusEntity.setDate(LocalDateTime.now());
-           orderStatusEntity.setStatus(EnumOrderStatus.WAITING);
+           orderStatusEntity.setStatus(EnumOrderStatus.PENDING);
            orderStatusEntities.add(orderStatusEntity);
            orderStatusEntity.setOrder(orderEntity);
            orderEntity.setOrderStatuses(orderStatusEntities);

@@ -328,12 +328,18 @@
                 </tr>
                 </thead>
                 <tbody>
+
                 <c:if test="${empty orderItemList}">
-                    <p style="text-align: center">No items found.</p> <!-- Hiển thị thông báo nếu không có item -->
+                    <p style="text-align: center">No items found.</p>
                 </c:if>
 
                 <c:if test="${not empty orderItemList}">
-                    <c:forEach var="item" items="${orderItemList}">
+                    <c:forEach var="item" items="${orderItemList}" varStatus="note">
+
+                        <c:if test="${note.index == 0}">
+                            <input type="hidden" id="firstIdOrderDetail" name="firstIdOrderDetail" value="${item.id}">
+                        </c:if>
+
                         <tr>
                             <td><input type="checkbox" class="row-checkbox" name="selectedItems" value="${item.id}"></td>
                             <td><img src="${item.imageUrl}" alt="Product Image" class="product-image"></td>
@@ -343,6 +349,7 @@
                             <td>${item.color}</td>
                             <td>${item.size}</td>
                         </tr>
+
                     </c:forEach>
                 </c:if>
                 </tbody>
@@ -353,11 +360,19 @@
                     <button type="submit" class="primary-btn">Trả sản phẩm</button>
                 </div>
             </c:if>
-
-            <div style="text-align: center; margin-top: 20px;">
-                <a href="javascript:void(0);" onclick="window.location.href='/trang-chu/don-hang';" class="primary-btn">Back</a>
-            </div>
         </form>
+
+<%--        cap nhat status hoan thanh--%>
+        <c:if test="${status == 'PROCESSED'}">
+            <div style="text-align: center;">
+                <button type="button" class="primary-btn" id="confirm-order-btn">Xác nhận đơn hàng</button>
+            </div>
+        </c:if>
+
+
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="javascript:void(0);" onclick="window.location.href='/trang-chu/don-hang';" class="primary-btn">Back</a>
+        </div>
     </div>
 </section>
 
@@ -369,5 +384,12 @@
         checkboxes.forEach(checkbox => {
             checkbox.checked = isChecked;
         });
+    });
+
+    document.getElementById('confirm-order-btn').addEventListener('click', function () {
+        const form = document.getElementById('return-form');
+        form.action = '/trang-chu/don-hang';
+        form.method = 'POST';
+        form.submit();
     });
 </script>

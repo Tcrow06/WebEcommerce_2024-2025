@@ -5,10 +5,12 @@ import com.webecommerce.dao.impl.AbstractDAO;
 import com.webecommerce.dao.order.IOrderDAO;
 import com.webecommerce.dto.notinentity.DisplayOrderDTO;
 import com.webecommerce.entity.order.OrderEntity;
+import com.webecommerce.entity.order.OrderStatusEntity;
 import com.webecommerce.utils.HibernateUtil;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.Query;
 import java.util.logging.Level;
 
 import java.security.Timestamp;
@@ -102,6 +104,26 @@ public class OrderDAO extends AbstractDAO<OrderEntity> implements IOrderDAO {
             return null;
         } finally {
             em.close();  // Đóng EntityManager sau khi hoàn tất
+        }
+    }
+
+    @Override
+    public boolean changeConfirmStatus(Long orderId) {
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            OrderStatusEntity newOrderStatus = new OrderStatusEntity();
+            newOrderStatus.setOrder(findById(orderId));
+            newOrderStatus.setStatus(EnumOrderStatus.valueOf("DELIVERED"));
+            newOrderStatus.setDate(LocalDateTime.now());
+
+            entityManager.persist(newOrderStatus);
+            transaction.commit();
+            return true;
+        } catch (Exception e) {
+            transaction.rollback();
+            e.printStackTrace();
+            return false;
         }
     }
 }

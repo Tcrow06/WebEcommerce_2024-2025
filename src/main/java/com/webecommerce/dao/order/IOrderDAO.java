@@ -11,4 +11,5 @@ public interface IOrderDAO extends GenericDAO<OrderEntity> {
 
     OrderEntity merge(OrderEntity orderEntity);
 
+    boolean changeConfirmStatus(Long orderId);
 }
