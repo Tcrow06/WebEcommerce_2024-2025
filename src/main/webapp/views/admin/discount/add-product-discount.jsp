@@ -347,7 +347,6 @@
                     // Đảm bảo body có thể cuộn lại sau khi modal đóng
                     $('body').removeClass('modal-open').css('overflow', 'auto');
                 } else {
-                    // Nếu không có sản phẩm được chọn
                     alert("Vui lòng chọn sản phẩm để xác nhận.");
                 }
             });
@@ -356,7 +355,7 @@
                 showConfirmationModal().then((result) => {
                     if (!result) {
                         console.log("User cancelled the action.");
-                        return; // Người dùng chọn "Cancel", dừng xử lý
+                        return;
                     }
 
                     const productDiscountId = $('#id-product-discount').val();

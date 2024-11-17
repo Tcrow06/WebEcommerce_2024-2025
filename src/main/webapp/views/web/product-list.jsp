@@ -254,7 +254,7 @@
                                         <i class="fa fa-star-o"></i>
                                         <i class="fa fa-star-o"></i>
                                     </div>
-                                    <h5>$${item.getDiscountedPrice()}
+                                    <h5>${item.getDiscountedPrice()}
                                         <c:if test="${item.productDiscount != null}">
                                             <span class="discounted-price">${item.price}</span>
                                         </c:if>
