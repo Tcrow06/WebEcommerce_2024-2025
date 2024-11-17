@@ -61,7 +61,25 @@ public class ProductController extends HttpServlet {
 
     private void productList(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.setAttribute(ModelConstant.MODEL, productService.findAll());
+
+        String type = request.getParameter("type");
+        List <ProductDTO> productDTOS = null ;
+
+        if (type != null) {
+
+            if (type.equals("ngung-kinh-doanh"))
+                productDTOS = productService.findProductStopSelling();
+            else type = "dang-kinh-doanh";
+
+            request.setAttribute(ModelConstant.TYPE_DISCOUNT,type);
+        }
+
+        if (productDTOS == null) {
+            productDTOS = productService.findProductSelling();
+        }
+
+
+        request.setAttribute(ModelConstant.MODEL, productDTOS);
         request.getRequestDispatcher("/views/admin/product/product-list.jsp").forward(request, response);
     }
 }

@@ -38,27 +38,31 @@ public class PaymentController extends HttpServlet {
     private IOrderService orderService;
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        String state = request.getParameter("order");
-        HttpSession session = request.getSession();
-        if(state==null){
-            state = session.getAttribute("order").toString();
-        }else{
-            session.removeAttribute("order");
-            session.setAttribute("order",state);
-        }
-        // Giải mã dữ liệu
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        if (state != null && !state.isEmpty()) {
-            String decodedState = URLDecoder.decode(state, StandardCharsets.UTF_8);
-            OrderDTO orderDTO = objectMapper.readValue(decodedState, OrderDTO.class);
-            String orderDTOJson = objectMapper.writeValueAsString(orderDTO);
-            request.setAttribute("orderDTO",orderDTO);
-            request.setAttribute("orderDTOJson",orderDTOJson);
-            request.getRequestDispatcher("/views/web/payment.jsp").forward(request, response);
-        } else {
-            response.sendRedirect("/error"); // Xử lý khi không có dữ liệu
+        try {
+            String state = request.getParameter("order");
+            HttpSession session = request.getSession();
+            if(state==null){
+                state = session.getAttribute("order").toString();
+            }else{
+                session.removeAttribute("order");
+                session.setAttribute("order",state);
+            }
+            // Giải mã dữ liệu
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+            objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+            if (state != null && !state.isEmpty()) {
+                String decodedState = URLDecoder.decode(state, StandardCharsets.UTF_8);
+                OrderDTO orderDTO = objectMapper.readValue(decodedState, OrderDTO.class);
+                String orderDTOJson = objectMapper.writeValueAsString(orderDTO);
+                request.setAttribute("orderDTO",orderDTO);
+                request.setAttribute("orderDTOJson",orderDTOJson);
+                request.getRequestDispatcher("/views/web/payment.jsp").forward(request, response);
+            } else {
+                response.sendRedirect("/error"); // Xử lý khi không có dữ liệu
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

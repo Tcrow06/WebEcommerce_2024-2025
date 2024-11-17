@@ -210,7 +210,12 @@ public class OrderService implements IOrderService {
     public OrderEntity createOrder(OrderDTO orderDTO, Long idUser) {
        try {
            OrderEntity orderEntity = new OrderEntity();
-           orderEntity.setShippingFee(orderDTO.getShippingFee());
+           String city = orderDTO.getOrderInfoDTO().getAddress().getCity().trim();
+           if(city.equalsIgnoreCase("Tp.Hồ Chí Minh")||city.equalsIgnoreCase("HCM")||city.equalsIgnoreCase("Hồ Chí Minh"))
+               orderEntity.setShippingFee(15);
+           else{
+               orderEntity.setShippingFee(30);
+           }
 
 
            if(orderDTO.getBillDiscount()!=null){
@@ -260,7 +265,7 @@ public class OrderService implements IOrderService {
            orderEntity.setOrderDetails(orderDetailEntities);
            CustomerEntity customer = customerDAO.findById(idUser);
            orderEntity.setCustomer(customer);
-
+           orderEntity.setPaymentMethod(orderDTO.getPaymentMethod());
            orderDAO.insert(orderEntity);
            return orderEntity;
        }catch (Exception e){

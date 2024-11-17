@@ -39,6 +39,11 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
         this.sizeConversionTable = sizeConversionTable;
     }
 
+    public ProductDTO(Long id) {
+        this.setId(id);
+    }
+
+
     public ProductDTO () {}
 
     private boolean highlight;
