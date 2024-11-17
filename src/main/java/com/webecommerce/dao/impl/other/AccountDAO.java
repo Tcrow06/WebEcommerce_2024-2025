@@ -105,4 +105,6 @@ public class AccountDAO extends AbstractDAO<AccountEntity> implements IAccountDA
         return count > 0;
     }
 
+
+//
 }

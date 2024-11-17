@@ -149,14 +149,14 @@ public class ReturnOrderDAO extends AbstractDAO<ReturnOrderEntity> implements IR
                 String checkProcessedStatusQuery = "SELECT COUNT(os) FROM OrderStatusEntity os WHERE os.order.id = :orderId AND os.status = :status";
                 Query checkProcessedStatus = entityManager.createQuery(checkProcessedStatusQuery);
                 checkProcessedStatus.setParameter("orderId", orderId);
-                checkProcessedStatus.setParameter("status", EnumOrderStatus.valueOf("PROCESSED"));
+                checkProcessedStatus.setParameter("status", EnumOrderStatus.valueOf("CANCELLED"));
 
                 long processedCount = (long) checkProcessedStatus.getSingleResult();
 
                 if (processedCount == 0) {
                     OrderStatusEntity newOrderStatus = new OrderStatusEntity();
                     newOrderStatus.setOrder(orderDAO.findById(orderId));
-                    newOrderStatus.setStatus(EnumOrderStatus.valueOf("PROCESSED"));
+                    newOrderStatus.setStatus(EnumOrderStatus.valueOf("CANCELLED"));
                     newOrderStatus.setDate(LocalDateTime.now());
 
                     entityManager.persist(newOrderStatus);
@@ -164,22 +164,14 @@ public class ReturnOrderDAO extends AbstractDAO<ReturnOrderEntity> implements IR
                     transaction.commit();
                     return true;
                 }
-//                OrderStatusEntity newOrderStatus = new OrderStatusEntity();
-//                newOrderStatus.setOrder(orderDAO.findById(orderId));
-//                newOrderStatus.setStatus(EnumOrderStatus.valueOf("PROCESSED"));
-//                newOrderStatus.setDate(LocalDateTime.now());
-//
-//                entityManager.persist(newOrderStatus);
-//                transaction.commit();
-//                return true;
             }
             transaction.commit();
-            return false;  // Trả về false nếu điều kiện không thỏa mãn
+            return false;
 
         } catch (Exception e) {
             transaction.rollback();
             e.printStackTrace();
-            return false;  // Trả về false nếu có lỗi
+            return false;
         }
     }
 
@@ -237,5 +229,96 @@ public class ReturnOrderDAO extends AbstractDAO<ReturnOrderEntity> implements IR
         }
     }
 
+    @Override
+    public boolean updateStatusNoReturn(Long orderDetailId) {
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            // Bắt đầu giao dịch
+            transaction.begin();
 
+            // Cập nhật trạng thái của đơn hàng trong bảng ReturnOrderEntity
+            String query = "UPDATE ReturnOrderEntity ro SET ro.status = 2 WHERE ro.orderDetail.id = :orderDetailId";
+            Query jpqlQuery = entityManager.createQuery(query);
+            jpqlQuery.setParameter("orderDetailId", orderDetailId);
+            int rowsUpdated = jpqlQuery.executeUpdate();
+
+            if (rowsUpdated == 0) {
+                transaction.rollback();  // Nếu không có dòng nào bị cập nhật, rollback giao dịch
+                return false;
+            }
+
+            // Nếu thành công, commit giao dịch
+            transaction.commit();
+            return true;
+        }
+        catch (Exception e) {
+            // Nếu có lỗi, rollback giao dịch và ghi lại thông tin lỗi
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            e.printStackTrace();  // Hoặc bạn có thể log lỗi ở đây
+            return false;
+        }
+    }
+
+    @Override
+    public boolean updateStatusProcess(Long orderDetailId) {
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            //Tim orderId
+            String findOrderIdQuery = "SELECT od.order.id FROM OrderDetailEntity od WHERE od.id = :orderDetailId";
+            Query findOrderId = entityManager.createQuery(findOrderIdQuery);
+            findOrderId.setParameter("orderDetailId", orderDetailId);
+
+            Long orderId = (Long) findOrderId.getSingleResult();
+
+            String checkOrderSuccess = "SELECT COUNT(od) FROM OrderDetailEntity od " +
+                    "WHERE od.order.id = :orderId " +
+                    "AND od.id IN (SELECT ro.orderDetail.id FROM ReturnOrderEntity ro WHERE ro.status = 0)";
+
+            String checkAtLeastOrderReturn = "SELECT COUNT(od) FROM OrderDetailEntity od " +
+                    "WHERE od.order.id = :orderId " +
+                    "AND od.id IN (SELECT ro.orderDetail.id FROM ReturnOrderEntity ro WHERE ro.status = 2)";
+
+            Query checkSuccess = entityManager.createQuery(checkOrderSuccess);
+            checkSuccess.setParameter("orderId", orderId);
+
+            Query checkReturn = entityManager.createQuery(checkAtLeastOrderReturn);
+            checkReturn.setParameter("orderId", orderId);
+
+            long countSuccess = (long) checkSuccess.getSingleResult();
+            long countReturn = (long) checkReturn.getSingleResult();
+
+
+            // Neu khong co don hoan tra nao chua xu li
+            if (countSuccess == 0 && countReturn >= 1) {
+                String checkProcessedStatusQuery = "SELECT COUNT(os) FROM OrderStatusEntity os WHERE os.order.id = :orderId AND os.status = :status";
+                Query checkProcessedStatus = entityManager.createQuery(checkProcessedStatusQuery);
+                checkProcessedStatus.setParameter("orderId", orderId);
+                checkProcessedStatus.setParameter("status", EnumOrderStatus.valueOf("PROCESSED"));
+
+                long processedCount = (long) checkProcessedStatus.getSingleResult();
+
+                if (processedCount == 0) {
+                    OrderStatusEntity newOrderStatus = new OrderStatusEntity();
+                    newOrderStatus.setOrder(orderDAO.findById(orderId));
+                    newOrderStatus.setStatus(EnumOrderStatus.valueOf("PROCESSED"));
+                    newOrderStatus.setDate(LocalDateTime.now());
+
+                    entityManager.persist(newOrderStatus);
+
+                    transaction.commit();
+                    return true;
+                }
+            }
+            transaction.commit();
+            return false;
+
+        } catch (Exception e) {
+            transaction.rollback();
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
