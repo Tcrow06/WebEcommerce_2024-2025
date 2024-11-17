@@ -168,8 +168,8 @@
                                                 <div class="col-lg-4">
                                                     <div class="instagram__text">
                                                         <span>Chỉ dành cho thành viên trên ${item.loyaltyPointsRequired} điểm !</span>
-                                                        <h3>Giảm giá cho đơn hàng trên ${item.minimumInvoiceAmount}$</h3>
-                                                        <p>Giảm tối thiểu $${item.maximumAmount}.</p>
+                                                        <h3>Giảm giá cho đơn hàng trên ${item.minimumInvoiceAmount} VND</h3>
+                                                        <p>Giảm tối thiểu ${item.maximumAmount} VND.</p>
 
                                                         <span class="badge badge-${item.getBootstrapClassStatus()} rounded-pill d-inline">${item.getStatus()}</span>
 
