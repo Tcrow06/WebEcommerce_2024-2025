@@ -1,6 +1,7 @@
 package com.webecommerce.controller.web;
 
 import com.webecommerce.constant.ModelConstant;
+import com.webecommerce.dao.product.IProductDAO;
 import com.webecommerce.dto.ProductDTO;
 import com.webecommerce.filter.FilterProduct;
 import com.webecommerce.filter.FilterProductVariant;
@@ -26,7 +27,6 @@ public class ProductController extends HttpServlet {
     private IProductService productService;
     @Inject
     private ICategoryService categoryService;
-
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<String> listNames = productService.getAllProductName();
@@ -73,7 +73,13 @@ public class ProductController extends HttpServlet {
         List<ProductDTO> productDTOList = productService.findAll(pageable);
         product.setResultList(productDTOList);
 
-        product.setTotalItem(productService.getTotalItem());
+        //product.setTotalItem(productService.getTotalItem());
+
+        //nháp tí
+
+        product.setTotalItem(productService.getTotalItems());
+
+        //hết nháp
         product.setTotalPage(productService.setTotalPage(product.getTotalItem(),
                 product.getMaxPageItem()));
 

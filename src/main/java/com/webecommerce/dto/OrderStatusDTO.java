@@ -13,6 +13,9 @@ public class OrderStatusDTO {
 
     private EnumOrderStatus status;
 
+    public OrderStatusDTO() {
+    }
+
 
     public Long getId() {
         return id;

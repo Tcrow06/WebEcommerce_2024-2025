@@ -12,4 +12,5 @@ public interface ICustomerService {
     CustomerResponse findById(Long id);
     CustomerResponse findByEmail(String email);
 
+    int getPointLoyaltyCustomer(Long id);
 }
