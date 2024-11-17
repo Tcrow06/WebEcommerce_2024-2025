@@ -19,7 +19,7 @@ public class OrderStatusDAO extends AbstractDAO<OrderStatusEntity> implements IO
     private IOrderDAO orderDAO;
 
     @Override
-    public boolean changeStatus(Long orderDetailId) {
+    public boolean changeStatus(Long orderDetailId, EnumOrderStatus status) {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
@@ -29,12 +29,20 @@ public class OrderStatusDAO extends AbstractDAO<OrderStatusEntity> implements IO
 
             Long orderId = (Long) findOrderId.getSingleResult();
 
-            OrderStatusEntity newOrderStatus = new OrderStatusEntity();
-            newOrderStatus.setOrder(orderDAO.findById(orderId));
-            newOrderStatus.setStatus(EnumOrderStatus.valueOf("WAITING"));
-            newOrderStatus.setDate(LocalDateTime.now());
+            String checkStatusQuery = "SELECT COUNT(os) FROM OrderStatusEntity os WHERE os.order.id = :orderId AND os.status = :status";
+            Query checkStatus = entityManager.createQuery(checkStatusQuery);
+            checkStatus.setParameter("orderId", orderId);
+            checkStatus.setParameter("status", status);
 
-            entityManager.persist(newOrderStatus);
+            long existingStatusCount = (long) checkStatus.getSingleResult();
+            if (existingStatusCount == 0) {
+                OrderStatusEntity newOrderStatus = new OrderStatusEntity();
+                newOrderStatus.setOrder(orderDAO.findById(orderId));
+                newOrderStatus.setStatus(status);
+                newOrderStatus.setDate(LocalDateTime.now());
+
+                entityManager.persist(newOrderStatus);
+            }
             transaction.commit();
             return true;
         } catch (Exception e) {

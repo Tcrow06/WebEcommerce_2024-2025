@@ -72,5 +72,16 @@ public class ReturnOrderService implements IReturnOrderService {
         return returnOrderDAO.updateStatusOrder(returnOrderId);
     }
 
+    @Override
+    public boolean updateStatusNoReturn(Long returnOrderId) {
+        return returnOrderDAO.updateStatusNoReturn(returnOrderId);
+    }
+
+    @Override
+    public boolean updateStatusProcess(Long orderDetailId) {
+        return returnOrderDAO.updateStatusProcess(orderDetailId);
+
+    }
+
 
 }

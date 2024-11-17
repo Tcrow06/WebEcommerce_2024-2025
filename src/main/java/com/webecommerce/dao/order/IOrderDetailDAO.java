@@ -11,7 +11,7 @@ import java.util.List;
 public interface IOrderDetailDAO extends GenericDAO<OrderDetailEntity> {
     List<OrderDetailEntity> findAllByOrderId(Long orderId);
 
-    List<DisplayOrderDetailDTO> showOrderDetail(Long orderId);
+    List<DisplayOrderDetailDTO> showOrderDetail(Long orderId, EnumOrderStatus status);
     EnumOrderStatus getCurrentStatus(Long orderId);
 
     DisplayOrderDetailDTO findOrderDetail(Long orderDetailId);
