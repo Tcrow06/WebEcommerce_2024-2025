@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(urlPatterns = {"/aadmin"})
+@WebServlet(urlPatterns = {"/chu-cua-hang"})
 public class HomeController extends HttpServlet {
 
     @Inject

@@ -5,6 +5,7 @@ import com.webecommerce.entity.discount.ProductDiscountEntity;
 import com.webecommerce.entity.people.CustomerEntity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Table(name = "[order]")
@@ -18,23 +19,28 @@ public class OrderEntity {
     @Column(name = "shipping_fee")
     private double shippingFee;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @Column(name="payment_method")
+    private String paymentMethod;
+
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "bill_discount_id", referencedColumnName = "id")
     private BillDiscountEntity billDiscount;
 
-    @OneToMany(mappedBy = "order")
-    private List<OrderStatusEntity> orderStatuses;
+    @OneToMany(mappedBy = "order",cascade = CascadeType.ALL)
+    private List<OrderStatusEntity> orderStatuses = new ArrayList<>();
 
-    @OneToMany(mappedBy = "order")
-    private List<OrderDetailEntity> orderDetails;
+    @OneToMany(mappedBy = "order",cascade = CascadeType.ALL)
+    private List<OrderDetailEntity> orderDetails = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "order_info_id", referencedColumnName = "id")
     private OrderInfoEntity orderInfo;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "customer_id", nullable = false)
     private CustomerEntity customer;
+
+
 
     public BillDiscountEntity getBillDiscount() {
         return billDiscount;
@@ -90,5 +96,14 @@ public class OrderEntity {
 
     public void setShippingFee(double shippingFee) {
         this.shippingFee = shippingFee;
+    }
+
+
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
     }
 }

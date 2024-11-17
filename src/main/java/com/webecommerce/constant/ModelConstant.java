@@ -4,4 +4,7 @@ public class ModelConstant {
     public static final String MODEL = "model";
     public static final String MODEL1 = "onemodel";
     public static final String MODEL2 = "twomodel";
+    public static final String DANG_DIEN_RA = "dangdienra";
+    public static final String TYPE_DISCOUNT = "type";
+    public static final String CATEGORY = "category";
 }

@@ -1,6 +1,7 @@
 package com.webecommerce.service;
 
 import com.webecommerce.dto.CartItemDTO;
+import com.webecommerce.dto.PlacedOrder.CheckOutRequestDTO;
 import com.webecommerce.entity.cart.CartEntity;
 
 import java.util.HashMap;
@@ -16,4 +17,8 @@ public interface ICartItemService {
     int getQuantityOfCart(HashMap<Long, CartItemDTO> cart);
 
     double getPriceOfCart(HashMap<Long, CartItemDTO> cart);
+
+    HashMap<Long,CartItemDTO> updateCartWhenBuy(Long idUser, CheckOutRequestDTO checkOutRequestDTO);
+    HashMap<Long, CartItemDTO> LoadCart(Long idUser);
+
 }

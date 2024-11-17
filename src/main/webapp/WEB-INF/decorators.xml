@@ -3,13 +3,9 @@
 	<encludes>
 		<pattern>/api*</pattern>
 	</encludes>
-	
-	<decorator name="aadmin" page="admin.jsp"> <!-- .jsp là master layout -->
-		<pattern>/aadmin*</pattern>
-	</decorator>
 
-	<decorator name="chu-doanh-nghiep" page="admin.jsp"> <!-- .jsp là master layout -->
-		<pattern>/chu-doanh-nghiep*</pattern>
+	<decorator name="chu-cua-hang" page="admin.jsp">
+		<pattern>/chu-cua-hang*</pattern>
 	</decorator>
 	
 	<decorator name="web" page="web.jsp">

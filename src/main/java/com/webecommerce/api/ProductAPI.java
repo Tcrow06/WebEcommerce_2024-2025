@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.webecommerce.dto.CategoryDTO;
 import com.webecommerce.dto.ProductDTO;
 import com.webecommerce.dto.ProductVariantDTO;
+import com.webecommerce.dto.discount.BillDiscountDTO;
 import com.webecommerce.service.IProductService;
 import com.webecommerce.service.IProductVariantService;
 import com.webecommerce.utils.HttpUtils;
@@ -17,12 +18,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@WebServlet(urlPatterns = {"/api-product"})
+@WebServlet(urlPatterns = {"/api-product","/api-add-product","/api-update-product"})
 @MultipartConfig
 public class ProductAPI extends HttpServlet {
     @Inject
@@ -30,6 +32,8 @@ public class ProductAPI extends HttpServlet {
 
     @Inject
     IProductVariantService productVariantService;
+
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -66,7 +70,25 @@ public class ProductAPI extends HttpServlet {
         }
     }
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setCharacterEncoding("UTF-8");
+        resp.setContentType("application/json");
+        req.setCharacterEncoding("UTF-8");
+
+        try {
+            String idProduct = req.getParameter("product.id");
+
+            if (idProduct != null) {
+                Long id = Long.valueOf(idProduct);
+                stopSellingProduct(req,resp,new ProductDTO(id));
+            }
+
+        } catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            objectMapper.writeValue(resp.getWriter(), "Lỗi xử lý: " + e.getMessage());
+        }
+    }
 
     private int getIndexFromParameter(String parameterName) {
         int startIndex = parameterName.indexOf('[') + 1;
@@ -80,8 +102,16 @@ public class ProductAPI extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8"); // Thiết lập mã hóa UTF-8 cho phản hồi
 
-        try {
+        String action = request.getServletPath();
+        if (action.equals("/api-add-product"))
+            addProduct(request,response);
+        else if (action.equals("/api-update-product"))
+            updateProduct(request,response);
 
+    }
+
+    private void addProduct (HttpServletRequest request, HttpServletResponse response) throws IOException {
+        try {
             String name = request.getParameter("product.name");
             boolean highlight = Boolean.parseBoolean(request.getParameter("product.highlight"));
             String brand = request.getParameter("product.brand");
@@ -143,4 +173,76 @@ public class ProductAPI extends HttpServlet {
             objectMapper.writeValue(response.getWriter(), "Servlet error");
         }
     }
+
+    private void updateProduct (HttpServletRequest request, HttpServletResponse response) throws IOException {
+        try {
+            Long id = Long.valueOf(request.getParameter("product.id"));
+            String name = request.getParameter("product.name");
+            boolean highlight = Boolean.parseBoolean(request.getParameter("product.highlight"));
+            String brand = request.getParameter("product.brand");
+            String description = request.getParameter("product.description");
+
+            Long categoryId =Long.valueOf(request.getParameter("product.category.id"));
+            CategoryDTO categoryDTO = new CategoryDTO();
+            categoryDTO.setId(categoryId);
+
+            Part sizeTableImagePart = request.getPart("product.sizeConversionTable");
+
+            ProductDTO product = new ProductDTO(id,name,highlight,brand,description,categoryDTO,sizeTableImagePart);
+
+
+            int index = 0;
+            while (true) {
+                ProductVariantDTO productVariant = new ProductVariantDTO();
+
+                String i = request.getParameter("productVariants[" + index + "].index");
+                if (i == null) break; // Không còn variant nào nữa
+
+                String variantId = request.getParameter("productVariants[" + index + "].id");
+                if (variantId != null && !variantId.equals("undefined")) {
+                    productVariant.setId(Long.valueOf(variantId));
+                }
+                productVariant.setPrice(Double.parseDouble(request.getParameter("productVariants[" + index + "].price")));
+                productVariant.setColor(request.getParameter("productVariants[" + index + "].color"));
+                productVariant.setSize(request.getParameter("productVariants[" + index + "].size"));
+                productVariant.setQuantity( Integer.parseInt(request.getParameter("productVariants[" + index + "].quantity")));
+                productVariant.setImage(request.getPart("productVariants[" + index + "].image"));
+
+                product.getProductVariants().add(productVariant);
+
+                index++;
+            }
+
+            if(product != null) {
+                product.setRealPathFile(getServletContext().getRealPath("/"));
+                product = productService.update(product);
+                if(product != null) {
+                    objectMapper.writeValue(response.getWriter(), "Chỉnh sửa sản phẩm thành công !");
+                } else {
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST); // 400 Bad Request
+                    objectMapper.writeValue(response.getWriter(), "Có lỗi trong khi thêm sản phẩm !");
+                }
+            }
+        } catch (NumberFormatException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST); // 400 Bad Request
+            objectMapper.writeValue(response.getWriter(), "Invalid number format");
+        } catch (IOException e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); // 500 Internal Server Error
+            objectMapper.writeValue(response.getWriter(), "File processing error");
+        } catch (ServletException e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); // 500 Internal Server Error
+            objectMapper.writeValue(response.getWriter(), "Servlet error");
+        }
+    }
+
+    private void stopSellingProduct (HttpServletRequest request, HttpServletResponse response, ProductDTO productDTO) throws IOException {
+        productDTO = productService.stopSelling(productDTO.getId());
+        if(productDTO != null) {
+            objectMapper.writeValue(response.getWriter(), "Ngừng kinh doanh sản phẩm thành công !");
+        } else {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            objectMapper.writeValue(response.getWriter(), "Ngừng kinh doanh sản phẩm thất bại !");
+        }
+    }
+
 }

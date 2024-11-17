@@ -21,7 +21,7 @@
 
     <!-- Css Styles -->
     <link rel="stylesheet" href="<c:url value="/static/css/bootstrap.min.css"/>" type="text/css">
-<%--    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.2.0/mdb.min.js"></script>--%>
+    <%--    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.2.0/mdb.min.js"></script>--%>
     <link rel="stylesheet" href="<c:url value="/static/css/font-awesome.min.css"/>" type="text/css">
     <link rel="stylesheet" href="<c:url value="/static/css/elegant-icons.css"/>" type="text/css">
     <link rel="stylesheet" href="<c:url value="/static/css/magnific-popup.css"/>" type="text/css">
@@ -35,8 +35,6 @@
     <script type='text/javascript' src='<c:url value="/template/web/js/jquery-2.2.3.min.js" />'></script>
 
     <script src="<c:url value='/template/paging/jquery.twbsPagination.js' />"></script>
-
-
 </head>
 
 <body>
