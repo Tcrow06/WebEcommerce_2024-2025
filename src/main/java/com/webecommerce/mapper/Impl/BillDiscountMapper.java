@@ -17,7 +17,6 @@ public class BillDiscountMapper extends DiscountMapper implements GenericMapper<
         billDiscountDTO.setLoyaltyPointsRequired(billDiscountEntity.getLoyaltyPointsRequired());
         billDiscountDTO.setCode(billDiscountEntity.getCode());
         billDiscountDTO.setMaximumAmount(billDiscountEntity.getMaximumAmount());
-        billDiscountDTO.setMinimumPurchaseQuantity(billDiscountEntity.getMinimumPurchaseQuantity());
 
         return billDiscountDTO;
     }
@@ -33,7 +32,6 @@ public class BillDiscountMapper extends DiscountMapper implements GenericMapper<
         billDiscountEntity.setLoyaltyPointsRequired(billDiscountDTO.getLoyaltyPointsRequired());
         billDiscountEntity.setCode(billDiscountDTO.getCode());
         billDiscountEntity.setMaximumAmount(billDiscountDTO.getMaximumAmount());
-        billDiscountEntity.setMinimumPurchaseQuantity(billDiscountDTO.getMinimumPurchaseQuantity());
 
         return billDiscountEntity;
     }

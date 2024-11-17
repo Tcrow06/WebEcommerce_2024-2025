@@ -5,6 +5,8 @@
 
 
 
+
+
 <style>
     input[type="checkbox"] {
         width: 20px;
@@ -16,11 +18,13 @@
         transition: background-color 0.3s ease;
     }
 
+
     input[type="checkbox"]:checked {
         background-color: black; /* Màu đen khi được chọn */
         border-color: black;
     }
 </style>
+
 
 <!-- Breadcrumb Section Begin -->
 <section class="breadcrumb-option">
@@ -42,6 +46,7 @@
     </div>
 </section>
 <!-- Breadcrumb Section End -->
+
 
 <!-- Shopping Cart Section Begin -->
 <section class="shopping-cart spad">
@@ -65,40 +70,7 @@
                             <tr>
                                 <td class="product__cart__item">
                                     <div class="product__cart__item__pic">
-                                        <img src="<c:url value='${item.productVariant.imageUrl}' />" alt="${item.productVariant.name}">
-                                    </div>
-                                    <div class="product__cart__item__text">
-                                        <h6>${item.productVariant.name}</h6>
-                                        <h6>Size: ${item.productVariant.size}</h6>
-                                        <h6>Color: ${item.productVariant.color}</h6>
-                                    </div>
-                                </td>
-                                <td class="quantity__item">
-                                    <div class="quantity">
-                                        <div class="pro-qty-2">
-                                            <input type="text" value="${item.quantity}" data-product-id="${item.productVariant.id}">
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="cart__price">$ ${item.productVariant.price * item.quantity}</td>
-                                <td class="cart__close">
-                                    <a href="javascript:void(0);" onclick="removeFromCart(${item.productVariant.id})">
-                                        <i class="fa fa-close"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        </c:forEach>
-                        </tbody>
-
-                        <tbody>
-                        <c:forEach var="entry" items="${sessionScope.cart}">
-                            <c:set var="itemId" value="${entry.key}" />
-                            <c:set var="item" value="${entry.value}" />
-                            <tr>
-                                <td class="product__cart__item">
-                                    <div class="product__cart__item__pic">
-                                        <img style="width: 100px" src="<c:url value='/static/img/product/aothun1-gray.png'/>" alt="${item.productVariant.name}">
-                                            <%--                                        <img src="<c:url value='/api-image?path=${item.productVariant.imageUrl}'/>" alt="${item.productVariant.name}">--%>
+                                        <img style="width: 100px" src="<c:url value='/api-image?path=${item.productVariant.imageUrl}'/>" alt="${item.productVariant.name}">
                                     </div>
                                     <div class="product__cart__item__text">
                                         <h6>${item.productVariant.name}</h6>
@@ -116,10 +88,11 @@
                                 </td>
                                 <td class="cart__price">$ ${item.productVariant.price * item.quantity}</td>
 
+
                                 <td></td>
                                 <td class="cart__close">
                                     <div style="display: flex; align-items: center; justify-content: center; gap: 10px">
-                                        <input type="checkbox" />
+                                            <input type="checkbox" ${item.isActive == 1 ? 'checked' : ''}/>
                                         <a href="javascript:void(0);" onclick="removeFromCart(${item.productVariant.id})">
                                             <i class="fa fa-close"></i>
                                         </a>
@@ -155,7 +128,7 @@
                     <h6 style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#form2Modal">Discount codes</h6>
                     <form action="#">
                         <input type="text" id="couponCode" placeholder="Coupon code">
-                        <button type="submit">Apply</button>
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#form2Modal">Apply</button>
                     </form>
 
                 </div>
@@ -207,50 +180,52 @@
                                         aria-label="Close"></button>
                             </div>
                             <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
-                                <c:forEach items="${discountList}" var="o">
-                                    <div class="card mb-3">
-                                        <div class="card-body">
-                                            <div class="row ps-1">
-                                                <h5 class="fw-bold">${o.name}</h5>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-2">
-                                                    <div class="fs-3 text-dark pb-2">
-                                                        <i class="fas fa-ticket"></i>
+                                <c:if test="${not empty discountList}">
+                                    <c:forEach items="${discountList}" var="o">
+                                        <div class="card mb-3">
+                                            <div class="card-body">
+                                                <div class="row ps-1">
+                                                    <h5 class="fw-bold">${o.name}</h5>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-2">
+                                                        <div class="fs-3 text-dark pb-2">
+                                                            <i class="fas fa-ticket"></i>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-10">
+                                                        <strong>${o.code}</strong><br>
+                                                        <p class="text-secondary-emphasis">Hạn sử dụng: ${o.endDate}</p>
                                                     </div>
                                                 </div>
-                                                <div class="col-10">
-                                                    <strong>${o.code}</strong><br>
-                                                    <p class="text-secondary-emphasis">Hạn sử dụng: ${o.endDate}</p>
+                                                <div class="row">
+                                                    <h6>• Giảm ${o.discountPercentage}%</h6>
                                                 </div>
-                                            </div>
-                                            <div class="row">
-                                                <h6>• Giảm ${o.discountPercentage}%</h6>
-                                            </div>
-                                            <div id="extraContent${o.code}" class="collapse">
-                                                <h6>• Áp dụng với đơn hàng trên ${o.minimumPurchaseQuantity} sản phẩm.
-                                                </h6>
-                                            </div>
+                                                <div id="extraContent${o.code}" class="collapse">
+                                                    <h6>• Áp dụng với đơn hàng trên ${o.minimumInvoiceAmount} VND.
+                                                    </h6>
+                                                </div>
 
-                                            <div class="row">
-                                                <div class="col-8">
-                                                    <!-- Sử dụng data-bs-target với id riêng biệt -->
-                                                    <button type="button" class="btn btn-link p-0 text-decoration-none"
-                                                            data-bs-toggle="collapse"
-                                                            data-bs-target="#extraContent${o.code}" aria-expanded="false"
-                                                            aria-controls="extraContent${o.code}"
-                                                            onclick="toggleButtonText(this)">Xem chi tiết ⬎</button>
-                                                </div>
-                                                <div class="col-4">
-                                                    <button type="button" class="btn btn-dark w-100"
-                                                            data-bs-dismiss="modal" onclick="applyCoupon(this)"
-                                                            data-code="${o.code}" data-description="${o.name}"
-                                                            data-percentCoupon="${o.discountPercentage}">Áp dụng</button>
+                                                <div class="row">
+                                                    <div class="col-8">
+                                                        <!-- Sử dụng data-bs-target với id riêng biệt -->
+                                                        <button type="button" class="btn btn-link p-0 text-decoration-none"
+                                                                data-bs-toggle="collapse"
+                                                                data-bs-target="#extraContent${o.code}" aria-expanded="false"
+                                                                aria-controls="extraContent${o.code}"
+                                                                onclick="toggleButtonText(this)">Xem chi tiết ⬎</button>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <button type="button" class="btn btn-dark w-100"
+                                                                data-bs-dismiss="modal" onclick="applyCoupon(this)"
+                                                                data-code="${o.code}" data-description="${o.name}"
+                                                                data-percentCoupon="${o.discountPercentage}">Áp dụng</button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </c:forEach>
+                                    </c:forEach>
+                                </c:if>
                             </div>
                         </div>
                     </div>
@@ -284,12 +259,13 @@
                         <li>Subtotal <span>$ 0</span></li>
                         <li>Total <span id="total-price">$ ${sessionScope.totalPrice}</span></li>
                     </ul>
-                    <a href="<c:url value='/' />" class="primary-btn"  id="PlacedOrder">Proceed to checkout</a>
+                    <a href="javascript:void(0);" class="primary-btn"  id="ProceedToCheckout">Proceed to checkout</a>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
 
 <script>
     $(document).ready(function () {
@@ -413,28 +389,91 @@
                 }
             });
         }
-    })
+    });
 
-
-
-    // Phần quản lý mã giảm giá
+        // Phần quản lý mã giảm giá
     function toggleButtonText(button) {
-        if (button.textContent === "Xem chi tiết ⬎") {
-            button.textContent = "Thu gọn ⬏";
-        } else {
-            button.textContent = "Xem chi tiết ⬎";
+            if (button.textContent === "Xem chi tiết ⬎") {
+                button.textContent = "Thu gọn ⬏";
+            } else {
+                button.textContent = "Xem chi tiết ⬎";
+            }
         }
-    }
     function applyCoupon(button) {
-        var couponCode = button.getAttribute("data-code");
-        var descriptionCoupon = button.getAttribute("data-description");
-        var percentCoupon = button.getAttribute("data-percentCoupon");
-        document.getElementById("title").value = "Áp dụng thành công!";
-        document.getElementById("title1").value = "Xem thêm";
-        document.getElementById("couponCode").value = couponCode;
-        document.getElementById("descriptionCoupon").value = descriptionCoupon + ":";
-        document.getElementById("percentCoupon").value = "-" + percentCoupon + "%";
-        document.getElementById("discountContent").style.display = "block";
+            var couponCode = button.getAttribute("data-code");
+            var descriptionCoupon = button.getAttribute("data-description");
+            var percentCoupon = button.getAttribute("data-percentCoupon");
+            document.getElementById("title").value = "Áp dụng thành công!";
+            document.getElementById("title1").value = "Xem thêm";
+            document.getElementById("couponCode").value = couponCode;
+            document.getElementById("descriptionCoupon").value = descriptionCoupon + ":";
+            document.getElementById("percentCoupon").value = "-" + percentCoupon + "%";
+            document.getElementById("discountContent").style.display = "block";
+        }
+
+
+
+
+    $('#ProceedToCheckout').click(function (event) {
+
+
+        event.preventDefault();
+        const selectedProducts = getSelectedProducts();
+        const billDiscountCode = $('#couponCode').val();
+
+
+        if (selectedProducts.length === 0) {
+            alert("Vui lòng chọn ít nhất một sản phẩm để thanh toán.");
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: "/kiem-tra-san-pham",
+            contentType: "application/json",
+            data: JSON.stringify({
+                selectedProductsId: selectedProducts,
+                billDiscountCode: billDiscountCode
+            }),
+            success: function(response) {
+                if(response.status==="warring"){
+                    window.location.href = response.redirectUrl.toString() ;
+                }
+                else if(response.status==="error"){
+                    alert(response.message.toString());
+                }
+                // Xử lý khi thành công
+                else{
+                    window.location.href = response.redirectUrl.toString() + "?order=" + encodeURIComponent(JSON.stringify(response.order));
+                }
+            },
+            error: function(xhr, status, error) {
+                window.location.href = response.redirectUrl.toString() + "?order=" + encodeURIComponent(JSON.stringify(response.order));
+                // Xử lý khi có lỗi
+                console.error("Lỗi: ", error);
+                alert("Có lỗi xảy ra, vui lòng thử lại.");
+            }
+        });
+    });
+
+
+
+
+    function getSelectedProducts() {
+        const selectedProducts = [];
+        $('#cart-container tbody tr').each(function() {
+            const checkbox = $(this).find('input[type="checkbox"]');
+            if (checkbox.is(':checked')) {
+                const productVariantId = $(this).find('input[type="text"]').data('product-id');
+                const quantity = $(this).find('input[type="text"]').val();
+                if (productVariantId && quantity) {
+                    selectedProducts.push({
+                        productVariantId: productVariantId,
+                        quantity: parseInt(quantity, 10)
+                    });
+                }
+            }
+        });
+        return selectedProducts;
     }
 
 </script>

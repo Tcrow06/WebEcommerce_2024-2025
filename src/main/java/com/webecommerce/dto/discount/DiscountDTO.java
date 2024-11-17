@@ -102,4 +102,6 @@ public abstract class DiscountDTO extends BaseDTO<DiscountDTO> {
         this.discountPercentage = discountPercentage;
     }
 
+
+
 }
