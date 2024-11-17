@@ -33,6 +33,8 @@ public class OrderDTO {
     private String status;
     private StringBuilder message = new StringBuilder();
 
+    private String paymentMethod;
+
     public double getMaximumDiscount() {
         return maximumDiscount;
     }
@@ -128,5 +130,13 @@ public class OrderDTO {
     }
 
     public OrderDTO() {
+    }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
     }
 }

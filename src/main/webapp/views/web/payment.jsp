@@ -12,6 +12,10 @@
         color: silver;
         text-transform: lowercase;
     }
+    .note{
+        font-weight: normal;
+        color: silver;
+    }
 </style>
 
 <!-- Breadcrumb Section Begin -->
@@ -47,7 +51,7 @@
                             </div>
                             <ul class="checkout__total__products">
                                 <c:forEach items="${orderDTO.orderDetails}" var="order">
-                                    <li>- ${order.productVariant.name} ${order.productVariant.size} ${order.productVariant.color} x${order.quantity}<span><fmt:formatNumber type = "number" maxFractionDigits = "3" value="${order.total}" /> VND</span></li>
+                                        <li>- ${order.productVariant.name} ${order.productVariant.size} ${order.productVariant.color} x${order.quantity}<span><fmt:formatNumber type = "number" maxFractionDigits = "3" value="${order.total}" /> VND</span></li>
                                 </c:forEach>
                             </ul>
                             <ul class="checkout__total__all">
@@ -63,11 +67,14 @@
                                     <li>Tổng thanh toán <span><fmt:formatNumber type = "number" maxFractionDigits = "3" value="${orderDTO.total}"/> VND</span></li>
                                 </c:if>
                             </ul>
+                            <div class="note" style="font-size: 14px; color :black">*<span style="color: #E53637">Phí vận chuyển</span>: Khu vưc Tp.Hồ Chí Minh: 15k, ngoài khu vực Tp.Hồ Chí Minh: 30k </div>
+
                             <div class="form-check">
                                 <input
                                         class="form-check-input"
                                         type="radio"
                                         name="payment"
+                                        value="cash"
                                 />
                                 <label class="form-check-label" for="flexRadioDefault1">
                                     Thanh toán bằng tiền mặt
@@ -80,6 +87,7 @@
                                         type="radio"
                                         name="payment"
                                         checked
+                                        value="bank"
                                 />
                                 <label class="form-check-label" for="flexRadioDefault2">
                                     Thanh toán bằng chuyển khoản
@@ -297,16 +305,16 @@
                 commune: document.getElementById("commune").value,
                 concrete: document.getElementById("concrete").value
             }
-            const paymentMethod = document.querySelector('input[name="payment"]:checked').nextElementSibling.textContent.trim();
+            const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
 
             delete order.orderInfoDTO;
             order.orderInfoDTO = {
                 recipient: recipient,
                 phone: phone,
                 address: address,
-
             };
-            // payment: paymentMethod
+            order.paymentMethod =paymentMethod
+
 
 
             event.preventDefault();
