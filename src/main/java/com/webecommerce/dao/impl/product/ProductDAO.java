@@ -3,6 +3,7 @@ package com.webecommerce.dao.impl.product;
 import antlr.StringUtils;
 import com.webecommerce.dao.impl.AbstractDAO;
 import com.webecommerce.dao.product.IProductDAO;
+import com.webecommerce.dto.ProductDTO;
 import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.mapper.Impl.ProductMapper;
 import com.webecommerce.paging.Pageable;
@@ -231,5 +232,13 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
             LOGGER.log(Level.SEVERE, "Lỗi khi lấy sản phẩm có discount còn hiệu lực", e);
             return null;
         }
+    }
+
+    @Override
+    public List<ProductEntity> searchProductsByName(String name) {
+        String query = "SELECT p FROM ProductEntity p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))";
+        TypedQuery<ProductEntity> typedQuery = entityManager.createQuery(query, ProductEntity.class);
+        typedQuery.setParameter("name", name);
+        return typedQuery.getResultList();
     }
 }

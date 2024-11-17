@@ -8,7 +8,7 @@ import com.webecommerce.paging.Pageable;
 
 import java.util.List;
 
-public interface IProductDAO extends GenericDAO <ProductEntity> {
+public interface    IProductDAO extends GenericDAO <ProductEntity> {
     List<ProductEntity> findProductsByCategoryCode(String categoryCode);
     List<String> getListColorBySize (String size, Long productId);
     List<String> getListSizeByColor (String color, Long productId);
@@ -23,4 +23,5 @@ public interface IProductDAO extends GenericDAO <ProductEntity> {
     List<ProductEntity> findAll(Pageable pageable);
     List<String> getAllProductName();
 
+    List<ProductEntity> searchProductsByName(String name);
 }

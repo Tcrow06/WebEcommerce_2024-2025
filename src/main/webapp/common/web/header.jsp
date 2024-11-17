@@ -26,6 +26,154 @@
         background-color: #ddd;
     }
 
+    #chat-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+
+    .chat-button {
+        background-color: transparent;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .chat-button img {
+        display: block;
+    }
+
+    .close-chat button {
+        background: transparent;
+        color: #e53637;
+        font-size: 20px;
+    }
+
+    .chat-box {
+        position: fixed;
+        bottom: 80px;
+        right: 20px;
+        width: 400px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .chat-box-header {
+        background-color: #000000;
+        color: #fff;
+        padding: 10px;
+        font-size: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .chat-box-content {
+        flex-grow: 1;
+        padding: 10px;
+        overflow-y: auto;
+        font-size: 14px;
+        max-height: 400px;
+        height: 400px;
+        border-bottom: 1px solid #ddd;
+        box-sizing: border-box;
+    }
+
+    .chat-box-input {
+        display: flex;
+        border-top: 1px solid #ddd;
+    }
+
+    .chat-box-input input {
+        flex-grow: 1;
+        border: none;
+        padding: 10px;
+        font-size: 14px;
+        border-right: 1px solid #ddd;
+        outline: none;
+    }
+
+    .chat-box-input button {
+        background-color: #f58a20;
+        border: none;
+        color: #fff;
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    .d-none {
+        display: none;
+    }
+
+    .message-container {
+        display: flex;
+        margin-bottom: 10px;
+        padding: 5px;
+    }
+
+    .message-container img.avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+
+    .user-message {
+        justify-content: flex-end;
+    }
+
+    .user-message .avatar {
+        order: 1;
+        margin-left: 10px;
+        margin-right: 0;
+    }
+
+    .user-message p {
+        background-color: #007bff;
+        color: black;
+        padding: 10px;
+        border-radius: 15px;
+        max-width: 250px;
+        word-wrap: break-word;
+        word-break: break-word;
+    }
+
+    .server-message {
+        justify-content: flex-start;
+    }
+
+    .server-message p {
+        background-color: #f1f1f1;
+        color: black;
+        padding: 10px;
+        border-radius: 15px;
+        max-width: 250px;
+        word-wrap: break-word;
+        word-break: break-word;
+    }
+
+
+    #messages {
+        max-height: 700px;
+        overflow-y: auto;
+    }
+
+    .message-container p {
+        margin: 0;
+        background-color: #f1f1f1;
+        color: black;
+        padding: 10px;
+        border-radius: 10px;
+        max-width: 200px;
+        word-wrap: break-word;
+        word-break: break-word;
+    }
 
 </style>
 <header class="header">
@@ -123,5 +271,114 @@
         <div class="canvas__open"><i class="fa fa-bars"></i></div>
     </div>
 
+    <div id="chat-container">
+        <button id="chat-button" class="chat-button">
+            <img src="<c:url value='/static/img/icon/chat.webp' />" alt="Chat" width="40" height="40">
+        </button>
+        <div id="chat-box" class="chat-box d-none">
+            <div class="chat-box-header">
+                <span>Hỗ trợ trực tuyến</span>
+                <button id="close-chat" class="close-chat">&times;</button>
+            </div>
+            <div class="chat-box-content" id="messages"></div>
+            <div class="chat-box-input">
+                <input type="text" id="message" placeholder="Nhập tin nhắn..." id="chat-input" onkeyup="checkEnter(event)">
+                <button id="send-chat" class="send-chat" onclick="sendMessage()">Gửi</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const chatButton = document.getElementById("chat-button");
+            const chatBox = document.getElementById("chat-box");
+            const closeChat = document.getElementById("close-chat");
+            const messages = document.getElementById('messages');
+
+            function showWelcomeMessage() {
+                var messageContainer = document.createElement('div');
+                messageContainer.classList.add('message-container');
+                var avatar = document.createElement('img');
+                avatar.src = '/static/img/avatar/chatbot.png';
+                avatar.classList.add('avatar');
+                var messageText = document.createElement('p');
+                messageText.textContent = "Nhấn chat để bắt đầu";
+                messageContainer.appendChild(avatar);
+                messageContainer.appendChild(messageText);
+                messages.appendChild(messageContainer);
+                messages.scrollTop = messages.scrollHeight;
+            }
+
+            chatButton.addEventListener("click", () => {
+                chatBox.classList.toggle("d-none");
+                if (messages.children.length === 0) {
+                    showWelcomeMessage();
+                }
+            });
+
+            closeChat.addEventListener("click", () => {
+                chatBox.classList.add("d-none");
+            });
+        });
+
+        var socket = new WebSocket('ws://localhost:8080/chat');
+
+        socket.onopen = function() {
+            console.log("Connected to the WebSocket server");
+        };
+
+        socket.onmessage = function(event) {
+            var messages = document.getElementById('messages');
+            var messageContainer = document.createElement('div');
+
+            messageContainer.classList.add('message-container', 'server-message');
+
+
+            var avatar = document.createElement('img');
+            avatar.src = '/static/img/avatar/chatbot.png';
+            avatar.classList.add('avatar');
+            var messageText = document.createElement('p');
+            messageText.textContent = event.data;
+            messageContainer.appendChild(avatar);
+            messageContainer.appendChild(messageText);
+            messages.appendChild(messageContainer);
+            messages.scrollTop = messages.scrollHeight;
+        };
+
+        socket.onclose = function() {
+            console.log("Disconnected from the WebSocket server");
+        };
+
+        function sendMessage() {
+            var message = document.getElementById('message').value;
+            if (message != "") {
+                socket.send(message);
+
+                var messages = document.getElementById('messages');
+                var messageContainer = document.createElement('div');
+                messageContainer.classList.add('message-container', 'user-message'); // Thêm lớp CSS cho tin nhắn của người dùng
+
+                var avatar = document.createElement('img');
+                avatar.src = '/static/img/avatar/userChat.png'; // Bạn có thể thay đổi avatar của người dùng ở đây
+                avatar.classList.add('avatar');
+
+                var messageText = document.createElement('p');
+                messageText.textContent = message;
+
+                messageContainer.appendChild(avatar);
+                messageContainer.appendChild(messageText);
+                messages.appendChild(messageContainer);
+                messages.scrollTop = messages.scrollHeight;
+
+                document.getElementById('message').value = '';
+            }
+        }
+
+        function checkEnter(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+    </script>
 </header>
 <!-- Header Section End -->
