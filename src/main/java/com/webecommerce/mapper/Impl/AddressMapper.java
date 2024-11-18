@@ -21,13 +21,13 @@ public class AddressMapper implements GenericMapper<AddressDTO, AddressEntity> {
 
     @Override
     public AddressEntity toEntity(AddressDTO addressDTO) {
-        AddressEntity addressEntity = new AddressEntity();
-        addressEntity.setId(addressDTO.getId() == null ? null : addressDTO.getId());
-        addressEntity.setConcrete(addressDTO.getConcrete());
-        addressEntity.setCommune(addressDTO.getCommune());
-        addressEntity.setDistrict(addressDTO.getDistrict());
-        addressEntity.setCity(addressDTO.getCity());
-        return addressEntity;
+        AddressEntity entity = new AddressEntity();
+        entity.setId(addressDTO.getId());
+        entity.setCity(addressDTO.getCity());
+        entity.setCommune(addressDTO.getCommune());
+        entity.setConcrete(addressDTO.getConcrete());
+        entity.setDistrict(addressDTO.getDistrict());
+        return entity;
     }
 
     @Override

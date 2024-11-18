@@ -32,6 +32,11 @@ public interface IProductDAO extends GenericDAO <ProductEntity> {
 
     List<String> getAllProductName();
 
+
+    List<Object[]> findBestSellerProduct(int limit);
+
+    int totalProducts();
+
     List<ProductEntity> findProductByStatus(EnumProductStatus status);
 
     Long getTotalItems();
