@@ -4,6 +4,7 @@ import antlr.StringUtils;
 import com.webecommerce.constant.EnumProductStatus;
 import com.webecommerce.dao.impl.AbstractDAO;
 import com.webecommerce.dao.product.IProductDAO;
+import com.webecommerce.dto.ProductDTO;
 import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.mapper.Impl.ProductMapper;
 import com.webecommerce.paging.Pageable;
@@ -261,5 +262,13 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
     @Override
     public Long getTotalItems() {
         return totalItem;
+    }
+
+    @Override
+    public List<ProductEntity> searchProductsByName(String name) {
+        String query = "SELECT p FROM ProductEntity p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))";
+        TypedQuery<ProductEntity> typedQuery = entityManager.createQuery(query, ProductEntity.class);
+        typedQuery.setParameter("name", name);
+        return typedQuery.getResultList();
     }
 }

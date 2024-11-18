@@ -29,7 +29,7 @@ public class AccountMapper implements IAccountMapper {
         accountEntity.setUsername(customerRequest.getUserName());
         accountEntity.setPassword(passwordEncoder.encode(customerRequest.getPassword()));
         accountEntity.setRole(EnumRoleAccount.CUSTOMER);
-        accountEntity.setStatus(EnumAccountStatus.ACTIVE);
+        accountEntity.setStatus(EnumAccountStatus.UNVERIFIED);
         return accountEntity;
     }
 }

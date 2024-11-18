@@ -7,6 +7,17 @@
     List<String> listNames = (List<String>) request.getAttribute("listNames");
 %>
 
+<%
+    List<String> randomProductNames = (List<String>) request.getAttribute("randomProductNames");
+    if (randomProductNames != null && !randomProductNames.isEmpty()) {
+%>
+<ul>
+    <c:forEach var="productName" items="${randomProductNames}">
+        <li class="dropdown-item">${productName}</li>
+    </c:forEach>
+</ul>
+<% } %>
+
 <style>
     .product__item__pic {
         position: relative; /* Để chứa các thẻ con có position absolute */
@@ -243,7 +254,7 @@
                                         <i class="fa fa-star-o"></i>
                                         <i class="fa fa-star-o"></i>
                                     </div>
-                                    <h5>$${item.getDiscountedPrice()}
+                                    <h5>${item.getDiscountedPrice()}
                                         <c:if test="${item.productDiscount != null}">
                                             <span class="discounted-price">${item.price}</span>
                                         </c:if>
@@ -631,6 +642,7 @@
             }
         }else {
             suggestions.style.display = 'none';
+
         }
     });
 

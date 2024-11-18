@@ -1,5 +1,6 @@
 package com.webecommerce.controller.web;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.webecommerce.constant.ModelConstant;
 import com.webecommerce.dao.product.IProductDAO;
 import com.webecommerce.dto.ProductDTO;
@@ -41,6 +42,8 @@ public class ProductController extends HttpServlet {
         String tag = request.getParameter("tag");
         String sort = request.getParameter("sort");
 
+        String searchName = request.getParameter("ten");
+
         product.setPage(page);
         product.setMaxPageItem(maxPageItem);
 
@@ -70,7 +73,11 @@ public class ProductController extends HttpServlet {
         Pageable pageable =new PageRequest(product.getPage(), product.getMaxPageItem(), new FilterProduct(categoryId, brand, tag),
                 new FilterProductVariant(minPrice, maxPrice), new Sorter(product.getSortBy()));
 
+
         List<ProductDTO> productDTOList = productService.findAll(pageable);
+        if (searchName != null && !searchName.isEmpty()) {
+            productDTOList = productService.searchProductsByName(searchName);
+        }
         product.setResultList(productDTOList);
 
         //product.setTotalItem(productService.getTotalItem());

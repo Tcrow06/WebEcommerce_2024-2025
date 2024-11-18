@@ -4,6 +4,7 @@ import com.webecommerce.constant.ModelConstant;
 import com.webecommerce.dto.ProductDTO;
 import com.webecommerce.dto.ProductVariantDTO;
 import com.webecommerce.dto.discount.ProductDiscountDTO;
+import com.webecommerce.entity.discount.ProductDiscountEntity;
 import com.webecommerce.service.IProductDiscountService;
 import com.webecommerce.service.IProductService;
 
@@ -17,7 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet(urlPatterns = {"/chu-cua-hang/giam-gia-cho-san-pham","/chu-cua-hang/tao-giam-gia-cho-san-pham"})
+@WebServlet(urlPatterns = {"/chu-cua-hang/giam-gia-cho-san-pham","/chu-cua-hang/tao-giam-gia-cho-san-pham","/chu-cua-hang/chinh-sua-giam-gia-san-pham"})
 public class ProductDiscountController extends HttpServlet {
     @Inject
     IProductService productService;
@@ -30,16 +31,36 @@ public class ProductDiscountController extends HttpServlet {
         if (action.equals("/chu-cua-hang/giam-gia-cho-san-pham")) {
             productDiscountList(request, response);
         } else if (action.equals("/chu-cua-hang/tao-giam-gia-cho-san-pham")) {
-            productDiscount(request,response);
+            addProductDiscount(request,response);
+        } else if (action.equals("/chu-cua-hang/chinh-sua-giam-gia-san-pham")) {
+            updateProductDiscount (request,response);
         }
     }
 
-    private void productDiscount(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void addProductDiscount(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ProductDTO productDTO  = new ProductDTO();
         productDTO.setResultList(productService.getProductsFromDiscount());
 
         request.setAttribute(ModelConstant.MODEL, productDTO);
         request.getRequestDispatcher("/views/admin/discount/add-product-discount.jsp").forward(request, response);
+    }
+
+    private void updateProductDiscount (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        try {
+            String id = request.getParameter("id");
+
+            if (id != null) {
+                ProductDiscountDTO productDiscountDTO = productDiscountService.findByIdAndHaveProduct(Long.valueOf(id));
+                if (productDiscountDTO != null) {
+                    request.setAttribute(ModelConstant.MODEL, productDiscountDTO);
+                }
+            }
+            request.getRequestDispatcher("/views/admin/discount/edit-product-discount.jsp").forward(request, response);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void productDiscountList (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

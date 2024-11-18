@@ -123,22 +123,22 @@ public class ProductService implements IProductService {
 
     @Transactional
     public ProductDTO save(ProductDTO product) {
-//        try { // tiến hành lưu ảnh
-//            imageServiceImpl.setRealPath(product.getRealPathFile());
-//            imageServiceImpl.setPath(product.getSizeConversionTable());
-//            imageServiceImpl.saveImageToDisk();
-//            product.setSizeConversionTableUrl(imageServiceImpl.getId());
-//
-//            for (ProductVariantDTO productVariant : product.getProductVariants()) {
-//                imageServiceImpl.setRealPath(product.getRealPathFile());
-//                imageServiceImpl.setPath(productVariant.getImage());
-//                imageServiceImpl.saveImageToDisk();
-//                productVariant.setImageUrl(imageServiceImpl.getId());
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return null;
-//        }
+        try { // tiến hành lưu ảnh
+            imageServiceImpl.setRealPath(product.getRealPathFile());
+            imageServiceImpl.setPath(product.getSizeConversionTable());
+            imageServiceImpl.saveImageToDisk();
+            product.setSizeConversionTableUrl(imageServiceImpl.getId());
+
+            for (ProductVariantDTO productVariant : product.getProductVariants()) {
+                imageServiceImpl.setRealPath(product.getRealPathFile());
+                imageServiceImpl.setPath(productVariant.getImage());
+                imageServiceImpl.saveImageToDisk();
+                productVariant.setImageUrl(imageServiceImpl.getId());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
 
         ProductEntity productEntity = productMapper.toEntity(product);
         if (productEntity == null) return null;
@@ -358,4 +358,11 @@ public class ProductService implements IProductService {
         return productDAO.getTotalItems();
     }
 
+    @Override
+    public List<ProductDTO> searchProductsByName(String name) {
+        List<ProductEntity> products = productDAO.searchProductsByName(name);
+        return products.stream()
+                .map(productMapper::toDTO)
+                .collect(Collectors.toList());
+    }
 }

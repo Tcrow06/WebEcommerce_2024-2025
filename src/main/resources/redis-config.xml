@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <redis>
+        <host>localhost</host>
+        <port>6379</port>
+        <maxTotal>128</maxTotal>
+        <maxIdle>64</maxIdle>
+        <minIdle>16</minIdle>
+    </redis>
+</configuration>
