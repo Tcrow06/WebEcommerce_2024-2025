@@ -19,6 +19,9 @@ public class OrderEntity {
     @Column(name = "shipping_fee")
     private double shippingFee;
 
+    @Column(name="payment_method")
+    private String paymentMethod;
+
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "bill_discount_id", referencedColumnName = "id")
     private BillDiscountEntity billDiscount;
@@ -36,6 +39,8 @@ public class OrderEntity {
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "customer_id", nullable = false)
     private CustomerEntity customer;
+
+
 
     public BillDiscountEntity getBillDiscount() {
         return billDiscount;
@@ -91,5 +96,14 @@ public class OrderEntity {
 
     public void setShippingFee(double shippingFee) {
         this.shippingFee = shippingFee;
+    }
+
+
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
     }
 }

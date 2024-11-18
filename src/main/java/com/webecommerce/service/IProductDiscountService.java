@@ -20,4 +20,6 @@ public interface IProductDiscountService {
 
     List <ProductDiscountDTO> getUpcommingProductDiscount ();
 
+    ProductDiscountDTO findByIdAndHaveProduct(Long id);
+
 }

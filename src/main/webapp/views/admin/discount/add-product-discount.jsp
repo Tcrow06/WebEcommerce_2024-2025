@@ -150,6 +150,7 @@
                             <tr>
                                 <th scope="col">Chọn</th>
                                 <th scope="col">Sản Phẩm</th>
+                                <th scope="col">Có giảm giá</th>
                                 <th scope="col">Giá</th>
                                 <th scope="col">Hãng</th>
                             </tr>
@@ -172,7 +173,28 @@
                                         </c:if>
                                         >
                                     </td>
-                                    <td>${item.name}</td>
+                                    <td>
+                                        <img
+                                                src="<c:url value='/api-image?path=${item.photo}'/>"
+                                                alt="th"
+                                                style="width: 45px; height: 45px"
+                                                class="rounded-circle"
+                                        />
+                                        ${item.name}
+                                    </td>
+                                    <td>
+                                        <c:if test="${item.productDiscount != null}">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckCheckedDisabled_${item.productDiscount.id}" checked disabled/>
+                                            <label class="form-check-label" for="flexCheckCheckedDisabled_${item.productDiscount.id}">Giảm_${item.productDiscount.discountPercentage}%</label>
+                                        </div>
+                                        </c:if>
+                                        <c:if test="${item.productDiscount == null}">
+                                            <div class="flex-column ms-4">
+                                                <p class="mb-2">Không giảm</p>
+                                            </div>
+                                        </c:if>
+                                    </td>
                                     <td>${item.price}</td>
                                     <td>${item.brand}</td>
                                 </tr>
@@ -192,8 +214,49 @@
     </div>
 
 
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Xác nhận</h5>
+                    <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn thực hiện ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal" id="cancelButton">Hủy</button>
+                    <button type="button" class="btn btn-primary" id="okButton">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
     <script>
+
+        function showConfirmationModal() {
+            return new Promise((resolve) => {
+                // Hiển thị modal
+                $('#exampleModal').modal('show');
+
+                // Khi người dùng nhấn "OK"
+                $('#okButton').one('click', function () {
+                    resolve(true); // Người dùng đồng ý
+                    $('#exampleModal').modal('hide');
+                });
+
+                // Khi người dùng nhấn "Cancel"
+                $('#cancelButton').one('click', function () {
+                    resolve(false); // Người dùng hủy
+                    $('#exampleModal').modal('hide');
+                });
+            });
+        }
+
+
         $(document).ready(function () {
             // Khi nhấn nút "Xác nhận" trong modal
             $('#productModal .btn-primary').click(function () {
@@ -261,13 +324,15 @@
                             $('#rule-product-discount').text("")
                         }
                     } else {
+                        $('#submit-button').show()
+                        $('#update-button').hide()
+                        $('#cancel-button').hide()
                         // Xóa các giá trị nếu sản phẩm không có discount
                         $('#discountName').val('');
                         $('#startTime-discount').val('');
                         $('#endTime-discount').val('');
                         $('#discountPercentage').val('');
                         $('#isOutstanding').prop('checked', false);
-                        $('#cancel-button').hide()
                         $('#isDiscountProduct').text("Sản phẩm này chưa được thiết lập giảm giá !");
                         $('#id-product-discount').val(undefined)
                         $('#is-going-on-discount').hide()
@@ -282,47 +347,60 @@
                     // Đảm bảo body có thể cuộn lại sau khi modal đóng
                     $('body').removeClass('modal-open').css('overflow', 'auto');
                 } else {
-                    // Nếu không có sản phẩm được chọn
                     alert("Vui lòng chọn sản phẩm để xác nhận.");
                 }
             });
 
             $('#cancel-button').click(function (){
-                const productDiscountId = $('#id-product-discount').val();
+                showConfirmationModal().then((result) => {
+                    if (!result) {
+                        console.log("User cancelled the action.");
+                        return;
+                    }
 
-                if (productDiscountId == undefined) return
+                    const productDiscountId = $('#id-product-discount').val();
 
-                const data = {
-                    id: productDiscountId
-                };
-                sendAPI(data,'/api-huy-giam-gia')
+                    if (productDiscountId == undefined) return
+
+                    const data = {
+                        id: productDiscountId
+                    };
+                    sendAPI(data, '/api-huy-giam-gia')
+                });
             })
 
 
             $('#submit-button').click(function () {
                 if (!checkInput()) return
 
-                const id = $('#id-product-discount').val();
-                const name = $('#discountName').val();
-                const productId = $('#id-productselected').val();
-                const startDate = $('#startTime-discount').val();
-                const endDate = $('#endTime-discount').val();
-                const discountPercentage = $('#discountPercentage').val();
-                const isOutstanding = $('#isOutstanding').is(':checked');
-
-                const data = {
-                    id: id,
-                    name: name,
-                    startDate: startDate,
-                    endDate: endDate,
-                    discountPercentage: discountPercentage,
-                    isOutStanding: isOutstanding,
-                    product: {
-                        id: productId
+                showConfirmationModal().then((result) => {
+                    if (!result) {
+                        console.log("User cancelled the action.");
+                        return; // Người dùng chọn "Cancel", dừng xử lý
                     }
-                };
 
-                sendAPI(data,'/api-product-discount')
+                    const id = $('#id-product-discount').val();
+                    const name = $('#discountName').val();
+                    const productId = $('#id-productselected').val();
+                    const startDate = $('#startTime-discount').val();
+                    const endDate = $('#endTime-discount').val();
+                    const discountPercentage = $('#discountPercentage').val();
+                    const isOutstanding = $('#isOutstanding').is(':checked');
+
+                    const data = {
+                        id: id,
+                        name: name,
+                        startDate: startDate,
+                        endDate: endDate,
+                        discountPercentage: discountPercentage,
+                        isOutStanding: isOutstanding,
+                        product: {
+                            id: productId
+                        }
+                    };
+
+                    sendAPI(data, '/api-product-discount')
+                });
             });
 
             function sendAPI (data,url) {

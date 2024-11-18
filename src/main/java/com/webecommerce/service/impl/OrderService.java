@@ -3,21 +3,17 @@ package com.webecommerce.service.impl;
 import com.webecommerce.constant.EnumOrderStatus;
 import com.webecommerce.dao.discount.IBillDiscountDAO;
 import com.webecommerce.dao.discount.IProductDiscountDAO;
-import com.webecommerce.dao.impl.order.OrderDAO;
-import com.webecommerce.dao.impl.product.ProductVariantDAO;
 import com.webecommerce.dao.order.IOrderDAO;
 import com.webecommerce.dao.order.IOrderInfoDAO;
 import com.webecommerce.dao.people.ICustomerDAO;
-import com.webecommerce.dao.product.IProductDAO;
 import com.webecommerce.dao.product.IProductVariantDAO;
 import com.webecommerce.dto.OrderDTO;
 import com.webecommerce.dto.OrderDetailDTO;
-import com.webecommerce.dto.OrderInfoDTO;
 import com.webecommerce.dto.PlacedOrder.CheckOutRequestDTO;
 import com.webecommerce.dto.PlacedOrder.ProductOrderDTO;
 import com.webecommerce.dto.ProductVariantDTO;
 import com.webecommerce.dto.discount.BillDiscountDTO;
-import com.webecommerce.dto.discount.ProductDiscountDTO;
+import com.webecommerce.dto.notinentity.DisplayOrderDTO;
 import com.webecommerce.entity.discount.BillDiscountEntity;
 import com.webecommerce.entity.discount.ProductDiscountEntity;
 import com.webecommerce.entity.order.OrderDetailEntity;
@@ -25,9 +21,11 @@ import com.webecommerce.entity.order.OrderEntity;
 import com.webecommerce.entity.order.OrderInfoEntity;
 import com.webecommerce.entity.order.OrderStatusEntity;
 import com.webecommerce.entity.people.CustomerEntity;
-import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.entity.product.ProductVariantEntity;
-import com.webecommerce.mapper.Impl.*;
+import com.webecommerce.mapper.Impl.OrderInfoMapper;
+import com.webecommerce.mapper.Impl.OrderMapper;
+import com.webecommerce.mapper.Impl.ProductDiscountMapper;
+import com.webecommerce.mapper.Impl.ProductVariantMapper;
 import com.webecommerce.service.*;
 
 import javax.inject.Inject;
@@ -37,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OrderService implements IOrderService {
-
     @Inject
     private IProductService productService;
 
@@ -203,11 +200,22 @@ public class OrderService implements IOrderService {
         return orderDTO;
 
     }
+
+    @Override
+    public boolean changeConfirmStatus(Long orderId) {
+        return orderDAO.changeConfirmStatus(orderId);
+    }
+
     @Transactional
     public OrderEntity createOrder(OrderDTO orderDTO, Long idUser) {
        try {
            OrderEntity orderEntity = new OrderEntity();
-           orderEntity.setShippingFee(orderDTO.getShippingFee());
+           String city = orderDTO.getOrderInfoDTO().getAddress().getCity().trim();
+           if(city.equalsIgnoreCase("Tp.Hồ Chí Minh")||city.equalsIgnoreCase("HCM")||city.equalsIgnoreCase("Hồ Chí Minh"))
+               orderEntity.setShippingFee(15);
+           else{
+               orderEntity.setShippingFee(30);
+           }
 
 
            if(orderDTO.getBillDiscount()!=null){
@@ -223,7 +231,7 @@ public class OrderService implements IOrderService {
            List<OrderStatusEntity> orderStatusEntities = new ArrayList<>();
            OrderStatusEntity orderStatusEntity = new OrderStatusEntity();
            orderStatusEntity.setDate(LocalDateTime.now());
-           orderStatusEntity.setStatus(EnumOrderStatus.WAITING);
+           orderStatusEntity.setStatus(EnumOrderStatus.PENDING);
            orderStatusEntities.add(orderStatusEntity);
            orderStatusEntity.setOrder(orderEntity);
            orderEntity.setOrderStatuses(orderStatusEntities);
@@ -257,12 +265,17 @@ public class OrderService implements IOrderService {
            orderEntity.setOrderDetails(orderDetailEntities);
            CustomerEntity customer = customerDAO.findById(idUser);
            orderEntity.setCustomer(customer);
-
+           orderEntity.setPaymentMethod(orderDTO.getPaymentMethod());
            orderDAO.insert(orderEntity);
            return orderEntity;
        }catch (Exception e){
            e.printStackTrace();
        }
        return null;
+    }
+
+    @Override
+    public List<DisplayOrderDTO> getOrderDisplay(Long customerId) {
+        return orderDAO.getOrderDisplay(customerId);
     }
 }

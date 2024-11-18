@@ -29,6 +29,7 @@ public class OrderMapper implements GenericMapper<OrderDTO,OrderEntity> {
         orderDTO.setBillDiscount(billDiscountMapper.toDTO(orderEntity.getBillDiscount()));
         orderDTO.setOrderStatuses(orderStatusMapper.toDTOList(orderEntity.getOrderStatuses()));
         orderDTO.setShippingFee(orderEntity.getShippingFee());
+        orderDTO.setPaymentMethod(orderEntity.getPaymentMethod());
         return orderDTO;
     }
 
@@ -40,7 +41,8 @@ public class OrderMapper implements GenericMapper<OrderDTO,OrderEntity> {
         orderEntity.setOrderInfo(orderInfoMapper.toEntity(orderDTO.getOrderInfoDTO()));
         orderEntity.setOrderDetails(orderDetailMapper.toEntityList(orderDTO.getOrderDetails()));
         orderEntity.setBillDiscount(billDiscountMapper.toEntity(orderDTO.getBillDiscount()));
-        orderEntity.setShippingFee(orderEntity.getShippingFee());
+        orderEntity.setShippingFee(orderDTO.getShippingFee());
+        orderEntity.setPaymentMethod(orderDTO.getPaymentMethod());
         return orderEntity;
     }
 

@@ -24,7 +24,7 @@
         padding: 15px;
         position: relative;
         margin-top: 10px;
-        background-color: #f9f9f9;
+        background-color: white;
     }
 
     .custom-legend {
@@ -47,6 +47,20 @@
         padding: 8px;
         box-sizing: border-box;
     }
+
+    .product-image {
+        display: flex;
+        justify-content: center; /* Căn giữa ảnh */
+        align-items: center;
+        height: 360px; /* Chiều cao tối đa cho container ảnh */
+        overflow: hidden; /* Cắt bớt ảnh nếu vượt quá container */
+    }
+
+    .product-img {
+        max-width: 100%; /* Đảm bảo ảnh không vượt quá chiều rộng container */
+        max-height: 100%; /* Đảm bảo ảnh không vượt quá chiều cao container */
+        object-fit: contain; /* Giữ tỉ lệ ảnh trong vùng hiển thị */
+    }
 </style>
 
 
@@ -68,7 +82,7 @@
                                 <div data-mdb-input-init class="form-outline">
                                     <input type="text" name="firstName" id="productName" class="custom-input form-control form-control-lg" />
                                     <label class="form-label" for="productName">Tên sản phẩm</label>
-                                    <div class="error-message" id="productNameError" style="font-size: 12px"></div>
+                                    <div class="error-message text-danger" id="productNameError" style="font-size: 12px"></div>
                                 </div>
                             </div>
                         </div>
@@ -79,7 +93,7 @@
                                 <div data-mdb-input-init class="form-outline">
                                     <input type="text" name="firstName" id="productBrand" class="custom-input form-control form-control-lg" />
                                     <label class="form-label" for="productBrand">Hãng sản phẩm</label>
-                                    <div class="error-message" id="productBrandError" style="font-size: 12px"></div>
+                                    <div class="error-message text-danger" id="productBrandError" style="font-size: 12px"></div>
                                 </div>
                             </div>
                         </div>
@@ -114,7 +128,7 @@
 
             </div>
             <hr />
-            <div class="description description-tabs">
+            <div class="description description-tabs" style="margin-bottom: 10px">
                 <div class="tab-content" style="height: 400px">
                     <br />
                     <strong>Description Title</strong>
@@ -129,7 +143,7 @@
                 <strong>Up ảnh bảng size</strong>
                     <div class="product-image">
                         <div class="item active">
-                            <img src="<c:url value='/static/img/product/404.jpg'/>" class="img-responsive" alt="Product Image" id = "previewSizeTable">
+                            <img src="<c:url value='/static/img/product/404.jpg'/>" class="img-responsive product-img" alt="Product Image" id = "previewSizeTable">
                         </div>
                     </div>
                     <div class="form-group" style="max-width: 360px; max-height: 200px">
@@ -167,17 +181,14 @@
                                     <span class="input-group-text btn-primary" id="inputGroup-sizing-sm" style="color: white;" >Color</span>
                                 </div>
                                 <input type="text" class="form-control variant-color" name="name" aria-label="Small" aria-describedby="inputGroup-sizing-sm" value="" style="max-width: 150px;">
-                                <div class="error-message"></div>
+                                <div class="error-message text-danger"></div>
                             </div>
                         </div>
                         <div class="w-100"></div>
                         <div class="row size-container">
                             <!-- Các ô Size, Quantity và Price sẽ được thêm vào đây -->
                         </div>
-                        <button type="button" class="col btn btn-primary add-size-btn mt-3" style="max-width: 200px; max-height: 40px;" onclick="addSize(this)">Thêm Size</button>
-                        <div class="mt-3 d-flex justify-content-end">
-                            <button class="btn btn-secondary" onclick="removeProductVariantCard(this)" >Hủy</button>
-                        </div>
+                        <button type="button" class="col align-items-center btn btn-primary add-size-btn mt-5" style="max-width: 200px; max-height: 40px;" onclick="addSize(this)">Thêm Size</button>
                         <div class="w-100"></div>
                         <div class="col" style="margin-top: 20px;">
                             <div class="form-group">
@@ -190,6 +201,9 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="mt-3 d-flex justify-content-end">
+                            <button class="btn btn-danger" onclick="removeProductVariantCard(this)" >Hủy</button>
                         </div>
                     </div>
 
@@ -204,28 +218,54 @@
             <legend class="custom-legend">Phân loại hàng</legend>
             <div class="d-flex align-items-center mb-2 single-size-row">
 
-                <!-- Ô Size lớn hơn -->
-                <div class="flex-fill me-2" style="max-width: 40%; position: relative;">
-                    <input type="text" name="variantSize" placeholder="Size" class="form-control variant-size">
-                    <div class="error-message" style="position: absolute; bottom: -18px; left: 0; font-size: 12px;"></div>
+                <div class="input-group mb-3">
+                    <input
+                            type="text"
+                            class="form-control variant-size"
+                            placeholder="Size"
+                            aria-label="Size"
+                    />
+                    <span class="input-group-text">@</span>
+                    <input
+                            type="number"
+                            class="form-control variant-quantity"
+                            placeholder="Quantity"
+                            aria-label="Quantity"
+                    />
+                    <span class="input-group-text">@</span>
+                    <input
+                            type="text"
+                            class="form-control variant-price"
+                            placeholder="Price"
+                            aria-label="Price"
+                    />
+                    <div class="d-flex align-items-center justify-content-center">
+                        <button type="button" class="btn btn-danger btn-sm remove-row-btn ms-2" style="font-size: 0.8rem;" onclick="removeSizeRow(this)">🗑</button>
+                    </div>
                 </div>
 
-                <!-- Ô Quantity nhỏ hơn -->
-                <div class="flex-fill me-2" style="max-width: 20%; position: relative;">
-                    <input type="number" name="variantQuantity" placeholder="Quantity" class="form-control variant-quantity">
-                    <div class="error-message" style="position: absolute; bottom: -18px; left: 0; font-size: 12px;"></div>
-                </div>
+<%--                <!-- Ô Size lớn hơn -->--%>
+<%--                <div class="flex-fill me-2" style="max-width: 40%; position: relative;">--%>
+<%--                    <input type="text" name="variantSize" placeholder="Size" class="form-control variant-size">--%>
+<%--                    <div class="error-message text-danger" style="position: absolute; bottom: -18px; left: 0; font-size: 12px;"></div>--%>
+<%--                </div>--%>
 
-                <!-- Ô Price lớn hơn -->
-                <div class="flex-fill me-2" style="max-width: 40%; position: relative;">
-                    <input type="text" name="variantPrice" placeholder="Price" class="form-control variant-price">
-                    <div class="error-message" style="position: absolute; bottom: -18px; left: 0; font-size: 12px;"></div>
-                </div>
+<%--                <!-- Ô Quantity nhỏ hơn -->--%>
+<%--                <div class="flex-fill me-2" style="max-width: 20%; position: relative;">--%>
+<%--                    <input type="number" name="variantQuantity" placeholder="Quantity" class="form-control variant-quantity">--%>
+<%--                    <div class="error-message text-danger" style="position: absolute; bottom: -18px; left: 0; font-size: 12px;"></div>--%>
+<%--                </div>--%>
+
+<%--                <!-- Ô Price lớn hơn -->--%>
+<%--                <div class="flex-fill me-2" style="max-width: 40%; position: relative;">--%>
+<%--                    <input type="text" name="variantPrice" placeholder="Price" class="form-control variant-price">--%>
+<%--                    <div class="error-message text-danger" style="position: absolute; bottom: -18px; left: 0; font-size: 12px;"></div>--%>
+<%--                </div>--%>
 
                 <!-- Nút Xóa -->
-                <div class="d-flex align-items-center justify-content-center">
-                    <button type="button" class="btn btn-danger btn-sm remove-row-btn ms-2" style="font-size: 0.8rem;" onclick="removeSizeRow(this)">🗑</button>
-                </div>
+<%--                <div class="d-flex align-items-center justify-content-center">--%>
+<%--                    <button type="button" class="btn btn-danger btn-sm remove-row-btn ms-2" style="font-size: 0.8rem;" onclick="removeSizeRow(this)">🗑</button>--%>
+<%--                </div>--%>
             </div>
         </fieldset>
     </template>
@@ -242,14 +282,37 @@
 
     <div class="product-content product-wrap clearfix product-deatil">
         <div class="row">
-            <div class="col-sm-12 col-md-6 col-lg-6">
-                <a href="javascript:void(0);" class="btn btn-secondary btn-lg" onclick="updateProductCards()">Thêm phân loại sản phẩm</a>
-            </div>
-            <div class="col-sm-12 col-md-6 col-lg-6 d-flex justify-content-end">
-                <a id="add-product-btn" href="javascript:void(0);" class="btn btn-primary btn-lg">Xác nhận thêm sản phẩm</a>
+            <!-- Confirm and Cancel Buttons -->
+            <div class="col d-flex justify-content-end align-items-center">
+                <!-- Cancel Button -->
+                <button id="cancel-button" class="btn btn-secondary me-2" onclick="updateProductCards()">Thêm phân loại sản phẩm</button>
+                <!-- Add Product Button -->
+                <button id="add-product-btn" class="btn btn-primary">Xác nhận thêm sản phẩm</button>
             </div>
         </div>
     </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Xác nhận</h5>
+                    <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn thực hiện ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal" id="cancelButton">Hủy</button>
+                    <button type="button" class="btn btn-primary" id="okButton">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
@@ -347,6 +410,7 @@
 
             $('#productVariantsContainer .product-variant-card').each(function(index) {
                 const color = $(this).find('.variant-color').val();
+                let hasSizeRow = false;
 
                 if (!color) {
                     $(this).find('.variant-color').next('.error-message').text('Vui lòng nhập màu.');
@@ -356,6 +420,7 @@
                 }
 
                 $(this).find('.single-size-row').each(function() {
+                    hasSizeRow = true;
                     const price = $(this).find('.variant-price').val();
                     const quantity = $(this).find('.variant-quantity').val();
                     const size = $(this).find('.variant-size').val();
@@ -381,6 +446,14 @@
                         $(this).find('.variant-price').next('.error-message').text('');
                     }
                 });
+
+                if (!hasSizeRow) {
+                    $(this).find('.size-container').after('<div class="error-message text-danger">Vui lòng thêm ít nhất một phân loại kích cỡ.</div>');
+                    isValid = false;
+                } else {
+                    $(this).find('.size-container').next('.error-message').remove(); // Xóa thông báo lỗi nếu đã có size
+                }
+
             });
             return isValid
         }
@@ -416,76 +489,102 @@
             });
         }
 
+        function showConfirmationModal() {
+            return new Promise((resolve) => {
+                // Hiển thị modal
+                $('#exampleModal').modal('show');
+
+                // Khi người dùng nhấn "OK"
+                $('#okButton').one('click', function () {
+                    resolve(true); // Người dùng đồng ý
+                    $('#exampleModal').modal('hide');
+                });
+
+                // Khi người dùng nhấn "Cancel"
+                $('#cancelButton').one('click', function () {
+                    resolve(false); // Người dùng hủy
+                    $('#exampleModal').modal('hide');
+                });
+            });
+        }
+
         function addProduct() {
             if (!checkInput()) return;
 
-            const formData = new FormData();
-
-            var product = {
-                name: $('#productName').val(),
-                highlight: $('#highlight').is(':checked'),
-                status: 'SELLING',
-                brand: $('#productBrand').val(),
-                description: quill.root.innerHTML,
-                category: {
-                    id: $('#category').val(),
-                },
-            };
-
-            formData.append('product.name', product.name);
-            formData.append('product.highlight', product.highlight);
-            formData.append('product.status', product.status);
-            formData.append('product.brand', product.brand);
-            formData.append('product.description', product.description);
-            formData.append('product.category.id', product.category.id);
-
-            const sizeTableImage = $("#imageInputSizeTable")[0];
-            if (sizeTableImage) {
-                formData.append(`product.sizeConversionTable`, sizeTableImage.files[0]);
-            }
-
-
-            let index = 0;
-
-            $('#productVariantsContainer .product-variant-card').each(function() {
-                const color = $(this).find('.variant-color').val();
-                const fileInput = $(this).find(".image-upload input[type='file']")[0];
-
-                $(this).find('.single-size-row').each(function() {
-                    const variant = {
-                        price: parseFloat($(this).find('.variant-price').val()),
-                        size: $(this).find('.variant-size').val(),
-                        quantity: parseInt($(this).find('.variant-quantity').val()),
-                    };
-
-                    formData.append(`productVariants[` + index + `].price`, variant.price);
-                    formData.append(`productVariants[` + index + `].color`, color);
-                    formData.append(`productVariants[` + index + `].size`, variant.size);
-                    formData.append(`productVariants[` + index + `].quantity`, variant.quantity);
-
-                    if (fileInput && fileInput.files[0]) {
-                        formData.append(`productVariants[` + index + `].image`, fileInput.files[0]);
-                    }
-
-                    index += 1;
-                });
-            });
-
-
-            // Gửi dữ liệu lên server
-            $.ajax({
-                url: '/api-add-product',
-                type: 'POST',
-                data: formData,
-                processData: false,  // Không xử lý dữ liệu
-                contentType: false,  // Để trình duyệt tự xử lý content-type
-                success: function(response) {
-                    alert(response);
-                },
-                error: function(xhr, status, error) {
-                    const errorMessage = xhr.responseJSON ? xhr.responseJSON.message : error;
-                    alert("Failed to add product: " + errorMessage);
+            showConfirmationModal().then((result) => {
+                if (!result) {
+                    console.log("User cancelled the action.");
+                    return; // Người dùng chọn "Cancel", dừng xử lý
                 }
+
+                const formData = new FormData();
+
+                var product = {
+                    name: $('#productName').val(),
+                    highlight: $('#highlight').is(':checked'),
+                    status: 'SELLING',
+                    brand: $('#productBrand').val(),
+                    description: quill.root.innerHTML,
+                    category: {
+                        id: $('#category').val(),
+                    },
+                };
+
+                formData.append('product.name', product.name);
+                formData.append('product.highlight', product.highlight);
+                formData.append('product.status', product.status);
+                formData.append('product.brand', product.brand);
+                formData.append('product.description', product.description);
+                formData.append('product.category.id', product.category.id);
+
+                const sizeTableImage = $("#imageInputSizeTable")[0];
+                if (sizeTableImage) {
+                    formData.append(`product.sizeConversionTable`, sizeTableImage.files[0]);
+                }
+
+
+                let index = 0;
+
+                $('#productVariantsContainer .product-variant-card').each(function () {
+                    const color = $(this).find('.variant-color').val();
+                    const fileInput = $(this).find(".image-upload input[type='file']")[0];
+
+                    $(this).find('.single-size-row').each(function () {
+                        const variant = {
+                            price: parseFloat($(this).find('.variant-price').val()),
+                            size: $(this).find('.variant-size').val(),
+                            quantity: parseInt($(this).find('.variant-quantity').val()),
+                        };
+
+                        formData.append(`productVariants[` + index + `].price`, variant.price);
+                        formData.append(`productVariants[` + index + `].color`, color);
+                        formData.append(`productVariants[` + index + `].size`, variant.size);
+                        formData.append(`productVariants[` + index + `].quantity`, variant.quantity);
+
+                        if (fileInput && fileInput.files[0]) {
+                            formData.append(`productVariants[` + index + `].image`, fileInput.files[0]);
+                        }
+
+                        index += 1;
+                    });
+                });
+
+
+                // Gửi dữ liệu lên server
+                $.ajax({
+                    url: '/api-add-product',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,  // Không xử lý dữ liệu
+                    contentType: false,  // Để trình duyệt tự xử lý content-type
+                    success: function (response) {
+                        alert(response);
+                    },
+                    error: function (xhr, status, error) {
+                        const errorMessage = xhr.responseJSON ? xhr.responseJSON.message : error;
+                        alert("Failed to add product: " + errorMessage);
+                    }
+                });
             });
         }
 

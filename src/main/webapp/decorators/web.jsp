@@ -1,5 +1,3 @@
-<%@ page import="java.util.List" %>
-<%@ page import="java.util.Arrays" %>
 <%@ include file="/common/taglib.jsp"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -12,23 +10,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Male-Fashion | Template</title>
-    <!-- Link Font Awesome CDN -->
-    <link rel="stylesheet" href="<c:url value="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>"
-          integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOMPhuv1De4VfM1g2B1iI4+6jCW51e7no4mr10s5"
-          crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <script src="<c:url value="https://code.jquery.com/jquery-3.6.0.min.js"/>"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
-    <link href="<c:url value="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"/>" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-
-    <script src="<c:url value="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"/>" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <!-- Google Font -->
     <link href="<c:url value="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&display=swap"/>"
           rel="stylesheet">
 
     <!-- Css Styles -->
     <link rel="stylesheet" href="<c:url value="/static/css/bootstrap.min.css"/>" type="text/css">
+<<<<<<< HEAD
     <script src="<c:url value="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.2.0/mdb.min.js"/>"></script>
+=======
+    <%--    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.2.0/mdb.min.js"></script>--%>
+>>>>>>> b86e47164152e98bbdc9d49df6b936ed4affe25f
     <link rel="stylesheet" href="<c:url value="/static/css/font-awesome.min.css"/>" type="text/css">
     <link rel="stylesheet" href="<c:url value="/static/css/elegant-icons.css"/>" type="text/css">
     <link rel="stylesheet" href="<c:url value="/static/css/magnific-popup.css"/>" type="text/css">
@@ -36,14 +33,12 @@
     <link rel="stylesheet" href="<c:url value="/static/css/owl.carousel.min.css"/>" type="text/css">
     <link rel="stylesheet" href="<c:url value="/static/css/slicknav.min.css"/>" type="text/css">
     <link rel="stylesheet" href="<c:url value="/static/css/style.css"/>" type="text/css">
-    <script src="<c:url value="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"/>"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
     <script src="<c:url value='/template/web/assets/js/jquery.2.1.1.min.js' />"></script>
     <script type='text/javascript' src='<c:url value="/template/web/js/jquery-2.2.3.min.js" />'></script>
 
     <script src="<c:url value='/template/paging/jquery.twbsPagination.js' />"></script>
-
-
 </head>
 
 <body>
@@ -51,8 +46,6 @@
 <div id="preloder">
     <div class="loader"></div>
 </div>
-
-
 
 <%@ include file="../common/web/header.jsp"%>
 
@@ -85,26 +78,6 @@
 <script src="<c:url value="/static/js/mixitup.min.js"/>"></script>
 <script src="<c:url value="/static/js/owl.carousel.min.js"/>"></script>
 <script src="<c:url value="/static/js/main.js"/>"></script>
-
-
-<%--<script src="<c:url value='/static/auth/js/sendDirection.js'/> " type="text/javascript"></script>--%>
-
-
-
-<%--<%--%>
-<%--    // Lấy URI của trang hiện tại--%>
-<%--    String currentPage = request.getRequestURI();--%>
-
-<%--    // Danh sách các trang không cần jquery.slicknav.js--%>
-<%--    List<String> excludedPages = Arrays.asList("/payment.jsp");--%>
-
-<%--    // Nếu trang không nằm trong danh sách loại bỏ, thì thêm script slicknav--%>
-<%--    if (!excludedPages.contains(currentPage)) {--%>
-<%--%>--%>
-<%--<script src="js/jquery.slicknav.js"></script>--%>
-<%--<%--%>
-<%--    }--%>
-<%--%>--%>
 
 </body>
 

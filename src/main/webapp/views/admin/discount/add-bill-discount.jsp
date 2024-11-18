@@ -151,8 +151,48 @@
             </div>
         </form>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Xác nhận</h5>
+                    <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn thực hiện ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal" id="cancelButton">Hủy</button>
+                    <button type="button" class="btn btn-primary" id="okButton">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+
+        function showConfirmationModal() {
+            return new Promise((resolve) => {
+                // Hiển thị modal
+                $('#exampleModal').modal('show');
+
+                // Khi người dùng nhấn "OK"
+                $('#okButton').one('click', function () {
+                    resolve(true); // Người dùng đồng ý
+                    $('#exampleModal').modal('hide');
+                });
+
+                // Khi người dùng nhấn "Cancel"
+                $('#cancelButton').one('click', function () {
+                    resolve(false); // Người dùng hủy
+                    $('#exampleModal').modal('hide');
+                });
+            });
+        }
+
         $(document).ready(function() {
 
             const $billDiscountSelected = $('#billDiscountSelected');
@@ -378,13 +418,25 @@
             $('#add-Product').click(function(e) {
                 e.preventDefault(); // Prevent default form submission
                 if (checkInput()) {
-                    updateOrAddBillDiscount(); // Send data if inputs are valid
+                    showConfirmationModal().then((result) => {
+                        if (!result) {
+                            console.log("User cancelled the action.");
+                            return; // Người dùng chọn "Cancel", dừng xử lý
+                        }
+                        updateOrAddBillDiscount(); // Send data if inputs are valid
+                    });
                 }
             });
 
             $('#cancel-btn').click(function (e) {
                 e.preventDefault();
-                cancelBillDiscount();
+                showConfirmationModal().then((result) => {
+                    if (!result) {
+                        console.log("User cancelled the action.");
+                        return; // Người dùng chọn "Cancel", dừng xử lý
+                    }
+                    cancelBillDiscount();
+                });
             });
         });
 

@@ -1,11 +1,13 @@
 package com.webecommerce.dao.impl.product;
 
+import com.webecommerce.constant.EnumProductStatus;
 import com.webecommerce.dao.impl.AbstractDAO;
 import com.webecommerce.dao.product.IProductVariantDAO;
 import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.entity.product.ProductVariantEntity;
 
 import javax.persistence.NoResultException;
+import java.util.List;
 import java.util.logging.Level;
 
 public class ProductVariantDAO extends AbstractDAO <ProductVariantEntity> implements IProductVariantDAO {
@@ -28,6 +30,24 @@ public class ProductVariantDAO extends AbstractDAO <ProductVariantEntity> implem
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Lỗi khi lấy biến thể sản phẩm", e);
             return null;
+        }
+    }
+
+    public List<ProductVariantEntity> getProductVariantsByProduct(ProductEntity productEntity) {
+        String query = "SELECT e FROM " + ProductVariantEntity.class.getSimpleName() +
+                " e WHERE e.product = :product AND e.status = :status";
+
+        try {
+            return entityManager.createQuery(query, ProductVariantEntity.class)
+                    .setParameter("product", productEntity)
+                    .setParameter("status", EnumProductStatus.SELLING)
+                    .getResultList(); // Lấy danh sách kết quả
+        } catch (NoResultException e) {
+            LOGGER.log(Level.WARNING, "Không tìm thấy biến thể sản phẩm nào", e);
+            return null; // Trả về danh sách rỗng thay vì null
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi lấy biến thể sản phẩm", e);
+            return null; // Trả về danh sách rỗng để tránh lỗi NullPointerException
         }
     }
 

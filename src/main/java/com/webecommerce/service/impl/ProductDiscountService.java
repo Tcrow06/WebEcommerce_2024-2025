@@ -98,24 +98,42 @@ public class ProductDiscountService implements IProductDiscountService {
                 continue; // bỏ những product discount đã hết hạn
             }
 
-            ProductDiscountDTO productDiscountDTO = productDiscountMapper.toDTO(productDiscountEntity);
-
-            ProductEntity productEntity = productDiscountEntity.getProduct();
-            if (productEntity != null) {
-                ProductVariantEntity productVariant = productVariantDAO.getProductVariantByProduct(productEntity);
-                productDiscountDTO.setProduct(
-                        productMapper.toDTO(productDiscountEntity.getProduct())
-                );
-                if (productVariant != null) {
-                    productDiscountDTO.getProduct().setPhoto(productVariant.getImageUrl());
-                    productDiscountDTO.getProduct().setPrice(productVariant.getPrice());
-                }
-            }
+            ProductDiscountDTO productDiscountDTO = getProductDiscountDTO(productDiscountEntity);
 
             productDiscountDTOList.add(productDiscountDTO);
         }
 
         return productDiscountDTOList;
+    }
+
+    private ProductDiscountDTO getProductDiscountDTO(ProductDiscountEntity productDiscountEntity) {
+        ProductDiscountDTO productDiscountDTO = productDiscountMapper.toDTO(productDiscountEntity);
+
+        ProductEntity productEntity = productDiscountEntity.getProduct();
+        if (productEntity != null) {
+            ProductVariantEntity productVariant = productVariantDAO.getProductVariantByProduct(productEntity);
+            productDiscountDTO.setProduct(
+                    productMapper.toDTO(productDiscountEntity.getProduct())
+            );
+            if (productVariant != null) {
+                productDiscountDTO.getProduct().setPhoto(productVariant.getImageUrl());
+                productDiscountDTO.getProduct().setPrice(productVariant.getPrice());
+            }
+        }
+
+        return productDiscountDTO;
+    }
+
+    public ProductDiscountDTO findByIdAndHaveProduct(Long id) {
+        ProductDiscountEntity productDiscountEntity = productDiscountDAO.findById(id);
+
+        if (productDiscountEntity != null) {
+            if (productDiscountEntity.getProduct() != null) {
+                return getProductDiscountDTO(productDiscountEntity);
+            }
+        }
+
+        return null;
     }
 
     // lấy những discount có sẵn
