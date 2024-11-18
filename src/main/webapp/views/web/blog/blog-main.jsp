@@ -27,7 +27,7 @@
                     <div class="breadcrumb__text">
                         <h4>Shop</h4>
                         <div class="breadcrumb__links">
-                            <a href="<c:url value=" /trang-chu" />">Home</a>
+                            <a href="<c:url value="/trang-chu" />">Home</a>
                             <span>Blog</span>
                         </div>
                     </div>
@@ -74,7 +74,7 @@
             </div>
             <div class="row">
                 <div class="col-md-4">
-                    <a href="blog-1.jsp">
+                    <a href="<c:url value='/views/web/blog/blog-1.jsp'/>">
                         <div class="card" style="width: 24rem; border: none;">
                             <div class="row">
                                 <img src="<c:url value='/static/img/blog/blog-m-1.png'/>" class="card-img-top px-2"
@@ -104,7 +104,7 @@
                     </a>
                 </div>
                 <div class="col-md-4">
-                    <a href="blog-2.jsp">
+                    <a href="<c:url value='/views/web/blog/blog-2.jsp'/>">
                         <div class="card" style="width: 24rem; border: none;">
                             <div class="row">
                                 <img src="<c:url value='/static/img/blog/blog-m-2.jpg'/>" class="card-img-top px-2"
@@ -133,7 +133,7 @@
                     </a>
                 </div>
                 <div class="col-md-4">
-                    <a href="blog-3.jsp">
+                    <a href="<c:url value='/views/web/blog/blog-3.jsp'/>">
                         <div class="card" style="width: 24rem; border: none;">
                             <div class="row">
                                 <img src="<c:url value='/static/img/blog/blog-m-3.jpg'/>" class="card-img-top px-2"
@@ -165,7 +165,7 @@
             <!--  -->
             <div class="row">
                 <div class="col-md-4">
-                    <a href="blog-4.jsp">
+                    <a href="<c:url value='/views/web/blog/blog-4.jsp'/>">
                         <div class="card" style="width: 24rem; border: none;">
                             <div class="row">
                                 <img src="<c:url value='/static/img/blog/blog-m-4.jpg'/>" class="card-img-top px-2"
@@ -195,7 +195,7 @@
                     </a>
                 </div>
                 <div class="col-md-4">
-                    <a href="blog-5.jsp">
+                    <a href="<c:url value='/views/web/blog/blog-5.jsp'/>">
                         <div class="card" style="width: 24rem; border: none;">
                             <div class="row">
                                 <img src="<c:url value='/static/img/blog/blog-m-5.jpg'/>" class="card-img-top px-2"
@@ -225,7 +225,7 @@
                     </a>
                 </div>
                 <div class="col-md-4">
-                    <a href="blog-6.jsp">
+                    <a href="<c:url value='/views/web/blog/blog-6.jsp'/>">
                         <div class="card" style="width: 24rem; border: none;">
                             <div class="row">
                                 <img src="<c:url value='/static/img/blog/blog-m-6.jpg'/>" class="card-img-top px-2"
@@ -254,6 +254,7 @@
                     </a>
                 </div>
             </div>
+        </div>
     </section>
 </body>
 
