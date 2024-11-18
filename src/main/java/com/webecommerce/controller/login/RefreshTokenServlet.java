@@ -2,10 +2,16 @@ package com.webecommerce.controller.login;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.google.gson.Gson;
+import com.webecommerce.dao.people.ICustomerDAO;
+import com.webecommerce.dto.CartItemDTO;
 import com.webecommerce.dto.response.people.OwnerResponse;
 import com.webecommerce.dto.response.people.UserResponse;
+import com.webecommerce.entity.cart.CartEntity;
+import com.webecommerce.entity.cart.CartItemEntity;
+import com.webecommerce.mapper.Impl.CartItemMapper;
 import com.webecommerce.utils.JWTUtil;
 
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
@@ -19,6 +25,12 @@ import java.util.Map;
 @WebServlet(urlPatterns = {"/refreshAuthToken"})
 public class RefreshTokenServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
+
+    @Inject
+    private ICustomerDAO customerDAO;
+
+    @Inject
+    private CartItemMapper cartItemMapper;
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String oldToken = request.getHeader("Authorization").replace("Bearer ", "");

@@ -16,12 +16,12 @@ public class CartItemEntity {
     @Column(name = "[quantity]")
     private int quantity;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "cart_id", referencedColumnName = "id")
     private CartEntity cart;
 
     @ManyToOne
-    @JoinColumn(name = "product_variant_id")
+    @JoinColumn(name = "product_variant_id", referencedColumnName = "id")
     private ProductVariantEntity productVariant;
 
     public ProductVariantEntity getProductVariant() {

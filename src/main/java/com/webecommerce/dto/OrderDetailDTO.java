@@ -8,6 +8,7 @@ import com.webecommerce.entity.product.ProductVariantEntity;
 import com.webecommerce.entity.review.ProductReviewEntity;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class OrderDetailDTO {
@@ -21,6 +22,22 @@ public class OrderDetailDTO {
     private ProductDiscountDTO productDiscount;
 
     private List<ProductReviewDTO> productReviews;
+
+    private double total;
+
+    public double getTotal() {
+        return total;
+    }
+
+    private void calculateTotal() {
+        double sum= productVariant.getPrice()*quantity;
+        if(productDiscount!=null && productDiscount.getEndDate().isAfter(LocalDateTime.now()) && productDiscount.getStartDate().isBefore(LocalDateTime.now())){
+            sum *= (double) (100 - productDiscount.getDiscountPercentage()) /100;
+        }
+        this.total= sum;
+
+    }
+
     public Long getId() {
         return id;
     }
@@ -59,5 +76,16 @@ public class OrderDetailDTO {
 
     public void setProductReviews(List<ProductReviewDTO> productReviews) {
         this.productReviews = productReviews;
+    }
+
+
+    public OrderDetailDTO(int quantity, ProductVariantDTO productVariant, ProductDiscountDTO productDiscount) {
+        this.quantity = quantity;
+        this.productVariant = productVariant;
+        this.productDiscount = productDiscount;
+        calculateTotal();
+    }
+
+    public OrderDetailDTO() {
     }
 }

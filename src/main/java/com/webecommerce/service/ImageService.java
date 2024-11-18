@@ -1,5 +1,7 @@
 package com.webecommerce.service;
 
+import com.webecommerce.dto.MessageDTO;
+
 import java.io.File;
 
 public interface ImageService {
@@ -9,7 +11,7 @@ public interface ImageService {
 
     String getFolderUpload();
 
-    void saveImageToDisk();
+    MessageDTO saveImageToDisk();
     boolean delete(String path);
 
     public File getFile(String path);

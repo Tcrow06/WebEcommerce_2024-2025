@@ -7,21 +7,27 @@ import com.webecommerce.mapper.GenericMapper;
 import java.util.List;
 
 public class AddressMapper implements GenericMapper<AddressDTO, AddressEntity> {
-
     @Override
-    public AddressDTO toDTO(AddressEntity entity) {
-        AddressDTO dto = new AddressDTO();
-        dto.setId(entity.getId());
-        dto.setCity(entity.getCity());
-        dto.setCommune(entity.getCommune());
-        dto.setConcrete(entity.getConcrete());
-        dto.setDistrict(entity.getDistrict());
-        return dto;
+    public AddressDTO toDTO(AddressEntity addressEntity) {
+        AddressDTO addressDTO = new AddressDTO();
+        addressDTO.setId(addressEntity.getId());
+        addressDTO.setConcrete(addressEntity.getConcrete());
+        addressDTO.setCommune(addressEntity.getCommune());
+        addressDTO.setDistrict(addressEntity.getDistrict());
+        addressDTO.setCity(addressEntity.getCity());
+        return addressDTO;
     }
+
 
     @Override
     public AddressEntity toEntity(AddressDTO addressDTO) {
-        return null;
+        AddressEntity entity = new AddressEntity();
+        entity.setId(addressDTO.getId());
+        entity.setCity(addressDTO.getCity());
+        entity.setCommune(addressDTO.getCommune());
+        entity.setConcrete(addressDTO.getConcrete());
+        entity.setDistrict(addressDTO.getDistrict());
+        return entity;
     }
 
     @Override

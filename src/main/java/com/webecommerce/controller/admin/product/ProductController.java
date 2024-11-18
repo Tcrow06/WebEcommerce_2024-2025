@@ -1,6 +1,9 @@
 package com.webecommerce.controller.admin.product;
 import com.webecommerce.constant.ModelConstant;
+import com.webecommerce.dto.ProductDTO;
+import com.webecommerce.dto.response.admin.ProductVariantColorDTO;
 import com.webecommerce.service.ICategoryService;
+import com.webecommerce.service.IProductService;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -9,11 +12,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
-@WebServlet(urlPatterns = {"/chu-cua-hang/them-san-pham", "/chu-cua-hang/danh-sach-san-pham"})
+@WebServlet(urlPatterns = {"/chu-cua-hang/them-san-pham", "/chu-cua-hang/danh-sach-san-pham", "/chu-cua-hang/chinh-sua-san-pham"})
 public class ProductController extends HttpServlet {
     @Inject
     ICategoryService categoryService;
+
+    @Inject
+    IProductService productService;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getServletPath();
@@ -21,6 +28,8 @@ public class ProductController extends HttpServlet {
             addProduct(request, response);
         } else if (action.equals("/chu-cua-hang/danh-sach-san-pham")) {
             productList(request, response);
+        } else if (action.equals("/chu-cua-hang/chinh-sua-san-pham")) {
+            updateProduct(request,response);
         }
     }
 
@@ -30,9 +39,47 @@ public class ProductController extends HttpServlet {
         request.getRequestDispatcher("/views/admin/product/add-product.jsp").forward(request, response);
     }
 
+    private void updateProduct (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+            Long id = Long.valueOf(request.getParameter("id"));
+
+            request.setAttribute(ModelConstant.CATEGORY, categoryService.findAll());
+
+            ProductDTO productDTO = productService.getProductById(id);
+            List<ProductVariantColorDTO> productVariantColorDTO = productDTO.getProductVariantColorsss();
+
+            request.setAttribute( ModelConstant.MODEL,productDTO);
+
+
+            request.getRequestDispatcher("/views/admin/product/edit-product.jsp").forward(request, response);
+
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            productList(request,response);
+        }
+    }
+
     private void productList(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.setAttribute(ModelConstant.MODEL, categoryService.findAll());
+
+        String type = request.getParameter("type");
+        List <ProductDTO> productDTOS = null ;
+
+        if (type != null) {
+
+            if (type.equals("ngung-kinh-doanh"))
+                productDTOS = productService.findProductStopSelling();
+            else type = "dang-kinh-doanh";
+
+            request.setAttribute(ModelConstant.TYPE_DISCOUNT,type);
+        }
+
+        if (productDTOS == null) {
+            productDTOS = productService.findProductSelling();
+        }
+
+
+        request.setAttribute(ModelConstant.MODEL, productDTOS);
         request.getRequestDispatcher("/views/admin/product/product-list.jsp").forward(request, response);
     }
 }
