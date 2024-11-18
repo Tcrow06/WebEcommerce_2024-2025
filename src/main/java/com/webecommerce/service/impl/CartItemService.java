@@ -168,14 +168,20 @@ public class CartItemService implements ICartItemService {
 
     @Override
     public HashMap<Long, CartItemDTO> LoadCart(Long idUser) {
-        CartEntity cartEntity = customerDAO.findById(idUser).getCart();
-        HashMap<Long, CartItemDTO> cart = new HashMap<>();
-        for (CartItemEntity cartItemEntity : cartEntity.getCartItems()) {
-            CartItemDTO cartItemDTO = cartItemMapper.toDTO(cartItemEntity);
-            cartItemDTO.setIsActive(1);
-            cart.put(cartItemDTO.getId(), cartItemDTO);
+        try {
+            CartEntity cartEntity = customerDAO.findById(idUser).getCart();
+            HashMap<Long, CartItemDTO> cart = new HashMap<>();
+            for (CartItemEntity cartItemEntity : cartEntity.getCartItems()) {
+                CartItemDTO cartItemDTO = cartItemMapper.toDTO(cartItemEntity);
+                cartItemDTO.setIsActive(1);
+                cart.put(cartItemDTO.getId(), cartItemDTO);
+            }
+            return cart;
+        }catch (Exception   e){
+            e.printStackTrace();
+            return null;
         }
-        return cart;
+
     }
 
 
