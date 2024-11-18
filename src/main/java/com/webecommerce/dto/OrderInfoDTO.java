@@ -20,6 +20,16 @@ public class OrderInfoDTO {
 
     private AddressDTO address;
 
+    private Long customerId;
+
+    public Long getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
+    }
+
     public int getIsDefault() {
         return isDefault;
     }

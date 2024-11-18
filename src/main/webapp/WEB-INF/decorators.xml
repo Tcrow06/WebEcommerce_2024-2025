@@ -7,8 +7,13 @@
 	<decorator name="chu-cua-hang" page="admin.jsp">
 		<pattern>/chu-cua-hang*</pattern>
 	</decorator>
+
+	<decorator name="thong-tin-ca-nhan" page="custom.jsp">
+		<pattern>/thong-tin-ca-nhan*</pattern>
+		<pattern>/thanh-toan*</pattern>
+	</decorator>
 	
-	<decorator name="web" page="web.jsp">
+	<decorator name="customer" page="customer.jsp">
 		<pattern>/*</pattern>
 	</decorator>
 

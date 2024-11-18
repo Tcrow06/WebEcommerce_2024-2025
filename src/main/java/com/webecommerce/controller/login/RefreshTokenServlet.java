@@ -48,14 +48,6 @@ public class RefreshTokenServlet extends HttpServlet {
 //            tokenCookie.setPath("/");
 //            tokenCookie.setHttpOnly(true);
             response.addCookie(tokenCookie);
-            CartEntity cartEntity = customerDAO.findById(JWTUtil.getIdUser(request)).getCart();
-
-            HashMap<Long, CartItemDTO> cart = new HashMap<>();
-            for (CartItemEntity cartItemEntity : cartEntity.getCartItems()) {
-                CartItemDTO cartItemDTO = cartItemMapper.toDTO(cartItemEntity);
-                cart.put(cartItemDTO.getId(), cartItemDTO);
-            }
-            request.getSession().setAttribute("cart", cart);
 
             Map<String, Object> responseData = new HashMap<>();
             responseData.put("valid", true);
