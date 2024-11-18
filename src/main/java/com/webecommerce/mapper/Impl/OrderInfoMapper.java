@@ -17,6 +17,9 @@ public class OrderInfoMapper implements GenericMapper<OrderInfoDTO, OrderInfoEnt
 
     @Override
     public OrderInfoDTO toDTO(OrderInfoEntity entity) {
+        if(entity==null){
+            return null;
+        }
         OrderInfoDTO dto = new OrderInfoDTO();
         dto.setId(entity.getId());
         dto.setAddress(addressMapper.toDTO(entity.getAddress()));
@@ -29,6 +32,9 @@ public class OrderInfoMapper implements GenericMapper<OrderInfoDTO, OrderInfoEnt
 
     @Override
     public OrderInfoEntity toEntity(OrderInfoDTO orderInfoDTO) {
+        if (orderInfoDTO==null){
+            return null;
+        }
         OrderInfoEntity entity = new OrderInfoEntity();
         entity.setId(orderInfoDTO.getId());
         entity.setAddress(addressMapper.toEntity(orderInfoDTO.getAddress()));

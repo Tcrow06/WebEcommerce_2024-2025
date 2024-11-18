@@ -55,6 +55,11 @@ public class CartItemService implements ICartItemService {
         // Lấy thông tin khách hàng từ database
         CustomerEntity customerEntity = customerDAO.findById(userId);
         CartEntity cartEntity = customerEntity.getCart();
+        if(cartEntity==null){
+            cartEntity = new CartEntity();
+            cartEntity.setCustomer(customerEntity);
+            cartDAO.insert(cartEntity);
+        }
         List<CartItemEntity> cartItemEntities = cartEntity.getCartItems();
 
         // Tạo giỏ hàng mới nếu chưa có
