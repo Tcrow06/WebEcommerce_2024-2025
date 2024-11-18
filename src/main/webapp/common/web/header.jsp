@@ -224,7 +224,7 @@
         <div class="row">
             <div class="col-lg-3 col-md-3">
                 <div class="header__logo">
-                    <a href="<c:url value="/trang-chu"/>"><img src="<c:url value="/static/img/logo.png"/>" alt=""></a>
+                    <a href="<c:url value="/trang-chu"/>"><img src="<c:url value="/static/img/logo.jpg"/>" alt=""></a>
                 </div>
             </div>
             <div class="col-lg-6 col-md-6">
