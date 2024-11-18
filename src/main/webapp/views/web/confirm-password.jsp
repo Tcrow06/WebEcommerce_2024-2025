@@ -1,4 +1,5 @@
 <%@include file="/common/taglib.jsp"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,17 +13,22 @@
 <div class="container">
     <div class="forms-container">
         <div class="signin-signup">
-            <form action="#" class="sign-in-form">
+            <form id="verify-form" class="sign-in-form" method="post" >
                 <h2 class="title">Đổi mật khẩu</h2>
+                <c:if test="${not empty message}">
+                    <div class="alert alert-${alert}" role="alert" id="register-error-message">
+                            ${message}
+                    </div>
+                </c:if>
 
                 <div class="input-field">
                     <i class="fas fa-lock"></i>
-                    <input type="password" placeholder="Mật khẩu" />
+                    <input type="password" placeholder="Mật khẩu" name="password" required/>
                 </div>
 
                 <div class="input-field">
                     <i class="fas fa-lock"></i>
-                    <input type="password" placeholder="Nhập lại mật khẩu" />
+                    <input type="password" placeholder="Nhập lại mật khẩu" name="repassword" required/>
                 </div>
 
                 <button class="btn" type="submit">Xác nhận</button>
@@ -30,7 +36,14 @@
         </div>
     </div>
 </div>
+<script>
+    // Lấy URL hiện tại
+    const currentUrl = window.location.href;
 
+    // Cập nhật action của form để trỏ đến URL hiện tại
+    const form = document.getElementById('verify-form');
+    form.action = currentUrl;
+</script>
 <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </body>
 </html>

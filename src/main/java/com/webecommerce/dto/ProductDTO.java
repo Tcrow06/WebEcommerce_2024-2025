@@ -9,6 +9,7 @@ import com.webecommerce.dto.response.admin.SizeVariantDTO;
 import javax.servlet.http.Part;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,6 +39,11 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
         this.category = category;
         this.sizeConversionTable = sizeConversionTable;
     }
+
+    public ProductDTO(Long id) {
+        this.setId(id);
+    }
+
 
     public ProductDTO () {}
 
@@ -209,18 +215,24 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
     public void setProductDiscount(ProductDiscountDTO productDiscount) {
         this.productDiscount = productDiscount;
     }
-    
-    public double getDiscountedPrice() {
+
+    private String formatVND(double price) {
+        DecimalFormat formatter = new DecimalFormat("#,###");
+        return formatter.format(price) + " VND";
+    }
+
+    public String getDiscountedPrice() {
         if (price == 0) {
             for (ProductVariantDTO productVariantDTO : this.productVariants) {
-                if (price == 0 || productVariantDTO.getPrice() < productVariantDTO.getPrice())
+                if (price == 0 || productVariantDTO.getPrice() < price)
                     price = productVariantDTO.getPrice();
             }
         }
-        if (this.productDiscount == null) return price;
-        return new BigDecimal(
-                price - (price / 100) * productDiscount.getDiscountPercentage()
-        ).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        if (this.productDiscount == null) return formatVND(price);
+
+        double discountedPrice = price - (price / 100) * productDiscount.getDiscountPercentage();
+        BigDecimal finalPrice = new BigDecimal(discountedPrice).setScale(2, RoundingMode.HALF_UP);
+        return formatVND(finalPrice.doubleValue());
     }
 
     public String getSizeConversionTableUrl() {

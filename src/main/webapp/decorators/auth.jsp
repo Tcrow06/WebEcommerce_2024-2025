@@ -42,7 +42,7 @@
                     <input type="password" placeholder="Mật khẩu" id="password" name="password" />
                 </div>
                 <div class="container-action">
-                    <a href="#" class="forgot-password" style="color: #bca58c;">Quên mật khẩu?</a>
+                    <a href="<c:url value='/quen-mat-khau'/>" class="forgot-password" style="color: #bca58c;">Quên mật khẩu?</a>
                 </div>
                 <input type="hidden" name="action" value="login" />
                 <input id="btn-login" type="submit" value="Đăng nhập" class="btn solid" />

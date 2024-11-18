@@ -1,7 +1,7 @@
 package com.webecommerce.dao.impl.product;
 
-import antlr.StringUtils;
 import com.webecommerce.constant.EnumOrderStatus;
+import com.webecommerce.constant.EnumProductStatus;
 import com.webecommerce.dao.impl.AbstractDAO;
 import com.webecommerce.dao.product.IProductDAO;
 import com.webecommerce.entity.product.ProductEntity;
@@ -11,7 +11,6 @@ import com.webecommerce.paging.Pageable;
 import javax.inject.Inject;
 import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
@@ -21,6 +20,7 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
 
     @Inject
     private ProductMapper productMapper;
+    private Long totalItem;
     public ProductDAO() {
         super(ProductEntity.class);
     }
@@ -39,11 +39,12 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
     }
 
     public List<String> getListColorBySize (String size, Long productId) {
-        String query = "SELECT p.color FROM ProductVariantEntity p WHERE p.product.id = :id AND p.size = :size";
+        String query = "SELECT p.color FROM ProductVariantEntity p WHERE p.product.id = :id AND p.size = :size AND p.status = : status";
         try {
             return entityManager.createQuery(query, String.class)
                     .setParameter("id", productId)
                     .setParameter("size", size)
+                    .setParameter("status", EnumProductStatus.SELLING)
                     .getResultList();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error fetching product colors by size and product ID: " + productId, e);
@@ -52,11 +53,12 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
     }
 
     public List<String> getListSizeByColor (String color, Long productId) {
-        String query = "SELECT p.size FROM ProductVariantEntity p WHERE p.product.id = :id AND p.color = :color";
+        String query = "SELECT p.size FROM ProductVariantEntity p WHERE p.product.id = :id AND p.color = :color AND p.status = : status";
         try {
             return entityManager.createQuery(query, String.class)
                     .setParameter("id", productId)
                     .setParameter("color", color)
+                    .setParameter("status", EnumProductStatus.SELLING)
                     .getResultList();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error fetching product sizes by size and product ID: " + productId, e);
@@ -132,6 +134,11 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
         }
     }
 
+
+    public List<ProductEntity> findProductByStatus(EnumProductStatus status) {
+        return super.findByAttribute("status", status);
+    }
+
     public Long getTotalItem() {
         return (Long) entityManager.createQuery("SELECT COUNT(p) FROM ProductEntity p")
                 .getSingleResult();
@@ -144,7 +151,7 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
                 "SELECT DISTINCT p FROM ProductEntity p " +
                         "JOIN p.productVariants v " +
                         "LEFT JOIN p.productDiscount d " +
-                        "WHERE 1=1"
+                        "WHERE p.status = 'SELLING'"
         );
 
         // Điều kiện lọc
@@ -185,20 +192,34 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
 
         TypedQuery<ProductEntity> query = entityManager.createQuery(jpql.toString(), ProductEntity.class);
 
+        String countJpql = jpql.toString().replace("SELECT DISTINCT p", "SELECT COUNT(DISTINCT p)");
+        TypedQuery<Long> countQuery = entityManager.createQuery(countJpql, Long.class);
+
         if (pageable.getFilterProduct().getFilterCategory() != -1) {
             query.setParameter("categoryId", Long.valueOf(pageable.getFilterProduct().getFilterCategory()));
+
+            countQuery.setParameter("categoryId", Long.valueOf(pageable.getFilterProduct().getFilterCategory()));
+
         }
 
         if (pageable.getFilterProduct().getFilterBrand() != null &&
                 !pageable.getFilterProduct().getFilterBrand().isEmpty()) {
             query.setParameter("brand", pageable.getFilterProduct().getFilterBrand());
+
+            countQuery.setParameter("brand", pageable.getFilterProduct().getFilterBrand());
         }
 
         if (!Double.isNaN(minPrice)) {
             query.setParameter("minPrice", minPrice);
+
+            countQuery.setParameter("minPrice", minPrice);
+
         }
         if (!Double.isNaN(maxPrice)) {
             query.setParameter("maxPrice", maxPrice);
+
+            countQuery.setParameter("maxPrice", maxPrice);
+
         }
 
         // Thực thi truy vấn để lấy danh sách sản phẩm
@@ -216,6 +237,8 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
             }
         }
 
+
+        totalItem = countQuery.getSingleResult();
         // Thực hiện phân trang cho danh sách sản phẩm đã sắp xếp
         int offset = pageable.getOffset() != null ? pageable.getOffset() : 0;
         int limit = pageable.getLimit() != null ? pageable.getLimit() : 9;
@@ -264,5 +287,16 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
             LOGGER.log(Level.SEVERE, "Lỗi khi tính tổng số sản phẩm", e);
             return 0; // Trả về 0 nếu xảy ra lỗi
         }
+    }
+    public Long getTotalItems() {
+        return totalItem;
+    }
+
+    @Override
+    public List<ProductEntity> searchProductsByName(String name) {
+        String query = "SELECT p FROM ProductEntity p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))";
+        TypedQuery<ProductEntity> typedQuery = entityManager.createQuery(query, ProductEntity.class);
+        typedQuery.setParameter("name", name);
+        return typedQuery.getResultList();
     }
 }

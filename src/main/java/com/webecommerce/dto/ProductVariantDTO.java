@@ -25,6 +25,16 @@ public class ProductVariantDTO extends BaseDTO <ProductVariantDTO> {
 
     private Part image;
 
+    private Long productId;
+
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
+
     @Override
     public Long getId() {
         return id;

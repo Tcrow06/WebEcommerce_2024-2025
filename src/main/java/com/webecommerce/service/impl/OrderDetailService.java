@@ -1,5 +1,6 @@
 package com.webecommerce.service.impl;
 
+import com.webecommerce.constant.EnumOrderStatus;
 import com.webecommerce.dao.impl.order.OrderDetailDAO;
 import com.webecommerce.dto.OrderDetailDTO;
 import com.webecommerce.dto.notinentity.DisplayOrderDetailDTO;
@@ -24,8 +25,8 @@ public class OrderDetailService implements IOrderDetailService {
     }
 
     @Override
-    public List<DisplayOrderDetailDTO> showOrderDetail(Long orderId) {
-        return  orderDetailDAO.showOrderDetail(orderId);
+    public List<DisplayOrderDetailDTO> showOrderDetail(Long orderId, EnumOrderStatus status) {
+        return  orderDetailDAO.showOrderDetail(orderId, status);
     }
 
     @Override

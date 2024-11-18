@@ -1,6 +1,9 @@
 package com.webecommerce.controller.admin;
 
+import com.webecommerce.constant.EnumOrderStatus;
+import com.webecommerce.dao.order.IOrderStatusDAO;
 import com.webecommerce.dto.notinentity.TransferListDTO;
+import com.webecommerce.service.IOrderStatusService;
 import com.webecommerce.service.IReturnOrderService;
 
 import javax.inject.Inject;
@@ -23,16 +26,29 @@ public class ReturnOrderController extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = request.getParameter("action");
         String orderDetailReturnId = request.getParameter("orderDetailReturnId");
         Long orderDetailId = -1L;
         if(orderDetailReturnId != null) {
             orderDetailId = Long.valueOf(orderDetailReturnId);
         }
-        boolean updateStatusOrder = returnOrderService.updateStatusOrder(orderDetailId);
-        if(updateStatusOrder) {
-            System.out.println("aaaaa");
+        //ACTION TRA HANG
+        if("return".equals(action)) {
+            //Cập nhật trạng thái order detail là 1 và tăng lại lượng sản phẩm
+            boolean updateStatusOrderDetail = returnOrderService.updateStatusOrder(orderDetailId);
         }
-        boolean updateStatusProcess = returnOrderService.updateStatus(orderDetailId);
+        else if("noReturn".equals(action)) { //ACTION KHONG CHO TRA
+            // Cập nhật trạng thái order detail là 2
+            boolean updateStatusOrderDetail = returnOrderService.updateStatusNoReturn(orderDetailId);
+        }
+
+        //Thay đổi trạng thái order nếu tất cả đơn hàng được trả
+        boolean updateStatusReturn = returnOrderService.updateStatus(orderDetailId);
+
+        if(!updateStatusReturn) {
+            //Thay đổi trạng thái đơn hàng nếu tất cả được xử lý
+            boolean updateStatusProcess = returnOrderService.updateStatusProcess(orderDetailId);
+        }
         List<TransferListDTO> listDTOList = returnOrderService.getData();
         request.setAttribute("lstProductReturn", listDTOList);
         request.getRequestDispatcher("/views/admin/transfer/transfer-list.jsp").forward(request,response);

@@ -20,4 +20,5 @@ public interface IOrderDAO extends GenericDAO<OrderEntity> {
     int totalOrders();
     int totalOrdersToday();
 
+    boolean changeConfirmStatus(Long orderId);
 }

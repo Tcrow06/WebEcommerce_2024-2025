@@ -74,7 +74,9 @@
                             <h6 class="mb-0">${item.product.name}</h6>
                         </c:if>
                         <h6 class="mb-0">
-                            <span style="text-decoration: line-through; color: grey;">7,99 $</span>
+                            <c:if test="${item.product != null}">
+                                <span style="text-decoration: line-through; color: grey;">${item.product.getDiscountedPrice()}</span>
+                            </c:if>
                             Giảm giá ${item.discountPercentage} %
                         </h6>
                     </div>
@@ -88,7 +90,7 @@
                         ${item.getStringStartDate()} - ${item.getStringEndDate()}
                     </div>
                     <div class="col-md-3 offset-lg-1 text-end"> <!-- Thêm text-end -->
-                        <button type="submit" class="btn btn-dark add-to-cart" >Chỉnh sửa</button>
+                        <a href="chinh-sua-giam-gia-san-pham?id=${item.id}" class="btn btn-dark add-to-cart" >Chỉnh sửa</a>
                     </div>
                 </div>
 

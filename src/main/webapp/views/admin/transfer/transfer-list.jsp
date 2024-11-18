@@ -104,13 +104,13 @@
                             <td>
                                 <c:choose>
                                     <c:when test="${productReturn.status == 0}">
-                                        <span class="badges bg-lightred">In Progress</span>
+                                        <span class="badges bg-warning">Chưa xử lý</span>
                                     </c:when>
                                     <c:when test="${productReturn.status == 1}">
-                                        <span class="badges bg-lightgreen">Completed</span>
+                                        <span class="badges bg-lightgreen">Đã hoàn trả</span>
                                     </c:when>
                                     <c:otherwise>
-                                        <span class="badges bg-lightgrey">Unknown</span>
+                                        <span class="badges bg-lightred">Không hoàn trả</span>
                                     </c:otherwise>
                                 </c:choose>
                             </td>

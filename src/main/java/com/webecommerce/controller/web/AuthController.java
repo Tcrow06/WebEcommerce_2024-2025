@@ -14,6 +14,8 @@ import com.webecommerce.mapper.Impl.CartItemMapper;
 import com.webecommerce.service.IAccountService;
 import com.webecommerce.service.ICartItemService;
 import com.webecommerce.service.impl.CartItemService;
+import com.webecommerce.service.ICacheService;
+import com.webecommerce.utils.CacheFactory;
 import com.webecommerce.utils.FormUtils;
 import com.webecommerce.utils.JWTUtil;
 import com.webecommerce.utils.SessionUtil;
@@ -56,6 +58,15 @@ public class AuthController extends HttpServlet {
                 request.setAttribute("message", resourceBundle.getString(message));
                 request.setAttribute("alert", alert);
             }
+            request.getRequestDispatcher("/decorators/auth.jsp").forward(request, response);
+        } else if (action != null && (action.equals("verify"))) {
+            String message = request.getParameter("message");
+            String alert = request.getParameter("alert");
+            if (message != null && alert != null) {
+                request.setAttribute("message", resourceBundle.getString(message));
+                request.setAttribute("alert", alert);
+            }
+            request.getRequestDispatcher("/views/web/enter-OTP.jsp").forward(request, response);
         }
         request.getRequestDispatcher("/decorators/auth.jsp").forward(request, response);
     }
@@ -119,7 +130,13 @@ public class AuthController extends HttpServlet {
             try {
                 CustomerResponse customerResponse = accountService.save(customerRequest);
                 if (customerResponse != null) {
-                    response.sendRedirect(request.getContextPath() + "/dang-nhap?action=login&message=register_success&alert=success");
+                    // Send otp to email with expiration time in 3 minutes
+                    boolean ok = accountService.sendOTPToEmail(customerResponse.getEmail(), customerResponse.getId(), "register");
+                    if (ok) {
+                        response.sendRedirect(request.getContextPath() + "/dang-ky?action=verify&id=" + customerResponse.getId());
+                    } else {
+                        response.sendRedirect(request.getContextPath() + "/dang-nhap?action=register&message=" + "&alert=danger");
+                    }
                 }
             } catch (DuplicateFieldException e) {
                 session.setAttribute("registrationData", customerRequest);
@@ -139,6 +156,18 @@ public class AuthController extends HttpServlet {
                         break;
                 }
                 response.sendRedirect(request.getContextPath() + "/dang-nhap?action=register&message=" + errorMessage + "&alert=danger");
+            }
+        } else if (action != null && action.equals("verify")) {
+            String otp = request.getParameter("otp");
+            String id = request.getParameter("id");
+            int count = accountService.verifyOTP(id, otp);
+            if (count == 0) {
+                response.sendRedirect(request.getContextPath() + "/dang-nhap?action=login&message=verify_success&alert=success");
+            }else  if (count == 5) {
+                response.sendRedirect(request.getContextPath() + "/dang-ky?action=verify&id=" + id +"&message=verify_failed&alert=danger");
+            }
+            else {
+                response.sendRedirect(request.getContextPath() + "/dang-ky?action=verify&id=" + id +"&message=verify_retry&alert=danger");
             }
         }
     }

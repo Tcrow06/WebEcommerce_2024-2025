@@ -1,9 +1,11 @@
 package com.webecommerce.service;
 
+import com.webecommerce.constant.EnumProductStatus;
 import com.webecommerce.dto.ProductDTO;
 import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.paging.Pageable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -16,11 +18,18 @@ public interface IProductService {
 
     List <ProductDTO> getProductsFromDiscount ();
 
+    List<ProductDTO> findProductSelling() ;
+
+    // dùng cho controller product admin
+    List<ProductDTO> findProductStopSelling() ;
+
     List<ProductDTO> findAll();
 
     ProductDTO save(ProductDTO product);
 
     ProductDTO update(ProductDTO product);
+
+    ProductDTO stopSelling (Long productId);
 
     List<ProductDTO> findProductsByCategoryCode(String categoryCode);
 
@@ -48,4 +57,7 @@ public interface IProductService {
     List<Map.Entry<ProductDTO, Integer>> findBestSellerProduct(int limit);
 
     int totalProducts();
+    Long getTotalItems();
+
+    List<ProductDTO> searchProductsByName(String name);
 }
