@@ -8,17 +8,17 @@ import java.util.HashMap;
 
 public interface ICartItemService {
 
-    HashMap<Long, CartItemDTO> addCart(Long id, int quantity, HashMap<Long, CartItemDTO> cart);
+    HashMap<Long, CartItemDTO> addCartItem(Long productVariantId, int quantity, Long userId);
 
-    CartEntity editCart(Long id, HashMap<Long, CartItemDTO> cart);
-
-    HashMap<Long, CartItemDTO> deleteCart(Long id, HashMap<Long, CartItemDTO> cart);
+    HashMap<Long, CartItemDTO> updateCartItem(Long userId, HashMap<Long, CartItemDTO> newCart);
 
     int getQuantityOfCart(HashMap<Long, CartItemDTO> cart);
 
     double getPriceOfCart(HashMap<Long, CartItemDTO> cart);
 
     HashMap<Long,CartItemDTO> updateCartWhenBuy(Long idUser, CheckOutRequestDTO checkOutRequestDTO);
+
     HashMap<Long, CartItemDTO> LoadCart(Long idUser);
 
+    HashMap<Long, CartItemDTO> convertCartForSession(CartEntity cartEntity);
 }

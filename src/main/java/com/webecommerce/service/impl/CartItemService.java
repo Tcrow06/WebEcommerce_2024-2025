@@ -1,25 +1,23 @@
 package com.webecommerce.service.impl;
 
+import com.webecommerce.dao.cart.ICartDAO;
 import com.webecommerce.dao.cart.ICartItemDAO;
-import com.webecommerce.dao.impl.cart.CartItemDAO;
+import com.webecommerce.dao.impl.cart.CartDAO;
 import com.webecommerce.dao.impl.people.CustomerDAO;
 import com.webecommerce.dao.product.IProductVariantDAO;
 import com.webecommerce.dto.CartItemDTO;
 import com.webecommerce.dto.PlacedOrder.CheckOutRequestDTO;
 import com.webecommerce.dto.PlacedOrder.ProductOrderDTO;
-import com.webecommerce.dto.ProductVariantDTO;
 import com.webecommerce.entity.cart.CartEntity;
 import com.webecommerce.entity.cart.CartItemEntity;
 import com.webecommerce.entity.people.CustomerEntity;
 import com.webecommerce.entity.product.ProductVariantEntity;
 import com.webecommerce.mapper.Impl.CartItemMapper;
-import com.webecommerce.mapper.Impl.ProductVariantMapper;
 import com.webecommerce.service.ICartItemService;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class CartItemService implements ICartItemService {
 
@@ -27,92 +25,103 @@ public class CartItemService implements ICartItemService {
     private IProductVariantDAO productVariantDAO;
 
     @Inject
-    private ProductVariantMapper productVariantMapper;
-
-    @Inject
     private CustomerDAO customerDAO;
 
     @Inject
     private CartItemMapper cartItemMapper;
 
-
     @Inject
     private ICartItemDAO cartItemDAO;
 
-    @Override
-    public HashMap<Long, CartItemDTO> addCart(Long id, int quantity, HashMap<Long, CartItemDTO> cart) {
-        CartItemDTO cartItemDTO = new CartItemDTO();
-        ProductVariantDTO productVariantDTO = productVariantMapper.toDTO(productVariantDAO.findById(id));
+    @Inject
+    private ICartDAO cartDAO;
 
-        if(productVariantDTO != null && cart.containsKey(id)) {
-            cartItemDTO = cart.get(id);
-            cartItemDTO.setQuantity(cartItemDTO.getQuantity() + quantity);
-            cartItemDTO.setTotalPrice(cartItemDTO.getQuantity() * productVariantDTO.getPrice());
-        } else {
-            assert productVariantDTO != null;
-            cartItemDTO.setProductVariant(productVariantDTO);
-            cartItemDTO.setQuantity(quantity);
-            cartItemDTO.setTotalPrice(productVariantDTO.getPrice() * quantity);
+    @Override
+    public HashMap<Long, CartItemDTO> convertCartForSession(CartEntity cartEntity) {
+        HashMap<Long, CartItemDTO> cart = new HashMap<>();
+        for (CartItemEntity item : cartEntity.getCartItems()) {
+            CartItemDTO cartItemDTO = cartItemMapper.toDTO(item);
+            cart.put(item.getProductVariant().getId(), cartItemDTO);
         }
-        cart.put(id, cartItemDTO);
         return cart;
     }
 
     @Override
     @Transactional
-    public CartEntity editCart(Long idCustomer, HashMap<Long, CartItemDTO> cart) {
-        // Tìm giỏ hàng hiện tại của khách hàng
-        CustomerEntity customerEntity = customerDAO.findById(idCustomer);
+    public HashMap<Long, CartItemDTO> addCartItem(Long productVariantId, int quantity, Long userId) {
+        // Lấy thông tin sản phẩm từ database
+        ProductVariantEntity productVariantEntity = productVariantDAO.findById(productVariantId);
+
+        // Lấy thông tin khách hàng từ database
+        CustomerEntity customerEntity = customerDAO.findById(userId);
         CartEntity cartEntity = customerEntity.getCart();
+        List<CartItemEntity> cartItemEntities = cartEntity.getCartItems();
 
-        if (cartEntity == null) {
-            // Khách hàng mới chưa có giỏ hàng
-            cartEntity = new CartEntity();
-            cartEntity.setCartItems(new ArrayList<>());
+        // Tạo giỏ hàng mới nếu chưa có
 
-            // Tạo liên kết
-            cartEntity.setCustomer(customerEntity);
-            customerEntity.setCart(cartEntity);
-        }
-
-        // Lấy danh sách các CartItem hiện có trong giỏ hàng
-        List<CartItemEntity> existingCartItems = cartEntity.getCartItems();
-
-        // Duyệt qua các sản phẩm trong giỏ hàng mới
-        for (Map.Entry<Long, CartItemDTO> entry : cart.entrySet()) {
-            Long productVariantId = entry.getKey();
-            CartItemDTO cartItemDTO = entry.getValue();
-            boolean itemExists = false;
-
-            // Kiểm tra xem sản phẩm đã tồn tại trong giỏ hàng
-            for (CartItemEntity existingItem : existingCartItems) {
-                if (existingItem.getProductVariant().getId().equals(productVariantId)) {
-                    existingItem.setQuantity(cartItemDTO.getQuantity());
-                    itemExists = true;
-                    break;
-                }
-            }
-
-            // Nếu sản phẩm chưa tồn tại, thêm vào giỏ hàng
-            if (!itemExists) {
-                CartItemEntity newItem = cartItemMapper.toEntity(cartItemDTO);
-                newItem.setCart(cartEntity);
-                cartEntity.getCartItems().add(newItem);
+        // Kiểm tra sản phẩm đã có trong giỏ hàng hay chưa
+        boolean itemExists = false;
+        for (CartItemEntity existingItem : cartItemEntities) {
+            if (existingItem.getProductVariant().getId().equals(productVariantId)) {
+                existingItem.setQuantity(existingItem.getQuantity() + quantity);
+                cartItemDAO.update(existingItem);
+                itemExists = true;
+                break;
             }
         }
 
-        customerDAO.update(customerEntity);
-        return cartEntity;
+        // Thêm sản phẩm mới vào giỏ hàng
+        if (!itemExists) {
+            CartItemEntity newItem = new CartItemEntity();
+            newItem.setProductVariant(productVariantEntity);
+            newItem.setQuantity(quantity);
+            newItem.setCart(cartEntity);
+
+            cartEntity.getCartItems().add(newItem);
+            cartItemDAO.insert(newItem);
+
+        }
+
+
+        // Cập nhật cart vào session
+        return convertCartForSession(cartEntity);
     }
-
 
     @Override
-    public HashMap<Long, CartItemDTO> deleteCart(Long id, HashMap<Long, CartItemDTO> cart) {
-        if (cart.containsKey(id)) {
-            cart.remove(id);
+    public HashMap<Long, CartItemDTO> updateCartItem(Long userId, HashMap<Long, CartItemDTO> newCart) {
+        // Lấy thông tin khách hàng và giỏ hàng từ bảng Customer
+        CustomerEntity customerEntity = customerDAO.findById(userId);
+        CartEntity cartEntity = customerEntity.getCart();
+
+        // Duyệt qua các mục mới và cập nhật hoặc thêm vào giỏ hàng
+        for (Map.Entry<Long, CartItemDTO> entry : newCart.entrySet()) {
+            Long productVariantId = entry.getKey();
+            CartItemDTO cartItemDTO = entry.getValue();
+
+            for (CartItemEntity cartItemEntity : cartEntity.getCartItems()) {
+                if (cartItemEntity.getProductVariant().getId().equals(productVariantId)) {
+                    cartItemEntity.setQuantity(cartItemDTO.getQuantity());
+                }
+            }
         }
-        return cart;
+
+        // Xóa các sản phẩm được yêu cầu
+//        Iterator<CartItemEntity> iterator = cartEntity.getCartItems().iterator();
+//        while (iterator.hasNext()) {
+//            CartItemEntity item = iterator.next();
+//            if (newCart.containsKey(item.getProductVariant().getId())) {
+//                iterator.remove();
+//                cartItemDAO.delete(item.getId());
+//            }
+//        }
+
+        // Lưu giỏ hàng vào database
+        customerDAO.update(customerEntity);
+
+        // Cập nhật giỏ hàng vào session
+        return convertCartForSession(cartEntity);
     }
+
 
     @Override
     public int getQuantityOfCart(HashMap<Long, CartItemDTO> cart) {
@@ -167,6 +176,7 @@ public class CartItemService implements ICartItemService {
     }
 
     @Override
+    @Transactional
     public HashMap<Long, CartItemDTO> LoadCart(Long idUser) {
         try {
             CartEntity cartEntity = customerDAO.findById(idUser).getCart();
@@ -183,6 +193,7 @@ public class CartItemService implements ICartItemService {
         }
 
     }
+
 
 
 }

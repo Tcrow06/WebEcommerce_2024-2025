@@ -13,7 +13,7 @@ public class CartEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     private List<CartItemEntity> cartItems = new ArrayList<>();
 
     @OneToOne(mappedBy = "cart", cascade = CascadeType.ALL)
