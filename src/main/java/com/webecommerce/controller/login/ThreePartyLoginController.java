@@ -116,7 +116,8 @@ public class ThreePartyLoginController extends HttpServlet {
 ////            userModel = customerService.update(userModel);
 //        }
         cart=cartItemService.LoadCart(JWTUtil.getIdUser(request));
-        request.getSession().setAttribute("cart", cart);
+        if (cart!=null)
+            request.getSession().setAttribute("cart", cart);
         response.setContentType("application/json");
         String jwtToken = JWTUtil.generateToken(existingUser);
 
@@ -124,11 +125,15 @@ public class ThreePartyLoginController extends HttpServlet {
 
         Cookie cookie = new Cookie("token", jwtToken);
 
-        CartEntity cartEntity = customerDAO.findById(existingUser.getId()).getCart();
+        try{
+            CartEntity cartEntity = customerDAO.findById(existingUser.getId()).getCart();
 
-        for (CartItemEntity cartItemEntity : cartEntity.getCartItems()) {
-            CartItemDTO cartItemDTO = cartItemMapper.toDTO(cartItemEntity);
-            cart.put(cartItemDTO.getId(), cartItemDTO);
+            for (CartItemEntity cartItemEntity : cartEntity.getCartItems()) {
+                CartItemDTO cartItemDTO = cartItemMapper.toDTO(cartItemEntity);
+                cart.put(cartItemDTO.getId(), cartItemDTO);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
         request.getSession().setAttribute("cart", cart);
 //        cookie.setPath("/");

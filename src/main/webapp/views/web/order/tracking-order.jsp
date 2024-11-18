@@ -170,7 +170,7 @@
         <c:forEach var="order" items="${orders}">
             <div class="order-item" data-status="${order.status}">
                 <div class="order-image">
-                    <img src="${order.imgUrl}" alt="Hình ảnh đơn hàng ${order.id}">
+                    <img src="<c:url value='/api-image?path=${order.imgUrl}'/>"  alt="Hình ảnh đơn hàng ${order.id}">
                 </div>
                 <div class="order-info">
                     <strong>Mã đơn hàng:</strong> ELV${order.id} <br>

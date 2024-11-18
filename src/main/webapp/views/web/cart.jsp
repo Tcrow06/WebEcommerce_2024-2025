@@ -446,6 +446,7 @@
         const billDiscountCode = $('#couponCode').val();
 
 
+
         if (selectedProducts.length === 0) {
             alert("Vui lòng chọn ít nhất một sản phẩm để thanh toán.");
             return;
@@ -461,12 +462,15 @@
             success: function(response) {
                 if(response.status==="warring"){
                     window.location.href = response.redirectUrl.toString() ;
+                    alert("w");
                 }
                 else if(response.status==="error"){
                     alert(response.message.toString());
+                    alert("e");
                 }
                 // Xử lý khi thành công
                 else{
+                    alert("âss");
                     window.location.href = response.redirectUrl.toString() + "?order=" + encodeURIComponent(JSON.stringify(response.order));
                 }
             },
