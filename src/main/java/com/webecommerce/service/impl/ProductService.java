@@ -7,10 +7,13 @@ import com.webecommerce.dao.product.IProductVariantDAO;
 import com.webecommerce.dto.ProductDTO;
 import com.webecommerce.dto.ProductVariantDTO;
 import com.webecommerce.dto.discount.ProductDiscountDTO;
+import com.webecommerce.entity.cart.CartItemEntity;
 import com.webecommerce.entity.discount.ProductDiscountEntity;
+import com.webecommerce.entity.product.CategoryEntity;
 import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.entity.product.ProductVariantEntity;
 import com.webecommerce.mapper.GenericMapper;
+import com.webecommerce.mapper.Impl.CategoryMapper;
 import com.webecommerce.paging.Pageable;
 import com.webecommerce.service.IProductService;
 
@@ -42,6 +45,9 @@ public class ProductService implements IProductService {
 
     @Inject
     private GenericMapper<ProductDiscountDTO, ProductDiscountEntity> productDiscountMapper;
+
+    @Inject
+    private CategoryMapper categoryMapper;
 
     // Lây danh sách brand có trong product -> load giao diện
     public List<String> getBrands() {
@@ -319,6 +325,35 @@ public class ProductService implements IProductService {
     @Override
     public List<String> getAllProductName() {
         return productDAO.getAllProductName();
+    }
+
+
+
+    @Override
+    public List<Map.Entry<ProductDTO, Integer>> findBestSellerProduct(int limit){
+        List<Object[]> results = productDAO.findBestSellerProduct(limit);
+        List<Map.Entry<ProductDTO, Integer>> list = new ArrayList<>();
+        for(Object[] result : results){
+            ProductEntity product = (ProductEntity)result[0];
+            ProductDTO productDTO = productMapper.toDTO(product);
+            ProductVariantEntity productVariant = productVariantDAO.getProductVariantByProduct(product);
+            if (productVariant != null) {
+                productDTO.setPhoto(productVariant.getImageUrl());
+                productDTO.setPrice(productVariant.getPrice());
+            }
+            CategoryEntity categoryEntity = categoryDAO.findById(product.getCategory().getId());
+            if(categoryEntity!=null){
+                productDTO.setCategory(categoryMapper.toDTO(categoryEntity));
+            }
+            Integer sales = ((Long) result[1]).intValue();;
+            Map.Entry<ProductDTO, Integer> entry = new AbstractMap.SimpleEntry<>(productDTO, sales);
+            list.add(entry);
+        }
+        return list;
+    }
+
+    public int totalProducts(){
+        return productDAO.totalProducts();
     }
 
 

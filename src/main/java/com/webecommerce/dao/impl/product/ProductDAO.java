@@ -1,6 +1,7 @@
 package com.webecommerce.dao.impl.product;
 
 import antlr.StringUtils;
+import com.webecommerce.constant.EnumOrderStatus;
 import com.webecommerce.dao.impl.AbstractDAO;
 import com.webecommerce.dao.product.IProductDAO;
 import com.webecommerce.entity.product.ProductEntity;
@@ -230,6 +231,38 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Lỗi khi lấy sản phẩm có discount còn hiệu lực", e);
             return null;
+        }
+    }
+
+    @Override
+    public List<Object[]> findBestSellerProduct(int limit) {
+        String jpql = "SELECT p, SUM(od.quantity) AS totalSales " +
+                "FROM ProductEntity p " +
+                "JOIN p.productVariants pv " +
+                "JOIN OrderDetailEntity od ON pv.id = od.productVariant.id " +
+                "JOIN od.order o " +
+                "JOIN o.orderStatuses os " +
+                "WHERE os.status = :status " +
+                "GROUP BY p.id " +
+                "ORDER BY totalSales DESC";
+
+        TypedQuery<Object[]> query = entityManager.createQuery(jpql, Object[].class);
+        query.setParameter("status", EnumOrderStatus.WAITING);
+        query.setMaxResults(limit); // Giới hạn kết quả trả về
+        return query.getResultList();
+    }
+
+
+    @Override
+    public int totalProducts() {
+        String query = "SELECT COUNT(p) FROM ProductEntity p"; // Đếm tổng số sản phẩm
+        try {
+            Long count = entityManager.createQuery(query, Long.class)
+                    .getSingleResult();
+            return count != null ? count.intValue() : 0; // Chuyển đổi Long thành int
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi tính tổng số sản phẩm", e);
+            return 0; // Trả về 0 nếu xảy ra lỗi
         }
     }
 }

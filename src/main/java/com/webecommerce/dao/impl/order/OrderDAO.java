@@ -5,10 +5,13 @@ import com.webecommerce.dao.impl.AbstractDAO;
 import com.webecommerce.dao.order.IOrderDAO;
 import com.webecommerce.dto.notinentity.DisplayOrderDTO;
 import com.webecommerce.entity.order.OrderEntity;
+import com.webecommerce.entity.product.ProductVariantEntity;
 import com.webecommerce.utils.HibernateUtil;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
+import java.util.Map;
 import java.util.logging.Level;
 
 import java.security.Timestamp;
@@ -104,4 +107,108 @@ public class OrderDAO extends AbstractDAO<OrderEntity> implements IOrderDAO {
             em.close();  // Đóng EntityManager sau khi hoàn tất
         }
     }
+
+    @Override
+    public List<ProductVariantEntity> getBestSellingProduct() {
+
+
+        return null;
+    }
+
+    @Override
+    public List<Object[]> calculateMonthlyRevenue(int year) {
+        // Đặt lại biến đúng tên cho câu truy vấn JPQL
+        String jbql = "SELECT MONTH(os.date) AS month, SUM(od.quantity * pv.price) AS totalRevenue " +
+                "FROM OrderEntity o " +
+                "JOIN o.orderStatuses os " +
+                "JOIN o.orderDetails od " +
+                "JOIN od.productVariant pv " +
+                "WHERE os.status = :status " +
+                "AND YEAR(os.date) = :year " +
+                "GROUP BY MONTH(os.date) " +
+                "ORDER BY MONTH(os.date)";
+
+        // Tạo TypedQuery với câu truy vấn đúng
+        TypedQuery<Object[]> query = entityManager.createQuery(jbql, Object[].class);
+
+        // Thiết lập tham số năm
+        query.setParameter("year", year);
+        query.setParameter("status", EnumOrderStatus.WAITING);
+
+        // Trả về kết quả
+        return query.getResultList();
+    }
+
+    @Override
+    public Double calculateTotalRevenueByYear(int year) {
+        // Câu truy vấn JPQL để tính tổng doanh thu theo năm
+        String jpql = "SELECT SUM(od.quantity * pv.price) AS totalRevenue " +
+                "FROM OrderEntity o " +
+                "JOIN o.orderStatuses os " +
+                "JOIN o.orderDetails od " +
+                "JOIN od.productVariant pv " +
+                "WHERE os.status = :status " +
+                "AND YEAR(os.date) = :year";
+
+        // Tạo TypedQuery với câu truy vấn đúng
+        TypedQuery<Double> query = entityManager.createQuery(jpql, Double.class);
+
+        // Thiết lập tham số năm và trạng thái
+        query.setParameter("year", year);
+        query.setParameter("status", EnumOrderStatus.WAITING);
+
+        // Lấy kết quả
+        Double totalRevenue = query.getSingleResult();
+
+        // Nếu không có dữ liệu, trả về 0.0 thay vì null
+        return totalRevenue != null ? totalRevenue : 0.0;
+    }
+    @Override
+    public Double calculateTotalRevenue() {
+        // Câu truy vấn JPQL để tính toàn bộ doanh thu
+        String jpql = "SELECT SUM(od.quantity * pv.price) AS totalRevenue " +
+                "FROM OrderEntity o " +
+                "JOIN o.orderStatuses os " +
+                "JOIN o.orderDetails od " +
+                "JOIN od.productVariant pv";
+
+        // Tạo TypedQuery với câu truy vấn đúng
+        TypedQuery<Double> query = entityManager.createQuery(jpql, Double.class);
+
+        // Lấy kết quả
+        Double totalRevenue = query.getSingleResult();
+
+        // Nếu không có dữ liệu, trả về 0.0 thay vì null
+        return totalRevenue != null ? totalRevenue : 0.0;
+    }
+
+    @Override
+    public int totalOrders() {
+        String query = "SELECT COUNT(p) FROM OrderEntity p"; // Đếm tổng số sản phẩm
+        try {
+            Long count = entityManager.createQuery(query, Long.class)
+                    .getSingleResult();
+            return count != null ? count.intValue() : 0; // Chuyển đổi Long thành int
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi tính tổng số sản phẩm", e);
+            return 0; // Trả về 0 nếu xảy ra lỗi
+        }
+    }
+    @Override
+    public int totalOrdersToday() {
+        String query = "SELECT COUNT(o) " +
+                "FROM OrderEntity o " +
+                "JOIN o.orderStatuses os " +
+                "WHERE DATE(os.date) = CURRENT_DATE"; // So sánh ngày thực hiện
+
+        try {
+            Long count = entityManager.createQuery(query, Long.class)
+                    .getSingleResult();
+            return count != null ? count.intValue() : 0; // Chuyển đổi Long thành int
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi tính tổng số đơn hàng trong ngày", e);
+            return 0; // Trả về 0 nếu xảy ra lỗi
+        }
+    }
+
 }

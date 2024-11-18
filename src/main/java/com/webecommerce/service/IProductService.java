@@ -5,6 +5,7 @@ import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.paging.Pageable;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IProductService {
     List<String> getBrands();
@@ -42,4 +43,9 @@ public interface IProductService {
     int setTotalPage(Long totalItem, int maxPageItem);
 
     List<String> getAllProductName();
+
+
+    List<Map.Entry<ProductDTO, Integer>> findBestSellerProduct(int limit);
+
+    int totalProducts();
 }
