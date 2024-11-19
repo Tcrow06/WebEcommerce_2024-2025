@@ -2,14 +2,13 @@ package com.webecommerce.dto.review;
 
 import com.webecommerce.dto.BaseDTO;
 import com.webecommerce.dto.OrderDetailDTO;
-import com.webecommerce.dto.ProductVariantDTO;
 import com.webecommerce.entity.order.OrderDetailEntity;
-import com.webecommerce.entity.people.CustomerEntity;
 import com.webecommerce.entity.product.ProductVariantEntity;
 import com.webecommerce.entity.review.ReviewFeedbackEntity;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 public class ProductReviewDTO extends BaseDTO <ProductReviewDTO> {
 
@@ -17,19 +16,13 @@ public class ProductReviewDTO extends BaseDTO <ProductReviewDTO> {
 
     String nameCustomer;
 
-    OrderDetailDTO orderDetailDTO;
-
     private String content;
 
     private LocalDateTime date;
 
-    private CustomerEntity customer;
-
-    private ProductVariantEntity productVariant;
-
     private OrderDetailEntity orderDetail;
 
-    private ReviewFeedbackEntity reviewFeedback;
+    private ReviewFeedBackDTO reviewFeedback;
 
     public int getNumberOfStars() {
         return numberOfStars;
@@ -55,14 +48,6 @@ public class ProductReviewDTO extends BaseDTO <ProductReviewDTO> {
         this.nameCustomer = nameCustomer;
     }
 
-    public OrderDetailDTO getOrderDetailDTO() {
-        return orderDetailDTO;
-    }
-
-    public void setOrderDetailDTO(OrderDetailDTO orderDetailDTO) {
-        this.orderDetailDTO = orderDetailDTO;
-    }
-
     public String getContent() {
         return content;
     }
@@ -75,25 +60,24 @@ public class ProductReviewDTO extends BaseDTO <ProductReviewDTO> {
         return date;
     }
 
+    public String getDateString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d 'tháng' M 'năm' yyyy, HH:mm", new Locale("vi", "VN"));
+        return this.date.format(formatter);
+    }
+
     public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
-    public CustomerEntity getCustomer() {
-        return customer;
+    public ReviewFeedBackDTO getReviewFeedback() {
+        return reviewFeedback;
     }
 
-    public void setCustomer(CustomerEntity customer) {
-        this.customer = customer;
+    public void setReviewFeedback(ReviewFeedBackDTO reviewFeedback) {
+        this.reviewFeedback = reviewFeedback;
     }
 
-    public ProductVariantEntity getProductVariant() {
-        return productVariant;
-    }
-
-    public void setProductVariant(ProductVariantEntity productVariant) {
-        this.productVariant = productVariant;
-    }
+    private int numberOfStars;
 
     public OrderDetailEntity getOrderDetail() {
         return orderDetail;
@@ -102,15 +86,4 @@ public class ProductReviewDTO extends BaseDTO <ProductReviewDTO> {
     public void setOrderDetail(OrderDetailEntity orderDetail) {
         this.orderDetail = orderDetail;
     }
-
-    public ReviewFeedbackEntity getReviewFeedback() {
-        return reviewFeedback;
-    }
-
-    public void setReviewFeedback(ReviewFeedbackEntity reviewFeedback) {
-        this.reviewFeedback = reviewFeedback;
-    }
-
-    private int numberOfStars;
-
 }

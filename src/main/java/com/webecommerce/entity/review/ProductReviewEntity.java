@@ -28,7 +28,7 @@ public class ProductReviewEntity {
     @JoinColumn(name = "order_detail_id", nullable = false)
     private OrderDetailEntity orderDetail;
 
-    @OneToOne(mappedBy = "productReview")
+    @OneToOne(mappedBy = "productReview", cascade = CascadeType.ALL)
     private ReviewFeedbackEntity reviewFeedback;
 
     @Column(name = "number_of_stars")

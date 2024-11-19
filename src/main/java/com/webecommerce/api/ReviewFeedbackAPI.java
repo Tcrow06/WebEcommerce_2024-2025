@@ -1,9 +1,9 @@
 package com.webecommerce.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.webecommerce.dto.discount.BillDiscountDTO;
 import com.webecommerce.dto.review.ProductReviewDTO;
-import com.webecommerce.service.IProductReviewService;
+import com.webecommerce.dto.review.ReviewFeedBackDTO;
+import com.webecommerce.service.IReviewFeedBackService;
 import com.webecommerce.utils.HttpUtils;
 
 import javax.inject.Inject;
@@ -14,11 +14,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(urlPatterns = {"/api-product-review"})
-public class ProductReviewAPI extends HttpServlet {
+@WebServlet(urlPatterns = {"/api-review-feedback"})
+public class ReviewFeedbackAPI extends HttpServlet {
 
     @Inject
-    IProductReviewService productReviewService;
+    private IReviewFeedBackService reviewFeedBackService;
 
     ObjectMapper mapper = new ObjectMapper();
 
@@ -30,11 +30,11 @@ public class ProductReviewAPI extends HttpServlet {
 
         try {
             HttpUtils httpUtils =  HttpUtils.of(req.getReader()) ;
-            ProductReviewDTO productReview = httpUtils.toModel(ProductReviewDTO.class);
+            ReviewFeedBackDTO reviewFeedback = httpUtils.toModel(ReviewFeedBackDTO.class);
 
-            if (productReview != null) {
-                productReview = productReviewService.save(productReview);
-                if (productReview != null) {
+            if (reviewFeedback != null) {
+                reviewFeedback = reviewFeedBackService.save(reviewFeedback);
+                if (reviewFeedback != null) {
                     mapper.writeValue(resp.getWriter(), "Thành công !");
                 }
             }
@@ -43,5 +43,8 @@ public class ProductReviewAPI extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             mapper.writeValue(resp.getWriter(), "Lỗi xử lý: " + e.getMessage());
         }
+
     }
+
+
 }

@@ -21,7 +21,6 @@ public class ProductReviewMapper implements GenericMapper <ProductReviewDTO, Pro
         dto.setNumberOfStars(entity.getNumberOfStars());
 
         if (entity.getCustomer() != null) {
-            dto.setCustomer(entity.getCustomer());
             dto.setCustomerId(entity.getCustomer().getId());
             dto.setNameCustomer(entity.getCustomer().getName());
         }
