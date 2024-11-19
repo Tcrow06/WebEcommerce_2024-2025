@@ -1,8 +1,6 @@
 <%@include file="/common/taglib.jsp" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-
 
 
 
@@ -99,20 +97,20 @@
                 </div>
 
                 <!-- Nút Xóa cho các sản phẩm được chọn -->
-                <div id="delete-selected-container" style="display: none;">
+                <div id="delete-selected-container" style="display: none; margin-bottom: 15px;">
                     <button class="btn btn-danger" onclick="removeSelectedFromCart()">Xóa sản phẩm đã chọn</button>
                 </div>
 
                 <div class="row">
                     <div class="row align-items-center justify-content-between">
 
-                        <div class="col-lg-4 col-md-4 col-sm-4">
+                        <div class="col-lg-6 col-md-4 col-sm-4">
                             <div class="continue__btn">
                                 <a href="<c:url value='/danh-sach-san-pham' />">Tiếp tục mua sắm</a>
                             </div>
                         </div>
 
-                        <div class="col-lg-4 col-md-4 col-sm-4">
+                        <div class="col-lg-6 col-md-4 col-sm-4">
                             <div class="continue__btn update__btn">
                                 <c:if test="${empty cookie.token}">
                                     <a href="<c:url value='/dang-nhap' />"><i class="fa fa-spinner"></i>Cập nhật giỏ hàng</a>
