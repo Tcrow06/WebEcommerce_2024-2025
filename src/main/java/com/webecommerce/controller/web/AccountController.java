@@ -2,9 +2,14 @@ package com.webecommerce.controller.web;
 
 import com.auth0.jwt.JWT;
 import com.webecommerce.dto.OrderInfoDTO;
+import com.webecommerce.dto.response.other.AccountResponse;
+import com.webecommerce.dto.response.people.CustomerResponse;
+import com.webecommerce.dto.response.people.UserResponse;
 import com.webecommerce.entity.order.OrderInfoEntity;
 import com.webecommerce.entity.other.AddressEntity;
-import com.webecommerce.service.IOrderInfoService;
+import com.webecommerce.service.*;
+import com.webecommerce.service.impl.CustomerService;
+import com.webecommerce.service.impl.UserService;
 import com.webecommerce.utils.JWTUtil;
 
 import javax.inject.Inject;
@@ -21,17 +26,27 @@ public class AccountController extends HttpServlet {
 
     @Inject
     private IOrderInfoService orderInfoService;
+    @Inject
+    private ICustomerService customerService;
+    @Inject
+    private IAccountService accountService;
+
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Long customerId = JWTUtil.getIdUser(request);
-        List<OrderInfoDTO> orderInfos = orderInfoService.getOrderInfoByCustomerId(customerId);
-
-
-        request.setAttribute("id", customerId);
-        request.setAttribute("orderInfos", orderInfos);
-
-        request.getRequestDispatcher("/views/web/profile.jsp").forward(request, response);
+        try {
+            Long customerId = JWTUtil.getIdUser(request);
+            List<OrderInfoDTO> orderInfos = orderInfoService.getOrderInfoByCustomerId(customerId);
+            UserResponse customerResponse = customerService.findById(customerId);
+            AccountResponse accountResponse = accountService.findByCustomerId(customerId);
+            request.setAttribute("id", customerId);
+            request.setAttribute("orderInfos", orderInfos);
+            request.setAttribute("userResponse", customerResponse);
+            request.setAttribute("accountResponse", accountResponse);
+            request.getRequestDispatcher("/views/web/profile.jsp").forward(request, response);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override

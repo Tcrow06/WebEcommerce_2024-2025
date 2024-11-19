@@ -30,61 +30,64 @@ public class OrderDAO extends AbstractDAO<OrderEntity> implements IOrderDAO {
 
     @Override
     public List<DisplayOrderDTO> getOrderDisplay(Long customerId) {
-        String jpql = """
-        SELECT
+        try {
+            String jpql = """
+        SELECT\s
             o.id AS orderId,
             MAX(os.date) AS statusDate,
-            SUM(od.quantity * pv.price *
-                CASE WHEN pd IS NOT NULL 
-                     THEN (1 - pd.discountPercentage / 100) 
-                     ELSE 1 
+            SUM(od.quantity * pv.price *\s
+                CASE\s
+                    WHEN pd IS NOT NULL THEN (1 - pd.discountPercentage / 100)\s
+                    ELSE 1\s
                 END) AS totalOrder,
             SUM(od.quantity) AS allQuantity,
-            (SELECT pvRep.imageUrl
-             FROM com.webecommerce.entity.product.ProductVariantEntity pvRep
-             JOIN com.webecommerce.entity.order.OrderDetailEntity odRep ON odRep.productVariant.id = pvRep.id
-             WHERE odRep.order.id = o.id
-             AND pvRep.id = (
-                 SELECT MIN(pvSub.id)
-                 FROM com.webecommerce.entity.product.ProductVariantEntity pvSub
-                 JOIN com.webecommerce.entity.order.OrderDetailEntity odSub ON odSub.productVariant.id = pvSub.id
-                 WHERE odSub.order.id = o.id
-             )
-            ) AS imgUrl,
+            MIN(pv.imageUrl) AS imgUrl,
             os.status AS status
-        FROM com.webecommerce.entity.order.OrderEntity o
-        JOIN o.orderDetails od
-        JOIN od.productVariant pv
-        LEFT JOIN od.productDiscount pd
-        JOIN o.orderStatuses os
-        WHERE os.date = (
-            SELECT MAX(os2.date)
-            FROM com.webecommerce.entity.order.OrderStatusEntity os2
-            WHERE os2.order.id = o.id
-        )
-        AND o.customer.id = :customerId
-        GROUP BY o.id, os.status
+        FROM\s
+            OrderEntity o
+        JOIN\s
+            o.orderDetails od
+        JOIN\s
+            od.productVariant pv
+        LEFT JOIN\s
+            od.productDiscount pd
+        JOIN\s
+            o.orderStatuses os
+        WHERE\s
+            os.date = (
+                SELECT MAX(os2.date)
+                FROM OrderStatusEntity os2
+                WHERE os2.order.id = o.id
+            )
+        AND\s
+            o.customer.id = :customerId
+        GROUP BY\s
+            o.id, os.status
     """;
 
-        List<Object[]> rawResults = entityManager.createQuery(jpql, Object[].class)
-                .setParameter("customerId", customerId)
-                .getResultList();
+            List<Object[]> rawResults = entityManager.createQuery(jpql, Object[].class)
+                    .setParameter("customerId", customerId)
+                    .getResultList();
 
-        List<DisplayOrderDTO> resultList = new ArrayList<>();
+            List<DisplayOrderDTO> resultList = new ArrayList<>();
 
-        for (Object[] result : rawResults) {
-            Long orderId = (Long) result[0];
-            LocalDateTime statusDate = (LocalDateTime) result[1]; // Chuyển từ Timestamp thành LocalDateTime
-            Double totalOrder = (Double) result[2];
-            Long allQuantity = ((Number) result[3]).longValue(); // Convert từ Number thành Long
-            String imgUrl = (String) result[4];
-            EnumOrderStatus status = (EnumOrderStatus) result[5]; // Chỉ cần ép kiểu trực tiếp
+            for (Object[] result : rawResults) {
+                Long orderId = (Long) result[0];
+                LocalDateTime statusDate = (LocalDateTime) result[1]; // Chuyển từ Timestamp thành LocalDateTime
+                Double totalOrder = (Double) result[2];
+                Long allQuantity = ((Number) result[3]).longValue(); // Convert từ Number thành Long
+                String imgUrl = (String) result[4];
+                EnumOrderStatus status = (EnumOrderStatus) result[5]; // Chỉ cần ép kiểu trực tiếp
 
-            // Tạo DisplayOrderDTO và thêm vào danh sách
-            resultList.add(new DisplayOrderDTO(orderId, statusDate, totalOrder, allQuantity, imgUrl, status));
+                // Tạo DisplayOrderDTO và thêm vào danh sách
+                resultList.add(new DisplayOrderDTO(orderId, statusDate, totalOrder, allQuantity, imgUrl, status));
+            }
+
+            return resultList;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
         }
-
-        return resultList;
     }
 
     public OrderEntity merge(OrderEntity orderEntity) {
@@ -135,7 +138,7 @@ public class OrderDAO extends AbstractDAO<OrderEntity> implements IOrderDAO {
 
         // Thiết lập tham số năm
         query.setParameter("year", year);
-        query.setParameter("status", EnumOrderStatus.WAITING);
+        query.setParameter("status", EnumOrderStatus.RECEIVED);
 
         // Trả về kết quả
         return query.getResultList();
@@ -157,7 +160,7 @@ public class OrderDAO extends AbstractDAO<OrderEntity> implements IOrderDAO {
 
         // Thiết lập tham số năm và trạng thái
         query.setParameter("year", year);
-        query.setParameter("status", EnumOrderStatus.WAITING);
+        query.setParameter("status", EnumOrderStatus.RECEIVED);
 
         // Lấy kết quả
         Double totalRevenue = query.getSingleResult();
@@ -201,15 +204,15 @@ public class OrderDAO extends AbstractDAO<OrderEntity> implements IOrderDAO {
         String query = "SELECT COUNT(o) " +
                 "FROM OrderEntity o " +
                 "JOIN o.orderStatuses os " +
-                "WHERE DATE(os.date) = CURRENT_DATE"; // So sánh ngày thực hiện
+                "WHERE DATE(os.date) = CURRENT_DATE";
 
         try {
             Long count = entityManager.createQuery(query, Long.class)
                     .getSingleResult();
-            return count != null ? count.intValue() : 0; // Chuyển đổi Long thành int
+            return count != null ? count.intValue() : 0;
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Lỗi khi tính tổng số đơn hàng trong ngày", e);
-            return 0; // Trả về 0 nếu xảy ra lỗi
+            return 0;
         }
     }
 
