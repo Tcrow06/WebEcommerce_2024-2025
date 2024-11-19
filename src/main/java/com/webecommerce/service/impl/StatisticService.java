@@ -61,12 +61,11 @@ public class StatisticService implements IStatisticService {
     @Override
     public List<Double> calculateMonthlyRevenues(int year) {
         List<Object[]> results = orderDAO.calculateMonthlyRevenue(year);
-        List<Double> list = new ArrayList<>(Collections.nCopies(12, 0.0)); // Khởi tạo danh sách 12 phần tử giá trị 0.0
-
+        List<Double> list = new ArrayList<>(Collections.nCopies(12, 0.0));
         for (Object[] result : results) {
-            Integer month = (Integer) result[0];       // Tháng (1-12)
-            Double totalRevenue = (Double) result[1]; // Doanh thu của tháng
-            list.set(month - 1, totalRevenue);        // Đặt giá trị doanh thu vào vị trí tương ứng (tháng - 1)
+            Integer month = (Integer) result[0];
+            Double totalRevenue = (Double) result[1];
+            list.set(month - 1, totalRevenue);
         }
         return list;
     }
