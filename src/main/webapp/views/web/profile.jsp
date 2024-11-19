@@ -51,7 +51,97 @@
   .title-content {
     font-weight: bold;
   }
+
+  .login-with-google-btn {
+    transition: background-color .3s, box-shadow .3s;
+
+    padding: 12px 16px 12px 42px;
+    border: none;
+    border-radius: 3px;
+    box-shadow: 0 -1px 0 rgba(0, 0, 0, .04), 0 1px 1px rgba(0, 0, 0, .25);
+
+    color: #757575;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMTcuNiA5LjJsLS4xLTEuOEg5djMuNGg0LjhDMTMuNiAxMiAxMyAxMyAxMiAxMy42djIuMmgzYTguOCA4LjggMCAwIDAgMi42LTYuNnoiIGZpbGw9IiM0Mjg1RjQiIGZpbGwtcnVsZT0ibm9uemVybyIvPjxwYXRoIGQ9Ik05IDE4YzIuNCAwIDQuNS0uOCA2LTIuMmwtMy0yLjJhNS40IDUuNCAwIDAgMS04LTIuOUgxVjEzYTkgOSAwIDAgMCA4IDV6IiBmaWxsPSIjMzRBODUzIiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNNCAxMC43YTUuNCA1LjQgMCAwIDEgMC0zLjRWNUgxYTkgOSAwIDAgMCAwIDhsMy0yLjN6IiBmaWxsPSIjRkJCQzA1IiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNOSAzLjZjMS4zIDAgMi41LjQgMy40IDEuM0wxNSAyLjNBOSA5IDAgMCAwIDEgNWwzIDIuNGE1LjQgNS40IDAgMCAxIDUtMy43eiIgZmlsbD0iI0VBNDMzNSIgZmlsbC1ydWxlPSJub256ZXJvIi8+PHBhdGggZD0iTTAgMGgxOHYxOEgweiIvPjwvZz48L3N2Zz4=);
+    background-color: white;
+    background-repeat: no-repeat;
+    background-position: 12px 11px;
+
+    &:hover {
+      box-shadow: 0 -1px 0 rgba(0, 0, 0, .04), 0 2px 4px rgba(0, 0, 0, .25);
+    }
+
+    &:active {
+      background-color: #eeeeee;
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow:
+              0 -1px 0 rgba(0, 0, 0, .04),
+              0 2px 4px rgba(0, 0, 0, .25),
+              0 0 0 3px #c8dafc;
+    }
+
+    &:disabled {
+      filter: grayscale(100%);
+      background-color: #ebebeb;
+      box-shadow: 0 -1px 0 rgba(0, 0, 0, .04), 0 1px 1px rgba(0, 0, 0, .25);
+      cursor: not-allowed;
+    }
+  }
+
+  .login-with-facebook-btn {
+    transition: background-color .3s, box-shadow .3s;
+
+    padding: 12px 16px 12px 42px;
+    border: none;
+    border-radius: 3px;
+    box-shadow: 0 -1px 0 rgba(0, 0, 0, .04), 0 1px 1px rgba(0, 0, 0, .25);
+
+    color: #757575;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAADK0lEQVR4nO2Zz08TQRTHNzM0MQHixaMnI2jE4Mmr/4A/okej3r0oAn+AiYke9IYkpDNFDAkRqokHL4bEEzFelIqAJP5IDPvetrXQAhXSsrRjplYMboGdnd0th/0m79TN7Pcz8+bN7KthRIoUKZJUbNg8Qxj0UYZJwnCGcsxTjpv1yBOGH2u/cbNXPmscCCVy7YRDP2XwmXIUSsFgXgIbg9m28I3fFS1yJinDZWXjDhBcIgzvyDHDMR/Hk4RjStv4f0EYThsJOBGodxqHS5RD0W/z9F9arVEOFwMxTxLWDcrBDsw8/xtgE25dD2LmQzCP2xCUwQV/3A+ZHX+WVs9U24glOiey4uzLn6LreVZ0jGfE4afWXhBFud98qDbeN2wLR3H1TV5Mpctis1IVjXR5cnn3jc3hg1Z1qpVKj+YPDVti4vuG2E9X9gCoQcSxx5v70XQr5ZDzCvBwpriveTcA8pyQB6aH2Yd+r+aPjmVEeZeUUQbg8oyAPmUAT9eDevS+W2lotlCuiPupNXFzqrAdx55l9h+TwbySeXnZ0qk4498a5/65VznPY8YS6dOhpI+Mt5myw/zs8qbn8ajqZpbXXp2XzeVtB8DY1w0tAMpwXGEF8JPOyxYKToDHc7/0VoBjSmUFlvwGGNAEoBxyKgDlgweApUAA7k2viXypsiO2GhwBpa2q47l8qSK6X2QDAXCdQo9cnriNVBVCtI9Y/qeQyibWAfhR3ApsEyfDAJiEUkBlVLZHQgAYUNjYhONt1wAxbnarfKgcGU3viC8rzirEFtYdz7U+cZv/KGIs3eUaoL4KswolLtgyyhQvc6ppFDQA4WZvqB80vgIwXPLcvZMds2YDEIa3DK2PeobTzQIgHN4bSUENLfHF45TBavgA4ENbpS7Z7lNpbOkDgE0T5nnDT8l2n1sIPQCwCcNrRhCS7T43XTrPAAxWfZ95hxh0yo6Z3wBEbtghs8MIRbI6xbFnt2u3GgDkaqVSu9p40WC2TZ7YhMOcKoC8qhB5wjblL6YGkpet2qpwnHhtlgqLRbuybleFDLNoVx6kVi15Ja61R4atU832GylSJONg6DekIcfGE7hs2QAAAABJRU5ErkJggg==);
+    background-size: 30px;
+    background-color: white;
+    background-repeat: no-repeat;
+    background-position: 5px 6px;
+
+    &:hover {
+      box-shadow: 0 -1px 0 rgba(0, 0, 0, .04), 0 2px 4px rgba(0, 0, 0, .25);
+    }
+
+    &:active {
+      background-color: #eeeeee;
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow:
+              0 -1px 0 rgba(0, 0, 0, .04),
+              0 2px 4px rgba(0, 0, 0, .25),
+              0 0 0 3px #c8dafc;
+    }
+
+    &:disabled {
+      filter: grayscale(100%);
+      background-color: #ebebeb;
+      box-shadow: 0 -1px 0 rgba(0, 0, 0, .04), 0 1px 1px rgba(0, 0, 0, .25);
+      cursor: not-allowed;
+    }
+  }
 </style>
+
+
+<div class="notifications">
+  <h2>Công Quý</h2>
+</div>
 
 <div class="content">
   <div class="page-header">
@@ -105,6 +195,14 @@
                  data-bs-target="#form2Modal"
                  style="padding: 10px 0">Địa chỉ của bạn</a>
             </div>
+          </div>
+          <div class="ms-auto" style="right: 0 !important;">
+            <button type="button" class="login-with-google-btn" id="withGoogle">
+              Liên kết Google
+            </button>
+            <button type="button" class="login-with-facebook-btn" id="withFacebook">
+              Liên kết Facebook
+            </button>
           </div>
         </div>
       </div>
@@ -397,6 +495,7 @@
       success: function (response) {
         // Kiểm tra kết quả trả về từ API
         if (response.success) {
+
           Swal.fire({
             icon: 'success',
             title: 'Thành công!',
@@ -511,6 +610,18 @@
   }
 
   // Hàm cập nhật thông tin địa chỉ
+  let notifications = document.querySelector('.notifications');
+  const googleLoginBtn = document.getElementById('withGoogle');
+  const facebookLoginBtn = document.getElementById('withFacebook');
+
+  googleLoginBtn.onclick = function() {
+    let type = 'success';
+    let icon = 'fa-solid fa-circle-check';
+    let title = 'Success';
+    let text = 'Đã liên kết với Google thành công.';
+    createToast(type, icon, title, text);
+  }
+
   function updateOrderInfo() {
 
   }
@@ -519,6 +630,23 @@
     const form = document.getElementById('newAddressForm');
     form.style.display = form.style.display === 'none' ? 'block' : 'none';
   }
+
+  function createToast(type, icon, title, text){
+    let newToast = document.createElement('div');
+    newToast.innerHTML =
+            '<div class="toast ' + type + '">' +
+            '<i class="' + icon + '"></i>' +
+            '<div class="content">' +
+            '<div class="title">' + title + '</div>' +
+            '<span>' + text + '</span>' +
+            '</div>' +
+            '<i class="close fa-solid fa-xmark" onclick="(this.parentElement).remove()"></i>' +
+            '</div>';
+
+    notifications.appendChild(newToast);
+    newToast.timeOut = setTimeout(() => newToast.remove(), 5000)
+  }
+
 
 
 </script>

@@ -16,6 +16,22 @@
         font-weight: normal;
         color: silver;
     }
+
+    .checkout__info {
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .order__title {
+        font-size: 20px;
+        color: #333;
+    }
+
+    hr {
+        border-top: 1px solid #ddd;
+        margin: 5px 0 15px;
+    }
+
 </style>
 
 <!-- Breadcrumb Section Begin -->
@@ -43,7 +59,31 @@
         <div class="checkout__form">
             <form action="#">
                 <div class="row">
-                    <div class="col-lg-10 col-md-6">
+                    <!-- Phần thông tin nhận hàng -->
+                    <div class="col-lg-10 col-md-6 mx-auto">
+                        <div class="checkout__info d-flex justify-content-between align-items-center p-4 mb-4 rounded shadow-sm" style="background-color: #f9f9f9; border: 1px solid #ddd;">
+                            <!-- Phần thông tin bên trái -->
+                            <div>
+                                <h4 class="order__title" style="font-weight: 600; color: #333;">Nguyễn Công Quý</h4>
+                                <hr style="margin: 10px 0; border-top: 3px solid #333;" />
+                                <p class="mb-2"><strong>Số điện thoại:</strong> <span>0976870127</span></p>
+                                <p class="mb-0"><strong>Địa chỉ:</strong> <span>Địa chỉ ở đây</span></p>
+                            </div>
+
+                            <!-- Nút thay đổi địa chỉ -->
+                            <a href="javascript:void(0);"
+                               class="btn d-flex align-items-center"
+                               onfocus="this.blur()"
+                               data-bs-toggle="modal"
+                               data-bs-target="#form2Modal"
+                               style="background-color: black; color: white; text-decoration: none; padding: 10px 15px; border: 1px solid black;">
+                                Thay đổi địa chỉ của bạn
+                            </a>
+                        </div>
+                    </div>
+
+                    <%--Phần thông tind đơn hàng--%>
+                    <div class="col-lg-10 col-md-6 mx-auto">
                         <div class="checkout__order">
                             <h4 class="order__title">Đơn hàng của bạn</h4>
                             <div class="checkout__order__products">
@@ -51,7 +91,17 @@
                             </div>
                             <ul class="checkout__total__products">
                                 <c:forEach items="${orderDTO.orderDetails}" var="order">
-                                        <li>- ${order.productVariant.name} ${order.productVariant.size} ${order.productVariant.color} x${order.quantity}<span><fmt:formatNumber type = "number" maxFractionDigits = "3" value="${order.total}" /> VND</span></li>
+                                    <li>- ${order.productVariant.name} ${order.productVariant.size} ${order.productVariant.color} x${order.quantity}<span><fmt:formatNumber type = "number" maxFractionDigits = "3" value="${order.total}" /> VND</span></li>
+                                    <li style="display: flex; justify-content: left; align-items: center; gap: 10px; font-weight: bold; margin: -15px 0 20px 10px">
+
+                                        <c:if test="${not empty order.productDiscount}">
+                                            <span>${order.productVariant.price * (100 - order.productDiscount.discountPercentage) / 100}</span>
+                                            &nbsp;&nbsp;
+                                        </c:if>
+                                        <span style="text-decoration: ${not empty order.productDiscount ? 'line-through' : 'none'};">
+                                                ${order.productVariant.price}
+                                        </span>
+                                    </li>
                                 </c:forEach>
                             </ul>
                             <ul class="checkout__total__all">
@@ -76,7 +126,7 @@
                                         name="payment"
                                         value="cash"
                                 />
-                                <label class="form-check-label" for="flexRadioDefault1">
+                                <label class="form-check-label">
                                     Thanh toán bằng tiền mặt
                                 </label>
                             </div>
@@ -89,7 +139,7 @@
                                         checked
                                         value="bank"
                                 />
-                                <label class="form-check-label" for="flexRadioDefault2">
+                                <label class="form-check-label">
                                     Thanh toán bằng chuyển khoản
                                 </label>
                             </div>
@@ -99,76 +149,6 @@
 
                         </div>
                     </div>
-                    <c:if test="${not empty orderDTO.orderInfoDTO }">
-                        <div class="col-lg-4 col-md-6">
-                            <div class="checkout__title">
-                                <h6 class="col-lg-8">Thông tin giao hàng</h6>
-                                <div class="col-lg-8 change__address" >thay đổi địa chỉ</div>
-                            </div>
-                            <div class="checkout__input">
-                                <p>Họ và tên<span>*</span></p>
-                                <input class="" type="text" id="recipient" readonly value="${orderDTO.orderInfoDTO.recipient}"/>
-                            </div>
-                            <div class="checkout__input">
-                                <p>Số điện thoại<span>*</span></p>
-                                <input type="text" id="phone" readonly value="${orderDTO.orderInfoDTO.phone}" />
-                            </div>
-                            <div class="checkout__input">
-                                <p>Tỉnh/Thành phố<span>*</span></p>
-                                <input type="text" id="city" readonly value="${orderDTO.orderInfoDTO.address.city}" />
-                            </div>
-                            <div class="checkout__input">
-                                <p>Quận/Huyện<span>*</span></p>
-                                <input type="text" id="district" readonly value="${orderDTO.orderInfoDTO.address.district}" />
-                            </div>
-                            <div class="checkout__input">
-                                <p>Phường/Xã<span>*</span></p>
-                                <input type="text" id="commune" readonly value="${orderDTO.orderInfoDTO.address.commune}" />
-                            </div>
-                            <div class="checkout__input">
-                                <p>Số nhà, tên đường<span>*</span></p>
-                                <input type="text" id="concrete" readonly value="${orderDTO.orderInfoDTO.address.concrete}"/>
-                            </div>
-                        </div>
-                    </c:if>
-                    <c:if test="${empty orderDTO.orderInfoDTO }">
-                        <div class="col-lg-4 col-md-6">
-                            <div class="checkout__title">
-                                <h6 class="col-lg-8">Thông tin giao hàng</h6>
-                                <div class="col-lg-8 change__address" >thay đổi địa chỉ</div>
-                            </div>
-                            <div class="checkout__input">
-                                <p>Họ và tên<span>*</span></p>
-                                <input class="" type="text" id="recipient" value="" placeholder="Nhập họ và tên"/>
-                                <small class="feedback error-message"></small>
-                            </div>
-                            <div class="checkout__input">
-                                <p>Số điện thoại<span>*</span></p>
-                                <input type="text" id="phone" value="" placeholder="Nhập số điện thoại"/>
-                                <small class="feedback error-message"></small>
-                            </div>
-                            <div class="checkout__input">
-                                <p>Tỉnh/Thành phố<span>*</span></p>
-                                <input type="text" id="city" value="" placeholder="Nhập tỉnh/thành phố" />
-                                <small class="feedback error-message"></small>
-                            </div>
-                            <div class="checkout__input">
-                                <p>Quận/Huyện<span>*</span></p>
-                                <input type="text" id="district"  value="" placeholder="Nhập quận/huyện"/>
-                                <small class="feedback error-message"></small>
-                            </div>
-                            <div class="checkout__input">
-                                <p>Phường/Xã<span>*</span></p>
-                                <input type="text" id="commune"  value="" placeholder="Nhập phường xã"/>
-                                <small class="feedback error-message"></small>
-                            </div>
-                            <div class="checkout__input">
-                                <p>Số nhà, tên đường<span>*</span></p>
-                                <input type="text" id="concrete" value="" placeholder="Nhập số nhà, tên đường"/>
-                                <small class="feedback error-message"></small>
-                            </div>
-                        </div>
-                    </c:if>
                 </div>
             </form>
         </div>
@@ -176,88 +156,191 @@
 </section>
 <!-- Checkout Section End -->
 
+<%--Mở form thay đổi địa chỉ--%>
+<div class="modal fade" id="form2Modal" tabindex="-1" aria-labelledby="form2ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content shadow">
+            <div class="modal-header">
+                <h4 class="modal-title" id="form2ModalLabel">Chọn địa chỉ</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+
+                <!-- Danh sách địa chỉ của người dùng -->
+                <c:forEach items="${orderInfos}" var="orderInfo">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <%--Giấu thẻ này để tí có cái mà xóa =))--%>
+                            <input type="hidden" id="orderId" value="${orderInfo.id}">
+
+                            <h5 style="margin-top: 10px">
+                                ${orderInfo.recipient}
+                                <c:if test="${orderInfo.isDefault == 1}">
+                                    <span class="badge bg-primary-color ms-2">Mặc định</span>
+                                </c:if>
+                            </h5>
+                            <p><strong>Điện thoại: </strong>${orderInfo.phone}</p>
+                            <p><strong>Địa chỉ:</strong>
+                                    ${orderInfo.address.concrete}, ${orderInfo.address.commune},
+                                    ${orderInfo.address.district}, ${orderInfo.address.city}
+                            </p>
+                            <div class="row">
+                                <div class="col-4">
+                                    <button type="button" class="btn btn-link text-decoration-none"
+                                            onclick="">
+                                        Chọn địa chỉ
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </c:forEach>
+
+
+                <!-- Nút thêm địa chỉ mới -->
+                <div class="d-flex justify-content-center mt-3">
+                    <button type="button"
+                        onfocus="this.blur()"
+                        class="btn d-flex align-items-center"
+                        onclick="toggleNewAddressForm()"
+                        style="background-color: black; color: white; text-decoration: none; padding: 10px 15px; border: 1px solid black;">Thêm địa chỉ mới
+                    </button>
+                </div>
+
+                <!-- Form thêm địa chỉ mới, mặc định ẩn đi -->
+                <div id="newAddressForm" class="mt-4" style="display: none;">
+                    <h5 style="font-weight: bold;">Thêm địa chỉ mới</h5>
+                    <hr />
+                    <form>
+
+                        <div class="mb-3">
+                            <label for="recipientName" class="form-label" style="font-weight: bold;">Tên người nhận</label>
+                            <input type="text" class="form-control" id="recipientName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label" style="font-weight: bold;">Điện thoại</label>
+                            <input type="text" class="form-control" id="phone" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="city" class="form-label" style="font-weight: bold;">Tỉnh/Thành phố</label>
+                            <select class="form-control" id="city" required>
+                                <option value="" selected>Chọn tỉnh thành</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="district" class="form-label" style="font-weight: bold;">Quận/Huyện</label>
+                            <select class="form-control" id="district" required>
+                                <option value="" selected>Chọn quận huyện</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="ward" class="form-label" style="font-weight: bold;">Xã/Phường/Thị
+                                trấn</label>
+                            <select class="form-control" id="ward" required>
+                                <option value="" selected>Chọn phường xã</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="specificAddress" class="form-label" style="font-weight: bold;">Địa chỉ cụ
+                                thể</label>
+                            <input type="text" class="form-control" id="specificAddress" required>
+                        </div>
+
+                        <!-- Nút lưu và quay về -->
+                        <div class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-secondary me-2"
+                                    onclick="toggleNewAddressForm()">Quay về</button>
+                            <button type="button" class="btn btn-success" onclick="saveOrderInfo()">Lưu</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+        src="<c:url value="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"/>"
         referrerpolicy="no-referrer"
 ></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+<script src="<c:url value="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"/>"></script>
 <script>
-    $(document).ready(function () {
-    const host = "https://provinces.open-api.vn/api/";
-    var callAPI = (api) => {
-        return axios.get(api).then((response) => {
-            renderData(response.data, "city");
-        });
-    };
-    callAPI("https://provinces.open-api.vn/api/?depth=1");
-    var callApiDistrict = (api) => {
-        return axios.get(api).then((response) => {
-            renderData(response.data.districts, "district");
-        });
-    };
-    var callApiWard = (api) => {
-        return axios.get(api).then((response) => {
-            renderData(response.data.wards, "ward");
-        });
-    };
 
-    var renderData = (array, select) => {
-        let row = '<option disable value="">Chọn</option>';
-        array.forEach((element) => {
-            row += `<option data-id="${element.code}" value="${element.name}">${element.name}</option>`;
-        });
-        document.querySelector("#" + select).innerHTML = row;
-    };
+    // Gọi API đầu tiên
+    $(document).ready(() => {
+        // Bộ API
+        const host = "https://provinces.open-api.vn/api/";
 
-    $("#city").change(() => {
-        // Kiểm tra nếu giá trị là "Chọn" thì không gọi API cho huyện/xã
-        if ($("#city").val() === "") {
-            $("#district").html('<option value="">Chọn</option>');
-            $("#ward").html('<option value="">Chọn</option>');
-        } else {
-            callApiDistrict(
-                host + "p/" + $("#city").find(":selected").data("id") + "?depth=2"
-            );
+        var callAPI = (api) => {
+            return axios.get(api)
+                .then((response) => {
+                    renderData(response.data, "city");
+                })
+                .catch((error) => {
+                    console.error("Error fetching city data:", error);
+                });
         }
-        printResult();
-    });
 
-    $("#district").change(() => {
-        // Kiểm tra nếu giá trị là "Chọn" thì không gọi API cho xã
-        if ($("#district").val() === "") {
-            $("#ward").html('<option value="">Chọn</option>');
-        } else {
-            callApiWard(
-                host +
-                "d/" +
-                $("#district").find(":selected").data("id") +
-                "?depth=2"
-            );
+        callAPI(host + '?depth=1');
+
+        var callApiDistrict = (api) => {
+            return axios.get(api)
+                .then((response) => {
+                    renderData(response.data.districts, "district");
+                })
+                .catch((error) => {
+                    console.error("Error fetching district data:", error);
+                });
         }
-        printResult();
-    });
 
-    $("#ward").change(() => {
-        printResult();
-    });
-
-    var printResult = () => {
-        if (
-            $("#district").find(":selected").data("id") != "" &&
-            $("#city").find(":selected").data("id") != "" &&
-            $("#ward").find(":selected").data("id") != ""
-        ) {
-            let result =
-                $("#city option:selected").text() +
-                " | " +
-                $("#district option:selected").text() +
-                " | " +
-                $("#ward option:selected").text();
-            $("#result").text(result);
+        var callApiWard = (api) => {
+            return axios.get(api)
+                .then((response) => {
+                    renderData(response.data.wards, "ward");
+                })
+                .catch((error) => {
+                    console.error("Error fetching ward data:", error);
+                });
         }
-    };
 
+
+        var renderData = (array, select) => {
+            let selectElement = document.querySelector("#" + select);
+            selectElement.innerHTML = "";
+
+            let defaultOption = document.createElement("option");
+            defaultOption.text = "Chọn";
+            defaultOption.value = "";
+            defaultOption.disabled = true;
+            defaultOption.selected = true;
+            selectElement.appendChild(defaultOption);
+
+            array.forEach(element => {
+                let option = document.createElement("option");
+                option.text = element.name;
+                option.value = element.name;
+                option.setAttribute("data-id", element.code);
+                selectElement.appendChild(option);
+            });
+        };
+
+
+        $("#city").change(() => {
+            const cityId = $("#city").find(':selected').data('id');
+            if (cityId) {
+                callApiDistrict(host + "p/" + cityId + "?depth=2");
+            }
+        });
+
+        $("#district").change(() => {
+            const districtId = $("#district").find(':selected').data('id');
+            if (districtId) {
+                callApiWard(host + "d/" + districtId + "?depth=2");
+            }
+        });
     });
 
     var currentUrl = window.location.href;
@@ -316,7 +399,6 @@
             order.paymentMethod =paymentMethod
 
 
-
             event.preventDefault();
             $.ajax({
                 type: "POST",
@@ -348,4 +430,11 @@
 
 
     });
+
+    // Hàm gọi model thêm địa chỉ
+    function toggleNewAddressForm() {
+        const form = document.getElementById('newAddressForm');
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
+
 </script>
