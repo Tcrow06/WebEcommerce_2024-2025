@@ -3,10 +3,11 @@
   <component name="WebContextManager">
     <option name="state">
       <map>
-        <entry key="file://$PROJECT_DIR$/src/main/webapp/views/admin/product/edit-product.jsp" value="file://$PROJECT_DIR$/src/main/webapp/views/admin/product" />
-        <entry key="file://$PROJECT_DIR$/src/main/webapp/views/web/cart.jsp" value="file://$PROJECT_DIR$/src/main/webapp/views/web" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/views/admin/add-product.jsp" value="file://$PROJECT_DIR$/src/main/webapp/views/admin" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/views/admin/product/add-bill-discount.jsp" value="file://$PROJECT_DIR$/src/main/webapp/views/admin/product" />
+        <entry key="file://$PROJECT_DIR$/src/main/webapp/views/admin/product/edit-product.jsp" value="file://$PROJECT_DIR$/src/main/webapp/views/admin/product" />
+        <entry key="file://$PROJECT_DIR$/src/main/webapp/views/web/blog/blog-3.jsp" value="file://$PROJECT_DIR$/src/main/webapp/views/web/blog" />
+        <entry key="file://$PROJECT_DIR$/src/main/webapp/views/web/cart.jsp" value="file://$PROJECT_DIR$/src/main/webapp/views/web" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/views/web/forget-password.jsp" value="file://$PROJECT_DIR$/src/main/webapp/views/web" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/views/web/product-detail.jsp" value="file://$PROJECT_DIR$/src/main/webapp/views/web" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/views/web/product-list.jsp" value="file://$PROJECT_DIR$/src/main/webapp/views/web" />
