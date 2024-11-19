@@ -356,22 +356,27 @@
             </table>
 
             <c:if test="${status == 'DELIVERED'}">
-                <div style="text-align: center;">
-                    <button type="submit" class="primary-btn">Trả sản phẩm</button>
-                </div>
+                <div style="display: flex; justify-content: center; gap: 10px; margin-top: 20px;">
+                    <button type="submit" class="primary-btn">Trả hàng</button>
+                </div><br>
             </c:if>
         </form>
 
 <%--        cap nhat status hoan thanh--%>
         <c:if test="${status == 'PROCESSED'}">
-            <div style="text-align: center;">
-                <button type="button" class="primary-btn" id="confirm-order-btn">Xác nhận đơn hàng</button>
+            <div style="display: flex; justify-content: center; margin-top: 20px;">
+                <button type="button" class="primary-btn confirm-order-btn">Xác nhận đơn hàng</button>
             </div>
         </c:if>
 
+        <c:if test="${status == 'DELIVERED'}">
+            <div style="display: flex; justify-content: center; gap: 10px; margin-top: 20px;">
+                <button type="button" class="primary-btn confirm-order-btn">Xác nhận đơn hàng</button>
+            </div>
+        </c:if>
 
-        <div style="text-align: center; margin-top: 20px;">
-            <a href="javascript:void(0);" onclick="window.location.href='/trang-chu/don-hang';" class="primary-btn">Back</a>
+        <div style="display: flex; justify-content: center; margin-top: 20px;">
+            <a href="javascript:void(0);" onclick="window.location.href='/trang-chu/don-hang';" class="primary-btn">Trở lại</a>
         </div>
     </div>
 </section>
@@ -386,10 +391,12 @@
         });
     });
 
-    document.getElementById('confirm-order-btn').addEventListener('click', function () {
-        const form = document.getElementById('return-form');
-        form.action = '/trang-chu/don-hang';
-        form.method = 'POST';
-        form.submit();
+    document.querySelectorAll('.confirm-order-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const form = document.getElementById('return-form');
+            form.action = '/trang-chu/don-hang'; // Đường dẫn xử lý
+            form.method = 'POST';
+            form.submit();
+        });
     });
 </script>

@@ -206,6 +206,11 @@ public class OrderService implements IOrderService {
         return orderDAO.changeConfirmStatus(orderId);
     }
 
+    @Override
+    public List<DisplayOrderDTO> getListOrder() {
+        return orderDAO.getListOrder();
+    }
+
     @Transactional
     public OrderEntity createOrder(OrderDTO orderDTO, Long idUser) {
        try {

@@ -12,4 +12,6 @@ public interface IOrderService {
     OrderDTO findInfoCheckOut(CheckOutRequestDTO checkOutRequestDTO);
     OrderDTO findInfoPayment(OrderDTO orderDTO, Long idUser);
     boolean changeConfirmStatus(Long orderId);
+    List<DisplayOrderDTO> getListOrder();
+
 }
