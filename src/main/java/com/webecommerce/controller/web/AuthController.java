@@ -1,5 +1,6 @@
 package com.webecommerce.controller.web;
 
+import com.webecommerce.constant.EnumRole;
 import com.webecommerce.dao.people.ICustomerDAO;
 import com.webecommerce.dto.CartItemDTO;
 import com.webecommerce.dto.PlacedOrder.CheckOutRequestDTO;
@@ -80,22 +81,21 @@ public class AuthController extends HttpServlet {
         if(action != null && action.equals("login")) {
             AccountRequest account = FormUtils.toModel(AccountRequest.class, request);
             UserResponse user = accountService.findByUserNameAndPasswordAndStatus(account.getUserName(), account.getPassword(), "ACTIVE");
-
             if(user != null) {
                 response.setContentType("application/json");
                 String path=null,jwtToken=null;
 
                 SessionUtil.getInstance().putValue(request, "USERINFO", user);
-                if(user.getRole().equals("OWNER")) {
+                if(user.getRole().equals(EnumRole.OWNER.toString())) {
                     jwtToken = JWTUtil.generateToken(user);
                     path = "/chu-doanh-nghiep";
                 }
-                else if(user.getRole().equals("CUSTOMER")) {
+                else if(user.getRole().equals(EnumRole.CUSTOMER.toString())) {
                     HashMap<Long, CartItemDTO> cart = new HashMap<>();
                     if(checkOutRequestDTO!=null){
                         cart = cartItemService.updateCartWhenBuy(user.getId(),checkOutRequestDTO);
                     }else{
-                        cart=cartItemService.LoadCart(JWTUtil.getIdUser(request));
+                        cart=cartItemService.LoadCart(user.getId());
                     }
 
 

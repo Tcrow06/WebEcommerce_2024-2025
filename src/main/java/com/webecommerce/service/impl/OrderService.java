@@ -88,8 +88,6 @@ public class OrderService implements IOrderService {
         OrderDTO orderDTO = new OrderDTO();
         String status=null;
         StringBuilder message = new StringBuilder();
-//        OrderEntity order = new OrderEntity();
-//        List<OrderDetailEntity> orderDetails = new ArrayList<>();
         List<OrderDetailDTO> orderDetailDTOS = new ArrayList<>();
         BillDiscountDTO billDiscountDTO = billDiscountService.findBillDiscountByCode(checkOutRequestDTO.getBillDiscountCode());
         if(!checkOutRequestDTO.getBillDiscountCode().trim().isEmpty()){

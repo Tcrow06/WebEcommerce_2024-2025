@@ -30,7 +30,7 @@ public class BillDiscountDAO extends AbstractDAO<BillDiscountEntity> implements 
 
     public List<BillDiscountEntity> getAllDiscountEligible(Long idUser) {
         String query = "SELECT b FROM BillDiscountEntity b JOIN CustomerEntity c " +
-                "ON b.loyaltyPointsRequired < c.loyaltyPoint " +
+                "ON b.loyaltyPointsRequired <= c.loyaltyPoint " +
                 "WHERE c.id = :idUser " +
                 "AND CURRENT_TIMESTAMP BETWEEN b.startDate AND b.endDate";
         EntityManager entityManager = HibernateUtil.getEmFactory().createEntityManager();
