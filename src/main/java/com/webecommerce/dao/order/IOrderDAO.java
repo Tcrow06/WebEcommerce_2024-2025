@@ -19,6 +19,7 @@ public interface IOrderDAO extends GenericDAO<OrderEntity> {
     Double calculateTotalRevenue();
     int totalOrders();
     int totalOrdersToday();
-
     boolean changeConfirmStatus(Long orderId);
+    List<DisplayOrderDTO> getListOrder();
+
 }
