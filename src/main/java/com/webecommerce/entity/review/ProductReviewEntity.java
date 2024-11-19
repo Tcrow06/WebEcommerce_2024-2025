@@ -25,16 +25,15 @@ public class ProductReviewEntity {
     private CustomerEntity customer;
 
     @ManyToOne
-    @JoinColumn(name = "product_variant_id", nullable = false)
-    private ProductVariantEntity productVariant;
-
-    @ManyToOne
     @JoinColumn(name = "order_detail_id", nullable = false)
     private OrderDetailEntity orderDetail;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "review_feedback_id", referencedColumnName = "id")
+    @OneToOne(mappedBy = "productReview", cascade = CascadeType.ALL)
     private ReviewFeedbackEntity reviewFeedback;
+
+    @Column(name = "number_of_stars")
+    private int numberOfStars;
+
 
     public Long getId() {
         return id;
@@ -68,14 +67,6 @@ public class ProductReviewEntity {
         this.customer = customer;
     }
 
-    public ProductVariantEntity getProductVariant() {
-        return productVariant;
-    }
-
-    public void setProductVariant(ProductVariantEntity productVariant) {
-        this.productVariant = productVariant;
-    }
-
     public OrderDetailEntity getOrderDetail() {
         return orderDetail;
     }
@@ -90,5 +81,13 @@ public class ProductReviewEntity {
 
     public void setReviewFeedback(ReviewFeedbackEntity reviewFeedback) {
         this.reviewFeedback = reviewFeedback;
+    }
+
+    public int getNumberOfStars() {
+        return numberOfStars;
+    }
+
+    public void setNumberOfStars(int numberOfStars) {
+        this.numberOfStars = numberOfStars;
     }
 }
