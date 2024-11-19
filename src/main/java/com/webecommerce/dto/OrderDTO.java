@@ -54,7 +54,7 @@ public class OrderDTO {
             if(billDiscount.getMinimumInvoiceAmount() > total){
                 return false;
             }
-            if(billDiscount.getMaximumAmount()>total*billDiscount.getDiscountPercentage()/100){
+            if(billDiscount.getMaximumAmount()>(total*billDiscount.getDiscountPercentage()/100)){
                 this.maximumDiscount = total*billDiscount.getDiscountPercentage()/10;
             }else {
                 this.maximumDiscount = billDiscount.getMaximumAmount();

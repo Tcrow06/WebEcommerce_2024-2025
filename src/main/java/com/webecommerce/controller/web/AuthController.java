@@ -95,13 +95,9 @@ public class AuthController extends HttpServlet {
                     if(checkOutRequestDTO!=null){
                         cart = cartItemService.updateCartWhenBuy(user.getId(),checkOutRequestDTO);
                     }else{
-                        CartEntity cartEntity = customerDAO.findById(user.getId()).getCart();
-
-                        for (CartItemEntity cartItemEntity : cartEntity.getCartItems()) {
-                            CartItemDTO cartItemDTO = cartItemMapper.toDTO(cartItemEntity);
-                            cart.put(cartItemDTO.getId(), cartItemDTO);
-                        }
+                        cart=cartItemService.LoadCart(JWTUtil.getIdUser(request));
                     }
+
 
                     request.getSession().setAttribute("cart", cart);
                     jwtToken = JWTUtil.generateToken(user);

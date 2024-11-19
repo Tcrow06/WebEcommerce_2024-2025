@@ -4,6 +4,8 @@ public class CustomerResponse extends UserResponse{
 
    private String loyaltyPoint;
 
+   private String avatar;
+
     public CustomerResponse() {
     }
 
@@ -20,4 +22,13 @@ public class CustomerResponse extends UserResponse{
     }
 
 
+    @Override
+    public String getAvatar() {
+        return avatar;
+    }
+
+    @Override
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
 }

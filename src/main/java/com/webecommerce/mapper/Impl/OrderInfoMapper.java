@@ -26,7 +26,8 @@ public class OrderInfoMapper implements GenericMapper<OrderInfoDTO, OrderInfoEnt
         dto.setPhone(entity.getPhone());
         dto.setRecipient(entity.getRecipient());
         dto.setIsDefault(entity.getIsDefault());
-        dto.setCustomerId(entity.getCustomer().getId());
+        if(entity.getCustomer()!=null)
+            dto.setCustomerId(entity.getCustomer().getId());
         return dto;
     }
 

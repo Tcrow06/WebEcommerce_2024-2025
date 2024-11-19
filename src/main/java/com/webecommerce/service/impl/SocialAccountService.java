@@ -1,8 +1,10 @@
 package com.webecommerce.service.impl;
 
 import com.webecommerce.dao.other.ISocialAccountDAO;
+import com.webecommerce.dao.people.ICustomerDAO;
 import com.webecommerce.dto.request.people.CustomerRequest;
 import com.webecommerce.dto.response.people.CustomerResponse;
+import com.webecommerce.entity.cart.CartEntity;
 import com.webecommerce.entity.other.SocialAccountEntity;
 import com.webecommerce.entity.people.CustomerEntity;
 import com.webecommerce.mapper.ICustomerMapper;
@@ -22,6 +24,9 @@ public class SocialAccountService implements ISocialAccountService {
 
     @Inject
     private ISocialAccountMapper SocialAccountMapper;
+
+    @Inject
+    private ICustomerDAO customerDAO;
 
     @Override
     public CustomerResponse findByFbID(String fbID) {
@@ -46,6 +51,7 @@ public class SocialAccountService implements ISocialAccountService {
         CustomerEntity customerEntity = customerMapper.toCustomerEntity(customerRequest);
         SocialAccountEntity socialAccountEntity = SocialAccountMapper.toSocialAccountEntity(customerRequest);
         socialAccountEntity.setCustomer(customerEntity);
+        customerEntity.setCart(new CartEntity());
         socialAccountDAO.insert(socialAccountEntity);
         return customerMapper.toCustomerResponse(socialAccountEntity.getCustomer());
 
@@ -53,5 +59,27 @@ public class SocialAccountService implements ISocialAccountService {
         ///Lưu Acc
 
 //        return customerResponse;
+    }
+
+    @Transactional
+    @Override
+    public CustomerResponse saveSocialByEmail(CustomerRequest customerRequest) {
+        try {
+            CustomerEntity customerEntity = customerDAO.findByEmail(customerRequest.getEmail());
+            if(customerEntity == null){
+                return null;
+            }
+            if(customerEntity.getAvatar()==null){
+                customerEntity.setAvatar(customerRequest.getAvatar());
+                customerDAO.update(customerEntity);
+            }
+            SocialAccountEntity socialAccountEntity = new SocialAccountEntity();
+            socialAccountEntity.setCustomer(customerEntity);
+            socialAccountEntity.setGgID(customerRequest.getGgID());
+            socialAccountDAO.insert(socialAccountEntity);
+            return customerMapper.toCustomerResponse(customerEntity);
+        }catch (Exception e){
+            return new CustomerResponse();
+        }
     }
 }
