@@ -177,7 +177,7 @@
                             <form id="add-to-cart-form">
                                 <div class="quantity">
                                     <div class="pro-qty">
-                                        <input type="text" value="1" name="quantity" id="quantity">
+                                        <input type="number" value="1" name="quantity" id="quantity">
                                     </div>
                                 </div>
                                 <button type="button" id="add-to-cart-btn" class="primary-btn" style="margin-top: 10px">add to cart</button>

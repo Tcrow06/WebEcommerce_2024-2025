@@ -148,36 +148,41 @@ public class CartItemService implements ICartItemService {
 
     @Override
     public HashMap<Long, CartItemDTO> updateCartWhenBuy(Long idUser, CheckOutRequestDTO checkOutRequestDTO) {
-        CartEntity cartEntity = customerDAO.findById(idUser).getCart();
-        HashMap<Long, CartItemDTO> cart = new HashMap<>();
+        try {
+            CartEntity cartEntity = customerDAO.findById(idUser).getCart();
+            HashMap<Long, CartItemDTO> cart = new HashMap<>();
 
-        for (ProductOrderDTO productOrderDTO : checkOutRequestDTO.getSelectedProductsId()) {
-            cartEntity.getCartItems().stream()
-                    .filter(cartItemEntity -> cartItemEntity.getProductVariant().getId().equals(productOrderDTO.getProductVariantId()))
-                    .findFirst()
-                    .ifPresentOrElse(cartItemEntity -> {
-                        cartItemEntity.setQuantity(productOrderDTO.getQuantity());
-                        cartItemDAO.update(cartItemEntity);
-                        CartItemDTO updatedCartItemDTO = cartItemMapper.toDTO(cartItemEntity);
-                        updatedCartItemDTO.setIsActive(1);
-                        cart.put(updatedCartItemDTO.getId(), updatedCartItemDTO);
-                    }, () -> {
-                        CartItemEntity cartItem = new CartItemEntity();
-                        ProductVariantEntity productVariantEntity = productVariantDAO.findById(productOrderDTO.getProductVariantId());
-                        cartItem.setQuantity(productOrderDTO.getQuantity());
-                        cartItem.setProductVariant(productVariantEntity);
-                        cartItemDAO.insert(cartItem);
-                        CartItemDTO updatedCartItemDTO = cartItemMapper.toDTO(cartItem);
-                        updatedCartItemDTO.setIsActive(1);
-                        cart.put(updatedCartItemDTO.getId(), updatedCartItemDTO);
-                    });
+            for (ProductOrderDTO productOrderDTO : checkOutRequestDTO.getSelectedProductsId()) {
+                cartEntity.getCartItems().stream()
+                        .filter(cartItemEntity -> cartItemEntity.getProductVariant().getId().equals(productOrderDTO.getProductVariantId()))
+                        .findFirst()
+                        .ifPresentOrElse(cartItemEntity -> {
+                            cartItemEntity.setQuantity(productOrderDTO.getQuantity());
+                            cartItemDAO.update(cartItemEntity);
+                            CartItemDTO updatedCartItemDTO = cartItemMapper.toDTO(cartItemEntity);
+                            updatedCartItemDTO.setIsActive(1);
+                            cart.put(updatedCartItemDTO.getId(), updatedCartItemDTO);
+                        }, () -> {
+                            CartItemEntity cartItem = new CartItemEntity();
+                            ProductVariantEntity productVariantEntity = productVariantDAO.findById(productOrderDTO.getProductVariantId());
+                            cartItem.setQuantity(productOrderDTO.getQuantity());
+                            cartItem.setProductVariant(productVariantEntity);
+                            cartItemDAO.insert(cartItem);
+                            CartItemDTO updatedCartItemDTO = cartItemMapper.toDTO(cartItem);
+                            updatedCartItemDTO.setIsActive(1);
+                            cart.put(updatedCartItemDTO.getId(), updatedCartItemDTO);
+                        });
+            }
+            LinkedHashMap<Long, CartItemDTO> sortedCart = new LinkedHashMap<>();
+            cart.entrySet().stream()
+                    .sorted((entry1, entry2) -> Integer.compare(entry2.getValue().getIsActive(), entry1.getValue().getIsActive()))
+                    .forEachOrdered(entry -> sortedCart.put(entry.getKey(), entry.getValue()));
+
+            return sortedCart;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
         }
-        LinkedHashMap<Long, CartItemDTO> sortedCart = new LinkedHashMap<>();
-        cart.entrySet().stream()
-                .sorted((entry1, entry2) -> Integer.compare(entry2.getValue().getIsActive(), entry1.getValue().getIsActive()))
-                .forEachOrdered(entry -> sortedCart.put(entry.getKey(), entry.getValue()));
-
-        return sortedCart;
     }
 
     @Override

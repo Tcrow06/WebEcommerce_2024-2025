@@ -48,6 +48,9 @@ public class CustomerEntity extends UserEntity {
             inverseJoinColumns = @JoinColumn(name = "notification_id"))
     private List<NotificationEntity> notifications = new ArrayList<>();
 
+
+    private String avatar;
+
     public CartEntity getCart() {
         return cart;
     }
@@ -126,5 +129,14 @@ public class CustomerEntity extends UserEntity {
 
     public void setLoyaltyPoint(int loyaltyPoint) {
         this.loyaltyPoint = loyaltyPoint;
+    }
+
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }
