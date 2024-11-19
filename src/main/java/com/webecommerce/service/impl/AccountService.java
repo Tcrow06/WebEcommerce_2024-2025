@@ -61,6 +61,10 @@ public class AccountService implements IAccountService {
         return customerMapper.toCustomerResponse(accountEntity.getCustomer());
     }
 
+    public AccountResponse findByCustomerId(Long idCustomer) {
+        AccountEntity accountEntity = accountDAO.findByCustomerId(idCustomer);
+        return accountMapper.toAccountResponse(accountEntity);
+    }
     @Override
     public void setPassword(long id, String password) {
         AccountEntity accountEntity = accountDAO.findById(id);

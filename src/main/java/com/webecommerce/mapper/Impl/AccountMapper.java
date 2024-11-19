@@ -14,6 +14,7 @@ public class AccountMapper implements IAccountMapper {
 
     @Override
     public AccountResponse toAccountResponse(AccountEntity accountEntity) {
+        if(accountEntity == null) return null;
         AccountResponse accountResponse = new AccountResponse();
         accountResponse.setUserName(accountEntity.getUsername());
         accountResponse.setPassword(accountEntity.getPassword());

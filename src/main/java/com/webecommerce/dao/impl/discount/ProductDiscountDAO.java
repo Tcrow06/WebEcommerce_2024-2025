@@ -53,7 +53,7 @@ public class ProductDiscountDAO extends AbstractDAO<ProductDiscountEntity> imple
     public List<ProductDiscountEntity> findDiscounthaveProductByDate(LocalDateTime start) {
         String query = "SELECT d FROM ProductDiscountEntity d " +
                 "JOIN d.product p " +
-                "WHERE p IS NOT NULL and d.startDate >= :start and d.endDate >= :start"; ;
+                "WHERE p IS NOT NULL and d.startDate >= :start and d.endDate >= :start";
 
         try {
             return entityManager.createQuery(query, ProductDiscountEntity.class)

@@ -36,7 +36,11 @@
   <link rel="stylesheet" href="<c:url value='/static/css/bootstrap.min.css'/>" type="text/css">
   <link rel="stylesheet" href="<c:url value='/static/css/font-awesome.min.css'/>" type="text/css">
   <link rel="stylesheet" href="<c:url value='/static/css/style.css'/>" type="text/css">
+  <link rel="stylesheet" href="<c:url value='/static/css/toast.css'/>" type="text/css"/>
+  <link rel="stylesheet" href="<c:url value="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"/>">
 
+
+  
 </head>
 
 <body>

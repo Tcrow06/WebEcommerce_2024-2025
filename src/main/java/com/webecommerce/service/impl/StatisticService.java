@@ -33,7 +33,7 @@ public class StatisticService implements IStatisticService {
         statisticDTO.setProductDTOList(list);
         statisticDTO.setTotalOrdersToday(orderDAO.totalOrdersToday());
         statisticDTO.setTotalOrders(orderDAO.totalOrders());
-        statisticDTO.setTotalCustomers(customerDAO.totalCustiomers());
+        statisticDTO.setTotalCustomers(customerDAO.totalCustomers());
         return statisticDTO;
     }
 

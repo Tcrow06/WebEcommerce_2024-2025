@@ -1,0 +1,78 @@
+package com.webecommerce.service.impl;
+
+import com.webecommerce.dao.order.IOrderDAO;
+import com.webecommerce.dao.order.IOrderDetailDAO;
+import com.webecommerce.dao.people.ICustomerDAO;
+import com.webecommerce.dao.review.IProductReviewDAO;
+import com.webecommerce.dto.review.ProductReviewDTO;
+import com.webecommerce.entity.order.OrderDetailEntity;
+import com.webecommerce.entity.people.CustomerEntity;
+import com.webecommerce.entity.review.ProductReviewEntity;
+import com.webecommerce.mapper.Impl.ProductReviewMapper;
+import com.webecommerce.mapper.Impl.ReviewFeedbackMapper;
+import com.webecommerce.service.IProductReviewService;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ProductReviewService implements IProductReviewService {
+
+
+    @Inject
+    private IProductReviewDAO productReviewDAO;
+
+    @Inject
+    private ReviewFeedbackMapper reviewFeedbackMapper; ;
+
+    @Inject
+    private ICustomerDAO customerDAO;
+
+    @Inject
+    private IOrderDetailDAO orderDetailDAO;
+
+    @Inject
+    private ProductReviewMapper productReviewMapper;
+
+    public ProductReviewDTO save (ProductReviewDTO productReview) {
+
+        ProductReviewEntity productReviewEntity = productReviewMapper.toEntity(productReview);
+
+        CustomerEntity customerEntity = customerDAO.findById(productReview.getCustomerId());
+        OrderDetailEntity orderDetailEntity = orderDetailDAO.findById(productReview.getOrderDetail().getId());
+
+
+        if (customerEntity != null && orderDetailEntity != null) {
+            if (orderDetailEntity.getProductReviews() == null) {
+                productReviewEntity.setCustomer(customerEntity);
+                productReviewEntity.setOrderDetail(orderDetailEntity);
+
+                customerEntity.getProductReviews().add(productReviewEntity);
+                orderDetailEntity.getProductReviews().add(productReviewEntity);
+
+                return productReviewMapper.toDTO(productReviewDAO.insert(productReviewEntity));
+            }
+        }
+        return null;
+    }
+
+    public List<ProductReviewDTO> getProductReviewByProductId(Long productId) {
+        List <ProductReviewEntity> productReviewEntities = productReviewDAO.getProductReviewByProduct(productId);
+        List <ProductReviewDTO> productReviewDTOS = new ArrayList<>();
+
+        if (productReviewEntities != null) {
+            for (ProductReviewEntity productReviewEntity : productReviewEntities) {
+                ProductReviewDTO productReviewDTO = productReviewMapper.toDTO(productReviewEntity);
+                // lấy reviewfeedback nếu có
+                if (productReviewEntity.getReviewFeedback() != null) {
+                    productReviewDTO.setReviewFeedback(
+                            reviewFeedbackMapper.toDTO(productReviewEntity.getReviewFeedback())
+                    );
+                }
+                productReviewDTOS.add(productReviewDTO);
+            }
+        }
+
+        return productReviewDTOS;
+    }
+}

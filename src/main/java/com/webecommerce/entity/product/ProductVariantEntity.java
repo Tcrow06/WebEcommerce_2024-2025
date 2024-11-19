@@ -45,8 +45,6 @@ public class ProductVariantEntity {
     @OneToMany(mappedBy = "productVariant")
     private List<CartItemEntity> cartItems = new ArrayList<>();
 
-    @OneToMany(mappedBy = "productVariant")
-    private List<ProductReviewEntity> productReviews = new ArrayList<>();
 
     public ProductEntity getProduct() {
         return product;
@@ -70,14 +68,6 @@ public class ProductVariantEntity {
 
     public void setOrderDetails(List<OrderDetailEntity> orderDetails) {
         this.orderDetails = orderDetails;
-    }
-
-    public List<ProductReviewEntity> getProductReviews() {
-        return productReviews;
-    }
-
-    public void setProductReviews(List<ProductReviewEntity> productReviews) {
-        this.productReviews = productReviews;
     }
 
     public Long getId() {
