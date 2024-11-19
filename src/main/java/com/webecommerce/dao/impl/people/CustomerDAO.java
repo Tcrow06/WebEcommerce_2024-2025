@@ -44,8 +44,19 @@ public class CustomerDAO extends AbstractDAO<CustomerEntity> implements ICustome
         return customer;
     }
 
+
+    public CustomerEntity findById(long id) {
+        try {
+            String jpql = "SELECT u FROM CustomerEntity u WHERE u.id = :id";
+            return entityManager.createQuery(jpql, CustomerEntity.class)
+                    .setParameter("id", id)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
     @Override
-    public int totalCustiomers() {
+    public int totalCustomers() {
         String query = "SELECT COUNT(p) FROM CustomerEntity p"; // Đếm tổng số sản phẩm
         try {
             Long count = entityManager.createQuery(query, Long.class)

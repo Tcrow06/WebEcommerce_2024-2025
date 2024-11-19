@@ -10,4 +10,5 @@ public interface ISocialAccountService {
     CustomerResponse findByGgID(String ggID);
 
     CustomerResponse save(CustomerRequest customerRequest);
+    CustomerResponse saveSocialByEmail(CustomerRequest customerRequest);
 }

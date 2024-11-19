@@ -95,11 +95,10 @@ public class ThreePartyLoginController extends HttpServlet {
         HttpSession session = request.getSession();
         CustomerResponse existingUser;
         if (provider.equals("google")) {
-
             //Chưa chỉnh sửa nhất quan về thông tin đăng nhập bằng gg
             existingUser = socialAccountService.findByGgID(customerRequest.getGgID());
             if(existingUser==null){
-                existingUser = customerService.findByEmail(customerRequest.getEmail());
+                existingUser = socialAccountService.saveSocialByEmail(customerRequest);
             }
         } else {
             existingUser = socialAccountService.findByFbID(customerRequest.getFbID());
@@ -107,17 +106,12 @@ public class ThreePartyLoginController extends HttpServlet {
         if (existingUser == null) {
             existingUser = socialAccountService.save(customerRequest);
         }
-        existingUser.setRole("CUSTOMER");
 
-        //Neu da ton tai thi tien hanh update chua xu ly
-//        else {
-//            existingUser = new CustomerResponse();
-////            userModel.setId(existingUser.getId());
-////            userModel = customerService.update(userModel);
-//        }
+        existingUser.setRole("CUSTOMER");
         cart=cartItemService.LoadCart(JWTUtil.getIdUser(request));
-        if (cart!=null)
-            request.getSession().setAttribute("cart", cart);
+        request.getSession().setAttribute("cart", cart);
+
+
         response.setContentType("application/json");
         String jwtToken = JWTUtil.generateToken(existingUser);
 

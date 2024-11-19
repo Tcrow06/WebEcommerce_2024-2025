@@ -43,7 +43,7 @@
         <div class="checkout__form">
             <form action="#">
                 <div class="row">
-                    <div class="col-lg-8 col-md-6">
+                    <div class="col-lg-10 col-md-6">
                         <div class="checkout__order">
                             <h4 class="order__title">Đơn hàng của bạn</h4>
                             <div class="checkout__order__products">
