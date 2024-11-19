@@ -13,7 +13,7 @@ public interface IReturnOrderDAO extends GenericDAO <ReturnOrderEntity> {
     CustomerResponse getCustomerByReturnOrderId(Long returnOrderId);
     ProductReturnDTO getProductReturnData(Long returnOrderId);
     boolean updateStatus(Long returnOrderId);
-    boolean updateProductVariantQuantity(Long returnOrderId);
     boolean updateStatusOrder(Long returnOrderId);
-
+    boolean updateStatusNoReturn(Long returnOrderId);
+    boolean updateStatusProcess(Long orderDetailId);
 }

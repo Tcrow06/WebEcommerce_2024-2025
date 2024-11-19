@@ -3,13 +3,18 @@ package com.webecommerce.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.webecommerce.constant.EnumProductStatus;
 import com.webecommerce.dto.discount.ProductDiscountDTO;
+import com.webecommerce.dto.response.admin.ProductVariantColorDTO;
+import com.webecommerce.dto.response.admin.SizeVariantDTO;
 
 import javax.servlet.http.Part;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ProductDTO extends BaseDTO<ProductDTO> {
@@ -24,6 +29,21 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
         this.category = category;
         this.sizeConversionTable = sizeConversionTable;
     }
+
+    public ProductDTO(Long id,String name, boolean highlight, String brand, String description, CategoryDTO category, Part sizeConversionTable) {
+        this.setId(id);
+        this.name = name;
+        this.highlight = highlight;
+        this.brand = brand;
+        this.description = description;
+        this.category = category;
+        this.sizeConversionTable = sizeConversionTable;
+    }
+
+    public ProductDTO(Long id) {
+        this.setId(id);
+    }
+
 
     public ProductDTO () {}
 
@@ -163,6 +183,12 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
 
     private Part sizeConversionTable;
 
+    public void setProductVariantColors(List<ProductVariantColorDTO> productVariantColors) {
+        this.productVariantColors = productVariantColors;
+    }
+
+    private List <ProductVariantColorDTO> productVariantColors = null;
+
 
     public List<String> getColorList() {
         List<String> colorList = new ArrayList<>();
@@ -189,18 +215,24 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
     public void setProductDiscount(ProductDiscountDTO productDiscount) {
         this.productDiscount = productDiscount;
     }
-    
-    public double getDiscountedPrice() {
+
+    private String formatVND(double price) {
+        DecimalFormat formatter = new DecimalFormat("#,###");
+        return formatter.format(price) + " VND";
+    }
+
+    public String getDiscountedPrice() {
         if (price == 0) {
             for (ProductVariantDTO productVariantDTO : this.productVariants) {
-                if (price == 0 || productVariantDTO.getPrice() < productVariantDTO.getPrice())
+                if (price == 0 || productVariantDTO.getPrice() < price)
                     price = productVariantDTO.getPrice();
             }
         }
-        if (this.productDiscount == null) return price;
-        return new BigDecimal(
-                price - (price / 100) * productDiscount.getDiscountPercentage()
-        ).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        if (this.productDiscount == null) return formatVND(price);
+
+        double discountedPrice = price - (price / 100) * productDiscount.getDiscountPercentage();
+        BigDecimal finalPrice = new BigDecimal(discountedPrice).setScale(2, RoundingMode.HALF_UP);
+        return formatVND(finalPrice.doubleValue());
     }
 
     public String getSizeConversionTableUrl() {
@@ -218,4 +250,36 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
     public void setSizeConversionTable(Part sizeConversionTable) {
         this.sizeConversionTable = sizeConversionTable;
     }
+
+    public List<ProductVariantColorDTO> getProductVariantColorsss() {
+        if (productVariantColors != null) {
+            return productVariantColors;
+        }
+
+        productVariantColors = new ArrayList<>();
+        Map<String, ProductVariantColorDTO> map = new HashMap<>();
+
+
+        for (ProductVariantDTO productVariant : productVariants) {
+            String color = productVariant.getColor();
+
+            if (map.containsKey(color)) {
+                map.get(color).getSizes().add(
+                        new SizeVariantDTO(productVariant.getSize(), productVariant.getQuantity(), productVariant.getPrice(),productVariant.getId())
+                );
+            } else {
+                // Nếu chưa có, tạo mới ProductVariantColorDTO và thêm vào map
+                ProductVariantColorDTO newColorDTO = new ProductVariantColorDTO(color,productVariant.getImageUrl());
+                newColorDTO.getSizes().add(
+                        new SizeVariantDTO(productVariant.getSize(), productVariant.getQuantity(), productVariant.getPrice(),productVariant.getId())
+                );
+                map.put(color, newColorDTO);
+            }
+        }
+
+        productVariantColors.addAll(map.values());
+
+        return productVariantColors;
+    }
+
 }

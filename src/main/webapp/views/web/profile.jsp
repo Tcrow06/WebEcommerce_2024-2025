@@ -70,7 +70,26 @@
         <div class="profile-top">
           <div class="profile-content">
             <div class="profile-contentimg">
-              <img src="<c:url value="/static/admin/assets/img/customer/customer5.jpg"/>" alt="img" id="blah">
+              <c:if test="${not empty userResponse.avatar}">
+                <img src="" alt="img" id="avatar">
+                <input type="hidden" value="${userResponse.avatar}" id="avatarInput">
+
+                <script>
+                  // Lấy giá trị avatar từ input ẩn
+                  const avatarPath = document.getElementById('avatarInput').value;
+                  const avatarImg = document.getElementById('avatar');
+
+                  // Kiểm tra nếu avatarPath bắt đầu bằng "https:"
+                  if (avatarPath.startsWith("https:")) {
+                    avatarImg.src = avatarPath;
+                  } else {
+                    avatarImg.src = '<c:url value="/api-image?path="/>' + avatarPath;
+                  }
+                </script>
+              </c:if>
+              <c:if test="${empty userResponse.avatar}">
+                <img src='<c:url value="/static/img/avatar/user.png"/>' alt="User Profile" width="32" height="32" class="rounded-circle user-avatar">
+              </c:if>
               <div class="profileupload">
                 <input type="file" id="imgInp">
                 <a href="javascript:void(0);"><img src="<c:url value="/static/admin/assets/img/icons/edit-set.svg"/>"
@@ -117,7 +136,12 @@
         <div class="col-lg-6 col-sm-12">
           <div class="form-group">
             <label class="title-box">Tên đăng nhập</label>
-            <input type="text" placeholder="+1452 876 5432" value="${accountResponse.userName}" readonly>
+            <c:if test="${not empty accountResponse}">
+              <input type="text" placeholder="+1452 876 5432" value="${accountResponse.userName}" readonly>
+            </c:if>
+            <c:if test="${empty accountResponse}">
+              <input type="text" placeholder="+1452 876 5432" value="Tên đăng nhập" readonly>
+            </c:if>
           </div>
         </div>
         <div class="col-lg-6 col-sm-12">

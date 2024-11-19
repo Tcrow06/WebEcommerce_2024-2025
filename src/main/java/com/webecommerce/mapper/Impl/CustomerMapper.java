@@ -14,6 +14,7 @@ public class CustomerMapper implements ICustomerMapper{
         CustomerEntity customerEntity = new CustomerEntity();
         customerEntity.setName(customerRequest.getName());
         customerEntity.setEmail(customerRequest.getEmail());
+        customerEntity.setAvatar(customerRequest.getAvatar());
         return customerEntity;
     }
 
@@ -23,6 +24,7 @@ public class CustomerMapper implements ICustomerMapper{
         customerEntity.setName(customerRequest.getName());
         customerEntity.setPhone(customerRequest.getPhone());
         customerEntity.setEmail(customerRequest.getEmail());
+        customerEntity.setAvatar(customerEntity.getAvatar());
         return customerEntity;
     }
 
@@ -34,6 +36,7 @@ public class CustomerMapper implements ICustomerMapper{
         customerResponse.setId(customerEntity.getId());
         customerResponse.setName(customerEntity.getName());
         customerResponse.setEmail(customerEntity.getEmail());
+        customerResponse.setAvatar(customerEntity.getAvatar());
         customerResponse.setRole("CUSTOMER");
         return customerResponse;
     }
@@ -43,6 +46,7 @@ public class CustomerMapper implements ICustomerMapper{
         CustomerEntity customerEntity = new CustomerEntity();
         customerEntity.setId(customerResponse.getId());
         customerEntity.setName(customerResponse.getName());
+        customerEntity.setAvatar(customerResponse.getAvatar());
         ///////
         return customerEntity;
     }

@@ -1,6 +1,7 @@
 package com.webecommerce.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.webecommerce.constant.EnumOrderStatus;
 import com.webecommerce.dto.OrderDetailDTO;
 import com.webecommerce.dto.ReturnOrderDTO;
 import com.webecommerce.service.IOrderDetailService;
@@ -42,7 +43,7 @@ public class ReturnOrderAPI extends HttpServlet {
                 //lay 1 order detail id
                 Long orderDetailId = returnOrders.get(0).getOrderDetailId();
                 if (orderDetailId != null) {
-                    boolean checked = orderStatusService.changeStatus(orderDetailId);
+                    boolean checked = orderStatusService.changeStatus(orderDetailId, EnumOrderStatus.WAITING);
                 }
                 //load lai trang
 
@@ -50,7 +51,7 @@ public class ReturnOrderAPI extends HttpServlet {
 
                 List<OrderDetailDTO> result = orderDetailService.findAllByOrderId(2L);
                 req.setAttribute("orderitemList", result);
-                req.getRequestDispatcher("/views/web/order-detail-draft.jsp").forward(req,resp);
+                req.getRequestDispatcher("/views/web/order-detail.jsp").forward(req,resp);
             } else {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 objectMapper.writeValue(resp.getWriter(), "Invalid return order data");

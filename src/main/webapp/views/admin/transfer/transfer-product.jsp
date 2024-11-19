@@ -109,8 +109,9 @@
                     </div>
                 </div>
                 <div class="text-end mt-4">
-                    <button type="submit" class="btn btn-submit me-2">Xác nhận trả</button>
-                    <a href="javascript:void(0);" class="btn btn-cancel">Hủy</a>
+                    <button type="submit" class="btn btn-submit me-2" name="action" value="return">Hoàn trả</button>
+                    <button type="submit" class="btn btn-submit me-2" name="action" value="noReturn" style="background-color: red">Không hoàn trả</button>
+                    <a href="${pageContext.request.contextPath}/chu-cua-hang/danh-sach-tra" class="btn btn-cancel">Hủy</a>
                 </div>
             </form>
         </div>

@@ -22,6 +22,7 @@ public class ReturnOrderService implements IReturnOrderService {
 
     @Inject
     private IReturnOrderDAO returnOrderDAO;
+
     @Inject
     private OrderDetailDAO orderDetailDAO;
 
@@ -67,13 +68,19 @@ public class ReturnOrderService implements IReturnOrderService {
     }
 
     @Override
-    public boolean updateProductVariantQuantity(Long returnOrderId) {
-        return returnOrderDAO.updateProductVariantQuantity(returnOrderId);
+    public boolean updateStatusOrder(Long returnOrderId) {
+        return returnOrderDAO.updateStatusOrder(returnOrderId);
     }
 
     @Override
-    public boolean updateStatusOrder(Long returnOrderId) {
-        return returnOrderDAO.updateStatusOrder(returnOrderId);
+    public boolean updateStatusNoReturn(Long returnOrderId) {
+        return returnOrderDAO.updateStatusNoReturn(returnOrderId);
+    }
+
+    @Override
+    public boolean updateStatusProcess(Long orderDetailId) {
+        return returnOrderDAO.updateStatusProcess(orderDetailId);
+
     }
 
 

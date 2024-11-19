@@ -55,4 +55,16 @@ public class CustomerDAO extends AbstractDAO<CustomerEntity> implements ICustome
             return null;
         }
     }
+    @Override
+    public int totalCustomers() {
+        String query = "SELECT COUNT(p) FROM CustomerEntity p"; // Đếm tổng số sản phẩm
+        try {
+            Long count = entityManager.createQuery(query, Long.class)
+                    .getSingleResult();
+            return count != null ? count.intValue() : 0; // Chuyển đổi Long thành int
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi tính tổng số sản phẩm", e);
+            return 0; // Trả về 0 nếu xảy ra lỗi
+        }
+    }
 }

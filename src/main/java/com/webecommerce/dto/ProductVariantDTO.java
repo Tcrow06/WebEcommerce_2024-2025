@@ -1,10 +1,11 @@
 package com.webecommerce.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.webecommerce.constant.EnumProductStatus;
 
 import javax.servlet.http.Part;
 
-
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductVariantDTO extends BaseDTO <ProductVariantDTO> {
     private Long id;
 
@@ -23,6 +24,16 @@ public class ProductVariantDTO extends BaseDTO <ProductVariantDTO> {
     private String name;
 
     private Part image;
+
+    private Long productId;
+
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
 
     @Override
     public Long getId() {

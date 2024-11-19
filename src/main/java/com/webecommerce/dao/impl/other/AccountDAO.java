@@ -107,10 +107,15 @@ public class AccountDAO extends AbstractDAO<AccountEntity> implements IAccountDA
 
     @Override
     public AccountEntity findByCustomerId(Long id) {
-        String jpql = "SELECT a FROM AccountEntity a WHERE a.customer.id = :customerId";
-        Query query = entityManager.createQuery(jpql);
-        query.setParameter("customerId", id);
-        AccountEntity accountEntity = (AccountEntity) query.getSingleResult();
-        return accountEntity;
+        try {
+            String jpql = "SELECT a FROM AccountEntity a WHERE a.customer.id = :customerId";
+            Query query = entityManager.createQuery(jpql);
+            query.setParameter("customerId", id);
+            AccountEntity accountEntity = (AccountEntity) query.getSingleResult();
+            return accountEntity;
+        }catch (Exception e){
+            return null;
+        }
     }
+
 }

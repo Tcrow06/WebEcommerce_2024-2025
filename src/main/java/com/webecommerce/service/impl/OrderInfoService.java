@@ -1,22 +1,28 @@
 package com.webecommerce.service.impl;
 
-import com.webecommerce.dao.impl.order.OrderInfoDAO;
+import com.webecommerce.dao.order.IOrderInfoDAO;
 import com.webecommerce.dto.OrderInfoDTO;
-import com.webecommerce.entity.order.OrderInfoEntity;
 import com.webecommerce.mapper.Impl.OrderInfoMapper;
 import com.webecommerce.service.IOrderInfoService;
 
 import javax.inject.Inject;
+import com.webecommerce.entity.order.OrderInfoEntity;
 import java.util.List;
 import java.util.Optional;
 
-public class OrderInfoService implements IOrderInfoService {
 
+public class OrderInfoService implements IOrderInfoService {
     @Inject
-    private OrderInfoDAO orderInfoDAO;
+    private IOrderInfoDAO orderInfoDAO;
 
     @Inject
     private OrderInfoMapper orderInfoMapper;
+
+
+    @Override
+    public OrderInfoDTO findDefaultOrderInfoByIdUser(Long idUser) {
+        return orderInfoMapper.toDTO(orderInfoDAO.findDefaultOrderInfoByUserId(idUser));
+    }
 
     @Override
     public OrderInfoDTO getOrderInfoById(Long orderInfoId) {

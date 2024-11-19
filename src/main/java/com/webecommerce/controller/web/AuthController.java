@@ -2,6 +2,7 @@ package com.webecommerce.controller.web;
 
 import com.webecommerce.dao.people.ICustomerDAO;
 import com.webecommerce.dto.CartItemDTO;
+import com.webecommerce.dto.PlacedOrder.CheckOutRequestDTO;
 import com.webecommerce.dto.request.other.AccountRequest;
 import com.webecommerce.dto.request.people.CustomerRequest;
 import com.webecommerce.dto.response.people.CustomerResponse;
@@ -11,6 +12,10 @@ import com.webecommerce.entity.cart.CartItemEntity;
 import com.webecommerce.exception.DuplicateFieldException;
 import com.webecommerce.mapper.Impl.CartItemMapper;
 import com.webecommerce.service.IAccountService;
+import com.webecommerce.service.ICartItemService;
+import com.webecommerce.service.impl.CartItemService;
+import com.webecommerce.service.ICacheService;
+import com.webecommerce.utils.CacheFactory;
 import com.webecommerce.utils.FormUtils;
 import com.webecommerce.utils.JWTUtil;
 import com.webecommerce.utils.SessionUtil;
@@ -34,8 +39,17 @@ public class AuthController extends HttpServlet {
 
     @Inject
     private CartItemMapper cartItemMapper;
+    @Inject
+    private ICartItemService cartItemService;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        String send_direction = request.getParameter("send-direction");
+        if(send_direction!=null){
+            session.setAttribute("send-direction",send_direction);
+        }
+
+
         String action = request.getParameter("action");
         if (action != null && (action.equals("login") || (action.equals("register")))) {
             String message = request.getParameter("message");
@@ -44,6 +58,15 @@ public class AuthController extends HttpServlet {
                 request.setAttribute("message", resourceBundle.getString(message));
                 request.setAttribute("alert", alert);
             }
+            request.getRequestDispatcher("/decorators/auth.jsp").forward(request, response);
+        } else if (action != null && (action.equals("verify"))) {
+            String message = request.getParameter("message");
+            String alert = request.getParameter("alert");
+            if (message != null && alert != null) {
+                request.setAttribute("message", resourceBundle.getString(message));
+                request.setAttribute("alert", alert);
+            }
+            request.getRequestDispatcher("/views/web/enter-OTP.jsp").forward(request, response);
         }
         request.getRequestDispatcher("/decorators/auth.jsp").forward(request, response);
     }
@@ -53,6 +76,7 @@ public class AuthController extends HttpServlet {
         request.setCharacterEncoding("utf-8");
         response.setCharacterEncoding("utf-8");
         String action = request.getParameter("action");
+        CheckOutRequestDTO checkOutRequestDTO =(CheckOutRequestDTO) session.getAttribute("orderNotHandler");
         if(action != null && action.equals("login")) {
             AccountRequest account = FormUtils.toModel(AccountRequest.class, request);
             UserResponse user = accountService.findByUserNameAndPasswordAndStatus(account.getUserName(), account.getPassword(), "ACTIVE");
@@ -67,17 +91,23 @@ public class AuthController extends HttpServlet {
                     path = "/chu-doanh-nghiep";
                 }
                 else if(user.getRole().equals("CUSTOMER")) {
-                    // Khách hàng đăng nhập thành công thì hệ thống sẽ load dữ liệu giỏ hàng
-                    CartEntity cartEntity = customerDAO.findById(user.getId()).getCart();
-
                     HashMap<Long, CartItemDTO> cart = new HashMap<>();
-                    for (CartItemEntity cartItemEntity : cartEntity.getCartItems()) {
-                        CartItemDTO cartItemDTO = cartItemMapper.toDTO(cartItemEntity);
-                        cart.put(cartItemDTO.getId(), cartItemDTO);
+                    if(checkOutRequestDTO!=null){
+                        cart = cartItemService.updateCartWhenBuy(user.getId(),checkOutRequestDTO);
+                    }else{
+                        cart=cartItemService.LoadCart(JWTUtil.getIdUser(request));
                     }
+
+
                     request.getSession().setAttribute("cart", cart);
                     jwtToken = JWTUtil.generateToken(user);
                     path="/trang-chu";
+                    if(session.getAttribute("send-direction")!=null){
+
+                        path = session.getAttribute("send-direction").toString();
+                        session.removeAttribute("send-direction");
+                    }
+
                 }
                 System.out.println("Generated JWT Token: " + jwtToken);
 
@@ -96,7 +126,13 @@ public class AuthController extends HttpServlet {
             try {
                 CustomerResponse customerResponse = accountService.save(customerRequest);
                 if (customerResponse != null) {
-                    response.sendRedirect(request.getContextPath() + "/dang-nhap?action=login&message=register_success&alert=success");
+                    // Send otp to email with expiration time in 3 minutes
+                    boolean ok = accountService.sendOTPToEmail(customerResponse.getEmail(), customerResponse.getId(), "register");
+                    if (ok) {
+                        response.sendRedirect(request.getContextPath() + "/dang-ky?action=verify&id=" + customerResponse.getId());
+                    } else {
+                        response.sendRedirect(request.getContextPath() + "/dang-nhap?action=register&message=" + "&alert=danger");
+                    }
                 }
             } catch (DuplicateFieldException e) {
                 session.setAttribute("registrationData", customerRequest);
@@ -116,6 +152,18 @@ public class AuthController extends HttpServlet {
                         break;
                 }
                 response.sendRedirect(request.getContextPath() + "/dang-nhap?action=register&message=" + errorMessage + "&alert=danger");
+            }
+        } else if (action != null && action.equals("verify")) {
+            String otp = request.getParameter("otp");
+            String id = request.getParameter("id");
+            int count = accountService.verifyOTP(id, otp);
+            if (count == 0) {
+                response.sendRedirect(request.getContextPath() + "/dang-nhap?action=login&message=verify_success&alert=success");
+            }else  if (count == 5) {
+                response.sendRedirect(request.getContextPath() + "/dang-ky?action=verify&id=" + id +"&message=verify_failed&alert=danger");
+            }
+            else {
+                response.sendRedirect(request.getContextPath() + "/dang-ky?action=verify&id=" + id +"&message=verify_retry&alert=danger");
             }
         }
     }

@@ -52,7 +52,8 @@
 <!-- Header -->
 <%@ include file="../common/web/header.jsp"%>
 
-<dec:body></dec:body>
+<dec:body>
+</dec:body>
 
 <!-- Footer -->
 <%@ include file="../common/web/footer.jsp"%>

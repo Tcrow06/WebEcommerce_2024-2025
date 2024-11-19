@@ -1,11 +1,14 @@
 package com.webecommerce.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.webecommerce.entity.order.OrderEntity;
 import com.webecommerce.entity.other.AddressEntity;
 import com.webecommerce.entity.people.CustomerEntity;
 
 import javax.persistence.*;
 
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class OrderInfoDTO {
     private Long id;
 
@@ -65,5 +68,8 @@ public class OrderInfoDTO {
 
     public void setAddress(AddressDTO address) {
         this.address = address;
+    }
+
+    public OrderInfoDTO() {
     }
 }
