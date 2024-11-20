@@ -12,6 +12,7 @@ import com.webecommerce.utils.HibernateUtil;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
+import java.time.LocalDate;
 import java.util.Map;
 import javax.persistence.Query;
 import java.util.logging.Level;
@@ -232,6 +233,63 @@ public class OrderDAO extends AbstractDAO<OrderEntity> implements IOrderDAO {
             transaction.rollback();
             e.printStackTrace();
             return false;
+        }
+    }
+
+    @Override
+    public List<DisplayOrderDTO> getListOrder() {
+        try {
+            String jpql = """
+        SELECT\s
+            o.id AS orderId,
+            MAX(os.date) AS statusDate,
+            SUM(od.quantity * pv.price *\s
+                CASE\s
+                    WHEN pd IS NOT NULL THEN (1 - pd.discountPercentage / 100)\s
+                    ELSE 1\s
+                END) AS totalOrder,
+            SUM(od.quantity) AS allQuantity,
+            MIN(pv.imageUrl) AS imgUrl
+        FROM\s
+            OrderEntity o
+        JOIN\s
+            o.orderDetails od
+        JOIN\s
+            od.productVariant pv
+        LEFT JOIN\s
+            od.productDiscount pd
+        JOIN\s
+            o.orderStatuses os
+        WHERE\s
+            os.date = (
+                SELECT MAX(os2.date)
+                FROM OrderStatusEntity os2
+                WHERE os2.order.id = o.id AND os2.status = :status
+            )
+        GROUP BY\s
+            o.id
+    """;
+
+            List<Object[]> rawResults = entityManager.createQuery(jpql, Object[].class)
+                    .setParameter("status",EnumOrderStatus.PENDING)
+                    .getResultList();
+
+            List<DisplayOrderDTO> resultList = new ArrayList<>();
+
+            for (Object[] result : rawResults) {
+                Long orderId = (Long) result[0];
+                LocalDateTime statusDate = (LocalDateTime) result[1];
+                Double totalOrder = (Double) result[2];
+                Long allQuantity = ((Number) result[3]).longValue();
+                String imgUrl = (String) result[4];
+
+                resultList.add(new DisplayOrderDTO(orderId, statusDate, totalOrder, allQuantity, imgUrl));
+            }
+
+            return resultList;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
         }
     }
 
