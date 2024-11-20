@@ -34,6 +34,15 @@ public class ProductReviewService implements IProductReviewService {
     @Inject
     private ProductReviewMapper productReviewMapper;
 
+    public ProductReviewDTO findByOrderDetailId(Long OrderDetailId) {
+        ProductReviewEntity productReviewEntity = productReviewDAO.getProductReviewByOrderDetailId(OrderDetailId);
+
+        if (productReviewEntity != null) {
+            return productReviewMapper.toDTO(productReviewEntity);
+        }
+        return null;
+    }
+
     public ProductReviewDTO save (ProductReviewDTO productReview) {
 
         ProductReviewEntity productReviewEntity = productReviewMapper.toEntity(productReview);

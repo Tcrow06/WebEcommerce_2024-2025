@@ -1,6 +1,11 @@
 <%@include file="/common/taglib.jsp" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<!DOCTYPE html>
+
+<link rel="stylesheet" href="<c:url value='/static/web/css/rating.css'/> ">
+
+<script src="<c:url value='/static/web/js/rating.js'/> "></script>
+
+
 <link rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
 <style>
@@ -325,6 +330,7 @@
                     <th>Price</th>
                     <th>Color</th>
                     <th>Size</th>
+                    <th>Đánh giá</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -348,6 +354,10 @@
                             <td>${item.price}</td>
                             <td>${item.color}</td>
                             <td>${item.size}</td>
+                            <td>
+<%--                                data-bs-toggle="modal" data-bs-target="#exampleModalCenter"--%>
+                                <button type="button" class="btn btn-dark btn-review" data-product-name="${item.productName}" data-product-image="${item.imageUrl}" data-orderdetail-id = "${item.id}">Đánh giá</button>
+                            </td>
 
                         </tr>
 
@@ -389,6 +399,46 @@
 </section>
 
 
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">Đánh giá sản phẩm</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+
+                    <input type="hidden" id="orderDetailId" class="order-detail-id" value="">
+
+                    <div class="text-center">
+                        <img id = "modal-product-image" src="https://images.unsplash.com/photo-1525171254930-643fc658b64e?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                             class="profile-img rounded-circle img-thumbnail product-image" width="200px" height="200px" alt="Product Image">
+                        <h2 id="modal-product-name" class="mt-3 text-dark">Tên sản phẩm</h2>
+                        <p class="lead">Hãy để lại đánh giá cho sản phẩm của chúng tôi</p>
+
+                        <!-- Star rating -->
+                        <div id="stars" class="starrr mb-3"></div>
+                        <div class="alert alert-success text-center d-none" role="alert">
+                            You gave a rating of <span id="count">5</span> star(s)
+                        </div>
+
+                        <!-- Feedback textarea -->
+                        <div class="mb-3">
+                            <label for="feedback" id="dateFeedback" class="form-label">Đánh giá của bạn</label>
+                            <textarea class="form-control" id="feedback" rows="3" placeholder="Điền nội dung ở đây"></textarea>
+                        </div>
+                    </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button id="rating-button" type="button" class="btn btn-dark">Đánh giá</button>
+                        </div>
+                </form>
+             </div>
+        </div>
+    </div>
+</div>
+
 <script>
     document.getElementById('select-all').addEventListener('change', function () {
         const checkboxes = document.querySelectorAll('.item-checkbox');
@@ -415,4 +465,160 @@
             form.submit();
         });
     });
+</script>
+
+<script>
+
+    function updateStar(value) {
+        // Clear the existing stars
+        $('#stars').empty();
+
+        // Add 5 stars (empty by default)
+        for (let i = 0; i < 5; i++) {
+            // If the current index is less than the rating value, make the star filled
+            if (i < value) {
+                $('#stars').append("<span class='glyphicon glyphicon-star-empty text-warning'>★</span>");
+            } else {
+                $('#stars').append("<span class='glyphicon glyphicon-star-empty'>★</span>");
+            }
+        }
+    }
+
+    function updateReviewModal (response) {
+        $('#feedback').text(response.content);
+        $('#rating-button').hide()
+        updateStar(response.numberOfStars)
+        $('#dateFeedback').text("Bạn đã đánh giá sản phẩm này vào ngày " + response.dateString)
+
+        $('#exampleModalCenter').modal('show');
+    }
+
+
+
+    $(document).ready(function () {
+
+        // Lắng nghe sự kiện click cho tất cả các button có class 'btn-review'
+        $(document).on('click', '.btn-review', function () {
+
+            var productName = $(this).data('product-name');
+            var productImage = $(this).data('product-image');
+            var imageUrl = '${pageContext.request.contextPath}/api-image?path=' + productImage;
+
+            $('#modal-product-name').text(productName)
+            $('#modal-product-image').attr('src', imageUrl);
+
+            var orderDetailId = $(this).data('orderdetail-id');
+
+            // Gửi AJAX tới API với các thông tin đã lấy từ button
+            $.ajax({
+                url: '/api-product-review',
+                type: 'GET',
+                data: {
+                    orderDetailId: orderDetailId
+                },
+                dataType: 'json',
+                success: function (response) {
+                    if (response) {
+                        updateReviewModal(response)
+                    } else {
+                        $('#stars').empty();
+                        $('#stars').starrr()
+                        $('#rating-button').show()
+                        $('#dateFeedback').text("Bạn chưa đánh giá sản phẩm này !")
+                    }
+
+                    $('#exampleModalCenter').modal('show');
+                },
+                error: function (xhr, status, error) {
+                    // Xử lý lỗi nếu có
+                    alert("Lỗi xử lý: " + error);
+                }
+            });
+        });
+
+    });
+
+    <%--$(document).ready(function () {--%>
+    <%--    // Lắng nghe sự kiện click vào nút "Đánh giá"--%>
+    <%--    $('#rating-button').on('click', function () {--%>
+    <%--        // Lấy thông tin từ modal--%>
+    <%--        const orderDetailId = $('#orderDetailId').val();--%>
+    <%--        const feedback = $('#feedback').val();--%>
+    <%--        const stars = $('#stars span.text-warning').length; // Đếm số sao được chọn (sao có class "text-warning")--%>
+
+    <%--        if (!stars || !feedback.trim()) {--%>
+    <%--            alert("Vui lòng điền đầy đủ đánh giá và chọn số sao!");--%>
+    <%--            return;--%>
+    <%--        }--%>
+
+    <%--        // Gửi AJAX để gửi dữ liệu đánh giá lên server--%>
+    <%--        $.ajax({--%>
+    <%--            url: '/api-product-review', // Đường dẫn API xử lý review--%>
+    <%--            type: 'POST',--%>
+    <%--            contentType: 'application/json',--%>
+    <%--            data: JSON.stringify({--%>
+    <%--                customerId: ${customerId},--%>
+    <%--                content: feedback,--%>
+    <%--                orderDetail: {--%>
+    <%--                    id: orderDetailId--%>
+    <%--                },--%>
+    <%--                numberOfStars: stars--%>
+    <%--            }),--%>
+    <%--            success: function (response) {--%>
+    <%--                if (response.success) {--%>
+    <%--                    alert("Đánh giá của bạn đã được gửi thành công!");--%>
+    <%--                    $('#exampleModalCenter').modal('hide'); // Ẩn modal sau khi đánh giá thành công--%>
+    <%--                } else {--%>
+    <%--                    alert("Có lỗi xảy ra khi gửi đánh giá. Vui lòng thử lại.");--%>
+    <%--                }--%>
+    <%--            },--%>
+    <%--            error: function (xhr, status, error) {--%>
+    <%--                alert("Lỗi xử lý: " + error);--%>
+    <%--            }--%>
+    <%--        });--%>
+    <%--    });--%>
+    <%--});--%>
+
+
+
+</script>
+<script>
+        // Lắng nghe sự kiện click vào nút "Đánh giá"
+        $('#rating-button').on('click', function () {
+            // Lấy thông tin từ modal
+            const orderDetailId = $('#orderDetailId').val();
+            const feedback = $('#feedback').val();
+            const stars = $('#stars span.text-warning').length; // Đếm số sao được chọn (sao có class "text-warning")
+
+            if (!stars || !feedback.trim()) {
+                alert("Vui lòng điền đầy đủ đánh giá và chọn số sao!");
+                return;
+            }
+
+            // Gửi AJAX để gửi dữ liệu đánh giá lên server
+            $.ajax({
+                url: '/api-product-review', // Đường dẫn API xử lý review
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    customerId: ${customerId},
+                    content: feedback,
+                    orderDetail: {
+                        id: orderDetailId
+                    },
+                    numberOfStars: stars
+                }),
+                success: function (response) {
+                    if (response.success) {
+                        alert("Đánh giá của bạn đã được gửi thành công!");
+                        $('#exampleModalCenter').modal('hide'); // Ẩn modal sau khi đánh giá thành công
+                    } else {
+                        alert("Có lỗi xảy ra khi gửi đánh giá. Vui lòng thử lại.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("Lỗi xử lý: " + error);
+                }
+            });
+        });
 </script>
