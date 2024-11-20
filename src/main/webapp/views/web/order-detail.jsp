@@ -348,6 +348,7 @@
                             <td>${item.price}</td>
                             <td>${item.color}</td>
                             <td>${item.size}</td>
+
                         </tr>
 
                     </c:forEach>
