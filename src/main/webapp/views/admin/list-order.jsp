@@ -30,6 +30,9 @@
                                     <td>${order.dateTime}</td>
                                     <td>${order.totalOrder}</td>
                                     <td>${order.allQuantity}</td>
+                                    <td>
+                                        <a href="/chu-cua-hang/danh-sach-don-hang/chi-tiet-don-hang?id=${order.id}" class="btn btn-primary btn-sm">Xem chi tiết</a>
+                                    </td>
                                 </tr>
                             </c:forEach>
                         </tbody>

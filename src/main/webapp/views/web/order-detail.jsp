@@ -4,10 +4,10 @@
 <link rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
 <style>
-    .table-container {
-        margin: 20px auto;
-        max-width: 80%;
-    }
+    /*.table-container {*/
+    /*    margin: 20px auto;*/
+    /*    max-width: 80%;*/
+    /*}*/
 
     th, td {
         text-align: center;
@@ -150,10 +150,81 @@
     }
 
     .table-container {
+        /*max-width: 100%;*/
+        /*overflow-x: auto;*/
+        /*margin: 20px 0;*/
+
         max-width: 100%;
         overflow-x: auto;
         margin: 20px 0;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        background: #ffffff;
     }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .table thead th {
+        background: linear-gradient(135deg, #6c757d, #343a40);
+        color: #fff;
+        padding: 10px 15px;
+        text-align: center;
+        font-size: 14px;
+        text-transform: uppercase;
+    }
+
+    .table tbody tr {
+        transition: background 0.3s;
+    }
+
+    .table tbody tr:hover {
+        background: rgba(0, 0, 0, 0.05);
+    }
+
+    .table tbody td {
+        padding: 12px 15px;
+        text-align: center;
+        color: #333;
+        font-size: 14px;
+        vertical-align: middle;
+    }
+
+    .table tbody td img.product-image {
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .table tbody tr:nth-child(odd) {
+        background: #f9f9f9;
+    }
+
+    .table tbody tr:nth-child(even) {
+        background: #ffffff;
+    }
+
+    .primary-btn {
+        display: inline-block;
+        padding: 8px 16px;
+        background: linear-gradient(135deg, #333, #555); /* Chuyển từ đen nhạt sang xám đậm */
+        color: #fff;
+        border-radius: 4px;
+        text-decoration: none;
+        text-align: center;
+        font-size: 14px;
+        transition: background 0.3s ease;
+    }
+
+    .primary-btn:hover {
+        background: linear-gradient(135deg, #555, #222); /* Chuyển từ xám đậm sang đen */
+        text-decoration: none;
+    }
+
+    /* het nhap*/
 
     .table td, .table th {
         text-align: center;
@@ -319,11 +390,11 @@
                 <thead class="thead-dark">
                 <tr>
                     <th><input type="checkbox" id="select-all"></th>
-                    <th>Image</th>
-                    <th>Product Name</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                    <th>Color</th>
+                    <th>Hình ảnh</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Số lượng </th>
+                    <th>Giá</th>
+                    <th>Màu</th>
                     <th>Size</th>
                 </tr>
                 </thead>
@@ -342,7 +413,7 @@
 
                         <tr>
                             <td><input type="checkbox" class="row-checkbox" name="selectedItems" value="${item.id}"></td>
-                            <td><img src="${item.imageUrl}" alt="Product Image" class="product-image"></td>
+                            <td><img src="<c:url value='/api-image?path=${item.imageUrl}'/>" alt="Product Image" class="product-image"></td>
                             <td>${item.productName}</td>
                             <td>${item.quantity}</td>
                             <td>${item.price}</td>

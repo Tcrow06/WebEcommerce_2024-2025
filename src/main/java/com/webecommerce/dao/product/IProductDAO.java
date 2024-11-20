@@ -3,6 +3,7 @@ package com.webecommerce.dao.product;
 import com.webecommerce.constant.EnumProductStatus;
 import com.webecommerce.dao.GenericDAO;
 import com.webecommerce.dto.ProductDTO;
+import com.webecommerce.dto.notinentity.RevenueDTO;
 import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.entity.product.ProductVariantEntity;
 import com.webecommerce.paging.Pageable;
@@ -41,4 +42,6 @@ public interface IProductDAO extends GenericDAO <ProductEntity> {
 
     Long getTotalItems();
     List<ProductEntity> searchProductsByName(String name);
+    RevenueDTO getRevenue();
+
 }

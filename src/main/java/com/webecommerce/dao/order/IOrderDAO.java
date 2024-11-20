@@ -22,4 +22,5 @@ public interface IOrderDAO extends GenericDAO<OrderEntity> {
     boolean changeConfirmStatus(Long orderId);
     List<DisplayOrderDTO> getListOrder();
 
+    Long findOrderId(Long orderDetailId);
 }
