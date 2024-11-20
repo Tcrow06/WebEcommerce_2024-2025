@@ -375,6 +375,12 @@
             </div>
         </c:if>
 
+        <c:if test="${status == 'PENDING'}">
+            <div style="display: flex; justify-content: center; gap: 10px; margin-top: 20px;">
+                <button type="button" class="primary-btn cancle-order-btn">Hủy đơn hàng</button>
+            </div>
+        </c:if>
+
         <div style="display: flex; justify-content: center; margin-top: 20px;">
             <a href="javascript:void(0);" onclick="window.location.href='/trang-chu/don-hang';" class="primary-btn">Trở lại</a>
         </div>
@@ -394,7 +400,16 @@
     document.querySelectorAll('.confirm-order-btn').forEach(button => {
         button.addEventListener('click', function () {
             const form = document.getElementById('return-form');
-            form.action = '/trang-chu/don-hang'; // Đường dẫn xử lý
+            form.action = '/trang-chu/don-hang?actionType=CONFIRM'; // Đường dẫn xử lý
+            form.method = 'POST';
+            form.submit();
+        });
+    });
+
+    document.querySelectorAll('.cancle-order-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const form = document.getElementById('return-form');
+            form.action = '/trang-chu/don-hang?actionType=CANCLE'; // Đường dẫn xử lý
             form.method = 'POST';
             form.submit();
         });
