@@ -46,7 +46,7 @@
                         <div class="col-lg-4 col-md-12">
                             <div class="product-display-section">
                                 <div class="product__item">
-                                    <div class="product__item__pic set-bg" data-setbg="/static/web/img/jiwon.jpg">
+                                    <div class="product__item__pic set-bg" data-setbg="<c:url value='/api-image?path=${product.imageUrl}'/>">
                                         <!-- Product image (background image set in CSS) -->
                                     </div>
                                     <div class="product__item__text">
@@ -159,4 +159,5 @@
             }
         });
     });
+
 </script>

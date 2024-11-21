@@ -32,7 +32,7 @@ public class OrderDetailDraftController extends HttpServlet {
         String orderIdStr = request.getParameter("id");
         if(orderIdStr != null) {
             Long orderId = Long.valueOf(orderIdStr);
-            EnumOrderStatus status = orderDetailDAO.getCurrentStatus(orderId);
+            EnumOrderStatus status = orderDetailService.getCurrentStatus(orderId);
             List<DisplayOrderDetailDTO> result = orderDetailService.showOrderDetail(orderId, status);
             request.setAttribute("customerId",JWTUtil.getIdUser(request));
             request.setAttribute("orderItemList", result);

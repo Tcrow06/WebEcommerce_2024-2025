@@ -4,6 +4,7 @@ import com.webecommerce.constant.EnumOrderStatus;
 import com.webecommerce.constant.EnumProductStatus;
 import com.webecommerce.dao.impl.AbstractDAO;
 import com.webecommerce.dao.product.IProductDAO;
+import com.webecommerce.dto.notinentity.RevenueDTO;
 import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.mapper.Impl.ProductMapper;
 import com.webecommerce.paging.Pageable;
@@ -298,5 +299,50 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
         TypedQuery<ProductEntity> typedQuery = entityManager.createQuery(query, ProductEntity.class);
         typedQuery.setParameter("name", name);
         return typedQuery.getResultList();
+    }
+
+    @Override
+    public RevenueDTO getRevenue() {
+        String query = "SELECT \n" +
+                "    pv.imageUrl AS imageUrl, \n" +
+                "    p.name AS productName, \n" +
+                "    p.brand AS brandName, \n" +
+                "    SUM(od.quantity) AS purchaseQuantity, \n" +
+                "    SUM(\n" +
+                "        CASE \n" +
+                "            WHEN pd.discountPercentage IS NOT NULL THEN \n" +
+                "                od.quantity * pv.price * (1 - pd.discountPercentage / 100)\n" +
+                "            ELSE \n" +
+                "                od.quantity * pv.price \n" +
+                "        END\n" +
+                "    ) AS revenueTotal\n" +
+                "FROM \n" +
+                "    com.webecommerce.entity.order.OrderDetailEntity od\n" +
+                "JOIN \n" +
+                "    od.productVariant pv\n" +
+                "JOIN \n" +
+                "    pv.product p\n" +
+                "JOIN \n" +
+                "    od.order o\n" +
+                "JOIN \n" +
+                "    o.orderStatuses os\n" +
+                "LEFT JOIN \n" +
+                "    com.webecommerce.entity.order.ReturnOrderEntity ro ON od.id = ro.orderDetail.id\n" +
+                "LEFT JOIN \n" +
+                "    com.webecommerce.entity.discount.ProductDiscountEntity pd ON od.productDiscount.id = pd.id\n" +
+                "WHERE \n" +
+                "    os.status = 'RECEIVED' \n" +
+                "    AND (ro.status IS NULL OR ro.status != 1)\n" +
+                "GROUP BY \n" +
+                "    pv.imageUrl, p.name, p.brand\n";
+
+
+
+
+
+        List<Object[]> rawResults = entityManager.createQuery(query, Object[].class)
+                .getResultList();
+
+        return null;
     }
 }

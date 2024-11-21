@@ -35,4 +35,11 @@ public class OrderDetailService implements IOrderDetailService {
     public DisplayOrderDetailDTO findOrderDetail(Long orderDetailId) {
         return orderDetailDAO.findOrderDetail(orderDetailId);
     }
+
+    @Override
+    public EnumOrderStatus getCurrentStatus(Long orderId) {
+        return orderDetailDAO.getCurrentStatus(orderId);
+    }
+
+
 }
