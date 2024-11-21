@@ -18,6 +18,8 @@ public class OrderDetailService implements IOrderDetailService {
 
     @Inject
     private OrderDetailMapper orderDetailMapper;
+
+
     @Override
     public List<OrderDetailDTO> findAllByOrderId(Long orderId) {
         List<OrderDetailEntity> orderDetailEntities = orderDetailDAO.findAllByOrderId(orderId);
@@ -33,4 +35,11 @@ public class OrderDetailService implements IOrderDetailService {
     public DisplayOrderDetailDTO findOrderDetail(Long orderDetailId) {
         return orderDetailDAO.findOrderDetail(orderDetailId);
     }
+
+    @Override
+    public EnumOrderStatus getCurrentStatus(Long orderId) {
+        return orderDetailDAO.getCurrentStatus(orderId);
+    }
+
+
 }

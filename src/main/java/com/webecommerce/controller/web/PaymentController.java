@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.webecommerce.service.IOrderInfoService;
 import com.webecommerce.service.IOrderService;
 import com.webecommerce.utils.HttpUtils;
 import com.webecommerce.utils.JWTUtil;
@@ -35,10 +36,17 @@ import org.hibernate.criterion.Order;
 public class PaymentController extends HttpServlet {
 
     @Inject
+    private IOrderInfoService orderInfoService;
+
+    @Inject
     private IOrderService orderService;
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         try {
+            Long idUser  = JWTUtil.getIdUser(request);
+            List<OrderInfoDTO> orderInfos = orderInfoService.getOrderInfoByCustomerId(idUser);
+
+
             String state = request.getParameter("order");
             HttpSession session = request.getSession();
             if(state==null){
@@ -57,6 +65,8 @@ public class PaymentController extends HttpServlet {
                 String orderDTOJson = objectMapper.writeValueAsString(orderDTO);
                 request.setAttribute("orderDTO",orderDTO);
                 request.setAttribute("orderDTOJson",orderDTOJson);
+
+                request.setAttribute("orderInfos", orderInfos);
                 request.getRequestDispatcher("/views/web/payment.jsp").forward(request, response);
             } else {
                 response.sendRedirect("/error"); // Xử lý khi không có dữ liệu

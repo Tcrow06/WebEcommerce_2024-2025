@@ -3,6 +3,7 @@ package com.webecommerce.dao.impl.order;
 import com.webecommerce.constant.EnumOrderStatus;
 import com.webecommerce.dao.impl.AbstractDAO;
 import com.webecommerce.dao.order.IOrderDAO;
+import com.webecommerce.dao.order.IOrderDetailDAO;
 import com.webecommerce.dao.order.IReturnOrderDAO;
 import com.webecommerce.dto.notinentity.ProductReturnDTO;
 import com.webecommerce.dto.notinentity.TransferListDTO;
@@ -34,11 +35,8 @@ public class ReturnOrderDAO extends AbstractDAO<ReturnOrderEntity> implements IR
                 "JOIN od.productVariant pv " +
                 "JOIN pv.product p";
 
-        // Thực thi câu lệnh JPQL thông qua EntityManager
         List<Object[]> result = entityManager.createQuery(jpql, Object[].class).getResultList();
 
-        // Khởi tạo DTO để chứa dữ liệu
-        // Duyệt qua kết quả và chuyển đổi thành DTO
         List<TransferListDTO> transferItems = new ArrayList<>();
         for (Object[] row : result) {
             Long id = (Long) row[0];
@@ -47,9 +45,8 @@ public class ReturnOrderDAO extends AbstractDAO<ReturnOrderEntity> implements IR
             Long quantityReturn = (Long) row[3];
             String color = (String) row[4];
             String productName = (String) row[5];
-
-            // Tạo đối tượng TransferItemDTO từ các trường dữ liệu
-            TransferListDTO item = new TransferListDTO(id, returnDate, productName,color, quantityReturn , status);
+            Long orderId = orderDAO.findOrderId(id);
+            TransferListDTO item = new TransferListDTO(id, returnDate, productName,color, quantityReturn , status, orderId);
             transferItems.add(item);
         }
         return transferItems;

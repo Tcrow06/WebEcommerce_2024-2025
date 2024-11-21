@@ -16,7 +16,7 @@ public class CartEntity {
     @OneToMany(mappedBy = "cart", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     private List<CartItemEntity> cartItems = new ArrayList<>();
 
-    @OneToOne(mappedBy = "cart", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "cart", cascade = CascadeType.MERGE)
     private CustomerEntity customer;
 
     public List<CartItemEntity> getCartItems() {

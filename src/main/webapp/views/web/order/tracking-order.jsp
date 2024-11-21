@@ -55,19 +55,38 @@
     }
 
     .order-item {
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        padding: 15px;
-        margin-bottom: 10px;
-        background-color: white;
+        /*border: 1px solid #ddd;*/
+        /*border-radius: 5px;*/
+        /*padding: 15px;*/
+        /*margin-bottom: 10px;*/
+        /*background-color: white;*/
 
+        /*display: flex;*/
+        /*align-items: center;*/
+        /*justify-content: space-between;*/
+
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 15px;
+        background-color: #ffffff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Thêm bóng */
         display: flex;
         align-items: center;
         justify-content: space-between;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .order-item:hover {
+        transform: translateY(-5px); /* Hiệu ứng nổi lên khi hover */
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
     }
 
     .order-info {
-        flex: 3; /* Chiếm 3 phần */
+        flex: 3;
+        padding-left: 15px; /* Thêm khoảng cách cho nội dung */
+        font-size: 15px; /* Font chữ chuyên nghiệp hơn */
+        line-height: 1.6;
     }
 
     .order-image {
@@ -75,6 +94,11 @@
         display: flex;
         justify-content: center;
         align-items: center;
+    }
+
+    .order-info strong {
+        color: #e60023; /* Nhấn mạnh thông tin */
+
     }
 
     .order-image img {
@@ -85,6 +109,7 @@
         width: 100px;        /* Đặt chiều rộng ảnh là 100px */
         height: 100px;       /* Đặt chiều cao ảnh là 100px */
         object-fit: cover;   /* Đảm bảo ảnh sẽ được cắt và giữ tỷ lệ 100x100px mà không bị méo */
+        border-radius: 10%;
     }
 
     .order-actions {
@@ -95,18 +120,31 @@
     }
 
     .order-actions a {
+        /*display: inline-block;*/
+        /*text-decoration: none;*/
+        /*color: white;*/
+        /*background-color: black;*/
+        /*padding: 10px 20px;*/
+        /*border-radius: 5px;*/
+        /*font-size: 14px;*/
+        /*transition: background-color 0.3s ease;*/
+
         display: inline-block;
         text-decoration: none;
-        color: white;
-        background-color: black;
-        padding: 10px 20px;
-        border-radius: 5px;
-        font-size: 14px;
-        transition: background-color 0.3s ease;
+        color: #fff; /* Màu chữ trắng */
+        background-color: #343a40; /* Màu xám đen */
+        padding: 12px 25px; /* Kích thước nút rộng hơn */
+        border-radius: 8px; /* Bo góc mềm mại hơn */
+        font-size: 16px; /* Kích thước chữ lớn hơn một chút */
+        font-weight: bold; /* Chữ đậm */
+        transition: background-color 0.3s ease, transform 0.3s ease; /* Hiệu ứng chuyển đổi mượt */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Thêm bóng mờ */
     }
 
     .order-actions a:hover {
-        background-color: #333;
+        background-color: #495057; /* Màu sáng hơn khi hover */
+        transform: translateY(-3px); /* Hiệu ứng nhấc nút khi hover */
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
     }
 
     .no-order-message {
@@ -170,7 +208,7 @@
         <c:forEach var="order" items="${orders}">
             <div class="order-item" data-status="${order.status}">
                 <div class="order-image">
-                    <img src="${order.imgUrl}" alt="Hình ảnh đơn hàng ${order.id}">
+                    <img src="<c:url value='/api-image?path=${order.imgUrl}'/>"  alt="Hình ảnh đơn hàng ${order.id}">
                 </div>
                 <div class="order-info">
                     <strong>Mã đơn hàng:</strong> ELV${order.id} <br>
@@ -181,6 +219,7 @@
                 <div class="order-actions">
                     <a href="/trang-chu/don-hang/danh-sach-don-hang?id=${order.id}" target="_blank">Xem chi tiết</a>
                 </div>
+
             </div>
         </c:forEach>
 

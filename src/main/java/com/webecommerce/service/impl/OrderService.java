@@ -88,8 +88,6 @@ public class OrderService implements IOrderService {
         OrderDTO orderDTO = new OrderDTO();
         String status=null;
         StringBuilder message = new StringBuilder();
-//        OrderEntity order = new OrderEntity();
-//        List<OrderDetailEntity> orderDetails = new ArrayList<>();
         List<OrderDetailDTO> orderDetailDTOS = new ArrayList<>();
         BillDiscountDTO billDiscountDTO = billDiscountService.findBillDiscountByCode(checkOutRequestDTO.getBillDiscountCode());
         if(!checkOutRequestDTO.getBillDiscountCode().trim().isEmpty()){
@@ -121,7 +119,7 @@ public class OrderService implements IOrderService {
 
             orderDetailDTOS.add(new OrderDetailDTO(product.getQuantity(),productVariantDTO, productDiscountMapper.toDTO(productVariantEntity.getProduct().getProductDiscount())));
         }
-        orderDTO.setOrderInfoDTO(orderInfoService.findDefaultOrderInfoByIdUser(checkOutRequestDTO.getIdUser()));
+//        orderDTO.setOrderInfoDTO(orderInfoService.findDefaultOrderInfoByIdUser(checkOutRequestDTO.getIdUser()));
         orderDTO.setOrderDetails(orderDetailDTOS);
         if(!orderDTO.calculateTotal()){
             status="error";
@@ -204,6 +202,11 @@ public class OrderService implements IOrderService {
     @Override
     public boolean changeConfirmStatus(Long orderId) {
         return orderDAO.changeConfirmStatus(orderId);
+    }
+
+    @Override
+    public List<DisplayOrderDTO> getListOrder() {
+        return orderDAO.getListOrder();
     }
 
     @Transactional

@@ -7,4 +7,6 @@ public class ModelConstant {
     public static final String DANG_DIEN_RA = "dangdienra";
     public static final String TYPE_DISCOUNT = "type";
     public static final String CATEGORY = "category";
+    public static final String REVIEW = "review";
+    public static final String ROLE = "role";
 }

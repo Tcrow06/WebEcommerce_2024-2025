@@ -100,14 +100,17 @@ public class CartItemController extends HttpServlet {
 
     private void handleAddCart(HttpServletRequest request, HttpServletResponse response, String path, Long userId) throws IOException {
         HttpSession session = request.getSession();
-        Long productVariantId = Long.parseLong(request.getParameter("productVariantId"));
 
+        Long productVariantId = Long.parseLong(request.getParameter("productVariantId"));
         HashMap<Long, CartItemDTO> cart = (HashMap<Long, CartItemDTO>) session.getAttribute("cart");
         if (cart == null) {
             cart = new HashMap<>();
         }
-
         int quantity = Integer.parseInt(request.getParameter("quantity"));
+
+        if(JWTUtil.getIdUser(request)==null){
+
+        }
         cart = cartItemService.addCartItem(productVariantId, quantity, userId);
 
         session.setAttribute("cart", cart);

@@ -1,13 +1,18 @@
 <%@include file="/common/taglib.jsp" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<!DOCTYPE html>
+
+<link rel="stylesheet" href="<c:url value='/static/web/css/rating.css'/> ">
+
+<script src="<c:url value='/static/web/js/rating.js'/> "></script>
+
+
 <link rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
 <style>
-    .table-container {
-        margin: 20px auto;
-        max-width: 80%;
-    }
+    /*.table-container {*/
+    /*    margin: 20px auto;*/
+    /*    max-width: 80%;*/
+    /*}*/
 
     th, td {
         text-align: center;
@@ -150,10 +155,81 @@
     }
 
     .table-container {
+        /*max-width: 100%;*/
+        /*overflow-x: auto;*/
+        /*margin: 20px 0;*/
+
         max-width: 100%;
         overflow-x: auto;
         margin: 20px 0;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        background: #ffffff;
     }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .table thead th {
+        background: linear-gradient(135deg, #6c757d, #343a40);
+        color: #fff;
+        padding: 10px 15px;
+        text-align: center;
+        font-size: 14px;
+        text-transform: uppercase;
+    }
+
+    .table tbody tr {
+        transition: background 0.3s;
+    }
+
+    .table tbody tr:hover {
+        background: rgba(0, 0, 0, 0.05);
+    }
+
+    .table tbody td {
+        padding: 12px 15px;
+        text-align: center;
+        color: #333;
+        font-size: 14px;
+        vertical-align: middle;
+    }
+
+    .table tbody td img.product-image {
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .table tbody tr:nth-child(odd) {
+        background: #f9f9f9;
+    }
+
+    .table tbody tr:nth-child(even) {
+        background: #ffffff;
+    }
+
+    .primary-btn {
+        display: inline-block;
+        padding: 8px 16px;
+        background: linear-gradient(135deg, #333, #555); /* Chuyển từ đen nhạt sang xám đậm */
+        color: #fff;
+        border-radius: 4px;
+        text-decoration: none;
+        text-align: center;
+        font-size: 14px;
+        transition: background 0.3s ease;
+    }
+
+    .primary-btn:hover {
+        background: linear-gradient(135deg, #555, #222); /* Chuyển từ xám đậm sang đen */
+        text-decoration: none;
+    }
+
+    /* het nhap*/
 
     .table td, .table th {
         text-align: center;
@@ -319,12 +395,15 @@
                 <thead class="thead-dark">
                 <tr>
                     <th><input type="checkbox" id="select-all"></th>
-                    <th>Image</th>
-                    <th>Product Name</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                    <th>Color</th>
+                    <th>Hình ảnh</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Số lượng </th>
+                    <th>Giá</th>
+                    <th>Màu</th>
                     <th>Size</th>
+                    <c:if test="${status == 'RECEIVED'}">
+                        <th>Đánh giá</th>
+                    </c:if>
                 </tr>
                 </thead>
                 <tbody>
@@ -342,12 +421,29 @@
 
                         <tr>
                             <td><input type="checkbox" class="row-checkbox" name="selectedItems" value="${item.id}"></td>
-                            <td><img src="${item.imageUrl}" alt="Product Image" class="product-image"></td>
+                            <td><img src="<c:url value='/api-image?path=${item.imageUrl}'/>" alt="Product Image" class="product-image"></td>
                             <td>${item.productName}</td>
-                            <td>${item.quantity}</td>
+
+                            <c:if test="${status == 'DELIVERED'}">
+                                <td>
+                                    <button type="button" onclick="decreaseQuantity(${item.id})">-</button>
+                                    <input type="number" id="quantity-${item.id}" name="quantities[${item.id}]" value="${item.quantity}" min="1" data-max="${item.quantity}" style="width: 50px; text-align: center;">
+                                    <button type="button" onclick="increaseQuantity(${item.id})">+</button>
+                                </td>
+                            </c:if>
+
+                            <c:if test="${status != 'DELIVERED'}">
+                                  <td>${item.quantity}</td>
+                            </c:if>
                             <td>${item.price}</td>
                             <td>${item.color}</td>
                             <td>${item.size}</td>
+                            <c:if test="${status == 'RECEIVED'}">
+                                <td>
+                                <%--                                data-bs-toggle="modal" data-bs-target="#exampleModalCenter"--%>
+                                        <button type="button" class="btn btn-dark btn-review" data-product-name="${item.productName}" data-product-image="${item.imageUrl}" data-orderdetail-id = "${item.id}">Đánh giá</button>
+                                </td>
+                            </c:if>
                         </tr>
 
                     </c:forEach>
@@ -356,26 +452,105 @@
             </table>
 
             <c:if test="${status == 'DELIVERED'}">
-                <div style="text-align: center;">
-                    <button type="submit" class="primary-btn">Trả sản phẩm</button>
-                </div>
+                <div style="display: flex; justify-content: center; gap: 10px; margin-top: 20px;">
+                    <button type="submit" class="primary-btn">Trả hàng</button>
+                </div><br>
             </c:if>
         </form>
 
 <%--        cap nhat status hoan thanh--%>
         <c:if test="${status == 'PROCESSED'}">
-            <div style="text-align: center;">
-                <button type="button" class="primary-btn" id="confirm-order-btn">Xác nhận đơn hàng</button>
+            <div style="display: flex; justify-content: center; margin-top: 20px;">
+                <button type="button" class="primary-btn confirm-order-btn">Xác nhận đơn hàng</button>
             </div>
         </c:if>
 
+        <c:if test="${status == 'DELIVERED'}">
+            <div style="display: flex; justify-content: center; gap: 10px; margin-top: 20px;">
+                <button type="button" class="primary-btn confirm-order-btn">Xác nhận đơn hàng</button>
+            </div>
+        </c:if>
 
-        <div style="text-align: center; margin-top: 20px;">
-            <a href="javascript:void(0);" onclick="window.location.href='/trang-chu/don-hang';" class="primary-btn">Back</a>
+        <c:if test="${status == 'PENDING'}">
+            <div style="display: flex; justify-content: center; gap: 10px; margin-top: 20px;">
+                <button type="button" class="primary-btn cancle-order-btn">Hủy đơn hàng</button>
+            </div>
+        </c:if>
+
+        <div style="display: flex; justify-content: center; margin-top: 20px;">
+            <a href="javascript:void(0);" onclick="window.location.href='/trang-chu/don-hang';" class="primary-btn">Trở lại</a>
         </div>
     </div>
 </section>
 
+
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">Đánh giá sản phẩm</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+
+                    <input type="hidden" id="orderDetailId" class="order-detail-id" value="">
+
+                    <div class="text-center">
+                        <img id = "modal-product-image" src="https://images.unsplash.com/photo-1525171254930-643fc658b64e?q=80&w=1977&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                             class="profile-img rounded-circle img-thumbnail product-image" width="200px" height="200px" alt="Product Image">
+                        <h2 id="modal-product-name" class="mt-3 text-dark">Tên sản phẩm</h2>
+                        <p class="lead">Hãy để lại đánh giá cho sản phẩm của chúng tôi</p>
+
+                        <!-- Star rating -->
+                        <div id="stars" class="starrr mb-3"></div>
+                        <div class="alert alert-success text-center d-none" role="alert">
+                            You gave a rating of <span id="count">5</span> star(s)
+                        </div>
+
+                        <!-- Feedback textarea -->
+                        <div class="mb-3">
+                            <label for="feedback" id="dateFeedback" class="form-label">Đánh giá của bạn</label>
+                            <textarea class="form-control" id="feedback" rows="3" placeholder="Điền nội dung ở đây"></textarea>
+                        </div>
+                    </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button id="rating-button" type="button" class="btn btn-dark">Đánh giá</button>
+                        </div>
+                </form>
+             </div>
+        </div>
+    </div>
+</div>
+
+<script>function increaseQuantity(itemId) {
+    const elementId = "quantity-" + itemId;
+    const quantityInput = document.getElementById(elementId);
+    const currentQuantity = parseInt(quantityInput.value);
+    const maxQuantity = parseInt(quantityInput.getAttribute('data-max'));
+
+    if (currentQuantity < maxQuantity) {
+        quantityInput.value = currentQuantity + 1;
+    } else {
+        alert(`Không thể tăng thêm số lượng, số lượng của sản phẩm đạt tối đa`);
+    }
+}
+
+function decreaseQuantity(itemId) {
+    const elementId = "quantity-" + itemId;
+    const quantityInput = document.getElementById(elementId);
+    const currentQuantity = parseInt(quantityInput.value);
+    const minQuantity = parseInt(quantityInput.getAttribute('min'));
+
+    if (currentQuantity > minQuantity) {
+        quantityInput.value = currentQuantity - 1;
+    } else {
+        alert(`Không thể giảm thêm số lượng, số lượng của sản phẩm đạt tối thiểu`);
+    }
+}
+
+</script>
 
 <script>
     document.getElementById('select-all').addEventListener('change', function () {
@@ -386,10 +561,136 @@
         });
     });
 
-    document.getElementById('confirm-order-btn').addEventListener('click', function () {
-        const form = document.getElementById('return-form');
-        form.action = '/trang-chu/don-hang';
-        form.method = 'POST';
-        form.submit();
+    document.querySelectorAll('.confirm-order-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const form = document.getElementById('return-form');
+            form.action = '/trang-chu/don-hang?actionType=CONFIRM'; // Đường dẫn xử lý
+            form.method = 'POST';
+            form.submit();
+        });
     });
+
+    document.querySelectorAll('.cancle-order-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const form = document.getElementById('return-form');
+            form.action = '/trang-chu/don-hang?actionType=CANCLE'; // Đường dẫn xử lý
+            form.method = 'POST';
+            form.submit();
+        });
+    });
+</script>
+
+<script>
+
+    function updateStar(value) {
+        // Clear the existing stars
+        $('#stars').empty();
+
+        // Add 5 stars (empty by default)
+        for (let i = 0; i < 5; i++) {
+            // If the current index is less than the rating value, make the star filled
+            if (i < value) {
+                $('#stars').append("<span class='glyphicon glyphicon-star-empty text-warning'>★</span>");
+            } else {
+                $('#stars').append("<span class='glyphicon glyphicon-star-empty'>★</span>");
+            }
+        }
+    }
+
+    function updateReviewModal (response) {
+        $('#feedback').text(response.content);
+        $('#rating-button').hide()
+        updateStar(response.numberOfStars)
+        $('#dateFeedback').text("Bạn đã đánh giá sản phẩm này vào ngày " + response.dateString)
+
+        $('#exampleModalCenter').modal('show');
+    }
+
+
+
+    $(document).ready(function () {
+
+        // Lắng nghe sự kiện click cho tất cả các button có class 'btn-review'
+        $(document).on('click', '.btn-review', function () {
+
+            var productName = $(this).data('product-name');
+            var productImage = $(this).data('product-image');
+            var imageUrl = '${pageContext.request.contextPath}/api-image?path=' + productImage;
+
+            $('#modal-product-name').text(productName)
+            $('#modal-product-image').attr('src', imageUrl);
+
+            var orderDetailId = $(this).data('orderdetail-id');
+            $('#orderDetailId').val(orderDetailId)
+
+            // Gửi AJAX tới API với các thông tin đã lấy từ button
+            $.ajax({
+                url: '/api-product-review',
+                type: 'GET',
+                data: {
+                    orderDetailId: orderDetailId
+                },
+                dataType: 'json',
+                success: function (response) {
+                    if (response) {
+                        updateReviewModal(response)
+                    } else {
+                        $('#stars').empty();
+                        $('#stars').starrr()
+                        $('#rating-button').show()
+                        $('#dateFeedback').text("Bạn chưa đánh giá sản phẩm này !")
+                    }
+
+                    $('#exampleModalCenter').modal('show');
+                },
+                error: function (xhr, status, error) {
+                    // Xử lý lỗi nếu có
+                    alert("Lỗi xử lý: " + error);
+                }
+            });
+        });
+
+    });
+
+
+</script>
+<script>
+        // Lắng nghe sự kiện click vào nút "Đánh giá"
+        $('#rating-button').on('click', function () {
+            // Lấy thông tin từ modal
+            const orderDetailId = $('#orderDetailId').val();
+            const feedback = $('#feedback').val();
+            const stars = $('#stars span.text-warning').length; // Đếm số sao được chọn (sao có class "text-warning")
+
+            if (!stars || !feedback.trim()) {
+                alert("Vui lòng điền đầy đủ đánh giá và chọn số sao!");
+                return;
+            }
+
+            // Gửi AJAX để gửi dữ liệu đánh giá lên server
+            $.ajax({
+                url: '/api-product-review', // Đường dẫn API xử lý review
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    customerId: ${customerId},
+                    content: feedback,
+                    orderDetail: {
+                        id: orderDetailId
+                    },
+                    numberOfStars: stars
+                }),
+                success: function (response) {
+                    if (response.success) {
+                        alert("Đánh giá của bạn đã được gửi thành công!");
+                        $('#exampleModalCenter').modal('hide'); // Ẩn modal sau khi đánh giá thành công
+                    } else {
+                        alert("Có lỗi xảy ra khi gửi đánh giá. Vui lòng thử lại.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("Lỗi xử lý: " + error);
+                }
+            });
+        });
 </script>

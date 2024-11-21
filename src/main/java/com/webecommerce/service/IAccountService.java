@@ -8,7 +8,7 @@ import com.webecommerce.dto.response.people.UserResponse;
 
 public interface IAccountService {
     UserResponse findByUserNameAndPasswordAndStatus(String userName, String password, String status);
-
+    AccountResponse findByCustomerId(Long customerId);
     CustomerResponse save(CustomerRequest customerRequest);
 
     void setPassword(long id, String password);
