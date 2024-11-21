@@ -39,10 +39,15 @@ public class TrackingOrderController extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String orderDetailIdStr = request.getParameter("firstIdOrderDetail");
-
+        String actionType = request.getParameter("actionType");
         if (orderDetailIdStr != null) {
             Long orderDetailId = Long.parseLong(orderDetailIdStr);
-            boolean updateStatusReceive = orderStatusService.changeStatus(orderDetailId, EnumOrderStatus.RECEIVED);
+            if ("CONFIRM".equals(actionType)) {
+                boolean updateStatusReceive = orderStatusService.changeStatus(orderDetailId, EnumOrderStatus.RECEIVED);
+            }
+            else if("CANCLE".equals(actionType)) {
+                boolean updateStatusCancle = orderStatusService.changeStatus(orderDetailId, EnumOrderStatus.CANCELLED);
+            }
         }
         Long customerId = JWTUtil.getIdUser(request);
         List<DisplayOrderDTO> orders = orderService.getOrderDisplay(customerId);

@@ -3,6 +3,7 @@ package com.webecommerce.controller.admin;
 
 import com.webecommerce.dto.notinentity.DisplayOrderDTO;
 import com.webecommerce.service.IOrderService;
+import com.webecommerce.utils.JWTUtil;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -18,7 +19,7 @@ public class ConfirmOrderController extends HttpServlet {
     @Inject
     private IOrderService orderService;
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Long customerId = 1L;
+        Long customerId = JWTUtil.getIdUser(request);
         List<DisplayOrderDTO> orders = orderService.getOrderDisplay(customerId);
 
         request.setAttribute("orders", orders);

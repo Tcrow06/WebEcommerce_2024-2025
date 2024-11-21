@@ -32,4 +32,24 @@ public class ProductReviewDAO extends AbstractDAO<ProductReviewEntity> implement
             return null;
         }
     }
+
+    public ProductReviewEntity getProductReviewByOrderDetailId (Long OrderDetailId) {
+        String query = "SELECT d FROM ProductReviewEntity d " +
+                "JOIN d.orderDetail od " +
+                "WHERE od.id = :orderDetailId";
+
+        try {
+            return entityManager.createQuery(query, ProductReviewEntity.class)
+                    .setParameter("orderDetailId", OrderDetailId)
+                    .setMaxResults(1) // Giới hạn kết quả về 1
+                    .getSingleResult(); // Lấy kết quả duy nhất
+        } catch (NoResultException e) {
+            LOGGER.log(Level.WARNING, "Không tìm thấy review nào", e);
+            return null;
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi lấy review", e);
+            return null;
+        }
+    }
+
 }

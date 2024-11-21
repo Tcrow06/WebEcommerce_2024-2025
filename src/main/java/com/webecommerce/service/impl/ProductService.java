@@ -7,6 +7,7 @@ import com.webecommerce.dao.product.IProductVariantDAO;
 import com.webecommerce.dto.ProductDTO;
 import com.webecommerce.dto.ProductVariantDTO;
 import com.webecommerce.dto.discount.ProductDiscountDTO;
+import com.webecommerce.dto.notinentity.RevenueDTO;
 import com.webecommerce.entity.cart.CartItemEntity;
 import com.webecommerce.entity.discount.ProductDiscountEntity;
 import com.webecommerce.entity.product.CategoryEntity;
@@ -426,5 +427,9 @@ public class ProductService implements IProductService {
     @Override
     public int countByStatus(EnumProductStatus status) {
         return productDAO.countByStatus(status);
+    }
+    @Override
+    public RevenueDTO getRevenue() {
+        return productDAO.getRevenue();
     }
 }

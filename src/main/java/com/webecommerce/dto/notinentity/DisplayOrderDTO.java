@@ -22,6 +22,14 @@ public class DisplayOrderDTO {
         this.imgUrl = imgUrl;
     }
 
+    public DisplayOrderDTO(Long id, LocalDateTime dateTime, Double totalOrder, Long allQuantity, String imgUrl) {
+        this.id = id;
+        this.dateTime = dateTime;
+        this.allQuantity = allQuantity;
+        this.totalOrder = totalOrder;
+        this.imgUrl = imgUrl;
+    }
+
     public Long getId() {
         return id;
     }
