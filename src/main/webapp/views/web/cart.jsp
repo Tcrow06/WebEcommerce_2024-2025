@@ -162,6 +162,24 @@
                                    readonly>
                         </div>
                     </div>
+                    <div class="row text-info d-flex align-items-center fw-bold" style="border: none; background: transparent; pointer-events: none; font-weight: bold">
+                        <div class = "col-8">
+                            <h6>• Áp dụng với đơn hàng trên: </h6>
+                        </div>
+                        <div class = "col-2 mb-1 ">
+                            <input type="text" id="minimumInvoiceAmount" style="border: none; color:#17a2b8 ;" readonly>
+                        </div>
+                        <div class = "col-2"></div>
+                    </div>
+                    <div class="row text-black d-flex align-items-center fw-bold" style="border: none; background: transparent; pointer-events: none; font-weight: bold">
+                        <div class="col-8">
+                            <h6>• Số tiền giảm tối đa: </h6>
+                        </div>
+                        <div class = "col-2 mb-1">
+                            <input type="text" id="maximumAmount" style="border: none; color:#17a2b8 ;" readonly>
+                        </div>
+                        <div class = "col-2"></div>
+                    </div>
                     <div class="row text-info d-flex align-items-center mb-5">
                         <div class="col-1">
                             <i class="fas fa-ticket"></i>
@@ -204,7 +222,9 @@
                                                     <h6>• Giảm ${o.discountPercentage}%</h6>
                                                 </div>
                                                 <div id="extraContent${o.code}" class="collapse">
-                                                    <h6>• Áp dụng với đơn hàng trên ${o.minimumInvoiceAmount} VND.
+                                                    <h6>• Áp dụng với đơn hàng trên: ${o.minimumInvoiceAmount} VND.
+                                                    </h6>
+                                                    <h6>• Số tiền giảm tối đa: ${o.maximumAmount} VND.
                                                     </h6>
                                                 </div>
 
@@ -221,6 +241,8 @@
                                                         <button type="button" class="btn btn-dark w-100"
                                                                 data-bs-dismiss="modal" onclick="applyCoupon(this)"
                                                                 data-code="${o.code}" data-description="${o.name}"
+                                                                data-minInvoiceAmount = "${o.minimumInvoiceAmount}"
+                                                                data-maxAmount = "${o.maximumAmount}"
                                                                 data-percentCoupon="${o.discountPercentage}">Áp dụng</button>
                                                     </div>
                                                 </div>
@@ -428,11 +450,15 @@
         var couponCode = button.getAttribute("data-code");
         var descriptionCoupon = button.getAttribute("data-description");
         var percentCoupon = button.getAttribute("data-percentCoupon");
+        var maximumAmount = button.getAttribute("data-maxAmount");
+        var minimumInvoiceAmount = button.getAttribute("data-minInvoiceAmount");
         document.getElementById("title").value = "Áp dụng thành công!";
         document.getElementById("title1").value = "Xem thêm";
         document.getElementById("couponCode").value = couponCode;
         document.getElementById("descriptionCoupon").value = descriptionCoupon + ":";
         document.getElementById("percentCoupon").value = "-" + percentCoupon + "%";
+        document.getElementById("maximumAmount").value = maximumAmount + " VND.";
+        document.getElementById("minimumInvoiceAmount").value =minimumInvoiceAmount + " VND.";
         document.getElementById("discountContent").style.display = "block";
     }
 
