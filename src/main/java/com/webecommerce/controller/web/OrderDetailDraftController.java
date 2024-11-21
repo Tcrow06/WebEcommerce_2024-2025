@@ -6,6 +6,7 @@ import com.webecommerce.dto.OrderDetailDTO;
 import com.webecommerce.dto.notinentity.DisplayOrderDetailDTO;
 import com.webecommerce.service.IOrderDetailService;
 import com.webecommerce.service.IOrderStatusService;
+import com.webecommerce.utils.JWTUtil;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -33,6 +34,7 @@ public class OrderDetailDraftController extends HttpServlet {
             Long orderId = Long.valueOf(orderIdStr);
             EnumOrderStatus status = orderDetailService.getCurrentStatus(orderId);
             List<DisplayOrderDetailDTO> result = orderDetailService.showOrderDetail(orderId, status);
+            request.setAttribute("customerId",JWTUtil.getIdUser(request));
             request.setAttribute("orderItemList", result);
             request.setAttribute("status", status);
         }

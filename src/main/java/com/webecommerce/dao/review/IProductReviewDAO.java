@@ -8,4 +8,6 @@ import java.util.List;
 public interface IProductReviewDAO extends GenericDAO<ProductReviewEntity> {
 
     List<ProductReviewEntity> getProductReviewByProduct (Long productId);
+
+    ProductReviewEntity getProductReviewByOrderDetailId (Long OrderDetailId);
 }
