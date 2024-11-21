@@ -1,5 +1,6 @@
 package com.webecommerce.controller.web;
 
+import com.webecommerce.constant.EnumAccountStatus;
 import com.webecommerce.dao.people.ICustomerDAO;
 import com.webecommerce.dto.CartItemDTO;
 import com.webecommerce.dto.PlacedOrder.CheckOutRequestDTO;
@@ -79,6 +80,13 @@ public class AuthController extends HttpServlet {
         CheckOutRequestDTO checkOutRequestDTO =(CheckOutRequestDTO) session.getAttribute("orderNotHandler");
         if(action != null && action.equals("login")) {
             AccountRequest account = FormUtils.toModel(AccountRequest.class, request);
+            UserResponse foundUser = accountService.findByUserNameAndPasswordAndStatus(account.getUserName(), account.getPassword(), "UNVERIFIED");
+            if (foundUser != null) {
+                accountService.sendOTPToEmail(foundUser.getEmail(), foundUser.getId(), "register");
+                response.sendRedirect(request.getContextPath() + "/dang-ky?action=verify&id=" + foundUser.getId() + "&message=unverified&alert=danger");
+                return;
+            }
+
             UserResponse user = accountService.findByUserNameAndPasswordAndStatus(account.getUserName(), account.getPassword(), "ACTIVE");
 
             if(user != null) {

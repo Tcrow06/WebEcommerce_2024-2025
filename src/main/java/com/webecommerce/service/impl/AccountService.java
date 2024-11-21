@@ -110,7 +110,7 @@ public class AccountService implements IAccountService {
                         + "Lưu ý: Mã OTP này sẽ hết hạn sau 3 phút.\n\n";
             }
 
-            EmailUtils.sendEmail(email, subject, body);
+           EmailUtils.sendEmail(email, subject, body);
             return true;
         } catch (Exception ex) {
             ex.printStackTrace();

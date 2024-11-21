@@ -22,15 +22,12 @@
                 <h2 class="title">Nhập mã OTP</h2>
 
                 <div class="input-field">
-                    <i class="fas fa-key"></i>
                     <input type="text" placeholder="Mã OTP" name="otp" required />
                 </div>
 
                 <div class="button-group">
-                    <button class="btn" id="resend-otp">Gửi lại OTP</button>
                     <button class="btn" type="submit">Xác nhận</button>
                 </div>
-                <span> OTP sẽ hết hạn sau 180 giây </span>
             </form>
         </div>
     </div>
