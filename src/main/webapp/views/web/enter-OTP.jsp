@@ -8,10 +8,11 @@
     <title>ConfirmPassword Page</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="<c:url value='/static/auth/style.css'/>" />
+
 </head>
 <body>
-<div class="container">
-    <div class="forms-container">
+
+    <div class="forms-container" style="display: flex; justify-content: center; margin-top: 50px;"  >
         <div class="signin-signup">
             <form id="verify-form" class="sign-in-form" method="post">
                 <c:if test="${not empty message}">
@@ -19,19 +20,18 @@
                             ${message}
                     </div>
                 </c:if>
-                <h2 class="title">Nhập mã OTP</h2>
+                <h2 class="title" style="font-weight: 700">Nhập mã OTP</h2>
 
-                <div class="input-field">
-                    <input type="text" placeholder="Mã OTP" name="otp" required />
+                <div class="form-control" style="margin-top: 30px; width: 700px">
+                    <input style="width: 100%; height: 100%; border: none; outline: none" type="text" placeholder="Mã OTP" name="otp" required />
                 </div>
 
-                <div class="button-group">
+                <div class="button-group" style="margin-top: 30px; margin-bottom: 50px">
                     <button class="btn" type="submit">Xác nhận</button>
                 </div>
             </form>
         </div>
     </div>
-</div>
 
 <script>
     // Lấy URL hiện tại

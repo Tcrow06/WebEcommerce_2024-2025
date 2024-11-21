@@ -4,6 +4,7 @@ import com.webecommerce.constant.EnumOrderStatus;
 import com.webecommerce.dao.impl.AbstractDAO;
 import com.webecommerce.dao.order.IOrderDAO;
 import com.webecommerce.dto.notinentity.DisplayOrderDTO;
+import com.webecommerce.entity.order.OrderDetailEntity;
 import com.webecommerce.entity.order.OrderEntity;
 import com.webecommerce.entity.product.ProductVariantEntity;
 import com.webecommerce.entity.order.OrderStatusEntity;
@@ -13,14 +14,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 import java.time.LocalDate;
-import java.util.Map;
+import java.util.*;
 import javax.persistence.Query;
 import java.util.logging.Level;
 
 import java.security.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class OrderDAO extends AbstractDAO<OrderEntity> implements IOrderDAO {
@@ -74,16 +73,20 @@ public class OrderDAO extends AbstractDAO<OrderEntity> implements IOrderDAO {
 
             for (Object[] result : rawResults) {
                 Long orderId = (Long) result[0];
-                LocalDateTime statusDate = (LocalDateTime) result[1]; // Chuyển từ Timestamp thành LocalDateTime
+                LocalDateTime statusDate = (LocalDateTime) result[1];
                 Double totalOrder = (Double) result[2];
-                Long allQuantity = ((Number) result[3]).longValue(); // Convert từ Number thành Long
+                Long allQuantity = ((Number) result[3]).longValue();
                 String imgUrl = (String) result[4];
-                EnumOrderStatus status = (EnumOrderStatus) result[5]; // Chỉ cần ép kiểu trực tiếp
+                EnumOrderStatus status = (EnumOrderStatus) result[5];
 
-                // Tạo DisplayOrderDTO và thêm vào danh sách
                 resultList.add(new DisplayOrderDTO(orderId, statusDate, totalOrder, allQuantity, imgUrl, status));
             }
-
+            Collections.sort(resultList, new Comparator<DisplayOrderDTO>() {
+                @Override
+                public int compare(DisplayOrderDTO o1, DisplayOrderDTO o2) {
+                    return o2.getDateTime().compareTo(o1.getDateTime());
+                }
+            });
             return resultList;
         }catch (Exception e){
             e.printStackTrace();
@@ -97,20 +100,17 @@ public class OrderDAO extends AbstractDAO<OrderEntity> implements IOrderDAO {
 
         trans.begin();
         try {
-            // Sử dụng merge() thay vì persist()
-            em.persist(orderEntity);  // Nếu entity đã tồn tại, nó sẽ được cập nhật; nếu chưa tồn tại, sẽ được chèn mới
-            em.flush();  // Đảm bảo dữ liệu được ghi vào DB
-            em.clear();  // Làm trống bộ nhớ đệm sau khi ghi
-            trans.commit();  // Commit giao dịch
+            em.persist(orderEntity);
+            em.flush();
+            em.clear();
+            trans.commit();
             return null;
-//            LOGGER.log(Level.INFO, "Merged object: {0}", mergedEntity);
-//            return mergedEntity;
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error merging object", e);
-            trans.rollback();  // Rollback nếu có lỗi
+            trans.rollback();
             return null;
         } finally {
-            em.close();  // Đóng EntityManager sau khi hoàn tất
+            em.close();
         }
     }
 
@@ -123,7 +123,6 @@ public class OrderDAO extends AbstractDAO<OrderEntity> implements IOrderDAO {
 
     @Override
     public List<Object[]> calculateMonthlyRevenue(int year) {
-        // Đặt lại biến đúng tên cho câu truy vấn JPQL
         String jbql = "SELECT MONTH(os.date) AS month, SUM(od.quantity * pv.price) AS totalRevenue " +
                 "FROM OrderEntity o " +
                 "JOIN o.orderStatuses os " +
@@ -134,20 +133,16 @@ public class OrderDAO extends AbstractDAO<OrderEntity> implements IOrderDAO {
                 "GROUP BY MONTH(os.date) " +
                 "ORDER BY MONTH(os.date)";
 
-        // Tạo TypedQuery với câu truy vấn đúng
         TypedQuery<Object[]> query = entityManager.createQuery(jbql, Object[].class);
 
-        // Thiết lập tham số năm
         query.setParameter("year", year);
         query.setParameter("status", EnumOrderStatus.RECEIVED);
 
-        // Trả về kết quả
         return query.getResultList();
     }
 
     @Override
     public Double calculateTotalRevenueByYear(int year) {
-        // Câu truy vấn JPQL để tính tổng doanh thu theo năm
         String jpql = "SELECT SUM(od.quantity * pv.price) AS totalRevenue " +
                 "FROM OrderEntity o " +
                 "JOIN o.orderStatuses os " +
@@ -156,44 +151,42 @@ public class OrderDAO extends AbstractDAO<OrderEntity> implements IOrderDAO {
                 "WHERE os.status = :status " +
                 "AND YEAR(os.date) = :year";
 
-        // Tạo TypedQuery với câu truy vấn đúng
         TypedQuery<Double> query = entityManager.createQuery(jpql, Double.class);
 
-        // Thiết lập tham số năm và trạng thái
         query.setParameter("year", year);
         query.setParameter("status", EnumOrderStatus.RECEIVED);
 
-        // Lấy kết quả
         Double totalRevenue = query.getSingleResult();
 
-        // Nếu không có dữ liệu, trả về 0.0 thay vì null
         return totalRevenue != null ? totalRevenue : 0.0;
     }
     @Override
     public Double calculateTotalRevenue() {
-        // Câu truy vấn JPQL để tính toàn bộ doanh thu
         String jpql = "SELECT SUM(od.quantity * pv.price) AS totalRevenue " +
                 "FROM OrderEntity o " +
                 "JOIN o.orderStatuses os " +
                 "JOIN o.orderDetails od " +
-                "JOIN od.productVariant pv";
+                "JOIN od.productVariant pv " +  // Thêm khoảng trắng ở cuối
+                "WHERE os.status = :status";
 
-        // Tạo TypedQuery với câu truy vấn đúng
+
         TypedQuery<Double> query = entityManager.createQuery(jpql, Double.class);
+        query.setParameter("status",EnumOrderStatus.RECEIVED);
 
-        // Lấy kết quả
         Double totalRevenue = query.getSingleResult();
 
-        // Nếu không có dữ liệu, trả về 0.0 thay vì null
         return totalRevenue != null ? totalRevenue : 0.0;
     }
 
     @Override
-    public int totalOrders() {
-        String query = "SELECT COUNT(p) FROM OrderEntity p"; // Đếm tổng số sản phẩm
+    public int totalOrdersByStatus(EnumOrderStatus status) {
+        String query = "SELECT COUNT(o) FROM OrderEntity o " +
+                "JOIN o.orderStatuses os " +
+                "WHERE os.status = :status "; // Đếm tổng số sản phẩm
         try {
-            Long count = entityManager.createQuery(query, Long.class)
-                    .getSingleResult();
+            TypedQuery<Long> typedQuery = entityManager.createQuery(query, Long.class);
+            typedQuery.setParameter("status",status);
+            Long count = typedQuery.getSingleResult();
             return count != null ? count.intValue() : 0; // Chuyển đổi Long thành int
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Lỗi khi tính tổng số sản phẩm", e);
@@ -216,6 +209,7 @@ public class OrderDAO extends AbstractDAO<OrderEntity> implements IOrderDAO {
             return 0;
         }
     }
+
 
     public boolean changeConfirmStatus(Long orderId) {
         EntityTransaction transaction = entityManager.getTransaction();
@@ -291,6 +285,14 @@ public class OrderDAO extends AbstractDAO<OrderEntity> implements IOrderDAO {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public Long findOrderId(Long orderDetailId) {
+        String query = "SELECT od.order.id FROM OrderDetailEntity od WHERE od.id = :orderDetailId";
+        return entityManager.createQuery(query, Long.class)
+                .setParameter("orderDetailId", orderDetailId)
+                .getSingleResult();
     }
 
 }

@@ -4,6 +4,7 @@ import com.webecommerce.constant.EnumOrderStatus;
 import com.webecommerce.constant.EnumProductStatus;
 import com.webecommerce.dao.impl.AbstractDAO;
 import com.webecommerce.dao.product.IProductDAO;
+import com.webecommerce.dto.notinentity.RevenueDTO;
 import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.mapper.Impl.ProductMapper;
 import com.webecommerce.paging.Pageable;
@@ -275,6 +276,23 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
         return query.getResultList();
     }
 
+    @Override
+    public List<Object[]> findLowestSellingProducts(int limit) {
+        String jpql = "SELECT p, SUM(od.quantity) AS totalSales " +
+                "FROM ProductEntity p " +
+                "JOIN p.productVariants pv " +
+                "JOIN OrderDetailEntity od ON pv.id = od.productVariant.id " +
+                "JOIN od.order o " +
+                "JOIN o.orderStatuses os " +
+                "WHERE os.status = :status " +
+                "GROUP BY p.id " +
+                "ORDER BY totalSales ASC ";
+        TypedQuery<Object[]> query = entityManager.createQuery(jpql, Object[].class);
+        query.setParameter("status", EnumOrderStatus.WAITING);
+        query.setMaxResults(limit); // Giới hạn kết quả trả về
+        return query.getResultList();
+    }
+
 
     @Override
     public int totalProducts() {
@@ -298,5 +316,64 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
         TypedQuery<ProductEntity> typedQuery = entityManager.createQuery(query, ProductEntity.class);
         typedQuery.setParameter("name", name);
         return typedQuery.getResultList();
+    }
+
+    @Override
+    public int countByStatus(EnumProductStatus status) {
+        String query = "SELECT COUNT(p) FROM ProductEntity p WHERE p.status = :status"; // Câu JPQL đúng
+        try {
+            // Truy vấn COUNT trả về Long
+            TypedQuery<Long> typedQuery = entityManager.createQuery(query, Long.class);
+            typedQuery.setParameter("status", status);
+            Long count = typedQuery.getSingleResult(); // Lấy kết quả
+            return count != null ? count.intValue() : 0; // Chuyển Long thành int
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi tính tổng số sản phẩm", e);
+            return 0; // Trả về 0 nếu xảy ra lỗi
+        }
+    }
+    @Override
+    public RevenueDTO getRevenue() {
+        String query = "SELECT \n" +
+                "    pv.imageUrl AS imageUrl, \n" +
+                "    p.name AS productName, \n" +
+                "    p.brand AS brandName, \n" +
+                "    SUM(od.quantity) AS purchaseQuantity, \n" +
+                "    SUM(\n" +
+                "        CASE \n" +
+                "            WHEN pd.discountPercentage IS NOT NULL THEN \n" +
+                "                od.quantity * pv.price * (1 - pd.discountPercentage / 100)\n" +
+                "            ELSE \n" +
+                "                od.quantity * pv.price \n" +
+                "        END\n" +
+                "    ) AS revenueTotal\n" +
+                "FROM \n" +
+                "    com.webecommerce.entity.order.OrderDetailEntity od\n" +
+                "JOIN \n" +
+                "    od.productVariant pv\n" +
+                "JOIN \n" +
+                "    pv.product p\n" +
+                "JOIN \n" +
+                "    od.order o\n" +
+                "JOIN \n" +
+                "    o.orderStatuses os\n" +
+                "LEFT JOIN \n" +
+                "    com.webecommerce.entity.order.ReturnOrderEntity ro ON od.id = ro.orderDetail.id\n" +
+                "LEFT JOIN \n" +
+                "    com.webecommerce.entity.discount.ProductDiscountEntity pd ON od.productDiscount.id = pd.id\n" +
+                "WHERE \n" +
+                "    os.status = 'RECEIVED' \n" +
+                "    AND (ro.status IS NULL OR ro.status != 1)\n" +
+                "GROUP BY \n" +
+                "    pv.imageUrl, p.name, p.brand\n";
+
+
+
+
+
+        List<Object[]> rawResults = entityManager.createQuery(query, Object[].class)
+                .getResultList();
+
+        return null;
     }
 }

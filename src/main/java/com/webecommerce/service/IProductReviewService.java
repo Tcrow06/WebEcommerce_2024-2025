@@ -8,4 +8,6 @@ public interface IProductReviewService {
     ProductReviewDTO save (ProductReviewDTO productReview);
 
     List<ProductReviewDTO> getProductReviewByProductId(Long productId);
+
+    ProductReviewDTO findByOrderDetailId(Long OrderDetailId);
 }

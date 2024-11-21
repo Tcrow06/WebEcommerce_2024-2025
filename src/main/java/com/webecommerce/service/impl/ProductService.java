@@ -7,6 +7,7 @@ import com.webecommerce.dao.product.IProductVariantDAO;
 import com.webecommerce.dto.ProductDTO;
 import com.webecommerce.dto.ProductVariantDTO;
 import com.webecommerce.dto.discount.ProductDiscountDTO;
+import com.webecommerce.dto.notinentity.RevenueDTO;
 import com.webecommerce.entity.cart.CartItemEntity;
 import com.webecommerce.entity.discount.ProductDiscountEntity;
 import com.webecommerce.entity.product.CategoryEntity;
@@ -387,6 +388,29 @@ public class ProductService implements IProductService {
         return list;
     }
 
+    @Override
+    public List<Map.Entry<ProductDTO, Integer>> findLowestSellingProducts(int limit) {
+        List<Object[]> results = productDAO.findLowestSellingProducts(limit);
+        List<Map.Entry<ProductDTO, Integer>> list = new ArrayList<>();
+        for(Object[] result : results){
+            ProductEntity product = (ProductEntity)result[0];
+            ProductDTO productDTO = productMapper.toDTO(product);
+            ProductVariantEntity productVariant = productVariantDAO.getProductVariantByProduct(product);
+            if (productVariant != null) {
+                productDTO.setPhoto(productVariant.getImageUrl());
+                productDTO.setPrice(productVariant.getPrice());
+            }
+            CategoryEntity categoryEntity = categoryDAO.findById(product.getCategory().getId());
+            if(categoryEntity!=null){
+                productDTO.setCategory(categoryMapper.toDTO(categoryEntity));
+            }
+            Integer sales = ((Long) result[1]).intValue();;
+            Map.Entry<ProductDTO, Integer> entry = new AbstractMap.SimpleEntry<>(productDTO, sales);
+            list.add(entry);
+        }
+        return list;
+    }
+
     public int totalProducts(){
         return productDAO.totalProducts();
     }
@@ -398,5 +422,14 @@ public class ProductService implements IProductService {
         return products.stream()
                 .map(productMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public int countByStatus(EnumProductStatus status) {
+        return productDAO.countByStatus(status);
+    }
+    @Override
+    public RevenueDTO getRevenue() {
+        return productDAO.getRevenue();
     }
 }

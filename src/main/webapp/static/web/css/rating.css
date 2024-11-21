@@ -1,0 +1,11 @@
+.profile-img {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+.starrr span {
+    font-size: 24px;
+    cursor: pointer;
+    color: #FFD700;
+}
+.starrr .glyphicon-star-empty {
+    color: #DDD;
+}

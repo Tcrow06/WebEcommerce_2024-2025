@@ -89,6 +89,7 @@
                         <th>Sản phẩm</th>
                         <th>Màu</th>
                         <th>Số lượng</th>
+                        <th>Mã đơn</th>
                         <th>Trạng thái</th>
                         <th>Hành động</th>
                     </tr>
@@ -101,6 +102,7 @@
                             <td>${productReturn.nameProduct}</td>
                             <td>${productReturn.colorProduct}</td>
                             <td>${productReturn.quantity}</td>
+                            <td>ELV${productReturn.orderId}</td>
                             <td>
                                 <c:choose>
                                     <c:when test="${productReturn.status == 0}">

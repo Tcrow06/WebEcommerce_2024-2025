@@ -11,4 +11,6 @@ public interface IProductDiscountDAO extends GenericDAO<ProductDiscountEntity> {
     List<ProductDiscountEntity> findDiscounNotProduct();
     List<ProductDiscountEntity> findDiscounthaveProductByDate (LocalDateTime start);
     List<ProductDiscountEntity> findDiscounthaveProductByDate();
+
+    int countDiscountValid();
 }

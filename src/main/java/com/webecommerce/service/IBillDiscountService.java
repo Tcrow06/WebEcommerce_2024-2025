@@ -26,4 +26,5 @@ public interface IBillDiscountService {
     List <BillDiscountDTO> findBillDiscountValid () ;
 
     BillDiscountDTO findById(Long id);
+
 }

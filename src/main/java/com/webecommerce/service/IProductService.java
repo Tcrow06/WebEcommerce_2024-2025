@@ -2,6 +2,7 @@ package com.webecommerce.service;
 
 import com.webecommerce.constant.EnumProductStatus;
 import com.webecommerce.dto.ProductDTO;
+import com.webecommerce.dto.notinentity.RevenueDTO;
 import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.paging.Pageable;
 
@@ -56,8 +57,13 @@ public interface IProductService {
 
     List<Map.Entry<ProductDTO, Integer>> findBestSellerProduct(int limit);
 
+    List<Map.Entry<ProductDTO, Integer>>findLowestSellingProducts(int limit);
+
     int totalProducts();
     Long getTotalItems();
 
     List<ProductDTO> searchProductsByName(String name);
+
+    int countByStatus(EnumProductStatus status);
+    RevenueDTO getRevenue();
 }
