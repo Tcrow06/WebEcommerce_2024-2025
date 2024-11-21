@@ -100,6 +100,14 @@
                                 <hr style="margin: 10px 0; border-top: 3px solid #333;" />
                                 <p class="mb-2"><strong>Số điện thoại:</strong> <span id="phone-number">0976870127</span></p>
                                 <p class="mb-0"><strong>Địa chỉ:</strong> <span id="address">Địa chỉ ở đây</span></p>
+
+                                <!-- Input ẩn để lưu giá trị -->
+                                <input type="hidden" id="recipient-hidden" value="Nguyễn Công Quý" />
+                                <input type="hidden" id="phone-hidden" value="0976870127" />
+                                <input type="hidden" id="city-hidden" value="" />
+                                <input type="hidden" id="district-hidden" value="" />
+                                <input type="hidden" id="commune-hidden" value="" />
+                                <input type="hidden" id="concrete-hidden" value="" />
                             </div>
 
                             <!-- Nút thay đổi địa chỉ -->
@@ -221,7 +229,9 @@
                             <div class="row">
                                 <div class="col-4">
                                     <button type="button" class="btn btn-link text-decoration-none"
-                                            onclick="">
+                                            onclick="chooseOrderInfo('${orderInfo.recipient}', '${orderInfo.phone}',
+                                                    '${orderInfo.address.city}', '${orderInfo.address.district}',
+                                                    '${orderInfo.address.commune}', '${orderInfo.address.concrete}')">
                                         Chọn địa chỉ
                                     </button>
                                 </div>
@@ -407,82 +417,30 @@
     }
 
 
-    $('#placed-order').click(function (event) {
-
-        let isValid= true;
-        const inputs = document.querySelectorAll('.checkout__input input');
-        inputs.forEach(input => {
-            const feedback = input.nextElementSibling; // Tìm thẻ <small> gần nhất
-            if (input.value.trim() === '') {
-                feedback.textContent = 'Vui lòng nhập thông tin này!';
-                feedback.style.color = 'red';
-                isValid = false;
-            } else {
-                if(feedback){
-                    feedback.textContent = '';
-                }
-            }
-        });
-
-
-        if (isValid){
-            let order = JSON.parse('${orderDTOJson}');
-            let recipient= document.getElementById("recipient").value;
-            let phone= document.getElementById("phone").value;
-            let address= {
-                city: document.getElementById("city").value,
-                district: document.getElementById("district").value,
-                commune: document.getElementById("commune").value,
-                concrete: document.getElementById("concrete").value
-            }
-            const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
-
-            delete order.orderInfoDTO;
-            order.orderInfoDTO = {
-                recipient: recipient,
-                phone: phone,
-                address: address,
-            };
-            order.paymentMethod =paymentMethod
-
-
-            event.preventDefault();
-            $.ajax({
-                type: "POST",
-                url: "/thanh-toan",
-                contentType: "application/json",
-                data: JSON.stringify(order),
-                success: function(response) {
-                    if(response.status ==="success"){
-                        alert(response.message);
-                        window.location.href = response.redirectUrl.toString() ;
-
-                    }else if(response.status ==="error"){
-                        alert(response.message);
-                        window.location.href = response.redirectUrl.toString() ;
-
-                    }else if( response.status==="warning"){
-                        alert(response.message);
-                        window.location.reload();
-                    }
-                },
-                error: function(xhr, status, error) {
-                    window.location.href = response.redirectUrl.toString() ;
-                    // Xử lý khi có lỗi
-                    console.error("Lỗi: ", error);
-                    alert("Có lỗi xảy ra, vui lòng thử lại.");
-                }
-            });
-        }
-
-
-    });
-
     // Hàm gọi model thêm địa chỉ
     function toggleNewAddressForm() {
         const form = document.getElementById('newAddressForm');
         form.style.display = form.style.display === 'none' ? 'block' : 'none';
     }
+
+    // ===================================CHỌN THÔNG TIN THANH TOÁN===================================
+
+    function chooseOrderInfo(recipient, phone, city, district, commune, concrete) {
+        // Cập nhật thông tin trong phần thông tin phía trên
+        document.getElementById("account-name").textContent = recipient;
+        document.getElementById("phone-number").textContent = phone;
+        document.getElementById("address").textContent = concrete + ", " + commune + ", " + district + ", " + city;
+
+        document.getElementById("recipient-hidden").value = recipient;
+        document.getElementById("phone-hidden").value = phone;
+        document.getElementById("city-hidden").value = city;
+        document.getElementById("district-hidden").value = district;
+        document.getElementById("commune-hidden").value = commune;
+        document.getElementById("concrete-hidden").value = concrete;
+
+        $('#form2Modal').modal('hide');
+    }
+
 
     // ===================================THANH TOÁN===================================
 
@@ -575,24 +533,94 @@
 
     // Gọi modal hiện QR thanh toán
     document.getElementById('placed-order').addEventListener('click', function () {
-        // Lấy dữ liệu cần thiết từ giao diện
-        const accountName = encodeURIComponent(document.getElementById('account-name').textContent.trim());
-        const phoneNumber = encodeURIComponent(document.getElementById('phone-number').textContent.trim());
-        const totalMoney = document.getElementById('total-money').textContent.trim().replace(/[^\d]/g, ''); // Loại bỏ 'VND'
 
-        // Tạo URL QR
-        const qrUrl = "https://img.vietqr.io/image/970436-1027248713-compact2.png?amount="
-            + totalMoney + "&addInfo=" + phoneNumber + "&accountName=" + accountName;
+        // Xử lý thanh toán tiên mặt
+        if (document.querySelector('input[name="payment"]:checked').value === "cash") {
+            let isValid= true;
+            const inputs = document.querySelectorAll('.checkout__input input');
+            inputs.forEach(input => {
+                const feedback = input.nextElementSibling; // Tìm thẻ <small> gần nhất
+                if (input.value.trim() === '') {
+                    feedback.textContent = 'Vui lòng nhập thông tin này!';
+                    feedback.style.color = 'red';
+                    isValid = false;
+                } else {
+                    if(feedback){
+                        feedback.textContent = '';
+                    }
+                }
+            });
 
-        // Hiển thị mã QR trong modal
-        const qrImage = document.getElementById('qrImage');
-        qrImage.src = qrUrl;
 
-        // Hiển thị modal
-        const qrModal = new bootstrap.Modal(document.getElementById('qrModal'));
-        qrModal.show();
+            if (isValid){
+                let order = JSON.parse('${orderDTOJson}');
+                let recipient = document.getElementById("recipient-hidden").value;
+                let phone = document.getElementById("phone-hidden").value;
+                let address = {
+                    city: document.getElementById("city-hidden").value,
+                    district: document.getElementById("district-hidden").value,
+                    commune: document.getElementById("commune-hidden").value,
+                    concrete: document.getElementById("concrete-hidden").value
+                };
+                console.log({ recipient, phone, address });
+                const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
 
-        setTimeout(syncAndFetchTransactions, 10000);
+                delete order.orderInfoDTO;
+                order.orderInfoDTO = {
+                    recipient: recipient,
+                    phone: phone,
+                    address: address,
+                };
+                order.paymentMethod =paymentMethod
+
+
+                $.ajax({
+                    type: "POST",
+                    url: "/thanh-toan",
+                    contentType: "application/json",
+                    data: JSON.stringify(order),
+                    success: function(response) {
+                        if(response.status ==="success"){
+                            alert(response.message);
+                            window.location.href = response.redirectUrl.toString() ;
+
+                        }else if(response.status ==="error"){
+                            alert(response.message);
+                            window.location.href = response.redirectUrl.toString() ;
+
+                        }else if( response.status==="warning"){
+                            alert(response.message);
+                            window.location.reload();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        window.location.href = response.redirectUrl.toString() ;
+                        // Xử lý khi có lỗi
+                        console.error("Lỗi: ", error);
+                        alert("Có lỗi xảy ra, vui lòng thử lại.");
+                    }
+                });
+            }
+        } else {
+            // Xử lý chuyển khoản
+            const accountName = encodeURIComponent(document.getElementById('account-name').textContent.trim());
+            const phoneNumber = encodeURIComponent(document.getElementById('phone-number').textContent.trim());
+            const totalMoney = document.getElementById('total-money').textContent.trim().replace(/[^\d]/g, ''); // Loại bỏ 'VND'
+
+            // Tạo URL QR
+            const qrUrl = "https://img.vietqr.io/image/970436-1027248713-compact2.png?amount="
+                + totalMoney + "&addInfo=" + phoneNumber + "&accountName=" + accountName;
+
+            // Hiển thị mã QR trong modal
+            const qrImage = document.getElementById('qrImage');
+            qrImage.src = qrUrl;
+
+            // Hiển thị modal
+            const qrModal = new bootstrap.Modal(document.getElementById('qrModal'));
+            qrModal.show();
+
+            setTimeout(syncAndFetchTransactions, 10000);
+        }
     });
 
 
