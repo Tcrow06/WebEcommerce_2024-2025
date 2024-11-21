@@ -32,6 +32,38 @@
         margin: 5px 0 15px;
     }
 
+    .modal-content {
+        border-radius: 15px;
+        overflow: hidden;
+
+    }
+
+    .modal-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .modal-title {
+        font-weight: bold;
+        color: #495057;
+    }
+
+    .modal-footer {
+        background-color: #f8f9fa;
+        border-top: 1px solid #dee2e6;
+    }
+
+    .qr-image {
+        width: 400px; /* Tăng kích thước ngang */
+        height: 500px; /* Tăng kích thước dọc */
+        max-width: 100%; /* Đảm bảo ảnh không vượt quá kích thước modal */
+        object-fit: contain; /* Giữ tỷ lệ của ảnh */
+        border-radius: 10px; /* Bo góc nhẹ */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng */
+    }
+
+
+
 </style>
 
 <!-- Breadcrumb Section Begin -->
@@ -64,10 +96,10 @@
                         <div class="checkout__info d-flex justify-content-between align-items-center p-4 mb-4 rounded shadow-sm" style="background-color: #f9f9f9; border: 1px solid #ddd;">
                             <!-- Phần thông tin bên trái -->
                             <div>
-                                <h4 class="order__title" style="font-weight: 600; color: #333;">Nguyễn Công Quý</h4>
+                                <h4 class="order__title" id="account-name" style="font-weight: 600; color: #333;">Nguyễn Công Quý</h4>
                                 <hr style="margin: 10px 0; border-top: 3px solid #333;" />
-                                <p class="mb-2"><strong>Số điện thoại:</strong> <span>0976870127</span></p>
-                                <p class="mb-0"><strong>Địa chỉ:</strong> <span>Địa chỉ ở đây</span></p>
+                                <p class="mb-2"><strong>Số điện thoại:</strong> <span id="phone-number">0976870127</span></p>
+                                <p class="mb-0"><strong>Địa chỉ:</strong> <span id="address">Địa chỉ ở đây</span></p>
                             </div>
 
                             <!-- Nút thay đổi địa chỉ -->
@@ -110,11 +142,11 @@
                                     <c:set var="percent" value="${orderDTO.billDiscount.discountPercentage}"/>
                                     <li>Số tiền được giảm (${percent}% tối đa: <fmt:formatNumber type = "number" maxFractionDigits = "3" value="${orderDTO.billDiscount.maximumAmount}"/> VND)<span><fmt:formatNumber type = "number" maxFractionDigits = "3" value="${orderDTO.maximumDiscount}" /> VND</span></li>
 
-                                    <li>Tổng thanh toán <span><fmt:formatNumber type = "number" maxFractionDigits = "3" value="${orderDTO.total-orderDTO.maximumDiscount}" /> VND</span></li>
+                                    <li>Tổng thanh toán <span id="total-money"><fmt:formatNumber type = "number" maxFractionDigits = "3" value="${orderDTO.total-orderDTO.maximumDiscount}" /> VND</span></li>
                                 </c:if>
                                 <c:if test="${empty orderDTO.billDiscount}">
                                     <li>Số tiền được giảm <span>0 VND</span></li>
-                                    <li>Tổng thanh toán <span><fmt:formatNumber type = "number" maxFractionDigits = "3" value="${orderDTO.total}"/> VND</span></li>
+                                    <li>Tổng thanh toán <span id="total-money"><fmt:formatNumber type = "number" maxFractionDigits = "3" value="${orderDTO.total}"/> VND</span></li>
                                 </c:if>
                             </ul>
                             <div class="note" style="font-size: 14px; color :black">*<span style="color: #E53637">Phí vận chuyển</span>: Khu vưc Tp.Hồ Chí Minh: 15k, ngoài khu vực Tp.Hồ Chí Minh: 30k </div>
@@ -125,6 +157,7 @@
                                         type="radio"
                                         name="payment"
                                         value="cash"
+                                        id="cash"
                                 />
                                 <label class="form-check-label">
                                     Thanh toán bằng tiền mặt
@@ -138,6 +171,7 @@
                                         name="payment"
                                         checked
                                         value="bank"
+                                        id="bank"
                                 />
                                 <label class="form-check-label">
                                     Thanh toán bằng chuyển khoản
@@ -260,6 +294,19 @@
     </div>
 </div>
 
+<%--Mở modal thanh toán--%>
+<div class="modal fade" id="qrModal" tabindex="-1" aria-labelledby="qrModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="qrModalLabel">Vui lòng thanh toán qua mã bên dưới</h5>
+            </div>
+            <div class="modal-body text-center">
+                <img id="qrImage" src="" alt="QR Code" class="img-fluid rounded" style="width: 400px; height: 500px;" />
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <script
@@ -436,5 +483,117 @@
         const form = document.getElementById('newAddressForm');
         form.style.display = form.style.display === 'none' ? 'block' : 'none';
     }
+
+    // ===================================THANH TOÁN===================================
+
+    // Async thực hiện gọi API lấy thông tin giao dịch
+    const API_KEY = "AK_CS.c712d630a6fa11ef93018931a30376f5.98I5ChxR94eisvqnEhzOaQcYRECKbTkG40Pnz90McJ3eKNaBR6s262iECySlUsb76uBcvvpu";
+    const TRANSACTIONS_URL = "https://oauth.casso.vn/v2/transactions";
+    let dataFiller = [];
+
+    async function fetchTransactions(fromDate, toDate) {
+        const params = new URLSearchParams({ fromDate, toDate });
+
+        try {
+            const response = await fetch(TRANSACTIONS_URL + '?' + params.toString(), {
+                method: "GET",
+                headers: {
+                    Authorization: "Apikey " + API_KEY,
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to fetch transactions. HTTP Status:` + response.status);
+            }
+
+            const data = await response.json();
+
+            // Lọc dữ liệu chỉ lấy description và amount
+            dataFiller = data.data.records.map(record => ({
+                description: record.description,
+                amount: record.amount,
+            }));
+
+            console.log("Transactions:", dataFiller);
+        } catch (error) {
+            console.error("Error fetching transactions:", error);
+        }
+    }
+
+    async function syncAndFetchTransactions() {
+        const today = new Date();
+        const yesterday = new Date();
+        yesterday.setDate(today.getDate() - 1);
+
+        const formatDate = (date) => date.toISOString().split("T")[0];
+        const fromDate = formatDate(yesterday);
+        const toDate = formatDate(today);
+
+        await fetchTransactions(fromDate, toDate);
+
+        // Gửi ajax khi có dữ liệu
+        if (dataFiller.length > 0) {
+            const totalMoney = document.getElementById('total-money').textContent.trim().replace(/[^\d]/g, '');
+            const phoneNumber = encodeURIComponent(document.getElementById('phone-number').textContent.trim());
+            dataFiller.push({
+                description: phoneNumber,
+                amount: totalMoney
+            })
+            $.ajax({
+                url: "/api-kiem-tra-thanh-toan",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(dataFiller),
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành công!',
+                            text: 'Thanh toán của bạn đã được xác nhận, thông tin chi tiết có thể xem ở email.'
+                        }).then(() => {
+                            cardBody.parent().remove();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Có lỗi xảy ra',
+                            text: 'Quá trình thanh toán thất bại'
+                        });
+                    }
+                },
+                error: function (response) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Thất bại!',
+                        text: 'Lỗi trong quá trình xác nhận thanh toán.'
+                    });
+                }
+            });
+        }
+    }
+
+    // Gọi modal hiện QR thanh toán
+    document.getElementById('placed-order').addEventListener('click', function () {
+        // Lấy dữ liệu cần thiết từ giao diện
+        const accountName = encodeURIComponent(document.getElementById('account-name').textContent.trim());
+        const phoneNumber = encodeURIComponent(document.getElementById('phone-number').textContent.trim());
+        const totalMoney = document.getElementById('total-money').textContent.trim().replace(/[^\d]/g, ''); // Loại bỏ 'VND'
+
+        // Tạo URL QR
+        const qrUrl = "https://img.vietqr.io/image/970436-1027248713-compact2.png?amount="
+            + totalMoney + "&addInfo=" + phoneNumber + "&accountName=" + accountName;
+
+        // Hiển thị mã QR trong modal
+        const qrImage = document.getElementById('qrImage');
+        qrImage.src = qrUrl;
+
+        // Hiển thị modal
+        const qrModal = new bootstrap.Modal(document.getElementById('qrModal'));
+        qrModal.show();
+
+        setTimeout(syncAndFetchTransactions, 10000);
+    });
+
 
 </script>
