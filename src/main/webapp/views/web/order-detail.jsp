@@ -579,6 +579,7 @@
             $('#modal-product-image').attr('src', imageUrl);
 
             var orderDetailId = $(this).data('orderdetail-id');
+            $('#orderDetailId').val(orderDetailId)
 
             // Gửi AJAX tới API với các thông tin đã lấy từ button
             $.ajax({
@@ -608,48 +609,6 @@
         });
 
     });
-
-    <%--$(document).ready(function () {--%>
-    <%--    // Lắng nghe sự kiện click vào nút "Đánh giá"--%>
-    <%--    $('#rating-button').on('click', function () {--%>
-    <%--        // Lấy thông tin từ modal--%>
-    <%--        const orderDetailId = $('#orderDetailId').val();--%>
-    <%--        const feedback = $('#feedback').val();--%>
-    <%--        const stars = $('#stars span.text-warning').length; // Đếm số sao được chọn (sao có class "text-warning")--%>
-
-    <%--        if (!stars || !feedback.trim()) {--%>
-    <%--            alert("Vui lòng điền đầy đủ đánh giá và chọn số sao!");--%>
-    <%--            return;--%>
-    <%--        }--%>
-
-    <%--        // Gửi AJAX để gửi dữ liệu đánh giá lên server--%>
-    <%--        $.ajax({--%>
-    <%--            url: '/api-product-review', // Đường dẫn API xử lý review--%>
-    <%--            type: 'POST',--%>
-    <%--            contentType: 'application/json',--%>
-    <%--            data: JSON.stringify({--%>
-    <%--                customerId: ${customerId},--%>
-    <%--                content: feedback,--%>
-    <%--                orderDetail: {--%>
-    <%--                    id: orderDetailId--%>
-    <%--                },--%>
-    <%--                numberOfStars: stars--%>
-    <%--            }),--%>
-    <%--            success: function (response) {--%>
-    <%--                if (response.success) {--%>
-    <%--                    alert("Đánh giá của bạn đã được gửi thành công!");--%>
-    <%--                    $('#exampleModalCenter').modal('hide'); // Ẩn modal sau khi đánh giá thành công--%>
-    <%--                } else {--%>
-    <%--                    alert("Có lỗi xảy ra khi gửi đánh giá. Vui lòng thử lại.");--%>
-    <%--                }--%>
-    <%--            },--%>
-    <%--            error: function (xhr, status, error) {--%>
-    <%--                alert("Lỗi xử lý: " + error);--%>
-    <%--            }--%>
-    <%--        });--%>
-    <%--    });--%>
-    <%--});--%>
-
 
 
 </script>

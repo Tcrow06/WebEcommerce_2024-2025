@@ -13,6 +13,7 @@ import com.webecommerce.mapper.Impl.ReviewFeedbackMapper;
 import com.webecommerce.service.IProductReviewService;
 
 import javax.inject.Inject;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,22 +46,28 @@ public class ProductReviewService implements IProductReviewService {
 
     public ProductReviewDTO save (ProductReviewDTO productReview) {
 
-        ProductReviewEntity productReviewEntity = productReviewMapper.toEntity(productReview);
+        ProductReviewEntity productReviewEntity = productReviewDAO.getProductReviewByOrderDetailId(productReview.getOrderDetail().getId());
+
+        if (productReviewEntity != null) {
+            return null ;
+        }
+
+        productReviewEntity = productReviewMapper.toEntity(productReview);
+
+        productReviewEntity.setDate(LocalDateTime.now());
 
         CustomerEntity customerEntity = customerDAO.findById(productReview.getCustomerId());
         OrderDetailEntity orderDetailEntity = orderDetailDAO.findById(productReview.getOrderDetail().getId());
 
 
         if (customerEntity != null && orderDetailEntity != null) {
-            if (orderDetailEntity.getProductReviews() == null) {
-                productReviewEntity.setCustomer(customerEntity);
-                productReviewEntity.setOrderDetail(orderDetailEntity);
+            productReviewEntity.setCustomer(customerEntity);
+            productReviewEntity.setOrderDetail(orderDetailEntity);
 
-                customerEntity.getProductReviews().add(productReviewEntity);
-                orderDetailEntity.getProductReviews().add(productReviewEntity);
+            customerEntity.getProductReviews().add(productReviewEntity);
+            orderDetailEntity.getProductReviews().add(productReviewEntity);
 
-                return productReviewMapper.toDTO(productReviewDAO.insert(productReviewEntity));
-            }
+            return productReviewMapper.toDTO(productReviewDAO.insert(productReviewEntity));
         }
         return null;
     }
