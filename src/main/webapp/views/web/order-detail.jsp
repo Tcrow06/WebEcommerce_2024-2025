@@ -401,7 +401,9 @@
                     <th>Giá</th>
                     <th>Màu</th>
                     <th>Size</th>
-                    <th>Đánh giá</th>
+                    <c:if test="${status == 'RECEIVED'}">
+                        <th>Đánh giá</th>
+                    </c:if>
                 </tr>
                 </thead>
                 <tbody>
@@ -421,15 +423,27 @@
                             <td><input type="checkbox" class="row-checkbox" name="selectedItems" value="${item.id}"></td>
                             <td><img src="<c:url value='/api-image?path=${item.imageUrl}'/>" alt="Product Image" class="product-image"></td>
                             <td>${item.productName}</td>
-                            <td>${item.quantity}</td>
+
+                            <c:if test="${status == 'DELIVERED'}">
+                                <td>
+                                    <button type="button" onclick="decreaseQuantity(${item.id})">-</button>
+                                    <input type="number" id="quantity-${item.id}" name="quantities[${item.id}]" value="${item.quantity}" min="1" data-max="${item.quantity}" style="width: 50px; text-align: center;">
+                                    <button type="button" onclick="increaseQuantity(${item.id})">+</button>
+                                </td>
+                            </c:if>
+
+                            <c:if test="${status != 'DELIVERED'}">
+                                  <td>${item.quantity}</td>
+                            </c:if>
                             <td>${item.price}</td>
                             <td>${item.color}</td>
                             <td>${item.size}</td>
-                            <td>
-<%--                                data-bs-toggle="modal" data-bs-target="#exampleModalCenter"--%>
-                                <button type="button" class="btn btn-dark btn-review" data-product-name="${item.productName}" data-product-image="${item.imageUrl}" data-orderdetail-id = "${item.id}">Đánh giá</button>
-                            </td>
-
+                            <c:if test="${status == 'RECEIVED'}">
+                                <td>
+                                <%--                                data-bs-toggle="modal" data-bs-target="#exampleModalCenter"--%>
+                                        <button type="button" class="btn btn-dark btn-review" data-product-name="${item.productName}" data-product-image="${item.imageUrl}" data-orderdetail-id = "${item.id}">Đánh giá</button>
+                                </td>
+                            </c:if>
                         </tr>
 
                     </c:forEach>
@@ -509,6 +523,34 @@
         </div>
     </div>
 </div>
+
+<script>function increaseQuantity(itemId) {
+    const elementId = "quantity-" + itemId;
+    const quantityInput = document.getElementById(elementId);
+    const currentQuantity = parseInt(quantityInput.value);
+    const maxQuantity = parseInt(quantityInput.getAttribute('data-max'));
+
+    if (currentQuantity < maxQuantity) {
+        quantityInput.value = currentQuantity + 1;
+    } else {
+        alert(`Không thể tăng thêm số lượng, số lượng của sản phẩm đạt tối đa`);
+    }
+}
+
+function decreaseQuantity(itemId) {
+    const elementId = "quantity-" + itemId;
+    const quantityInput = document.getElementById(elementId);
+    const currentQuantity = parseInt(quantityInput.value);
+    const minQuantity = parseInt(quantityInput.getAttribute('min'));
+
+    if (currentQuantity > minQuantity) {
+        quantityInput.value = currentQuantity - 1;
+    } else {
+        alert(`Không thể giảm thêm số lượng, số lượng của sản phẩm đạt tối thiểu`);
+    }
+}
+
+</script>
 
 <script>
     document.getElementById('select-all').addEventListener('change', function () {
