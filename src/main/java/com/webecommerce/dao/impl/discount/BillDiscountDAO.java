@@ -6,6 +6,7 @@ import com.webecommerce.entity.discount.BillDiscountEntity;
 import com.webecommerce.entity.discount.ProductDiscountEntity;
 
 import javax.persistence.NoResultException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Level;
@@ -123,6 +124,8 @@ public class BillDiscountDAO extends AbstractDAO<BillDiscountEntity> implements 
     }
 
 
+
+
     public List <BillDiscountEntity> findBillDiscountUpComming () {
         String query = "SELECT b FROM BillDiscountEntity b " +
                 "WHERE b.startDate >= :start and b.endDate >= :start"; ;
@@ -155,6 +158,24 @@ public class BillDiscountDAO extends AbstractDAO<BillDiscountEntity> implements 
             LOGGER.log(Level.SEVERE, "Lỗi khi lấy biến thể giảm giá", e);
             return null;
         }
+    }
+
+    @Override
+    public int countDiscountValid() {
+        String jpql = "SELECT count(b) from BillDiscountEntity b " +
+                "WHERE b.startDate <= :current_date " +
+                "AND b.endDate >= :current_date";
+        try {
+            Long count = entityManager.createQuery(jpql,Long.class)
+                    .setParameter("current_date", LocalDateTime.now())
+                    .getSingleResult();
+            return count == null ? 0 : count.intValue();
+        }catch (NoResultException e) {
+            LOGGER.log(Level.WARNING, "Không tìm thấy biến thể giảm giá nào", e);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi lấy biến thể giảm giá", e);
+        }
+        return 0;
     }
 
 }
