@@ -57,10 +57,13 @@ public interface IProductService {
 
     List<Map.Entry<ProductDTO, Integer>> findBestSellerProduct(int limit);
 
+    List<Map.Entry<ProductDTO, Integer>>findLowestSellingProducts(int limit);
+
     int totalProducts();
     Long getTotalItems();
 
     List<ProductDTO> searchProductsByName(String name);
 
+    int countByStatus(EnumProductStatus status);
     RevenueDTO getRevenue();
 }

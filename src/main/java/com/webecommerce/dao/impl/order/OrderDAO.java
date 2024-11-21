@@ -166,9 +166,12 @@ public class OrderDAO extends AbstractDAO<OrderEntity> implements IOrderDAO {
                 "FROM OrderEntity o " +
                 "JOIN o.orderStatuses os " +
                 "JOIN o.orderDetails od " +
-                "JOIN od.productVariant pv";
+                "JOIN od.productVariant pv " +  // Thêm khoảng trắng ở cuối
+                "WHERE os.status = :status";
+
 
         TypedQuery<Double> query = entityManager.createQuery(jpql, Double.class);
+        query.setParameter("status",EnumOrderStatus.RECEIVED);
 
         Double totalRevenue = query.getSingleResult();
 
@@ -176,11 +179,14 @@ public class OrderDAO extends AbstractDAO<OrderEntity> implements IOrderDAO {
     }
 
     @Override
-    public int totalOrders() {
-        String query = "SELECT COUNT(p) FROM OrderEntity p"; // Đếm tổng số sản phẩm
+    public int totalOrdersByStatus(EnumOrderStatus status) {
+        String query = "SELECT COUNT(o) FROM OrderEntity o " +
+                "JOIN o.orderStatuses os " +
+                "WHERE os.status = :status "; // Đếm tổng số sản phẩm
         try {
-            Long count = entityManager.createQuery(query, Long.class)
-                    .getSingleResult();
+            TypedQuery<Long> typedQuery = entityManager.createQuery(query, Long.class);
+            typedQuery.setParameter("status",status);
+            Long count = typedQuery.getSingleResult();
             return count != null ? count.intValue() : 0; // Chuyển đổi Long thành int
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Lỗi khi tính tổng số sản phẩm", e);
@@ -203,6 +209,7 @@ public class OrderDAO extends AbstractDAO<OrderEntity> implements IOrderDAO {
             return 0;
         }
     }
+
 
     public boolean changeConfirmStatus(Long orderId) {
         EntityTransaction transaction = entityManager.getTransaction();
