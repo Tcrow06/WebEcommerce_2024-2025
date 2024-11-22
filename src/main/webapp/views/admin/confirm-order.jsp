@@ -52,25 +52,64 @@
 </div>
 
 <script>
+    // document.querySelectorAll('.submitBtn').forEach(button => {
+    //     button.addEventListener('click', function () {
+    //         const orderId = this.getAttribute('data-order-id');
+    //         const confirmSubmit = confirm("Bạn có muốn submit không?");
+    //         if (confirmSubmit) {
+    //             const form = document.createElement('form');
+    //             form.method = 'POST';
+    //             form.action = '/chu-cua-hang/xac-nhan-don-hang';
+    //
+    //             const input = document.createElement('input');
+    //             input.type = 'hidden';
+    //             input.name = 'orderId';
+    //             input.value = orderId;
+    //             form.appendChild(input);
+    //
+    //             document.body.appendChild(form);
+    //             form.submit();
+    //         }
+    //     });
+    // });
+
     document.querySelectorAll('.submitBtn').forEach(button => {
         button.addEventListener('click', function () {
             const orderId = this.getAttribute('data-order-id');
-            const confirmSubmit = confirm("Bạn có muốn submit không?");
-            if (confirmSubmit) {
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '/chu-cua-hang/xac-nhan-don-hang';
 
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = 'orderId';
-                input.value = orderId;
-                form.appendChild(input);
+            // Sử dụng SweetAlert thay vì confirm()
+            Swal.fire({
+                text: "Bạn muốn xác nhận đơn hàng này?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Xác nhận',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Nếu người dùng nhấn Xác nhận
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '/chu-cua-hang/xac-nhan-don-hang';
 
-                document.body.appendChild(form);
-                form.submit();
-            }
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'orderId';
+                    input.value = orderId;
+                    form.appendChild(input);
+
+                    document.body.appendChild(form);
+                    form.submit();
+
+                    Swal.fire({
+                        title: 'Thành công!',
+                        text: 'Đơn hàng của bạn đã được xác nhận.',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
         });
     });
+
 </script>
 

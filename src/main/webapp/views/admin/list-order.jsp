@@ -5,8 +5,8 @@
 <div class="content">
     <div class="page-header">
         <div class="page-title">
-            <h4>Create Purchase Return</h4>
-            <h6>Add/Update Purchase Return</h6>
+            <h4>Danh sách đơn hàng</h4>
+            <h6>Những đơn hàng đã được đặt ở cửa hàng</h6>
         </div>
     </div>
     <div class="card">

@@ -8,6 +8,11 @@
 
 <link rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
+<!-- SweetAlert2 CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <style>
     /*.table-container {*/
     /*    margin: 20px auto;*/
@@ -401,7 +406,7 @@
 
 <section>
     <div class="table-container">
-        <form id="return-form" action="/trang-chu/don-hang/danh-sach-don-hang/tra-san-pham" method="POST">
+        <form id="return-form" action="/trang-chu/don-hang/danh-sach-don-hang/tra-san-pham" method="POST" onsubmit="return validateSelection()">
             <table class="table table-bordered table-hover">
                 <thead class="thead-dark">
                 <tr>
@@ -438,7 +443,7 @@
                             <c:if test="${status == 'DELIVERED'}">
                                 <td>
                                     <button type="button" onclick="decreaseQuantity(${item.id})">-</button>
-                                    <input type="number" id="quantity-${item.id}" name="quantities[${item.id}]" value="${item.quantity}" min="1" data-max="${item.quantity}" style="width: 50px; text-align: center;">
+                                    <input type="number" id="quantity-${item.id}" name="quantities[${item.id}]" value="${item.quantity}" min="1" data-max="${item.quantity}" style="width: 50px; text-align: center;" readonly>
                                     <button type="button" onclick="increaseQuantity(${item.id})">+</button>
                                 </td>
                             </c:if>
@@ -543,8 +548,12 @@
     if (currentQuantity < maxQuantity) {
         quantityInput.value = currentQuantity + 1;
     } else {
-        alert(`Không thể tăng thêm số lượng, số lượng của sản phẩm đạt tối đa`);
-    }
+        Swal.fire({
+            title: 'Lỗi!',
+            text: 'Không thể tăng thêm số lượng, số lượng của sản phẩm đạt tối đa',
+            icon: 'error',
+            confirmButtonText: 'Đồng ý'
+        });    }
 }
 
 function decreaseQuantity(itemId) {
@@ -556,7 +565,12 @@ function decreaseQuantity(itemId) {
     if (currentQuantity > minQuantity) {
         quantityInput.value = currentQuantity - 1;
     } else {
-        alert(`Không thể giảm thêm số lượng, số lượng của sản phẩm đạt tối thiểu`);
+        Swal.fire({
+            title: 'Lỗi!',
+            text: 'Không thể giảm thêm số lượng, số lượng của sản phẩm đạt tối thiểu',
+            icon: 'error',
+            confirmButtonText: 'Đồng ý'
+        });
     }
 }
 
@@ -703,4 +717,22 @@ function decreaseQuantity(itemId) {
                 }
             });
         });
+</script>
+
+<script>
+    function validateSelection() {
+        const checkboxes = document.querySelectorAll('.item-checkbox:checked');
+
+        if (checkboxes.length === 0) {
+            Swal.fire({
+                title: 'Lỗi!',
+                text: 'Bạn phải chọn sản phẩm để trả hàng!',
+                icon: 'error',
+                confirmButtonText: 'Đồng ý'
+            });
+            return false;
+        }
+
+        return true;
+    }
 </script>
