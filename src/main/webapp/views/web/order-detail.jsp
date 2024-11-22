@@ -334,7 +334,7 @@
     <div class="order-tracking">
         <div class="order-steps">
             <div class="steps">
-                <div class="step ${status == 'PENDING' || status == 'DELIVERED' || status == 'WAITING' || status == 'PROCESSED' || status == 'RECEIVED' ? 'completed' : ''}">
+                <div class="step ${status == 'PENDING' || status == 'DELIVERED' || status == 'WAITING' || status == 'PROCESSED' || status == 'RECEIVED' || status == 'CANCELLED' ? 'completed' : ''}">
                     <div class="step-icon-wrap">
                         <div class="step-icon"
                              style="${status == 'PENDING' ? 'background-color: black; color: #fff;' : ''}">
@@ -344,7 +344,7 @@
                     <div class="step-title">Chờ xác nhận</div>
                 </div>
 
-                <div class="step ${status == 'DELIVERED' || status == 'WAITING' || status == 'PROCESSED' || status == 'RECEIVED' ? 'completed' : ''}">
+                <div class="step ${status == 'DELIVERED' || status == 'WAITING' || status == 'PROCESSED' || status == 'RECEIVED' || status == 'CANCELLED' ? 'completed' : ''}">
                     <div class="step-icon-wrap">
                         <div class="step-icon"
                              style="${status == 'DELIVERED' ? 'background-color: black; color: #fff;' : ''}">
@@ -354,7 +354,7 @@
                     <div class="step-title">Đang vận chuyển</div>
                 </div>
 
-                <div class="step ${status == 'DELIVERED' || status == 'WAITING' || status == 'PROCESSED' || status == 'RECEIVED' ? 'completed' : ''}">
+                <div class="step ${status == 'DELIVERED' || status == 'WAITING' || status == 'PROCESSED' || status == 'RECEIVED' || status == 'CANCELLED' ? 'completed' : ''}">
                     <div class="step-icon-wrap">
                         <div class="step-icon"
                              style="${status == 'WAITING' ? 'background-color: black; color: #fff;' : ''}">
@@ -364,7 +364,7 @@
                     <div class="step-title">Đã vận chuyển</div>
                 </div>
 
-                <div class="step ${status == 'WAITING' || status == 'PROCESSED' || status == 'RECEIVED' ? 'completed' : ''}">
+                <div class="step ${status == 'WAITING' || status == 'PROCESSED' || status == 'RECEIVED' || status == 'CANCELLED' ? 'completed' : ''}">
                     <div class="step-icon-wrap">
                         <div class="step-icon"
                              style="${status == 'RECEIVED' ? 'background-color: black; color: #fff;' : ''}">
@@ -377,12 +377,23 @@
                 <div class="step ${status == 'RECEIVED' ? 'completed' : ''}">
                     <div class="step-icon-wrap">
                         <div class="step-icon"
-                             style="${status == 'RECEIVED' ? 'background-color: black; color: #fff;' : ''}">
-                            <i class="pe-7s-home"></i>
+                             style="${status == 'RECEIVED' || status == 'CANCELLED' ? 'background-color: black; color: #fff;' : ''}">
+                            <i class="${status == 'CANCELLED' ? 'pe-7s-close-circle' : 'pe-7s-home'}"></i>
                         </div>
                     </div>
-                    <div class="step-title">Đã nhận</div>
+                    <div class="step-title">${status == 'CANCELLED' ? 'Đã hủy' : 'Đã nhận'}</div>
                 </div>
+
+
+<%--                <div class="step ${status == 'RECEIVED' ? 'completed' : ''}">--%>
+<%--                    <div class="step-icon-wrap">--%>
+<%--                        <div class="step-icon"--%>
+<%--                             style="${status == 'RECEIVED' ? 'background-color: black; color: #fff;' : ''}">--%>
+<%--                            <i class="pe-7s-home"></i>--%>
+<%--                        </div>--%>
+<%--                    </div>--%>
+<%--                    <div class="step-title">Đã nhận</div>--%>
+<%--                </div>--%>
             </div>
         </div>
     </div>
@@ -420,7 +431,7 @@
                         </c:if>
 
                         <tr>
-                            <td><input type="checkbox" class="row-checkbox" name="selectedItems" value="${item.id}"></td>
+                            <td><input type="checkbox" class="item-checkbox" name="selectedItems" value="${item.id}"></td>
                             <td><img src="<c:url value='/api-image?path=${item.imageUrl}'/>" alt="Product Image" class="product-image"></td>
                             <td>${item.productName}</td>
 

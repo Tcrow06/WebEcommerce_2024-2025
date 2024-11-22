@@ -11,7 +11,9 @@ import com.webecommerce.entity.order.OrderDetailEntity;
 import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class OrderDetailDAO extends AbstractDAO<OrderDetailEntity> implements IOrderDetailDAO {
 
@@ -52,22 +54,42 @@ public class OrderDetailDAO extends AbstractDAO<OrderDetailEntity> implements IO
                 .setParameter("orderId", orderId)
                 .getResultList();
 
+        Map<Long, Long> quantityReturnMap = new HashMap<>();
+
+        if(status.equals(EnumOrderStatus.CANCELLED)) {
+            String query = "SELECT ro.orderDetail.id, ro.quantityReturn FROM ReturnOrderEntity ro WHERE ro.orderDetail.order.id = :orderId";
+            List<Object[]> rawResultsQuantity = entityManager.createQuery(query, Object[].class)
+                    .setParameter("orderId", orderId)
+                    .getResultList();
+
+            for (Object[] result : rawResultsQuantity) {
+                Long orderDetailId = (Long) result[0];
+                Long quantityReturnValue = (Long) result[1];
+                quantityReturnMap.put(orderDetailId, quantityReturnValue);
+            }
+        }
+
         List<DisplayOrderDetailDTO> resultList = new ArrayList<>();
 
         for (Object[] result : rawResults) {
             Long orderDetailId = (Long) result[0];
-            Integer quantity  = (Integer) result[1];
+            Integer quantityInteger = (Integer) result[1];
+            Long quantity = Long.valueOf(quantityInteger);
             String imgUrl = (String) result[2];
             String color = (String) result[3];
             String size = (String) result[4];
             String productName = (String) result[5];
             Double total = (Double) result[6];
 
-            if(quantity == 0) {
+            if(quantity == 0 && status.equals(EnumOrderStatus.CANCELLED)) {
+                quantity = quantityReturnMap.get(orderDetailId);
+            }
+            else if(quantity == 0) {
                 continue;
             }
 
-            resultList.add(new DisplayOrderDetailDTO(orderDetailId, quantity,imgUrl, color, size, productName, total));
+
+            resultList.add(new DisplayOrderDetailDTO(orderDetailId, quantity ,imgUrl, color, size, productName, total));
         }
 
         return resultList;
@@ -113,7 +135,10 @@ public class OrderDetailDAO extends AbstractDAO<OrderDetailEntity> implements IO
                 .getSingleResult();
 
         Long orderDetailIdOld = (Long) rawResults[0];
-        Integer quantity  = (Integer) rawResults[1];
+
+        Integer quantityInteger = (Integer) rawResults[1];
+        Long quantity = quantityInteger.longValue();
+
         String imgUrl = (String) rawResults[2];
         String color = (String) rawResults[3];
         String size = (String) rawResults[4];

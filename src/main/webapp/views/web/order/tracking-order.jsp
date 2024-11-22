@@ -217,7 +217,7 @@
                     <strong>Tổng số lượng sản phẩm:</strong> ${order.allQuantity} sản phẩm
                 </div>
                 <div class="order-actions">
-                    <a href="/trang-chu/don-hang/danh-sach-don-hang?id=${order.id}" target="_blank">Xem chi tiết</a>
+                    <a href="/trang-chu/don-hang/danh-sach-don-hang?id=${order.id}">Xem chi tiết</a>
                 </div>
 
             </div>
