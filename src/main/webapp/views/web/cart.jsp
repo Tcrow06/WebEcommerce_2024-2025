@@ -271,6 +271,8 @@
 
 
     $(document).ready(function () {
+        calculateTotalPrice();
+        toggleDeleteButton();
 
         // Sự kiện click vào nút tăng/giảm số lượng
         $(document).on('click', '.pro-qty-2 .qtybtn', function () {
@@ -333,7 +335,6 @@
 
     function updateCart() {
         const cartData = getCartData();
-
         $.ajax({
             type: "POST",
             url: "/sua-gio-hang",
@@ -360,19 +361,14 @@
             const productVariantId = $(this).data('product-id');
             const quantity = $(this).closest('tr').find('input[type="text"]').val();
 
-            selectedItems.push({
-                productVariantId: productVariantId,
-                quantity: parseInt(quantity, 10)
-            });
+            selectedItems.push(productVariantId);
         });
 
         $.ajax({
             type: "POST",
             url: "/xoa-gio-hang",
             contentType: "application/json",
-            data: JSON.stringify({
-                cartItems: selectedItems
-            }),
+            data: JSON.stringify(selectedItems),
             success: function(response) {
                 alert("Xóa sản phẩm khỏi giỏ hàng thành công.");
                 refreshCart();
