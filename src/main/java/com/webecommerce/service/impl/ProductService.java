@@ -240,6 +240,20 @@ public class ProductService implements IProductService {
         return getProductsWithDiscount(productEntities);
     }
 
+    public List <ProductDTO> findProductSellingByCategoryAndName(String categoryCode, String name) {
+        List <ProductEntity> productEntities = productDAO.findProductByCategoryOrStatusOrName(categoryCode,EnumProductStatus.SELLING,name);
+        if (productEntities == null) return new ArrayList<>();
+
+        return getProductsWithDiscount(productEntities);
+    }
+
+    public List <ProductDTO> findProductStopSellingByCategoryAndName(String categoryCode, String name) {
+        List <ProductEntity> productEntities = productDAO.findProductByCategoryOrStatusOrName(categoryCode,EnumProductStatus.STOP_SELLING,name);
+        if (productEntities == null) return new ArrayList<>();
+
+        return getProductsWithDiscount(productEntities);
+    }
+
     // dùng cho controller product admin
     public List<ProductDTO> findProductStopSelling() {
         List <ProductEntity> productEntities = productDAO.findProductByStatus(EnumProductStatus.STOP_SELLING);

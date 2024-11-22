@@ -161,7 +161,7 @@
                                     <td>
                                         <input type="radio" name="product" value="${item.id}"
                                                data-photo="${item.photo}" data-id="${item.id}"
-                                               data-name="${item.name}" data-price="${item.price}"
+                                               data-name="${item.name}" data-price="${item.getDiscountedPrice()}"
                                                data-brand="${item.brand}"
                                         <c:if test="${item.productDiscount != null}">
                                                 data-productdiscountid="${item.productDiscount.id}"
@@ -365,7 +365,7 @@
                     const data = {
                         id: productDiscountId
                     };
-                    sendAPI(data, '/api-huy-giam-gia')
+                    sendAPI(data, 'DELETE')
                 });
             })
 
@@ -399,14 +399,14 @@
                         }
                     };
 
-                    sendAPI(data, '/api-product-discount')
+                    sendAPI(data, 'POST')
                 });
             });
 
-            function sendAPI (data,url) {
+            function sendAPI (data,method) {
                 $.ajax({
-                    url: url,
-                    type: 'POST',
+                    url: '/api-product-discount',
+                    type: method,
                     contentType: 'application/json',
                     data: JSON.stringify(data),
                     success: function (response) {
@@ -440,7 +440,7 @@
                     $('#dateInput').text(""); // Xóa lỗi nếu đã chọn ngày hợp lệ
                 }
 
-                // Kiểm tra nếu endDate nhỏ hơn startDate
+
                 if (new Date(endDate) < new Date(startDate)) {
                     $('#dateInput').text("Ngày kết thúc không thể nhỏ hơn ngày bắt đầu.");
                     return false;
