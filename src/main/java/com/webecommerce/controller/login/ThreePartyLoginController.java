@@ -108,9 +108,8 @@ public class ThreePartyLoginController extends HttpServlet {
         }
 
         existingUser.setRole("CUSTOMER");
-        cart=cartItemService.LoadCart(JWTUtil.getIdUser(request));
+        cart=cartItemService.LoadCart(existingUser.getId());
         request.getSession().setAttribute("cart", cart);
-
 
         response.setContentType("application/json");
         String jwtToken = JWTUtil.generateToken(existingUser);

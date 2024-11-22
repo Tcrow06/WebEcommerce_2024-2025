@@ -308,6 +308,23 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
         return query.getResultList();
     }
 
+    @Override
+    public List<Object[]> findLowestSellingProducts(int limit) {
+        String jpql = "SELECT p, SUM(od.quantity) AS totalSales " +
+                "FROM ProductEntity p " +
+                "JOIN p.productVariants pv " +
+                "JOIN OrderDetailEntity od ON pv.id = od.productVariant.id " +
+                "JOIN od.order o " +
+                "JOIN o.orderStatuses os " +
+                "WHERE os.status = :status " +
+                "GROUP BY p.id " +
+                "ORDER BY totalSales ASC ";
+        TypedQuery<Object[]> query = entityManager.createQuery(jpql, Object[].class);
+        query.setParameter("status", EnumOrderStatus.WAITING);
+        query.setMaxResults(limit); // Giới hạn kết quả trả về
+        return query.getResultList();
+    }
+
 
     @Override
     public int totalProducts() {
@@ -333,6 +350,20 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
         return typedQuery.getResultList();
     }
 
+    @Override
+    public int countByStatus(EnumProductStatus status) {
+        String query = "SELECT COUNT(p) FROM ProductEntity p WHERE p.status = :status"; // Câu JPQL đúng
+        try {
+            // Truy vấn COUNT trả về Long
+            TypedQuery<Long> typedQuery = entityManager.createQuery(query, Long.class);
+            typedQuery.setParameter("status", status);
+            Long count = typedQuery.getSingleResult(); // Lấy kết quả
+            return count != null ? count.intValue() : 0; // Chuyển Long thành int
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi tính tổng số sản phẩm", e);
+            return 0; // Trả về 0 nếu xảy ra lỗi
+        }
+    }
     @Override
     public RevenueDTO getRevenue() {
         String query = "SELECT \n" +

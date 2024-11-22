@@ -24,4 +24,5 @@ public interface IBillDiscountDAO extends GenericDAO<BillDiscountEntity> {
     List <BillDiscountEntity> findExpiredBillDiscount ();
 
     List <BillDiscountEntity> findBillDiscountValid ();
+    int countDiscountValid();
 }
