@@ -22,6 +22,8 @@
 </style>
 
 <link rel="stylesheet" href="/static/web/css/return-order.css" type="text/css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- Breadcrumb Section Begin -->
 <section class="breadcrumb-blog set-bg" data-setbg="/static/web/img/bg-return-order.jpg">
@@ -155,10 +157,22 @@
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (response) {
-                alert("Đã gửi thông tin thành công!");
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thành công!',
+                    text: 'Đã gửi yêu cầu trả hàng thành công!',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    window.location.href = '/trang-chu/don-hang';
+                });
             },
             error: function (xhr, status, error) {
-                alert("Lỗi: " + error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi!',
+                    text: 'Đã xảy ra lỗi: ' + error,
+                    confirmButtonText: 'OK'
+                });
             }
         });
     });
