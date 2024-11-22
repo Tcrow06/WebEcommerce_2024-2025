@@ -431,7 +431,6 @@
                                     <button type="button" onclick="increaseQuantity(${item.id})">+</button>
                                 </td>
                             </c:if>
-
                             <c:if test="${status != 'DELIVERED'}">
                                   <td>${item.quantity}</td>
                             </c:if>
