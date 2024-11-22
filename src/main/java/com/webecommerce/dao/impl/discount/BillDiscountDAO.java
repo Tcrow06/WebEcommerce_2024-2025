@@ -27,7 +27,6 @@ public class BillDiscountDAO extends AbstractDAO<BillDiscountEntity> implements 
         super(BillDiscountEntity.class);
     }
 
-
     public List<BillDiscountEntity> getAllDiscountEligible(Long idUser) {
         String query = "SELECT b FROM BillDiscountEntity b JOIN CustomerEntity c " +
                 "ON b.loyaltyPointsRequired < c.loyaltyPoint " +
@@ -53,6 +52,10 @@ public class BillDiscountDAO extends AbstractDAO<BillDiscountEntity> implements 
         }finally {
             entityManager.close();
         }
+    }
+
+    public boolean billDiscountCodeExists (String code) {
+        return super.existsByAttribute("code", code);
     }
 
 

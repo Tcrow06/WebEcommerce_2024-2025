@@ -71,6 +71,8 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
 
     private String photo;
 
+    private int discountPercentage;
+
     public LocalDateTime getIsNewProduct() {
         return isNewProduct;
     }
@@ -228,6 +230,13 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
                     price = productVariantDTO.getPrice();
             }
         }
+
+        if (discountPercentage != 0) {
+            return formatVND(new BigDecimal(
+                    (price - (price / 100) * discountPercentage))
+                    .setScale(2, RoundingMode.HALF_UP).doubleValue());
+        }
+
         if (this.productDiscount == null) return formatVND(price);
 
         double discountedPrice = price - (price / 100) * productDiscount.getDiscountPercentage();
@@ -282,4 +291,11 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
         return productVariantColors;
     }
 
+    public int getDiscountPercentage() {
+        return discountPercentage;
+    }
+
+    public void setDiscountPercentage(int discountPercentage) {
+        this.discountPercentage = discountPercentage;
+    }
 }

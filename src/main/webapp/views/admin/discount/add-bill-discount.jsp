@@ -409,7 +409,13 @@
                         alert(response);
                     },
                     error: function(xhr, status, error) {
-                        alert('Có lỗi xảy ra khi gửi dữ liệu!');
+                        if (xhr.status === 409) {
+                            alert("Lỗi: " + xhr.responseText); // Hiển thị thông báo lỗi khi mã code đã tồn tại
+                        } else if (xhr.status === 400) {
+                            alert("Lỗi: Dữ liệu không hợp lệ.");
+                        } else {
+                            alert("Đã xảy ra lỗi: " + error);
+                        }
                     }
                 });
             }
