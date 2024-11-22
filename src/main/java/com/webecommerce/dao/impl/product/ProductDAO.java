@@ -140,6 +140,36 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
         return super.findByAttribute("status", status);
     }
 
+    public List<ProductEntity> findProductByCategoryOrStatusOrName(String categoryCode, EnumProductStatus status, String name) {
+        StringBuilder jpql = new StringBuilder("SELECT p FROM ProductEntity p WHERE 1=1"); // Sử dụng 1=1 để giữ WHERE hợp lệ
+
+        if (categoryCode != null) {
+            jpql.append(" AND p.category.code = :category");
+        }
+        if (status != null) {
+            jpql.append(" AND p.status = :status");
+        }
+        if (name != null) {
+            jpql.append(" AND LOWER(p.name) LIKE :name");
+        }
+
+        TypedQuery<ProductEntity> query = entityManager.createQuery(jpql.toString(), ProductEntity.class);
+
+        if (categoryCode != null) {
+            query.setParameter("category", categoryCode);
+        }
+        if (status != null) {
+            query.setParameter("status", status);
+        }
+        if (name != null) {
+            query.setParameter("name", "%" + name.toLowerCase() + "%");
+        }
+
+        return query.getResultList();
+    }
+
+
+
     public Long getTotalItem() {
         return (Long) entityManager.createQuery("SELECT COUNT(p) FROM ProductEntity p")
                 .getSingleResult();
@@ -245,6 +275,8 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
         int limit = pageable.getLimit() != null ? pageable.getLimit() : 9;
         return productEntities.stream().skip(offset).limit(limit).collect(Collectors.toList());
     }
+
+
     @Override
     public List<String> getAllProductName() {
         String query = "SELECT p.name FROM ProductEntity p ";

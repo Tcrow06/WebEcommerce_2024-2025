@@ -36,6 +36,7 @@ public interface IProductDAO extends GenericDAO <ProductEntity> {
 
 
     List<Object[]> findBestSellerProduct(int limit);
+
     List<Object[]>findLowestSellingProducts(int limit);
 
     int totalProducts();
@@ -43,9 +44,12 @@ public interface IProductDAO extends GenericDAO <ProductEntity> {
     List<ProductEntity> findProductByStatus(EnumProductStatus status);
 
     Long getTotalItems();
+
     List<ProductEntity> searchProductsByName(String name);
 
     int countByStatus(EnumProductStatus status);
+
     RevenueDTO getRevenue();
 
+    List<ProductEntity> findProductByCategoryOrStatusOrName(String category, EnumProductStatus status, String name);
 }

@@ -105,6 +105,7 @@
                                 </div>
                             </div>
                             <input type="hidden" name="orderDetailReturnId" value="${productReturn.id}">
+                            <input type="hidden" name="orderDetailReturnQuantity" value="${productReturn.quantityReturn}">
                         </div>
                     </div>
                 </div>

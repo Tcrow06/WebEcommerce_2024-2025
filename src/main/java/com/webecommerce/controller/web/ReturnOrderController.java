@@ -15,7 +15,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @WebServlet(urlPatterns = {"/trang-chu/don-hang/danh-sach-don-hang/tra-san-pham"})
 public class ReturnOrderController extends HttpServlet {
@@ -28,13 +30,19 @@ public class ReturnOrderController extends HttpServlet {
         String[] selectedItems = request.getParameterValues("selectedItems");
 
         List<DisplayOrderDetailDTO> selectedOrderItems = new ArrayList<>();
-
+        Map<Long, Integer> quantities = new HashMap<>();
         if (selectedItems != null) {
             for (String idStr : selectedItems) {
                 Long id = Long.parseLong(idStr);
-                DisplayOrderDetailDTO dto = orderDetailService.findOrderDetail(id);
-                if(dto != null) {
-                    selectedOrderItems.add(dto);
+                String quantityStr = request.getParameter("quantities[" + id + "]");
+                if (quantityStr != null) {
+                    int quantity = Integer.parseInt(quantityStr);
+                    quantities.put(id, quantity);
+                    DisplayOrderDetailDTO dto = orderDetailService.findOrderDetail(id);
+                    if(dto != null) {
+                        dto.setQuantity(quantity);
+                        selectedOrderItems.add(dto);
+                    }
                 }
             }
         }

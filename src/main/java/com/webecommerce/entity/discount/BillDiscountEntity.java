@@ -12,6 +12,7 @@ import java.util.List;
 @Entity
 @Table(name = "bill_discount")
 public class BillDiscountEntity extends DiscountEntity {
+
     @Column(name = "start_date")
     private LocalDateTime startDate;
 
@@ -27,10 +28,9 @@ public class BillDiscountEntity extends DiscountEntity {
 
     @Column(name = "code")
     private String code;
+
     @OneToMany(mappedBy = "billDiscount")
     private List<OrderEntity> orders = new ArrayList<>();
-
-
 
     public double getMaximumAmount() {
         return maximumAmount;

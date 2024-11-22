@@ -6,6 +6,8 @@ import com.webecommerce.utils.HibernateUtil;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -76,17 +78,64 @@ public abstract class AbstractDAO<T> implements GenericDAO<T> {
         }
     }
 
-//    protected List<T> findByAttributeNotNull(String attributeName) {
-//        String query = "SELECT e FROM " + entityClass.getSimpleName() + " e WHERE e." + attributeName + " IS NOT NULL";
-//
-//        try {
-//            return entityManager.createQuery(query, entityClass)
-//                    .getResultList();
-//        } catch (Exception e) {
-//            LOGGER.log(Level.SEVERE, "Lỗi khi tìm đối tượng với thuộc tính khác null: " + attributeName, e);
-//            return null;
-//        }
-//    }
+    // Find object by attribute
+    protected T findOneByAttribute(String attributeName, Object value) {
+        // Xây dựng câu truy vấn động
+        String query = "SELECT e FROM " + entityClass.getSimpleName() + " e WHERE ";
+        if (value == null) {
+            query += "e." + attributeName + " IS NULL";
+        } else {
+            query += "e." + attributeName + " = :value";
+        }
+
+        try {
+            // Tạo truy vấn động
+            var typedQuery = entityManager.createQuery(query, entityClass);
+
+            // Chỉ set tham số nếu giá trị không phải null
+            if (value != null) {
+                typedQuery.setParameter("value", value);
+            }
+
+            // Lấy kết quả duy nhất
+            return typedQuery.getSingleResult();
+        } catch (NoResultException e) {
+            LOGGER.log(Level.WARNING, "No entity found with attribute: " + attributeName + " and value: " + value);
+            return null;
+        } catch (NonUniqueResultException e) {
+            LOGGER.log(Level.SEVERE, "Multiple entities found for attribute: " + attributeName + " and value: " + value, e);
+            throw e; // Nếu cần, bạn có thể ném ngoại lệ ra ngoài để xử lý
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error finding entity by attribute: " + attributeName + " and value: " + value, e);
+            return null;
+        }
+    }
+
+    protected boolean existsByAttribute(String attributeName, Object value) {
+        // Xây dựng câu truy vấn JPQL
+        String query = "SELECT COUNT(e) FROM " + entityClass.getSimpleName() + " e WHERE ";
+        if (value == null) {
+            query += "e." + attributeName + " IS NULL";
+        } else {
+            query += "e." + attributeName + " = :value";
+        }
+
+        try {
+            var typedQuery = entityManager.createQuery(query, Long.class);
+
+            // Chỉ set tham số nếu giá trị không phải null
+            if (value != null) {
+                typedQuery.setParameter("value", value);
+            }
+
+            // Lấy số lượng và kiểm tra có tồn tại hay không
+            Long count = typedQuery.getSingleResult();
+            return count > 0;
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error checking existence of entity with attribute: " + attributeName + " and value: " + value, e);
+            return false;
+        }
+    }
 
 
 

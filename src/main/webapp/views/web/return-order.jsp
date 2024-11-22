@@ -128,7 +128,10 @@
             const section = $(this);
 
             const orderDetailId = section.find('.product__id span').text();
-            const reason = section.find('textarea[name="description_' + orderDetailId + '"]').val();
+            let reason = section.find('textarea[name="description_' + orderDetailId + '"]').val();
+            if (!reason) {
+                reason = "Không có lý do";
+            }
             const status = 0;
             const quantityReturn = section.find('.product__quantity span').text();
             const today = new Date();
