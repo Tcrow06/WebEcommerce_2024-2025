@@ -8,4 +8,12 @@ public class CategoryDAO extends AbstractDAO <CategoryEntity> implements ICatego
     public CategoryDAO() {
         super(CategoryEntity.class);
     }
+
+    public CategoryEntity findByCode (String code) {
+        return super.findOneByAttribute("code",code);
+    }
+
+    public boolean categoryCodeExists (String code) {
+        return super.existsByAttribute("code",code);
+    }
 }
