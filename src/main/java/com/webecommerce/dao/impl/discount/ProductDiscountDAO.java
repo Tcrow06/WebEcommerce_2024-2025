@@ -27,21 +27,6 @@ public class ProductDiscountDAO extends AbstractDAO<ProductDiscountEntity> imple
     }
 
     public List<ProductDiscountEntity> findDiscounNotProduct() {
-//        String query = "SELECT e FROM " + ProductDiscountEntity.class.getSimpleName() +
-//                " e WHERE e.startDate >= :startDate and e.endDate <= :endDate";
-//
-//        try {
-//            return entityManager.createQuery(query, ProductDiscountEntity.class)
-//                    .setParameter("startDate", startDate)
-//                    .setParameter("endDate", endDate)
-//                    .getResultList();
-//        } catch (NoResultException e) {
-//            LOGGER.log(Level.WARNING, "Không tìm thấy biến thể giảm gía nào", e);
-//            return null;
-//        } catch (Exception e) {
-//            LOGGER.log(Level.SEVERE, "Lỗi khi lấy biến thể giảm giá", e);
-//            return null;
-//        }
         return super.findByAttribute("product",null);
     }
 
