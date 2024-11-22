@@ -91,14 +91,14 @@ public class AuthController extends HttpServlet {
                     path = "/chu-doanh-nghiep";
                 }
                 else if(user.getRole().equals(EnumRole.CUSTOMER.toString())) {
-                    HashMap<Long, CartItemDTO> cart = new HashMap<>();
+                    HashMap<Long, CartItemDTO> cart = (HashMap<Long, CartItemDTO>) session.getAttribute("cart");
+                    cart=cartItemService.updateCartWhenLogin(cart,user.getId());
                     if(checkOutRequestDTO!=null){
                         cart = cartItemService.updateCartWhenBuy(user.getId(),checkOutRequestDTO);
-                    }else{
-                        cart=cartItemService.LoadCart(user.getId());
                     }
-
-
+//                    else{
+//                        cart=cartItemService.updateCartWhenLogin(cart,user.getId());
+//                    }
                     request.getSession().setAttribute("cart", cart);
                     jwtToken = JWTUtil.generateToken(user);
                     path="/trang-chu";
