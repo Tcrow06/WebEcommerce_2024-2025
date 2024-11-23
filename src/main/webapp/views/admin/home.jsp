@@ -4,9 +4,9 @@
 <div class="content">
     <div class="row">
         <div class="col-lg-3 col-sm-6 col-12">
-            <div class="dash-widget">
+            <div class="dash-widget dash1">
                 <div class="dash-widgetimg">
-                    <span><img src="<c:url value='/static/admin/assets/img/icons/dash1.svg'/> " alt="img"></span>
+                    <span><img src="<c:url value='/static/admin/assets/img/icons/dash2.svg'/> " alt="img"></span>
                 </div>
                 <div class="dash-widgetcontent">
                     <h5><span class="counters" data-count="${statistic.revenue}"> ${statistic.revenue}</span> VND</h5>
@@ -15,9 +15,9 @@
             </div>
         </div>
         <div class="col-lg-3 col-sm-6 col-12">
-            <div class="dash-widget dash1">
+            <div class="dash-widget ">
                 <div class="dash-widgetimg">
-                    <span><img src= "<c:url value='/static/admin/assets/img/icons/dash2.svg'/> " alt="img"></span>
+                    <span><img src= "<c:url value='/static/admin/assets/img/icons/dash1.svg'/> " alt="img"></span>
                 </div>
                 <div class="dash-widgetcontent">
                     <h5><span class="counters" data-count="${statistic.totalOrders}">${statistic.totalOrders}</span></h5>
@@ -26,20 +26,20 @@
             </div>
         </div>
         <div class="col-lg-3 col-sm-6 col-12">
-            <div class="dash-widget dash2">
+            <div class="dash-widget dash3">
                 <div class="dash-widgetimg">
-                    <span><img src="<c:url value='/static/admin/assets/img/icons/dash3.svg'/> " alt="img"></span>
+                    <span><img src="<c:url value='/static/admin/assets/img/icons/dash4.svg'/> " alt="img"></span>
                 </div>
                 <div class="dash-widgetcontent">
-                    <h5><span class="counters" data-count="${statistic.totalProducts}">${statistic.totalProducts}</span></h5>
-                    <h6>Tổng số sản phẩm</h6>
+                    <h5><span class="counters" data-count="${statistic.totalReceivedOrders}">${statistic.totalReceivedOrders}</span></h5>
+                    <h6>Tổng đơn hàng đã nhận</h6>
                 </div>
             </div>
         </div>
         <div class="col-lg-3 col-sm-6 col-12">
-            <div class="dash-widget dash3">
+            <div class="dash-widget dash2">
                 <div class="dash-widgetimg">
-                    <span><img src="<c:url value='/static/admin/assets/img/icons/dash4.svg'/> " alt="img"></span>
+                    <span><img src="<c:url value='/static/admin/assets/img/icons/dash3.svg'/> " alt="img"></span>
                 </div>
                 <div class="dash-widgetcontent">
                     <h5><span class="counters" data-count="${statistic.totalOrdersToday}">${statistic.totalOrdersToday}</span></h5>
@@ -54,40 +54,40 @@
                     <h5>Khách hàng</h5>
                 </div>
                 <div class="dash-imgs">
-                    <i data-feather="user"></i>
+                    <i data-feather="user-check"></i>
                 </div>
             </div>
         </div>
         <div class="col-lg-3 col-sm-6 col-12 d-flex">
             <div class="dash-count das1">
                 <div class="dash-counts">
-                    <h4>100</h4>
-                    <h5>Suppliers</h5>
+                    <h4>${statistic.totalProducts}</h4>
+                    <h5>Sản phẩm</h5>
                 </div>
                 <div class="dash-imgs">
-                    <i data-feather="user-check"></i>
+                    <i data-feather="file"></i>
                 </div>
             </div>
         </div>
         <div class="col-lg-3 col-sm-6 col-12 d-flex">
             <div class="dash-count das2">
                 <div class="dash-counts">
-                    <h4>100</h4>
-                    <h5>Purchase Invoice</h5>
+                    <h4>${statistic.totalDiscountProduct}</h4>
+                    <h5>Giảm giá sản phẩm</h5>
                 </div>
                 <div class="dash-imgs">
-                    <i data-feather="file-text"></i>
+                    <i data-feather="tag"></i>
                 </div>
             </div>
         </div>
         <div class="col-lg-3 col-sm-6 col-12 d-flex">
             <div class="dash-count das3">
                 <div class="dash-counts">
-                    <h4>105</h4>
-                    <h5>Sales Invoice</h5>
+                    <h4>${statistic.totalDiscountBill}</h4>
+                    <h5>Giảm giá hóa đơn</h5>
                 </div>
                 <div class="dash-imgs">
-                    <i data-feather="file"></i>
+                    <i data-feather="tag"></i>
                 </div>
             </div>
         </div>
@@ -97,19 +97,20 @@
         <div class="col-lg-10 col-sm-12 col-12 d-flex">
             <div class="card flex-fill">
                 <div class="card-header pb-0 d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0">Tổng doanh thu theo tháng</h5>
+                    <h5 class="card-title mb-0">Doanh thu theo tháng</h5>
                     <div class="graph-sets">
                         <ul>
                             <li>
-                                <span>Sales</span>
+                                <span id ="revenue"></span>
+
                             </li>
                             <li>
-                                <span>Purchase</span>
+<%--                                <span id ="revenue"></span>--%>
                             </li>
                         </ul>
                         <div class="dropdown">
                             <button class="btn btn-white btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                ${statistic.thisYear.get(0)} <img src="assets/img/icons/dropdown.svg" alt="img" class="ms-2">
+                                ${statistic.thisYear.get(0)} <img src="<c:url value='/static/admin/assets/img/icons/dropdown.svg'/>" alt="img" class="ms-2">
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <c:forEach var="year" items="${statistic.thisYear}">
@@ -143,7 +144,48 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <c:forEach items="${statistic.productDTOList}" var="item" varStatus="status">
+                    <c:forEach items="${statistic.productDTOBestList}" var="item" varStatus="status">
+                        <tr>
+                            <td>${status.index + 1}</td>
+                            <td><a href="javascript:void(0);">SP${item.key.id}</a></td>
+                            <td class="productimgname">
+                                <a class="product-img" href="productlist.html">
+                                    <c:if test="${not empty item.key.photo}">
+                                        <img src="<c:url value='/api-image?path=${item.key.photo}'/>" alt="product">
+                                    </c:if>
+                                </a>
+                                <a href="productlist.html">${item.key.name}</a>
+                            </td>
+                            <td>${item.key.brand}</td>
+                            <td>${item.key.category.name}</td>
+                            <td>${item.value}</td>
+                        </tr>
+                    </c:forEach>
+                    </tbody>
+                    <c:forEach items="${revenueChart}" var="item" varStatus="status">
+                        <input id="${item.key}" name="${item.key}" value="${item.value}" type="hidden">
+                    </c:forEach>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card mb-0">
+        <div class="card-body">
+            <h4 class="card-title">Các sản phẩm có lượt bán thất nhất</h4>
+            <div class="table-responsive dataview">
+                <table class="table datatable ">
+                    <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Mã sản phẩm</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Hãng</th>
+                        <th>Phân loại</th>
+                        <th>Lượt bán</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <c:forEach items="${statistic.productDTOLowestList}" var="item" varStatus="status">
                         <tr>
                             <td>${status.index + 1}</td>
                             <td><a href="javascript:void(0);">SP${item.key.id}</a></td>
@@ -179,7 +221,7 @@
         var currentYear = parseInt($("#dropdownMenuButton").text().trim());
         updateChart(currentYear);
         var monthlyRevenue = [];
-
+        let revenue;
         function updateChart(year) {
             $.ajax({
                 url: '/thong-ke',
@@ -190,11 +232,13 @@
                     // Giả sử server trả về một mảng doanh thu theo tháng
                     if (response && response.monthlyRevenue) {
                         monthlyRevenue = response.monthlyRevenue;
+                        revenue=response.revenue;
                         console.log(monthlyRevenue);
                         chart.updateSeries([{
                             name: "VND",
                             data: monthlyRevenue
                         }]);
+                        document.getElementById('revenue').innerText = "Doanh thu : " + revenue + " VND";
                     }
                 },
                 error: function (xhr, status, error) {
@@ -206,7 +250,7 @@
         // Gắn sự kiện click vào các mục trong dropdown
         $(".dropdown-menu").on("click", ".dropdown-item", function () {
             var selectedYear = $(this).text().trim(); // Lấy năm đã chọn
-            $("#dropdownMenuButton").html(selectedYear + ' <img src="assets/img/icons/dropdown.svg" alt="img" class="ms-2">'); // Cập nhật nút dropdown
+            $("#dropdownMenuButton").html(selectedYear + ' <img src="<c:url value='/static/admin/assets/img/icons/dropdown.svg'/>" alt="img" class="ms-2">'); // Cập nhật nút dropdown
             updateChart(parseInt(selectedYear)); // Chuyển đổi năm thành int và gọi hàm cập nhật biểu đồ
         });
 
@@ -221,7 +265,7 @@
             dataLabels: { enabled: false },
             stroke: { curve: 'straight' },
             series: [{ name: "VND", data: monthlyRevenue }],
-            title: { text: 'Product Trends by Month', align: 'left' },
+            title: { text: '', align: 'left' },
             grid: { row: { colors: ['#f1f2f3', 'transparent'], opacity: 0.5 } },
             xaxis: {
                 categories: [

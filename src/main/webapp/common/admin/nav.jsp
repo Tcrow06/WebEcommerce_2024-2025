@@ -46,12 +46,11 @@
                 <li class="submenu">
                     <a href="javascript:void(0);"><img src="/static/admin/assets/img/icons/users1.svg" alt="img"><span> Người dùng</span> <span class="menu-arrow"></span></a>
                     <ul>
-                        <li><a href="newuser.html">Khách hàng mới</a></li>
-                        <li><a href="userlists.html">Danh sách người dùng</a></li>
+                        <li><a href="<c:url value='/chu-cua-hang/quan-ly-nguoi-dung'/>">Danh sách người dùng</a></li>
                     </ul>
                 </li>
                 <li class="submenu">
-                    <a href="javascript:void(0);"><img src="/static/admin/assets/img/icons/settings.svg" alt="img"><span> Settings</span> <span class="menu-arrow"></span></a>
+                    <a href="javascript:void(0);"><img src="/static/admin/assets/img/icons/settings.svg" alt="img"><span>Cài đặt</span> <span class="menu-arrow"></span></a>
                     <ul>
                         <li><a href="generalsettings.html">General Settings</a></li>
                         <li><a href="emailsettings.html">Email Settings</a></li>

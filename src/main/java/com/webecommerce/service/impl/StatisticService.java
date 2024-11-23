@@ -1,9 +1,15 @@
 package com.webecommerce.service.impl;
 
+import com.webecommerce.constant.EnumOrderStatus;
+import com.webecommerce.constant.EnumProductStatus;
+import com.webecommerce.dao.discount.IBillDiscountDAO;
+import com.webecommerce.dao.discount.IProductDiscountDAO;
 import com.webecommerce.dao.order.IOrderDAO;
 import com.webecommerce.dao.people.ICustomerDAO;
+import com.webecommerce.dao.product.IProductDAO;
 import com.webecommerce.dto.ProductDTO;
 import com.webecommerce.dto.StatisticDTO;
+import com.webecommerce.service.IBillDiscountService;
 import com.webecommerce.service.IProductService;
 import com.webecommerce.service.IStatisticService;
 
@@ -20,7 +26,11 @@ public class StatisticService implements IStatisticService {
     @Inject
     private ICustomerDAO customerDAO;
 
+    @Inject
+    private IBillDiscountDAO billDiscountDAO;
 
+    @Inject
+    private IProductDiscountDAO productDiscountDAO;
 
     @Override
     public StatisticDTO calculateHomeAdmin(int year) {
@@ -30,10 +40,16 @@ public class StatisticService implements IStatisticService {
         int totalProducts = productService.totalProducts();
         statisticDTO.setTotalProducts(totalProducts);
         statisticDTO.setRevenue(revenue);
-        statisticDTO.setProductDTOList(list);
+        statisticDTO.setProductDTOBestList(list);
+        statisticDTO.setProductDTOLowestList(productService.findLowestSellingProducts(5));
         statisticDTO.setTotalOrdersToday(orderDAO.totalOrdersToday());
-        statisticDTO.setTotalOrders(orderDAO.totalOrders());
+        statisticDTO.setTotalOrders(orderDAO.totalOrdersByStatus(EnumOrderStatus.WAITING));
+        statisticDTO.setTotalReceivedOrders(orderDAO.totalOrdersByStatus(EnumOrderStatus.RECEIVED));
         statisticDTO.setTotalCustomers(customerDAO.totalCustomers());
+        statisticDTO.setTotalProducts(productService.countByStatus(EnumProductStatus.SELLING));
+        statisticDTO.setTotalDiscountBill(billDiscountDAO.countDiscountValid());
+        statisticDTO.setTotalDiscountProduct(productDiscountDAO.countDiscountValid());
+
         return statisticDTO;
     }
 

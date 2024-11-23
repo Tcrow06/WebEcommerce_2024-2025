@@ -10,12 +10,9 @@ import com.webecommerce.entity.product.ProductVariantEntity;
 import com.webecommerce.entity.order.OrderStatusEntity;
 import com.webecommerce.utils.HibernateUtil;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.*;
-import javax.persistence.Query;
 import java.util.logging.Level;
 
 import java.security.Timestamp;
@@ -69,6 +66,49 @@ public class OrderDAO extends AbstractDAO<OrderEntity> implements IOrderDAO {
                     .setParameter("customerId", customerId)
                     .getResultList();
 
+            //nhap
+
+            String query = """
+        SELECT\s
+            o.id AS orderId,
+            SUM(ro.quantityReturn * pv.price *\s
+                CASE\s
+                    WHEN pd IS NOT NULL THEN (1 - pd.discountPercentage / 100)\s
+                    ELSE 1\s
+                END) AS totalOrder,
+            SUM(ro.quantityReturn) AS allQuantity
+        FROM\s
+            ReturnOrderEntity ro
+        JOIN\s
+            ro.orderDetail od
+        JOIN\s
+            od.order o
+        JOIN\s
+            od.productVariant pv
+        LEFT JOIN\s
+            od.productDiscount pd
+        WHERE\s
+            o.customer.id = :customerId
+        GROUP BY\s
+        o.id
+    """;
+
+            List<Object[]> rawOldResult = entityManager.createQuery(query, Object[].class)
+                    .setParameter("customerId", customerId)
+                    .getResultList();
+
+            List<Object[]> savedData = new ArrayList<>();
+
+            for (Object[] result : rawOldResult) {
+                Long orderId = (Long) result[0];
+                Double totalOrder = (Double) result[1];
+                Long allQuantity = ((Number) result[2]).longValue();
+
+                savedData.add(new Object[]{orderId, totalOrder, allQuantity});
+            }
+
+            //het nhap
+
             List<DisplayOrderDTO> resultList = new ArrayList<>();
 
             for (Object[] result : rawResults) {
@@ -78,6 +118,17 @@ public class OrderDAO extends AbstractDAO<OrderEntity> implements IOrderDAO {
                 Long allQuantity = ((Number) result[3]).longValue();
                 String imgUrl = (String) result[4];
                 EnumOrderStatus status = (EnumOrderStatus) result[5];
+
+                if(allQuantity == 0) {
+                    for (Object[] saved : savedData) {
+                        Long savedOrderId = (Long) saved[0];
+                        if (savedOrderId.equals(orderId)) {
+                            totalOrder = (Double) saved[1];
+                            allQuantity = ((Number) saved[2]).longValue();
+                            break;
+                        }
+                    }
+                }
 
                 resultList.add(new DisplayOrderDTO(orderId, statusDate, totalOrder, allQuantity, imgUrl, status));
             }
@@ -166,9 +217,12 @@ public class OrderDAO extends AbstractDAO<OrderEntity> implements IOrderDAO {
                 "FROM OrderEntity o " +
                 "JOIN o.orderStatuses os " +
                 "JOIN o.orderDetails od " +
-                "JOIN od.productVariant pv";
+                "JOIN od.productVariant pv " +  // Thêm khoảng trắng ở cuối
+                "WHERE os.status = :status";
+
 
         TypedQuery<Double> query = entityManager.createQuery(jpql, Double.class);
+        query.setParameter("status",EnumOrderStatus.RECEIVED);
 
         Double totalRevenue = query.getSingleResult();
 
@@ -176,11 +230,14 @@ public class OrderDAO extends AbstractDAO<OrderEntity> implements IOrderDAO {
     }
 
     @Override
-    public int totalOrders() {
-        String query = "SELECT COUNT(p) FROM OrderEntity p"; // Đếm tổng số sản phẩm
+    public int totalOrdersByStatus(EnumOrderStatus status) {
+        String query = "SELECT COUNT(o) FROM OrderEntity o " +
+                "JOIN o.orderStatuses os " +
+                "WHERE os.status = :status "; // Đếm tổng số sản phẩm
         try {
-            Long count = entityManager.createQuery(query, Long.class)
-                    .getSingleResult();
+            TypedQuery<Long> typedQuery = entityManager.createQuery(query, Long.class);
+            typedQuery.setParameter("status",status);
+            Long count = typedQuery.getSingleResult();
             return count != null ? count.intValue() : 0; // Chuyển đổi Long thành int
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Lỗi khi tính tổng số sản phẩm", e);
@@ -203,6 +260,7 @@ public class OrderDAO extends AbstractDAO<OrderEntity> implements IOrderDAO {
             return 0;
         }
     }
+
 
     public boolean changeConfirmStatus(Long orderId) {
         EntityTransaction transaction = entityManager.getTransaction();
@@ -261,6 +319,44 @@ public class OrderDAO extends AbstractDAO<OrderEntity> implements IOrderDAO {
                     .setParameter("status",EnumOrderStatus.PENDING)
                     .getResultList();
 
+            // Hiển thị dữ liệu bị hủy
+
+            String query = """
+        SELECT\s
+            o.id AS orderId,
+            SUM(ro.quantityReturn * pv.price *\s
+                CASE\s
+                    WHEN pd IS NOT NULL THEN (1 - pd.discountPercentage / 100)\s
+                    ELSE 1\s
+                END) AS totalOrder,
+            SUM(ro.quantityReturn) AS allQuantity
+        FROM\s
+            ReturnOrderEntity ro
+        JOIN\s
+            ro.orderDetail od
+        JOIN\s
+            od.order o
+        JOIN\s
+            od.productVariant pv
+        LEFT JOIN\s
+            od.productDiscount pd
+        GROUP BY\s
+        o.id
+    """;
+
+            List<Object[]> rawOldResult = entityManager.createQuery(query, Object[].class)
+                    .getResultList();
+
+            List<Object[]> savedData = new ArrayList<>();
+
+            for (Object[] result : rawOldResult) {
+                Long orderId = (Long) result[0];
+                Double totalOrder = (Double) result[1];
+                Long allQuantity = ((Number) result[2]).longValue();
+
+                savedData.add(new Object[]{orderId, totalOrder, allQuantity});
+            }
+
             List<DisplayOrderDTO> resultList = new ArrayList<>();
 
             for (Object[] result : rawResults) {
@@ -269,6 +365,17 @@ public class OrderDAO extends AbstractDAO<OrderEntity> implements IOrderDAO {
                 Double totalOrder = (Double) result[2];
                 Long allQuantity = ((Number) result[3]).longValue();
                 String imgUrl = (String) result[4];
+
+                if(allQuantity == 0) {
+                    for (Object[] saved : savedData) {
+                        Long savedOrderId = (Long) saved[0];
+                        if (savedOrderId.equals(orderId)) {
+                            totalOrder = (Double) saved[1];
+                            allQuantity = ((Number) saved[2]).longValue();
+                            break;
+                        }
+                    }
+                }
 
                 resultList.add(new DisplayOrderDTO(orderId, statusDate, totalOrder, allQuantity, imgUrl));
             }
