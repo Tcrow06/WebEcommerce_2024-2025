@@ -1,5 +1,6 @@
 package com.webecommerce.controller.web;
 
+import com.webecommerce.constant.EnumAccountStatus;
 import com.webecommerce.constant.EnumRole;
 import com.webecommerce.dao.people.ICustomerDAO;
 import com.webecommerce.dto.CartItemDTO;
@@ -80,7 +81,15 @@ public class AuthController extends HttpServlet {
         CheckOutRequestDTO checkOutRequestDTO =(CheckOutRequestDTO) session.getAttribute("orderNotHandler");
         if(action != null && action.equals("login")) {
             AccountRequest account = FormUtils.toModel(AccountRequest.class, request);
+            UserResponse foundUser = accountService.findByUserNameAndPasswordAndStatus(account.getUserName(), account.getPassword(), "UNVERIFIED");
+            if (foundUser != null) {
+                accountService.sendOTPToEmail(foundUser.getEmail(), foundUser.getId(), "register");
+                response.sendRedirect(request.getContextPath() + "/dang-ky?action=verify&id=" + foundUser.getId() + "&message=unverified&alert=danger");
+                return;
+            }
+
             UserResponse user = accountService.findByUserNameAndPasswordAndStatus(account.getUserName(), account.getPassword(), "ACTIVE");
+
             if(user != null) {
                 response.setContentType("application/json");
                 String path=null,jwtToken=null;
@@ -159,10 +168,11 @@ public class AuthController extends HttpServlet {
             int count = accountService.verifyOTP(id, otp);
             if (count == 0) {
                 response.sendRedirect(request.getContextPath() + "/dang-nhap?action=login&message=verify_success&alert=success");
-            }else  if (count == 5) {
+            }else  if (count == -1) {
                 response.sendRedirect(request.getContextPath() + "/dang-ky?action=verify&id=" + id +"&message=verify_failed&alert=danger");
-            }
-            else {
+            } else if (count == -2) {
+                response.sendRedirect(request.getContextPath() + "/dang-ky?action=verify&id=" + id +"&message=expired_otp&alert=danger");
+            } else {
                 response.sendRedirect(request.getContextPath() + "/dang-ky?action=verify&id=" + id +"&message=verify_retry&alert=danger");
             }
         }
