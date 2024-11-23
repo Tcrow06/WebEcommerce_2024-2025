@@ -23,6 +23,14 @@ public class SocialAccountEntity {
 //    @OneToOne(mappedBy = "socialAccount")
 //    private CustomerEntity customer;
 
+    public EnumAccountStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(EnumAccountStatus status) {
+        this.status = status;
+    }
+
     private String ggID;
     private String fbID;
 
