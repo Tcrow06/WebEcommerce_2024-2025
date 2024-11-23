@@ -170,8 +170,9 @@ public class AuthController extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/dang-nhap?action=login&message=verify_success&alert=success");
             }else  if (count == -1) {
                 response.sendRedirect(request.getContextPath() + "/dang-ky?action=verify&id=" + id +"&message=verify_failed&alert=danger");
-            }
-            else {
+            } else if (count == -2) {
+                response.sendRedirect(request.getContextPath() + "/dang-ky?action=verify&id=" + id +"&message=expired_otp&alert=danger");
+            } else {
                 response.sendRedirect(request.getContextPath() + "/dang-ky?action=verify&id=" + id +"&message=verify_retry&alert=danger");
             }
         }
