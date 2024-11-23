@@ -131,10 +131,12 @@ public class ProductService implements IProductService {
     @Transactional
     public ProductDTO save(ProductDTO product) {
         try { // tiến hành lưu ảnh
-            imageServiceImpl.setRealPath(product.getRealPathFile());
-            imageServiceImpl.setPath(product.getSizeConversionTable());
-            imageServiceImpl.saveImageToDisk();
-            product.setSizeConversionTableUrl(imageServiceImpl.getId());
+            if (product.getSizeConversionTable() != null) {
+                imageServiceImpl.setRealPath(product.getRealPathFile());
+                imageServiceImpl.setPath(product.getSizeConversionTable());
+                imageServiceImpl.saveImageToDisk();
+                product.setSizeConversionTableUrl(imageServiceImpl.getId());
+            }
 
             for (ProductVariantDTO productVariant : product.getProductVariants()) {
                 imageServiceImpl.setRealPath(product.getRealPathFile());
@@ -235,6 +237,20 @@ public class ProductService implements IProductService {
     // dùng cho controller product admin
     public List<ProductDTO> findProductSelling() {
         List <ProductEntity> productEntities = productDAO.findProductByStatus(EnumProductStatus.SELLING);
+        if (productEntities == null) return new ArrayList<>();
+
+        return getProductsWithDiscount(productEntities);
+    }
+
+    public List <ProductDTO> findProductSellingByCategoryAndName(String categoryCode, String name) {
+        List <ProductEntity> productEntities = productDAO.findProductByCategoryOrStatusOrName(categoryCode,EnumProductStatus.SELLING,name);
+        if (productEntities == null) return new ArrayList<>();
+
+        return getProductsWithDiscount(productEntities);
+    }
+
+    public List <ProductDTO> findProductStopSellingByCategoryAndName(String categoryCode, String name) {
+        List <ProductEntity> productEntities = productDAO.findProductByCategoryOrStatusOrName(categoryCode,EnumProductStatus.STOP_SELLING,name);
         if (productEntities == null) return new ArrayList<>();
 
         return getProductsWithDiscount(productEntities);

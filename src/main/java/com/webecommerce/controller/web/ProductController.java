@@ -80,9 +80,7 @@ public class ProductController extends HttpServlet {
         }
         product.setResultList(productDTOList);
 
-        //product.setTotalItem(productService.getTotalItem());
-
-        //nháp tí
+        //nháp
 
         product.setTotalItem(productService.getTotalItems());
 

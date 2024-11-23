@@ -115,6 +115,9 @@ public class ProductDiscountService implements IProductDiscountService {
             productDiscountDTO.setProduct(
                     productMapper.toDTO(productDiscountEntity.getProduct())
             );
+
+            productDiscountDTO.getProduct().setDiscountPercentage(productDiscountDTO.getDiscountPercentage());
+
             if (productVariant != null) {
                 productDiscountDTO.getProduct().setPhoto(productVariant.getImageUrl());
                 productDiscountDTO.getProduct().setPrice(productVariant.getPrice());

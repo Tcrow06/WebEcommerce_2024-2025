@@ -27,7 +27,7 @@ public class OrderDetailController extends HttpServlet {
             orderId = Long.valueOf(orderIdStr);
             EnumOrderStatus status = orderDetailService.getCurrentStatus(orderId);
         }
-        List<DisplayOrderDetailDTO> result = orderDetailService.showOrderDetail(orderId, EnumOrderStatus.PENDING);
+        List<DisplayOrderDetailDTO> result = orderDetailService.showOrderDetailAdmin(orderId);
         request.setAttribute("orderItemList", result);
         request.getRequestDispatcher("/views/admin/order-detail.jsp").forward(request,response);
     }

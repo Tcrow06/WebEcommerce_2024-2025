@@ -5,11 +5,8 @@ import com.webecommerce.dto.CategoryDTO;
 import com.webecommerce.entity.product.CategoryEntity;
 import com.webecommerce.mapper.GenericMapper;
 import com.webecommerce.service.ICategoryService;
-
+import javax.persistence.EntityExistsException;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryService implements ICategoryService {
@@ -25,7 +22,12 @@ public class CategoryService implements ICategoryService {
                 categoryMapper.toDTOList(categoryEntitiesList);
     }
 
-    public CategoryDTO save (CategoryDTO categoryDTO) {
+    public CategoryDTO save (CategoryDTO categoryDTO) throws Exception {
+
+        if (categoryDAO.categoryCodeExists(categoryDTO.getCode()))
+            throw new EntityExistsException("Mã category đã tồn tại: " + categoryDTO.getCode());
+
+
         CategoryEntity categoryEntity = categoryMapper.toEntity(categoryDTO);
 
         return categoryMapper.toDTO(

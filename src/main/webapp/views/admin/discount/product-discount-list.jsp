@@ -74,9 +74,16 @@
                             <h6 class="mb-0">${item.product.name}</h6>
                         </c:if>
                         <h6 class="mb-0">
+
                             <c:if test="${item.product != null}">
-                                <span style="text-decoration: line-through; color: grey;">${item.product.getDiscountedPrice()}</span>
+                                <p class="mb-0" style="font-weight: 500;">${item.product.getDiscountedPrice()}</p>
+                                <span style="text-decoration: line-through; color: grey;">${item.product.price}</span>
                             </c:if>
+<%--                            </c:if>--%>
+
+<%--                            <c:if test="${item.product != null}">--%>
+<%--                                <span style="text-decoration: line-through; color: grey;">${item.product.getDiscountedPrice()}</span>--%>
+<%--                            </c:if>--%>
                             Giảm giá ${item.discountPercentage} %
                         </h6>
                     </div>
