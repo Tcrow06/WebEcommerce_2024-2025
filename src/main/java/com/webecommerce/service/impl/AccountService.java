@@ -110,7 +110,7 @@ public class AccountService implements IAccountService {
                         + "Lưu ý: Mã OTP này sẽ hết hạn sau 3 phút.\n\n";
             }
 
-            EmailUtils.sendEmail(email, subject, body);
+           EmailUtils.sendEmail(email, subject, body);
             return true;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -123,17 +123,32 @@ public class AccountService implements IAccountService {
         String key = String.format("user:%s:otp", id);
         String otpFound = cacheService.getKey(key);
         String otpCountKey = String.format("user:%s:otp:count", id);
-        if (otpFound.equals(otp)) {
+        AccountEntity accountEntity = accountDAO.findById(Long.parseLong(id));
+        if (otpFound != null && otpFound.equals(otp)) {
             // Update Active
-            AccountEntity accountEntity = accountDAO.findById(Long.parseLong(id));
             accountEntity.setStatus(EnumAccountStatus.ACTIVE);
             accountDAO.update(accountEntity);
+
+            cacheService.delete(key);
+            cacheService.delete(otpCountKey);
             return 0;
         } else {
             cacheService.increment(otpCountKey);
             String otpCount = cacheService.getKey(otpCountKey);
-            if (otpFound.equals("5")) {
-                cacheService.delete(key);
+            if (Integer.parseInt(otpCount) >= 5) {
+                int newOtp = RandomUtils.generateSixDigit();
+                cacheService.setKey(key, String.valueOf(newOtp), 60 * 3);
+                cacheService.setKey(otpCountKey, "0", 60 * 3);
+
+                String subject = "Mã xác thực (OTP) để hoàn tất đăng ký tài khoản của bạn";
+                String body = "Xin chào,\n\n"
+                        + "Cảm ơn bạn đã đăng ký tài khoản của chúng tôi! "
+                        + "Để hoàn tất quá trình đăng ký, vui lòng nhập mã xác thực OTP dưới đây:\n\n"
+                        + "Mã OTP của bạn là: " + newOtp + "\n\n"
+                        + "Lưu ý: Mã OTP này sẽ hết hạn sau 3 phút.\n\n";
+
+                EmailUtils.sendEmail(accountEntity.getCustomer().getEmail(), subject, body);
+                return -1;
             }
             return Integer.parseInt(otpCount);
         }
