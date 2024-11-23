@@ -1,5 +1,6 @@
 package com.webecommerce.entity.other;
 
+import com.webecommerce.constant.EnumAccountStatus;
 import com.webecommerce.entity.people.CustomerEntity;
 
 import javax.persistence.*;
@@ -14,6 +15,10 @@ public class SocialAccountEntity {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private CustomerEntity customer;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private EnumAccountStatus status;
 
 //    @OneToOne(mappedBy = "socialAccount")
 //    private CustomerEntity customer;
