@@ -405,6 +405,10 @@
                     method: method,
                     contentType: 'application/json',
                     data: JSON.stringify(data),
+                    beforeSend: function () {
+                        // Hiển thị loader trước khi AJAX bắt đầu
+                        $('#global-loader').css('display', 'flex');
+                    },
                     success: function(response) {
                         alert(response);
                     },
@@ -416,6 +420,9 @@
                         } else {
                             alert("Đã xảy ra lỗi: " + error);
                         }
+                    },
+                    complete: function () {
+                        $('#global-loader').css('display', 'none');
                     }
                 });
             }

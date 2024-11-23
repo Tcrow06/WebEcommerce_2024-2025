@@ -1,7 +1,6 @@
 package com.webecommerce.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.webecommerce.dto.CategoryDTO;
 import com.webecommerce.dto.discount.BillDiscountDTO;
 import com.webecommerce.service.impl.BillDiscountService;
 import com.webecommerce.utils.HttpUtils;
@@ -80,6 +79,7 @@ public class BillDiscountAPI extends HttpServlet {
             mapper.writeValue(resp.getWriter(),"Thêm chương trình thất bại !");
         }
     }
+
 
     private void updateBillDiscount (HttpServletRequest req, HttpServletResponse resp, BillDiscountDTO billDiscount) throws IOException {
         billDiscount = billDiscountService.update(billDiscount);

@@ -265,11 +265,17 @@
                     type: method,
                     contentType: 'application/json',
                     data: JSON.stringify(data),
+                    beforeSend: function () {
+                        // Hiển thị loader trước khi AJAX bắt đầu
+                        $('#global-loader').css('display', 'flex');
+                    },
                     success: function (response) {
                         alert("Đã gửi thông tin thành công!" + response);
                     },
                     error: function (xhr, status, error) {
                         alert("Lỗi: " + error);
+                    },complete: function () {
+                        $('#global-loader').css('display', 'none');
                     }
                 });
             }
