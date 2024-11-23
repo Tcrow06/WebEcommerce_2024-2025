@@ -197,9 +197,9 @@ public class ReturnOrderDAO extends AbstractDAO<ReturnOrderEntity> implements IR
             String query = "UPDATE ReturnOrderEntity ro SET ro.status = 1 WHERE ro.orderDetail.id = :orderDetailId";
             Query jpqlQuery = entityManager.createQuery(query);
             jpqlQuery.setParameter("orderDetailId", orderDetailId);
-            int rowsUpdated = jpqlQuery.executeUpdate();
+            int update = jpqlQuery.executeUpdate();
 
-            if (rowsUpdated == 0) {
+            if (update == 0) {
                 transaction.rollback();
                 return false;
             }
