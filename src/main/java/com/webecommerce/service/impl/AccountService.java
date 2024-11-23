@@ -97,7 +97,7 @@ public class AccountService implements IAccountService {
             // Send Email
             String subject = null;
             String body = null;
-            if (purpose == "register") {
+            if (purpose.equals("register")) {
                 subject = "Mã xác thực (OTP) để hoàn tất đăng ký tài khoản của bạn";
                 body = "Xin chào,\n\n"
                         + "Cảm ơn bạn đã đăng ký tài khoản của chúng tôi! "
@@ -124,14 +124,30 @@ public class AccountService implements IAccountService {
         String otpFound = cacheService.getKey(key);
         String otpCountKey = String.format("user:%s:otp:count", id);
         AccountEntity accountEntity = accountDAO.findById(Long.parseLong(id));
-        if (otpFound != null && otpFound.equals(otp)) {
+
+        if (otpFound == null) {
+            int newOtp = RandomUtils.generateSixDigit();
+            cacheService.setKey(key, String.valueOf(newOtp), 60 * 3); // TTL 3 phút
+            cacheService.setKey(otpCountKey, "0", 60 * 3); // Reset số lần nhập sai
+
+            String subject = "Mã xác thực (OTP) để hoàn tất đăng ký tài khoản của bạn";
+            String body = "Xin chào,\n\n"
+                    + "OTP của bạn đã hết hạn. Chúng tôi đã gửi mã xác thực OTP mới để hoàn tất quá trình đăng ký:\n\n"
+                    + "Mã OTP mới của bạn là: " + newOtp + "\n\n"
+                    + "Lưu ý: Mã OTP này sẽ hết hạn sau 3 phút.\n\n";
+
+            EmailUtils.sendEmail(accountEntity.getCustomer().getEmail(), subject, body);
+            return -2; // OTP hết hạn và đã gửi lại mã mới
+        }
+
+        if (otpFound.equals(otp)) {
             // Update Active
             accountEntity.setStatus(EnumAccountStatus.ACTIVE);
             accountDAO.update(accountEntity);
 
             cacheService.delete(key);
             cacheService.delete(otpCountKey);
-            return 0;
+            return 0; // Thanh cong
         } else {
             cacheService.increment(otpCountKey);
             String otpCount = cacheService.getKey(otpCountKey);
@@ -148,9 +164,9 @@ public class AccountService implements IAccountService {
                         + "Lưu ý: Mã OTP này sẽ hết hạn sau 3 phút.\n\n";
 
                 EmailUtils.sendEmail(accountEntity.getCustomer().getEmail(), subject, body);
-                return -1;
+                return -1; // Sai qua 5 lan, gui ma OTP moi
             }
-            return Integer.parseInt(otpCount);
+            return Integer.parseInt(otpCount); // So lan nhap sai
         }
     }
 }
