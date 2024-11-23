@@ -131,10 +131,12 @@ public class ProductService implements IProductService {
     @Transactional
     public ProductDTO save(ProductDTO product) {
         try { // tiến hành lưu ảnh
-            imageServiceImpl.setRealPath(product.getRealPathFile());
-            imageServiceImpl.setPath(product.getSizeConversionTable());
-            imageServiceImpl.saveImageToDisk();
-            product.setSizeConversionTableUrl(imageServiceImpl.getId());
+            if (product.getSizeConversionTable() != null) {
+                imageServiceImpl.setRealPath(product.getRealPathFile());
+                imageServiceImpl.setPath(product.getSizeConversionTable());
+                imageServiceImpl.saveImageToDisk();
+                product.setSizeConversionTableUrl(imageServiceImpl.getId());
+            }
 
             for (ProductVariantDTO productVariant : product.getProductVariants()) {
                 imageServiceImpl.setRealPath(product.getRealPathFile());

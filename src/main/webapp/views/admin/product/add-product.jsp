@@ -30,7 +30,7 @@
     .custom-legend {
         font-size: 12px;
         font-weight: bold;
-        background-color: #f9f9f9;
+        background-color: #FFFFFF;
         position: absolute;
         top: -10px;
         left: 20px;
@@ -61,6 +61,15 @@
         max-height: 100%; /* Đảm bảo ảnh không vượt quá chiều cao container */
         object-fit: contain; /* Giữ tỉ lệ ảnh trong vùng hiển thị */
     }
+
+    .header-shopping {
+        background-image: url("https://images.unsplash.com/photo-1542060748-10c28b62716f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" );
+        background-size: 100%, 100%;
+        color: rgb(241, 239, 239);
+        margin-bottom: 20px;
+        padding: 100px; height: 400px
+    }
+
 </style>
 
 
@@ -73,6 +82,13 @@
     </div>
 
     <div class="product-content product-wrap clearfix product-deatil">
+        <header class="bg-light header-shopping">
+            <div class="container text-center">
+                <h1 class="display-4">Thêm sản phẩm</h1>
+                <p class="lead">Mua sắm cùng Eleven !</p>
+            </div>
+        </header>
+
         <div class="row">
             <div class="form-group">
                 <h2 class="name">
@@ -113,10 +129,18 @@
                 <div class="certified">
                     <ul>
                         <li>
-                            <a>Name: <span id="categoryName">--</span></a>
+                            <a>Name: <span id="categoryName">
+                                <c:if test="${not empty model}">
+                                    ${model[0].name}
+                                </c:if>
+                            </span></a>
                         </li>
                         <li>
-                            <a href="javascript:void(0);">Code: <span id="categoryCode">--</span></a>
+                            <a href="javascript:void(0);">Code: <span id="categoryCode">
+                                <c:if test="${not empty model}">
+                                    ${model[0].code}
+                                </c:if>
+                            </span></a>
                         </li>
                         <input type="hidden" name="category" id="category"
                                 <c:if test="${not empty model}">
@@ -137,7 +161,6 @@
                     </div>
                 </div>
             </div>
-            <hr/>
             <div class="size-table">
                 <br />
                 <strong>Up ảnh bảng size</strong>
@@ -157,7 +180,6 @@
                         </div>
                     </div>
             </div>
-<%--            </div>--%>
             <hr/>
         </div>
     </div>
@@ -170,7 +192,8 @@
                     <div class="col-md-5 col-sm-12 col-xs-12">
                         <div class="product-image">
                             <div class="item active">
-                                <img src="<c:url value='/static/img/product/404.jpg'/>" class="img-responsive" alt="Product Image">
+<%--                                <img src="<c:url value='/static/img/product/404.jpg'/>" class="img-responsive" alt="Product Image">--%>
+                                <img src="https://ih1.redbubble.net/image.2487419682.3594/cposter,small,product,750x1000.2.jpg" class="img-responsive" alt="Product Image">
                             </div>
                         </div>
                     </div>
@@ -188,7 +211,7 @@
                         <div class="row size-container">
                             <!-- Các ô Size, Quantity và Price sẽ được thêm vào đây -->
                         </div>
-                        <button type="button" class="col align-items-center btn btn-primary add-size-btn mt-5" style="max-width: 200px; max-height: 40px;" onclick="addSize(this)">Thêm Size</button>
+                        <button type="button" class="col align-items-center btn btn-primary btn-rounded add-size-btn mt-5" style="max-width: 200px; max-height: 40px;" onclick="addSize(this)">Thêm Size</button>
                         <div class="w-100"></div>
                         <div class="col" style="margin-top: 20px;">
                             <div class="form-group">
@@ -203,7 +226,7 @@
                             </div>
                         </div>
                         <div class="mt-3 d-flex justify-content-end">
-                            <button class="btn btn-danger" onclick="removeProductVariantCard(this)" >Hủy</button>
+                            <button class="btn btn-dark " onclick="removeProductVariantCard(this)" >Hủy</button>
                         </div>
                     </div>
 
@@ -225,47 +248,25 @@
                             placeholder="Size"
                             aria-label="Size"
                     />
-                    <span class="input-group-text">@</span>
+                    <span class="input-group-text">-</span>
                     <input
                             type="number"
                             class="form-control variant-quantity"
                             placeholder="Quantity"
                             aria-label="Quantity"
                     />
-                    <span class="input-group-text">@</span>
+                    <span class="input-group-text">-</span>
                     <input
                             type="text"
                             class="form-control variant-price"
                             placeholder="Price"
                             aria-label="Price"
                     />
+                    <span class="input-group-text">VND</span>
                     <div class="d-flex align-items-center justify-content-center">
-                        <button type="button" class="btn btn-danger btn-sm remove-row-btn ms-2" style="font-size: 0.8rem;" onclick="removeSizeRow(this)">🗑</button>
+                        <button type="button" class="btn btn-dark btn-sm remove-row-btn ms-2" style="font-size: 0.8rem;" onclick="removeSizeRow(this)">🗑</button>
                     </div>
                 </div>
-
-<%--                <!-- Ô Size lớn hơn -->--%>
-<%--                <div class="flex-fill me-2" style="max-width: 40%; position: relative;">--%>
-<%--                    <input type="text" name="variantSize" placeholder="Size" class="form-control variant-size">--%>
-<%--                    <div class="error-message text-danger" style="position: absolute; bottom: -18px; left: 0; font-size: 12px;"></div>--%>
-<%--                </div>--%>
-
-<%--                <!-- Ô Quantity nhỏ hơn -->--%>
-<%--                <div class="flex-fill me-2" style="max-width: 20%; position: relative;">--%>
-<%--                    <input type="number" name="variantQuantity" placeholder="Quantity" class="form-control variant-quantity">--%>
-<%--                    <div class="error-message text-danger" style="position: absolute; bottom: -18px; left: 0; font-size: 12px;"></div>--%>
-<%--                </div>--%>
-
-<%--                <!-- Ô Price lớn hơn -->--%>
-<%--                <div class="flex-fill me-2" style="max-width: 40%; position: relative;">--%>
-<%--                    <input type="text" name="variantPrice" placeholder="Price" class="form-control variant-price">--%>
-<%--                    <div class="error-message text-danger" style="position: absolute; bottom: -18px; left: 0; font-size: 12px;"></div>--%>
-<%--                </div>--%>
-
-                <!-- Nút Xóa -->
-<%--                <div class="d-flex align-items-center justify-content-center">--%>
-<%--                    <button type="button" class="btn btn-danger btn-sm remove-row-btn ms-2" style="font-size: 0.8rem;" onclick="removeSizeRow(this)">🗑</button>--%>
-<%--                </div>--%>
             </div>
         </fieldset>
     </template>
@@ -577,12 +578,20 @@
                     data: formData,
                     processData: false,  // Không xử lý dữ liệu
                     contentType: false,  // Để trình duyệt tự xử lý content-type
+                    beforeSend: function () {
+                        // Hiển thị loader trước khi AJAX bắt đầu
+                        $('#global-loader').css('display', 'flex');
+                    },
                     success: function (response) {
                         alert(response);
+                        window.location.href = 'danh-sach-san-pham'
                     },
                     error: function (xhr, status, error) {
                         const errorMessage = xhr.responseJSON ? xhr.responseJSON.message : error;
                         alert("Failed to add product: " + errorMessage);
+                    },
+                    complete: function () {
+                        $('#global-loader').css('display', 'none');
                     }
                 });
             });
