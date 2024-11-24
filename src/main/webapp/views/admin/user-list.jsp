@@ -1,6 +1,8 @@
 <%@include file="/common/taglib.jsp" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <div class="content">
     <div class="page-header">
         <div class="page-title">
@@ -89,29 +91,88 @@
                         <th>Điểm tích lũy</th>
                         <th>Số lần hủy đơn</th>
                         <th>Trạng thái</th>
+                        <th>Kích hoạt</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Nguyễn Đức Sang</td>
-                        <td>0946576890</td>
-                        <td>500</td>
-                        <td>4</td>
-                        <td>
-                            <div
-                                    class="status-toggle d-flex justify-content-between align-items-center">
-                                <input type="checkbox" id="user18" class="check" checked="">
-                                <label for="user18" class="checktoggle">checkbox</label>
-                            </div>
-                        </td>
-                    </tr>
+                        <c:forEach var="user" items="${users}">
+                            <tr>
+                                <td data-user-id="${user.id}">${user.id}</td>
+                                <td>${user.name}</td>
+                                <td>${user.phone}</td>
+                                <td>${user.point}</td>
+                                <td>${user.numOfCancel}</td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${user.block == 1}">
+                                            <span class="badges bg-lightred">Vi phạm</span>
+                                        </c:when>
+                                        <c:when test="${user.block == 0}">
+                                            <span class="badges bg-lightgreen">Bình thường</span>
+                                        </c:when>
+                                    </c:choose>
+                                </td>
+                                <td>
+                                    <div class="status-toggle d-flex justify-content-between align-items-center">
+                                        <input type="checkbox" class="check status-checkbox"
+                                                id="status-${user.id}"
+                                                data-user-id="${user.id}"
+                                        ${user.status == 'ACTIVE' ? 'checked' : ''}>
+                                        <label for="status-${user.id}" class="checktoggle">checkbox</label>
+                                    </div>
+                                </td>
+                            </tr>
+                        </c:forEach>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.querySelectorAll('.status-checkbox').forEach(function (checkbox) {
+        checkbox.addEventListener('change', function () {
+
+            const userId = checkbox.getAttribute('data-user-id');
+            const isChecked = checkbox.checked;
+
+            Swal.fire({
+                title: "Bạn có muốn lưu thay đổi không?",
+                showDenyButton: true,
+                confirmButtonText: "Xác nhận",
+                denyButtonText: `Hủy`
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch('/api-account-status', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            userId: userId,
+                            status: isChecked ? 'ACTIVE' : 'BLOCK'
+                        })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            Swal.fire("Đã lưu!", "", "success");
+                        })
+                        .catch(error => {
+                            Swal.fire("Lỗi khi cập nhật trạng thái", "", "error");
+                            checkbox.checked = !isChecked;
+                        });
+                } else if (result.isDenied) {
+                    Swal.fire("Thay đổi thất bại!", "", "info");
+
+                    checkbox.checked = !isChecked;
+                }
+            });
+        });
+    });
+</script>
+
+
 
 
 

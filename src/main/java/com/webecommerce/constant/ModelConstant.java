@@ -9,4 +9,5 @@ public class ModelConstant {
     public static final String CATEGORY = "category";
     public static final String REVIEW = "review";
     public static final String ROLE = "role";
+    public static final String STATUS = "status";
 }

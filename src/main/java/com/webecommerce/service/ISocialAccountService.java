@@ -11,4 +11,6 @@ public interface ISocialAccountService {
 
     CustomerResponse save(CustomerRequest customerRequest);
     CustomerResponse saveSocialByEmail(CustomerRequest customerRequest);
+
+    CustomerResponse findAccount(CustomerRequest customerRequest, String provider);
 }

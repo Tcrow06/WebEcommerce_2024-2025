@@ -37,19 +37,19 @@ public class VNPayController extends HttpServlet {
 
         OrderDTO orderDTO =  HttpUtils.of(request.getReader()).toModel(OrderDTO.class);
         Map<String, Object> jsonResponse = new HashMap<>();
-        orderDTO = orderService.findInfoPayment(orderDTO, JWTUtil.getIdUser(request));
+        var resultOrderDTO = orderService.findInfoPayment(orderDTO, JWTUtil.getIdUser(request));
 
 
-        if (orderDTO.getStatus().contains("error")) {
+        if (resultOrderDTO.getStatus().contains("error")) {
             jsonResponse.put("redirectUrl", "/gio-hang");
-            jsonResponse.put("message",orderDTO.getMessage().toString());
+            jsonResponse.put("message",resultOrderDTO.getMessage().toString());
             jsonResponse.put("status","error");
-        } else if (orderDTO.getStatus().contains("warning")) {
-            jsonResponse.put("message",orderDTO.getMessage().toString());
+        } else if (resultOrderDTO.getStatus().contains("warning")) {
+            jsonResponse.put("message",resultOrderDTO.getMessage().toString());
             jsonResponse.put("status","warning");
         } else {
-            jsonResponse.put("redirectUrl", VNPayUtils.transaction(request, orderDTO));
-            jsonResponse.put("message",orderDTO.getMessage().toString());
+            jsonResponse.put("redirectUrl", VNPayUtils.transaction(request, orderDTO.getTotal()));
+            jsonResponse.put("message",resultOrderDTO.getMessage().toString());
             jsonResponse.put("status","success");
         }
         objectMapper.writeValue(response.getWriter(), jsonResponse);

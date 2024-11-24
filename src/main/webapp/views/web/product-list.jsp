@@ -247,13 +247,13 @@
                                     <h6>${item.name}</h6>
                                         <%--                                    <a href="<c:url value="/them-gio-hang?id=${item.id}"/>" class="add-cart">View Detail</a>--%>
                                     <a href="san-pham?id=${item.id}" class="add-cart">View Detail</a>
+
                                     <div class="rating">
-                                        <i class="fa fa-star-o"></i>
-                                        <i class="fa fa-star-o"></i>
-                                        <i class="fa fa-star-o"></i>
-                                        <i class="fa fa-star-o"></i>
-                                        <i class="fa fa-star-o"></i>
+                                        <c:forEach var="i" begin="1" end="5">
+                                            <i ${i > item.averageStars ? 'style="color: #6c757d"' : ''} class="fa ${i <= item.averageStars ? ' fa-star' : ' fa-star-o'}"></i>
+                                        </c:forEach>
                                     </div>
+
                                     <h5>${item.getDiscountedPrice()}
                                         <c:if test="${item.productDiscount != null}">
                                             <span class="discounted-price">${item.price}</span>

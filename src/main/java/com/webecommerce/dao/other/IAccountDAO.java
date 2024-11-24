@@ -14,4 +14,7 @@ public interface IAccountDAO extends GenericDAO <AccountEntity> {
     boolean existsByUsername(String username);
     AccountEntity findByCustomerId(Long customerId);
 
+
+    UserResponse findByUserNameAndPassword(String userName, String password);
+
 }

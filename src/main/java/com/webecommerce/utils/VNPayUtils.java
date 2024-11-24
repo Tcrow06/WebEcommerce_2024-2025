@@ -10,12 +10,12 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class VNPayUtils {
-    public static String transaction(HttpServletRequest request, OrderDTO orderDTO) {
+    public static String transaction(HttpServletRequest request, double totalPrice) {
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String orderType = "Thời trang";
 
-        long amount = (long) orderDTO.getTotal() * 100L;
+        long amount = (long) totalPrice * 100L;
 
 
         String vnp_TxnRef = VNPayConfig.getRandomNumber(8);

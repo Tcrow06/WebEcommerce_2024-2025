@@ -2,6 +2,7 @@ package com.webecommerce.controller.login;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.webecommerce.constant.EnumAccountStatus;
 import com.webecommerce.dao.people.ICustomerDAO;
 import com.webecommerce.dto.CartItemDTO;
 import com.webecommerce.dto.PlacedOrder.CheckOutRequestDTO;
@@ -94,25 +95,27 @@ public class ThreePartyLoginController extends HttpServlet {
     }
     public void handleUserLogin(CustomerRequest customerRequest, String provider, String sendDirection, HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-//        HashMap<Long, CartItemDTO> cart = new HashMap<>();
         HttpSession session = request.getSession();
         CheckOutRequestDTO checkOutRequestDTO =(CheckOutRequestDTO) session.getAttribute("orderNotHandler");
         CustomerResponse existingUser;
         String path="";
-        if (provider.equals("google")) {
-            //Chưa chỉnh sửa nhất quan về thông tin đăng nhập bằng gg
-            existingUser = socialAccountService.findByGgID(customerRequest.getGgID());
-            if(existingUser==null){
-                existingUser = socialAccountService.saveSocialByEmail(customerRequest);
-            }
-        } else {
-            existingUser = socialAccountService.findByFbID(customerRequest.getFbID());
+        existingUser = socialAccountService.findAccount(customerRequest,provider);
+//        if (provider.equals("google")) {
+//            //Chưa chỉnh sửa nhất quan về thông tin đăng nhập bằng gg
+//            existingUser = socialAccountService.findByGgID(customerRequest.getGgID());
+//            if(existingUser==null){
+//                existingUser = socialAccountService.saveSocialByEmail(customerRequest);
+//            }
+//        } else {
+//            existingUser = socialAccountService.findByFbID(customerRequest.getFbID());
+//        }
+//        if (existingUser == null) {
+//            existingUser = socialAccountService.save(customerRequest);
+//        }
+        if(existingUser.getStatus().equals(EnumAccountStatus.BLOCK)){
+            response.sendRedirect(request.getContextPath() + "/dang-nhap?action=login&message=username_is_block&alert=danger");
+            return;
         }
-        if (existingUser == null) {
-            existingUser = socialAccountService.save(customerRequest);
-        }
-
-        existingUser.setRole("CUSTOMER");
         HashMap<Long, CartItemDTO> cart = (HashMap<Long, CartItemDTO>) session.getAttribute("cart");
         cart = cartItemService.updateCartWhenLogin(cart,existingUser.getId());
         if(checkOutRequestDTO!=null){

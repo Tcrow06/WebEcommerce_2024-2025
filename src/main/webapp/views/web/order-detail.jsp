@@ -530,7 +530,7 @@
                         </div>
                     </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                             <button id="rating-button" type="button" class="btn btn-dark">Đánh giá</button>
                         </div>
                 </form>
@@ -705,7 +705,7 @@ function decreaseQuantity(itemId) {
                     numberOfStars: stars
                 }),
                 success: function (response) {
-                    if (response.success) {
+                    if (response == "Thành công !") {
                         alert("Đánh giá của bạn đã được gửi thành công!");
                         $('#exampleModalCenter').modal('hide'); // Ẩn modal sau khi đánh giá thành công
                     } else {

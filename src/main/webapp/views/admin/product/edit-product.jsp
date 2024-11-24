@@ -67,7 +67,7 @@
         background-size: 100%, 100%;
         color: rgb(241, 239, 239);
         margin-bottom: 20px;
-        padding: 100px; height: 400px
+        padding: 100px; height: 300px
     }
 
 </style>
