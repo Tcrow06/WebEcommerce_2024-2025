@@ -67,7 +67,7 @@
         background-size: 100%, 100%;
         color: rgb(241, 239, 239);
         margin-bottom: 20px;
-        padding: 100px; height: 400px
+        padding: 100px; height: 300px
     }
 
 </style>
@@ -204,7 +204,7 @@
                                     <span class="input-group-text btn-primary" id="inputGroup-sizing-sm" style="color: white;" >Color</span>
                                 </div>
                                 <input type="text" class="form-control variant-color" name="name" aria-label="Small" aria-describedby="inputGroup-sizing-sm" value="" style="max-width: 150px;">
-                                <div class="error-message text-danger"></div>
+                                <div class="error-message text-danger" style="margin: 10px"></div>
                             </div>
                         </div>
                         <div class="w-100"></div>
