@@ -81,6 +81,7 @@ public class AuthController extends HttpServlet {
         CheckOutRequestDTO checkOutRequestDTO =(CheckOutRequestDTO) session.getAttribute("orderNotHandler");
         if(action != null && action.equals("login")) {
             AccountRequest account = FormUtils.toModel(AccountRequest.class, request);
+
             UserResponse foundUser = accountService.findByUserNameAndPasswordAndStatus(account.getUserName(), account.getPassword(), "UNVERIFIED");
             if (foundUser != null) {
                 accountService.sendOTPToEmail(foundUser.getEmail(), foundUser.getId(), "register");
@@ -88,26 +89,27 @@ public class AuthController extends HttpServlet {
                 return;
             }
 
-            UserResponse user = accountService.findByUserNameAndPasswordAndStatus(account.getUserName(), account.getPassword(), "ACTIVE");
-
+            UserResponse user = accountService.findByUserNameAndPassword(account.getUserName(), account.getPassword());
             if(user != null) {
+                if (user.getStatus().equals(EnumAccountStatus.BLOCK)){
+                    session.setAttribute("loginData", account);
+                    response.sendRedirect(request.getContextPath() + "/dang-nhap?action=login&message=username_is_block&alert=danger");
+                    return;
+                }
                 response.setContentType("application/json");
                 String path=null,jwtToken=null;
 
                 SessionUtil.getInstance().putValue(request, "USERINFO", user);
-                if(user.getRole().equals(EnumRole.OWNER.toString())) {
+                if(user.getRole().equals(EnumRole.OWNER)) {
                     jwtToken = JWTUtil.generateToken(user);
                     path = "/chu-doanh-nghiep";
                 }
-                else if(user.getRole().equals(EnumRole.CUSTOMER.toString())) {
+                else if(user.getRole().equals(EnumRole.CUSTOMER)) {
                     HashMap<Long, CartItemDTO> cart = (HashMap<Long, CartItemDTO>) session.getAttribute("cart");
                     cart=cartItemService.updateCartWhenLogin(cart,user.getId());
                     if(checkOutRequestDTO!=null){
                         cart = cartItemService.updateCartWhenBuy(user.getId(),checkOutRequestDTO);
                     }
-//                    else{
-//                        cart=cartItemService.updateCartWhenLogin(cart,user.getId());
-//                    }
                     request.getSession().setAttribute("cart", cart);
                     jwtToken = JWTUtil.generateToken(user);
                     path="/trang-chu";

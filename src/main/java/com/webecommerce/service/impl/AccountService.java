@@ -43,22 +43,27 @@ public class AccountService implements IAccountService {
     @Transactional
     @Override
     public CustomerResponse save(CustomerRequest customerRequest) {
-        if (accountDAO.existsByEmail(customerRequest.getEmail())) {
-            throw new DuplicateFieldException("email");
-        }
-        if (accountDAO.existsByPhone(customerRequest.getPhone())) {
-            throw new DuplicateFieldException("phone");
-        }
-        if (accountDAO.existsByUsername(customerRequest.getUserName())) {
-            throw new DuplicateFieldException("username");
-        }
+        try {
+            if (accountDAO.existsByEmail(customerRequest.getEmail())) {
+                throw new DuplicateFieldException("email");
+            }
+            if (accountDAO.existsByPhone(customerRequest.getPhone())) {
+                throw new DuplicateFieldException("phone");
+            }
+            if (accountDAO.existsByUsername(customerRequest.getUserName())) {
+                throw new DuplicateFieldException("username");
+            }
 
-        CustomerEntity customerEntity = customerMapper.toCustomerEntityFull(customerRequest);
-        customerEntity.setCart(new CartEntity());
-        AccountEntity accountEntity = accountMapper.toAccountEntity(customerRequest);
-        accountEntity.setCustomer(customerEntity);
-        accountDAO.insert(accountEntity);
-        return customerMapper.toCustomerResponse(accountEntity.getCustomer());
+            CustomerEntity customerEntity = customerMapper.toCustomerEntityFull(customerRequest);
+            customerEntity.setCart(new CartEntity());
+            AccountEntity accountEntity = accountMapper.toAccountEntity(customerRequest);
+            accountEntity.setCustomer(customerEntity);
+            accountDAO.insert(accountEntity);
+            return customerMapper.toCustomerResponse(accountEntity.getCustomer());
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public AccountResponse findByCustomerId(Long idCustomer) {
@@ -123,7 +128,7 @@ public class AccountService implements IAccountService {
         String key = String.format("user:%s:otp", id);
         String otpFound = cacheService.getKey(key);
         String otpCountKey = String.format("user:%s:otp:count", id);
-        AccountEntity accountEntity = accountDAO.findById(Long.parseLong(id));
+        AccountEntity accountEntity = accountDAO.findByCustomerId(Long.parseLong(id));
 
         if (otpFound == null) {
             int newOtp = RandomUtils.generateSixDigit();
@@ -142,6 +147,7 @@ public class AccountService implements IAccountService {
 
         if (otpFound.equals(otp)) {
             // Update Active
+            accountEntity = accountDAO.findByCustomerId(Long.parseLong(id));
             accountEntity.setStatus(EnumAccountStatus.ACTIVE);
             accountDAO.update(accountEntity);
 
@@ -168,5 +174,10 @@ public class AccountService implements IAccountService {
             }
             return Integer.parseInt(otpCount); // So lan nhap sai
         }
+    }
+
+    @Override
+    public UserResponse findByUserNameAndPassword(String userName, String password) {
+        return accountDAO.findByUserNameAndPassword(userName,password);
     }
 }
