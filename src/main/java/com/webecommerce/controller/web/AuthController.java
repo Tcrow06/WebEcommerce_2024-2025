@@ -102,7 +102,7 @@ public class AuthController extends HttpServlet {
                 SessionUtil.getInstance().putValue(request, "USERINFO", user);
                 if(user.getRole().equals(EnumRole.OWNER)) {
                     jwtToken = JWTUtil.generateToken(user);
-                    path = "/chu-doanh-nghiep";
+                    path = "/chu-cua-hang";
                 }
                 else if(user.getRole().equals(EnumRole.CUSTOMER)) {
                     HashMap<Long, CartItemDTO> cart = (HashMap<Long, CartItemDTO>) session.getAttribute("cart");
