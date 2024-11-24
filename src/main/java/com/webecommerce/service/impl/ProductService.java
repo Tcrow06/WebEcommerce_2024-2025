@@ -331,7 +331,9 @@ public class ProductService implements IProductService {
 
     public ProductDTO getProductById(Long id) {
         ProductEntity productEntity = productDAO.findById(id);
-        return getProduct(productEntity);
+        if (productEntity != null)
+            return getProduct(productEntity);
+        return null;
     }
 
     public List<String> getListColorBySize (String size, Long productId) {
