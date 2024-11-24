@@ -41,5 +41,11 @@ public class OrderDetailService implements IOrderDetailService {
         return orderDetailDAO.getCurrentStatus(orderId);
     }
 
+    @Override
+    public List<DisplayOrderDetailDTO> showOrderDetailAdmin(Long orderId) {
+        return orderDetailDAO.showOrderDetailAdmin(orderId);
+
+    }
+
 
 }

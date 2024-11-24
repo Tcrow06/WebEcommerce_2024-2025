@@ -110,8 +110,10 @@
                     </div>
                 </div>
                 <div class="text-end mt-4">
-                    <button type="submit" class="btn btn-submit me-2" name="action" value="return">Hoàn trả</button>
-                    <button type="submit" class="btn btn-submit me-2" name="action" value="noReturn" style="background-color: red">Không hoàn trả</button>
+                    <c:if test="${productReturn.status == 0}">
+                        <button type="submit" class="btn btn-submit me-2" name="action" value="return">Hoàn trả</button>
+                        <button type="submit" class="btn btn-submit me-2" name="action" value="noReturn" style="background-color: red">Không hoàn trả</button>
+                    </c:if>
                     <a href="${pageContext.request.contextPath}/chu-cua-hang/danh-sach-tra" class="btn btn-cancel">Hủy</a>
                 </div>
             </form>

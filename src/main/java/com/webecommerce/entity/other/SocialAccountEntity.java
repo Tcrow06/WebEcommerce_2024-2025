@@ -16,10 +16,12 @@ public class SocialAccountEntity {
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private CustomerEntity customer;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private EnumAccountStatus status =EnumAccountStatus.ACTIVE;
+
     private String ggID;
     private String fbID;
-
-    private EnumAccountStatus status=EnumAccountStatus.ACTIVE;
 
     public String getGgID() {
         return ggID;

@@ -174,13 +174,21 @@
                                         >
                                     </td>
                                     <td>
-                                        <img
-                                                src="<c:url value='/api-image?path=${item.photo}'/>"
-                                                alt="th"
-                                                style="width: 45px; height: 45px"
-                                                class="rounded-circle"
-                                        />
-                                        ${item.name}
+
+                                        <div class="d-flex align-items-center">
+                                            <img
+                                                    src="<c:url value='/api-image?path=${item.photo}'/>"
+                                                    alt="th"
+                                                    style="width: 45px; height: 45px"
+                                                    class="rounded-circle"
+                                            />
+                                            <div class="flex-column ms-4">
+                                                <c:if test="${item.productDiscount != null}">
+                                                    <span class="badge bg-${item.productDiscount.getBootstrapClassStatus ()}">${item.productDiscount.getStatus()}</span>
+                                                </c:if>
+                                                <p class="mb-0">${item.name}</p>
+                                            </div>
+                                        </div>
                                     </td>
                                     <td>
                                         <c:if test="${item.productDiscount != null}">
@@ -409,11 +417,17 @@
                     type: method,
                     contentType: 'application/json',
                     data: JSON.stringify(data),
+                    beforeSend: function () {
+                        // Hiển thị loader trước khi AJAX bắt đầu
+                        $('#global-loader').css('display', 'flex');
+                    },
                     success: function (response) {
                         alert("Đã gửi thông tin thành công!" + response);
                     },
                     error: function (xhr, status, error) {
                         alert("Lỗi: " + error);
+                    },complete: function () {
+                        $('#global-loader').css('display', 'none');
                     }
                 });
             }
@@ -454,6 +468,33 @@
 
         });
 
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            // Lắng nghe sự kiện khi người dùng nhập vào ô tìm kiếm
+            $('#productSearch').on('input', function () {
+                var searchValue = $(this).val().toLowerCase(); // Lấy giá trị tìm kiếm và chuyển về chữ thường
+
+                // Lọc các dòng trong bảng theo tên sản phẩm
+                $('#productModal table tbody tr').each(function () {
+                    var productName = $(this).find('td:nth-child(2)').text().toLowerCase(); // Lấy tên sản phẩm trong cột thứ 2 (Sản Phẩm)
+
+                    // Kiểm tra nếu tên sản phẩm chứa từ khóa tìm kiếm
+                    if (productName.indexOf(searchValue) > -1) {
+                        $(this).show(); // Hiển thị dòng nếu tìm thấy
+                    } else {
+                        $(this).hide(); // Ẩn dòng nếu không tìm thấy
+                    }
+                });
+            });
+
+            // Optional: Reset lại khi đóng modal
+            $('#productModal').on('hidden.bs.modal', function () {
+                $('#productSearch').val('');  // Xóa giá trị tìm kiếm khi modal đóng
+                $('#productModal table tbody tr').show(); // Hiển thị lại tất cả các dòng
+            });
+        });
     </script>
 
 </div>

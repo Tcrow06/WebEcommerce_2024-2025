@@ -11,5 +11,7 @@ public interface IOrderDetailService {
     List<DisplayOrderDetailDTO> showOrderDetail(Long orderId, EnumOrderStatus status);
     DisplayOrderDetailDTO findOrderDetail(Long orderDetailId);
     EnumOrderStatus getCurrentStatus(Long orderId);
+    List<DisplayOrderDetailDTO> showOrderDetailAdmin(Long orderId);
+
 
 }
