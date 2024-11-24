@@ -97,7 +97,7 @@ public class AccountService implements IAccountService {
             // Send Email
             String subject = null;
             String body = null;
-            if (purpose == "register") {
+            if (purpose.equals("register")) {
                 subject = "Mã xác thực (OTP) để hoàn tất đăng ký tài khoản của bạn";
                 body = "Xin chào,\n\n"
                         + "Cảm ơn bạn đã đăng ký tài khoản của chúng tôi! "

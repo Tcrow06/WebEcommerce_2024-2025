@@ -13,4 +13,6 @@ public interface ICustomerService {
     CustomerResponse findByEmail(String email);
 
     int getPointLoyaltyCustomer(Long id);
+
+    String updateInforCustomer(String id, String name, String email, String phone);
 }

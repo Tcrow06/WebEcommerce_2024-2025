@@ -47,8 +47,12 @@ public class OrderDetailDAO extends AbstractDAO<OrderDetailEntity> implements IO
                 "LEFT JOIN od.productDiscount pd " +
                 "INNER JOIN od.order o " +
                 "WHERE o.id = :orderId";
+//
+//        if (status.equals(EnumOrderStatus.PROCESSED) || status.equals(EnumOrderStatus.RECEIVED)) {
+//            jpql += " AND EXISTS (SELECT 1 FROM ReturnOrderEntity ro WHERE ro.orderDetail.id = od.id AND ro.status = 2)";
+//        }
 
-        if (status.equals(EnumOrderStatus.PROCESSED) || status.equals(EnumOrderStatus.RECEIVED)) {
+        if (status.equals(EnumOrderStatus.PROCESSED)) {
             jpql += " AND EXISTS (SELECT 1 FROM ReturnOrderEntity ro WHERE ro.orderDetail.id = od.id AND ro.status = 2)";
         }
 
