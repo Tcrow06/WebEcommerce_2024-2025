@@ -37,8 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OrderService implements IOrderService {
-    @Inject
-    private IProductService productService;
 
     @Inject
     private IBillDiscountService billDiscountService;
@@ -48,13 +46,6 @@ public class OrderService implements IOrderService {
 
     @Inject
     private IBillDiscountDAO billDiscountDAO;
-
-
-    @Inject
-    private ProductVariantService productVariantService;
-
-    @Inject
-    private IProductDiscountService productDiscountService;
 
     @Inject
     private ProductDiscountMapper productDiscountMapper;
@@ -73,12 +64,6 @@ public class OrderService implements IOrderService {
 
     @Inject
     private OrderMapper orderMapper;
-
-    @Inject
-    private IOrderInfoDAO orderInfoDAO;
-
-    @Inject
-    private IProductDiscountDAO productDiscountDAO;
 
     @Inject
     private ICustomerDAO customerDAO;
@@ -223,7 +208,7 @@ public class OrderService implements IOrderService {
     }
 
     @Transactional
-    public OrderEntity createOrder(OrderDTO orderDTO, Long idUser) {
+    public OrderEntity  createOrder(OrderDTO orderDTO, Long idUser) {
        try {
            OrderEntity orderEntity = new OrderEntity();
            String city = orderDTO.getOrderInfoDTO().getAddress().getCity().trim();
