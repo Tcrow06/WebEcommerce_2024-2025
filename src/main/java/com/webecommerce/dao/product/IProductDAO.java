@@ -2,10 +2,8 @@ package com.webecommerce.dao.product;
 
 import com.webecommerce.constant.EnumProductStatus;
 import com.webecommerce.dao.GenericDAO;
-import com.webecommerce.dto.ProductDTO;
 import com.webecommerce.dto.notinentity.RevenueDTO;
 import com.webecommerce.entity.product.ProductEntity;
-import com.webecommerce.entity.product.ProductVariantEntity;
 import com.webecommerce.paging.Pageable;
 
 import java.util.List;
@@ -36,12 +34,19 @@ public interface IProductDAO extends GenericDAO <ProductEntity> {
 
     List<Object[]> findBestSellerProduct(int limit);
 
+    List<Object[]>findLowestSellingProducts(int limit);
+
     int totalProducts();
 
     List<ProductEntity> findProductByStatus(EnumProductStatus status);
 
     Long getTotalItems();
+
     List<ProductEntity> searchProductsByName(String name);
+
+    int countByStatus(EnumProductStatus status);
+
     RevenueDTO getRevenue();
 
+    List<ProductEntity> findProductByCategoryOrStatusOrName(String category, EnumProductStatus status, String name);
 }

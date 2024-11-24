@@ -3,15 +3,13 @@ package com.webecommerce.dao.impl.order;
 import com.webecommerce.constant.EnumOrderStatus;
 import com.webecommerce.dao.impl.AbstractDAO;
 import com.webecommerce.dao.order.IOrderDetailDAO;
-import com.webecommerce.dto.OrderDetailDTO;
-import com.webecommerce.dto.notinentity.DisplayOrderDTO;
 import com.webecommerce.dto.notinentity.DisplayOrderDetailDTO;
 import com.webecommerce.entity.order.OrderDetailEntity;
 
-import javax.inject.Inject;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class OrderDetailDAO extends AbstractDAO<OrderDetailEntity> implements IOrderDetailDAO {
 
@@ -52,26 +50,46 @@ public class OrderDetailDAO extends AbstractDAO<OrderDetailEntity> implements IO
 //            jpql += " AND EXISTS (SELECT 1 FROM ReturnOrderEntity ro WHERE ro.orderDetail.id = od.id AND ro.status = 2)";
 //        }
 
-        if (status.equals(EnumOrderStatus.PROCESSED)) {
-            jpql += " AND EXISTS (SELECT 1 FROM ReturnOrderEntity ro WHERE ro.orderDetail.id = od.id AND ro.status = 2)";
-        }
-
         List<Object[]> rawResults = entityManager.createQuery(jpql, Object[].class)
                 .setParameter("orderId", orderId)
                 .getResultList();
+
+        Map<Long, Long> quantityReturnMap = new HashMap<>();
+
+        if(status.equals(EnumOrderStatus.CANCELLED)) {
+            String query = "SELECT ro.orderDetail.id, ro.quantityReturn FROM ReturnOrderEntity ro WHERE ro.orderDetail.order.id = :orderId";
+            List<Object[]> rawResultsQuantity = entityManager.createQuery(query, Object[].class)
+                    .setParameter("orderId", orderId)
+                    .getResultList();
+
+            for (Object[] result : rawResultsQuantity) {
+                Long orderDetailId = (Long) result[0];
+                Long quantityReturnValue = (Long) result[1];
+                quantityReturnMap.put(orderDetailId, quantityReturnValue);
+            }
+        }
 
         List<DisplayOrderDetailDTO> resultList = new ArrayList<>();
 
         for (Object[] result : rawResults) {
             Long orderDetailId = (Long) result[0];
-            Integer quantity  = (Integer) result[1];
+            Integer quantityInteger = (Integer) result[1];
+            Long quantity = Long.valueOf(quantityInteger);
             String imgUrl = (String) result[2];
             String color = (String) result[3];
             String size = (String) result[4];
             String productName = (String) result[5];
             Double total = (Double) result[6];
 
-            resultList.add(new DisplayOrderDetailDTO(orderDetailId, quantity,imgUrl, color, size, productName, total));
+            if(quantity == 0 && status.equals(EnumOrderStatus.CANCELLED)) {
+                quantity = quantityReturnMap.get(orderDetailId);
+            }
+            else if(quantity == 0) {
+                continue;
+            }
+
+
+            resultList.add(new DisplayOrderDetailDTO(orderDetailId, quantity ,imgUrl, color, size, productName, total));
         }
 
         return resultList;
@@ -117,7 +135,10 @@ public class OrderDetailDAO extends AbstractDAO<OrderDetailEntity> implements IO
                 .getSingleResult();
 
         Long orderDetailIdOld = (Long) rawResults[0];
-        Integer quantity  = (Integer) rawResults[1];
+
+        Integer quantityInteger = (Integer) rawResults[1];
+        Long quantity = quantityInteger.longValue();
+
         String imgUrl = (String) rawResults[2];
         String color = (String) rawResults[3];
         String size = (String) rawResults[4];
@@ -127,6 +148,66 @@ public class OrderDetailDAO extends AbstractDAO<OrderDetailEntity> implements IO
         DisplayOrderDetailDTO dto = new DisplayOrderDetailDTO(orderDetailIdOld, quantity, imgUrl, color, size, productName, total);
 
         return dto;
+    }
+
+    // Dùng để hiện thị order ở admin
+    @Override
+    public List<DisplayOrderDetailDTO> showOrderDetailAdmin(Long orderId) {
+        String jpql = "SELECT " +
+                "od.id, " +
+                "od.quantity, " +
+                "pv.imageUrl, " +
+                "pv.color, " +
+                "pv.size, " +
+                "p.name, " +
+                "CASE " +
+                "  WHEN pd.discountPercentage IS NOT NULL THEN (pv.price * (1.0 - (pd.discountPercentage / 100.0))) " +
+                "  ELSE pv.price " +
+                "END " +
+                "FROM OrderDetailEntity od " +
+                "LEFT JOIN od.productVariant pv " +
+                "LEFT JOIN pv.product p " +
+                "LEFT JOIN od.productDiscount pd " +
+                "INNER JOIN od.order o " +
+                "WHERE o.id = :orderId";
+
+        List<Object[]> rawResults = entityManager.createQuery(jpql, Object[].class)
+                .setParameter("orderId", orderId)
+                .getResultList();
+
+        Map<Long, Long> quantityReturnMap = new HashMap<>();
+
+        String query = "SELECT ro.orderDetail.id, ro.quantityReturn FROM ReturnOrderEntity ro WHERE ro.orderDetail.order.id = :orderId";
+        List<Object[]> rawResultsQuantity = entityManager.createQuery(query, Object[].class)
+                .setParameter("orderId", orderId)
+                .getResultList();
+
+        for (Object[] result : rawResultsQuantity) {
+            Long orderDetailId = (Long) result[0];
+            Long quantityReturnValue = (Long) result[1];
+            quantityReturnMap.put(orderDetailId, quantityReturnValue);
+        }
+
+        List<DisplayOrderDetailDTO> resultList = new ArrayList<>();
+
+        for (Object[] result : rawResults) {
+            Long orderDetailId = (Long) result[0];
+            Integer quantityInteger = (Integer) result[1];
+            Long quantity = Long.valueOf(quantityInteger);
+            String imgUrl = (String) result[2];
+            String color = (String) result[3];
+            String size = (String) result[4];
+            String productName = (String) result[5];
+            Double total = (Double) result[6];
+
+            if(quantity == 0) {
+                quantity = quantityReturnMap.get(orderDetailId);
+            }
+
+            resultList.add(new DisplayOrderDetailDTO(orderDetailId, quantity ,imgUrl, color, size, productName, total));
+        }
+
+        return resultList;
     }
 }
 

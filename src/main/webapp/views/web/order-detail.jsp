@@ -8,6 +8,11 @@
 
 <link rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
+<!-- SweetAlert2 CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <style>
     /*.table-container {*/
     /*    margin: 20px auto;*/
@@ -334,7 +339,7 @@
     <div class="order-tracking">
         <div class="order-steps">
             <div class="steps">
-                <div class="step ${status == 'PENDING' || status == 'DELIVERED' || status == 'WAITING' || status == 'PROCESSED' || status == 'RECEIVED' ? 'completed' : ''}">
+                <div class="step ${status == 'PENDING' || status == 'DELIVERED' || status == 'WAITING' || status == 'PROCESSED' || status == 'RECEIVED' || status == 'CANCELLED' ? 'completed' : ''}">
                     <div class="step-icon-wrap">
                         <div class="step-icon"
                              style="${status == 'PENDING' ? 'background-color: black; color: #fff;' : ''}">
@@ -344,7 +349,7 @@
                     <div class="step-title">Chờ xác nhận</div>
                 </div>
 
-                <div class="step ${status == 'DELIVERED' || status == 'WAITING' || status == 'PROCESSED' || status == 'RECEIVED' ? 'completed' : ''}">
+                <div class="step ${status == 'DELIVERED' || status == 'WAITING' || status == 'PROCESSED' || status == 'RECEIVED' || status == 'CANCELLED' ? 'completed' : ''}">
                     <div class="step-icon-wrap">
                         <div class="step-icon"
                              style="${status == 'DELIVERED' ? 'background-color: black; color: #fff;' : ''}">
@@ -354,7 +359,7 @@
                     <div class="step-title">Đang vận chuyển</div>
                 </div>
 
-                <div class="step ${status == 'DELIVERED' || status == 'WAITING' || status == 'PROCESSED' || status == 'RECEIVED' ? 'completed' : ''}">
+                <div class="step ${status == 'DELIVERED' || status == 'WAITING' || status == 'PROCESSED' || status == 'RECEIVED' || status == 'CANCELLED' ? 'completed' : ''}">
                     <div class="step-icon-wrap">
                         <div class="step-icon"
                              style="${status == 'WAITING' ? 'background-color: black; color: #fff;' : ''}">
@@ -364,7 +369,7 @@
                     <div class="step-title">Đã vận chuyển</div>
                 </div>
 
-                <div class="step ${status == 'WAITING' || status == 'PROCESSED' || status == 'RECEIVED' ? 'completed' : ''}">
+                <div class="step ${status == 'WAITING' || status == 'PROCESSED' || status == 'RECEIVED' || status == 'CANCELLED' ? 'completed' : ''}">
                     <div class="step-icon-wrap">
                         <div class="step-icon"
                              style="${status == 'RECEIVED' ? 'background-color: black; color: #fff;' : ''}">
@@ -377,12 +382,23 @@
                 <div class="step ${status == 'RECEIVED' ? 'completed' : ''}">
                     <div class="step-icon-wrap">
                         <div class="step-icon"
-                             style="${status == 'RECEIVED' ? 'background-color: black; color: #fff;' : ''}">
-                            <i class="pe-7s-home"></i>
+                             style="${status == 'RECEIVED' || status == 'CANCELLED' ? 'background-color: black; color: #fff;' : ''}">
+                            <i class="${status == 'CANCELLED' ? 'pe-7s-close-circle' : 'pe-7s-home'}"></i>
                         </div>
                     </div>
-                    <div class="step-title">Đã nhận</div>
+                    <div class="step-title">${status == 'CANCELLED' ? 'Đã hủy' : 'Đã nhận'}</div>
                 </div>
+
+
+<%--                <div class="step ${status == 'RECEIVED' ? 'completed' : ''}">--%>
+<%--                    <div class="step-icon-wrap">--%>
+<%--                        <div class="step-icon"--%>
+<%--                             style="${status == 'RECEIVED' ? 'background-color: black; color: #fff;' : ''}">--%>
+<%--                            <i class="pe-7s-home"></i>--%>
+<%--                        </div>--%>
+<%--                    </div>--%>
+<%--                    <div class="step-title">Đã nhận</div>--%>
+<%--                </div>--%>
             </div>
         </div>
     </div>
@@ -390,7 +406,7 @@
 
 <section>
     <div class="table-container">
-        <form id="return-form" action="/trang-chu/don-hang/danh-sach-don-hang/tra-san-pham" method="POST">
+        <form id="return-form" action="/trang-chu/don-hang/danh-sach-don-hang/tra-san-pham" method="POST" onsubmit="return validateSelection()">
             <table class="table table-bordered table-hover">
                 <thead class="thead-dark">
                 <tr>
@@ -401,7 +417,9 @@
                     <th>Giá</th>
                     <th>Màu</th>
                     <th>Size</th>
-                    <th>Đánh giá</th>
+                    <c:if test="${status == 'RECEIVED'}">
+                        <th>Đánh giá</th>
+                    </c:if>
                 </tr>
                 </thead>
                 <tbody>
@@ -418,18 +436,29 @@
                         </c:if>
 
                         <tr>
-                            <td><input type="checkbox" class="row-checkbox" name="selectedItems" value="${item.id}"></td>
+                            <td><input type="checkbox" class="item-checkbox" name="selectedItems" value="${item.id}"></td>
                             <td><img src="<c:url value='/api-image?path=${item.imageUrl}'/>" alt="Product Image" class="product-image"></td>
                             <td>${item.productName}</td>
-                            <td>${item.quantity}</td>
+
+                            <c:if test="${status == 'DELIVERED'}">
+                                <td>
+                                    <button type="button" onclick="decreaseQuantity(${item.id})">-</button>
+                                    <input type="number" id="quantity-${item.id}" name="quantities[${item.id}]" value="${item.quantity}" min="1" data-max="${item.quantity}" style="width: 50px; text-align: center;" readonly>
+                                    <button type="button" onclick="increaseQuantity(${item.id})">+</button>
+                                </td>
+                            </c:if>
+                            <c:if test="${status != 'DELIVERED'}">
+                                  <td>${item.quantity}</td>
+                            </c:if>
                             <td>${item.price}</td>
                             <td>${item.color}</td>
                             <td>${item.size}</td>
-                            <td>
-<%--                                data-bs-toggle="modal" data-bs-target="#exampleModalCenter"--%>
-                                <button type="button" class="btn btn-dark btn-review" data-product-name="${item.productName}" data-product-image="${item.imageUrl}" data-orderdetail-id = "${item.id}">Đánh giá</button>
-                            </td>
-
+                            <c:if test="${status == 'RECEIVED'}">
+                                <td>
+                                <%--                                data-bs-toggle="modal" data-bs-target="#exampleModalCenter"--%>
+                                        <button type="button" class="btn btn-dark btn-review" data-product-name="${item.productName}" data-product-image="${item.imageUrl}" data-orderdetail-id = "${item.id}">Đánh giá</button>
+                                </td>
+                            </c:if>
                         </tr>
 
                     </c:forEach>
@@ -509,6 +538,43 @@
         </div>
     </div>
 </div>
+
+<script>function increaseQuantity(itemId) {
+    const elementId = "quantity-" + itemId;
+    const quantityInput = document.getElementById(elementId);
+    const currentQuantity = parseInt(quantityInput.value);
+    const maxQuantity = parseInt(quantityInput.getAttribute('data-max'));
+
+    if (currentQuantity < maxQuantity) {
+        quantityInput.value = currentQuantity + 1;
+    } else {
+        Swal.fire({
+            title: 'Lỗi!',
+            text: 'Không thể tăng thêm số lượng, số lượng của sản phẩm đạt tối đa',
+            icon: 'error',
+            confirmButtonText: 'Đồng ý'
+        });    }
+}
+
+function decreaseQuantity(itemId) {
+    const elementId = "quantity-" + itemId;
+    const quantityInput = document.getElementById(elementId);
+    const currentQuantity = parseInt(quantityInput.value);
+    const minQuantity = parseInt(quantityInput.getAttribute('min'));
+
+    if (currentQuantity > minQuantity) {
+        quantityInput.value = currentQuantity - 1;
+    } else {
+        Swal.fire({
+            title: 'Lỗi!',
+            text: 'Không thể giảm thêm số lượng, số lượng của sản phẩm đạt tối thiểu',
+            icon: 'error',
+            confirmButtonText: 'Đồng ý'
+        });
+    }
+}
+
+</script>
 
 <script>
     document.getElementById('select-all').addEventListener('change', function () {
@@ -651,4 +717,22 @@
                 }
             });
         });
+</script>
+
+<script>
+    function validateSelection() {
+        const checkboxes = document.querySelectorAll('.item-checkbox:checked');
+
+        if (checkboxes.length === 0) {
+            Swal.fire({
+                title: 'Lỗi!',
+                text: 'Bạn phải chọn sản phẩm để trả hàng!',
+                icon: 'error',
+                confirmButtonText: 'Đồng ý'
+            });
+            return false;
+        }
+
+        return true;
+    }
 </script>

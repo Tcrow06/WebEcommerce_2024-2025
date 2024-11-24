@@ -8,11 +8,14 @@ import com.webecommerce.dao.product.IProductVariantDAO;
 import com.webecommerce.dto.CartItemDTO;
 import com.webecommerce.dto.PlacedOrder.CheckOutRequestDTO;
 import com.webecommerce.dto.PlacedOrder.ProductOrderDTO;
+import com.webecommerce.dto.ProductVariantDTO;
 import com.webecommerce.entity.cart.CartEntity;
 import com.webecommerce.entity.cart.CartItemEntity;
 import com.webecommerce.entity.people.CustomerEntity;
+import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.entity.product.ProductVariantEntity;
 import com.webecommerce.mapper.Impl.CartItemMapper;
+import com.webecommerce.mapper.Impl.ProductVariantMapper;
 import com.webecommerce.service.ICartItemService;
 
 import javax.inject.Inject;
@@ -36,6 +39,9 @@ public class CartItemService implements ICartItemService {
     @Inject
     private ICartDAO cartDAO;
 
+    @Inject
+    private ProductVariantMapper productVariantMapper;
+
     @Override
     public HashMap<Long, CartItemDTO> convertCartForSession(CartEntity cartEntity) {
         HashMap<Long, CartItemDTO> cart = new HashMap<>();
@@ -45,6 +51,7 @@ public class CartItemService implements ICartItemService {
         }
         return cart;
     }
+
 
     @Override
     @Transactional
@@ -150,7 +157,9 @@ public class CartItemService implements ICartItemService {
     public HashMap<Long, CartItemDTO> updateCartWhenBuy(Long idUser, CheckOutRequestDTO checkOutRequestDTO) {
         try {
             CartEntity cartEntity = customerDAO.findById(idUser).getCart();
-            HashMap<Long, CartItemDTO> cart = new HashMap<>();
+//            HashMap<Long, CartItemDTO> cart = new HashMap<>();
+            HashMap<Long, CartItemDTO> cart = convertCartForSession(cartEntity);
+
 
             for (ProductOrderDTO productOrderDTO : checkOutRequestDTO.getSelectedProductsId()) {
                 cartEntity.getCartItems().stream()
@@ -161,7 +170,8 @@ public class CartItemService implements ICartItemService {
                             cartItemDAO.update(cartItemEntity);
                             CartItemDTO updatedCartItemDTO = cartItemMapper.toDTO(cartItemEntity);
                             updatedCartItemDTO.setIsActive(1);
-                            cart.put(updatedCartItemDTO.getId(), updatedCartItemDTO);
+                            cart.replace(updatedCartItemDTO.getProductVariant().getId(),updatedCartItemDTO);
+//                            cart.set(updatedCartItemDTO.getId(), updatedCartItemDTO);
                         }, () -> {
                             CartItemEntity cartItem = new CartItemEntity();
                             ProductVariantEntity productVariantEntity = productVariantDAO.findById(productOrderDTO.getProductVariantId());
@@ -170,10 +180,10 @@ public class CartItemService implements ICartItemService {
                             cartItemDAO.insert(cartItem);
                             CartItemDTO updatedCartItemDTO = cartItemMapper.toDTO(cartItem);
                             updatedCartItemDTO.setIsActive(1);
-                            cart.put(updatedCartItemDTO.getId(), updatedCartItemDTO);
+                            cart.put(updatedCartItemDTO.getProductVariant().getId(), updatedCartItemDTO);
                         });
             }
-            LinkedHashMap<Long, CartItemDTO> sortedCart = new LinkedHashMap<>();
+            HashMap<Long, CartItemDTO> sortedCart = new LinkedHashMap<>();
             cart.entrySet().stream()
                     .sorted((entry1, entry2) -> Integer.compare(entry2.getValue().getIsActive(), entry1.getValue().getIsActive()))
                     .forEachOrdered(entry -> sortedCart.put(entry.getKey(), entry.getValue()));
@@ -186,14 +196,12 @@ public class CartItemService implements ICartItemService {
     }
 
     @Override
-    @Transactional
     public HashMap<Long, CartItemDTO> LoadCart(Long idUser) {
         try {
             CartEntity cartEntity = customerDAO.findById(idUser).getCart();
             HashMap<Long, CartItemDTO> cart = new HashMap<>();
             for (CartItemEntity cartItemEntity : cartEntity.getCartItems()) {
                 CartItemDTO cartItemDTO = cartItemMapper.toDTO(cartItemEntity);
-                cartItemDTO.setIsActive(1);
                 cart.put(cartItemDTO.getId(), cartItemDTO);
             }
             return cart;
@@ -204,6 +212,71 @@ public class CartItemService implements ICartItemService {
 
     }
 
+    @Override
+    public List<CartItemDTO> addCartAnonymous(List<CartItemDTO> cart, Long productVariantId, int quantity) {
+        cart.stream()
+                .filter(cartItem -> cartItem.getProductVariant().getId().equals(productVariantId))
+                .findFirst()
+                .ifPresentOrElse(cartItem -> {
+                    cartItem.setQuantity(cartItem.getQuantity() + quantity);
+                    },() -> {
+                    ProductVariantDTO productVariantDTO = productVariantMapper.toDTO(productVariantDAO.findById(productVariantId));
+                        CartItemDTO cartItem = new CartItemDTO();
+                        cartItem.setProductVariant(productVariantDTO);
+                        cartItem.setQuantity(quantity);
+                        cart.add(cartItem);
+                });
+
+        return cart;
+    }
+
+    @Transactional
+    @Override
+    public HashMap<Long, CartItemDTO> updateCartWhenLogin(HashMap<Long, CartItemDTO> cart,Long idUser) {
+        CartEntity cartEntity = customerDAO.findById(idUser).getCart();
+        if(cart == null){
+            return convertCartForSession(cartEntity);
+        }
+        List<CartItemEntity> result = new ArrayList<>();
+        List<CartItemEntity> cartItemEntityList = cartEntity.getCartItems();
+        for(CartItemDTO cartItemDTO : new ArrayList<>(cart.values())){
+            cartItemEntityList.stream()
+                    .filter(cartItemEntity -> cartItemEntity.getProductVariant().getId().equals(cartItemDTO.getProductVariant().getId()))
+                    .findFirst()
+                    .ifPresentOrElse(cartItemEntity -> {
+                        cartItemEntity.setQuantity(cartItemEntity.getQuantity() + cartItemDTO.getQuantity());
+                        cartItemDAO.update(cartItemEntity);
+                    },()-> {
+                        CartItemEntity cartItem = new CartItemEntity();
+                        ProductVariantEntity productVariantEntity = productVariantDAO.findById(cartItemDTO.getProductVariant().getId());
+                        cartItem.setProductVariant(productVariantEntity);
+                        cartItem.setCart(cartEntity);
+                        cartItem.setQuantity(cartItemDTO.getQuantity());
+                        cartItemDAO.insert(cartItem);
+                        cartItemEntityList.add(cartItem);
+                    });
+        }
+        cartEntity.setCartItems(cartItemEntityList);
+        return convertCartForSession(cartEntity);
+    }
+    @Transactional
+    @Override
+    public HashMap<Long, CartItemDTO> deleteCartItem(Long userId,List<Long> productVariantIds){
+        CustomerEntity customerEntity = customerDAO.findById(userId);
+        CartEntity cartEntity = customerEntity.getCart();
+        List<CartItemEntity> list  = cartEntity.getCartItems();
+        for(Long productVariantId : productVariantIds){
+            list.stream()
+                    .filter(cartItemEntity -> cartItemEntity.getProductVariant().getId().equals(productVariantId))
+                    .findFirst()
+                    .ifPresent(cartItemEntity -> {
+                        cartItemDAO.delete(cartItemEntity.getId());
+                        list.remove(cartItemEntity);
+                    });
+        }
+        cartEntity.setCartItems(list);
+        return convertCartForSession(cartEntity);
+    }
 
 
 }

@@ -47,7 +47,11 @@ public class HomeController extends HttpServlet {
             int year=Integer.parseInt(requestData.get("year").toString());
 
             List<Double> list = statisticService.calculateMonthlyRevenues(year);
+            double sum = list.stream()
+                    .mapToDouble(Double::doubleValue)
+                    .sum();
             jsonResponse.put("monthlyRevenue", list);
+            jsonResponse.put("revenue", sum);
 
         } catch (NumberFormatException e) {
             jsonResponse.put("error", "Invalid year format");
@@ -64,10 +68,10 @@ public class HomeController extends HttpServlet {
         StatisticDTO statisticDTO = statisticService.calculateHomeAdmin(2023);
         try {
             request.setAttribute("statistic",statisticDTO);
-            List<Map.Entry<Integer,Double>> revenue = statisticService.calculateMonthlyRevenue(2024);
-            String revenueJson = new ObjectMapper().writeValueAsString(revenue);
-            request.setAttribute("revenueChartJson", revenueJson);
-            request.setAttribute("revenueChart", revenue);
+//            List<Map.Entry<Integer,Double>> revenue = statisticService.calculateMonthlyRevenue(2024);
+//            String revenueJson = new ObjectMapper().writeValueAsString(revenue);
+//            request.setAttribute("revenueChartJson", revenueJson);
+//            request.setAttribute("revenueChart", revenue);
             request.getRequestDispatcher("/views/admin/home.jsp").forward(request, response);
         }catch (Exception e){
             e.printStackTrace();

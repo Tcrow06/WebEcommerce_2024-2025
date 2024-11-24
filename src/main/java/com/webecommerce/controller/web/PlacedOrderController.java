@@ -65,7 +65,6 @@ public class PlacedOrderController extends HttpServlet {
                 jsonResponse.put("status","success");
             }
 
-
             objectMapper.writeValue(response.getWriter(), jsonResponse);
         }catch (Exception e){
             e.printStackTrace();

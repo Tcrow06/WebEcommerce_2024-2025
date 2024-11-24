@@ -224,24 +224,16 @@
         <div class="row">
             <div class="col-lg-3 col-md-3">
                 <div class="header__logo">
-                    <a href="<c:url value="/trang-chu"/>"><img src="<c:url value="/static/img/logo.jpg"/>" alt=""></a>
+                    <a href="<c:url value="/trang-chu"/>"><img src="<c:url value="/static/img/logoshop.jpg"/>" alt=""></a>
                 </div>
             </div>
             <div class="col-lg-6 col-md-6">
                 <nav class="header__menu mobile-menu">
                     <ul>
-                        <li class="active"><a href="<c:url value="/trang-chu"/>">Home</a></li>
-                        <li><a href="<c:url value="/danh-sach-san-pham?page=1&maxPageItem=9"/>">Shop</a></li>
-                        <li><a href="#">Pages</a>
-                            <ul class="dropdown">
-                                <li><a href="<c:url value="/ve-chung-toi"/>">About Us</a></li>
-                                <li><a href="<c:url value="/san-pham?action=ten-san-pham-o-day"/>">Shop Details</a></li>
-                                <li><a href="<c:url value="/gio-hang"/>">Shopping Cart</a></li>
-                                <li><a href="<c:url value="/thanh-toan"/>">Check Out</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="<c:url value="/blog"/>">Blog</a></li>
-                        <li><a href="<c:url value="/ve-chung-toi"/>">Contacts</a></li>
+                        <li class="active"><a href="<c:url value="/trang-chu"/>">Trang chủ</a></li>
+                        <li><a href="<c:url value="/danh-sach-san-pham?page=1&maxPageItem=9"/>">Thời trang</a></li>
+                        <li><a href="<c:url value="/blog"/>">Bài viết</a></li>
+                        <li><a href="<c:url value="/ve-chung-toi"/>">Liên hệ</a></li>
                     </ul>
                 </nav>
             </div>

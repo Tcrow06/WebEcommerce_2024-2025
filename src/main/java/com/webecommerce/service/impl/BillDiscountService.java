@@ -9,6 +9,7 @@ import com.webecommerce.mapper.GenericMapper;
 import com.webecommerce.service.IBillDiscountService;
 
 import javax.inject.Inject;
+import javax.persistence.EntityExistsException;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -25,6 +26,10 @@ public class BillDiscountService implements IBillDiscountService {
 
     @Transactional
     public BillDiscountDTO save (BillDiscountDTO billDiscountDTO) {
+
+        if (billDiscountDAO.billDiscountCodeExists(billDiscountDTO.getCode()))
+            throw new EntityExistsException ("Mã code "+ billDiscountDTO.getCode() +" đã tồn tại!");
+
         BillDiscountEntity billDiscount = billDiscountMapper.toEntity(billDiscountDTO);
 
         return billDiscountMapper.toDTO(
@@ -117,5 +122,6 @@ public class BillDiscountService implements IBillDiscountService {
     public List <BillDiscountDTO> findBillDiscountValid () {
         return billDiscountMapper.toDTOList(billDiscountDAO.findBillDiscountValid());
     }
+
 
 }

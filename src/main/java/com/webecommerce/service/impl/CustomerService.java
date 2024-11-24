@@ -1,6 +1,8 @@
 package com.webecommerce.service.impl;
 
+import com.webecommerce.constant.EnumAccountStatus;
 import com.webecommerce.dao.people.ICustomerDAO;
+import com.webecommerce.dto.notinentity.ManageUserDTO;
 import com.webecommerce.dto.request.people.CustomerRequest;
 import com.webecommerce.dto.response.people.CustomerResponse;
 import com.webecommerce.entity.people.CustomerEntity;
@@ -8,6 +10,7 @@ import com.webecommerce.mapper.ICustomerMapper;
 import com.webecommerce.service.ICustomerService;
 
 import javax.inject.Inject;
+import java.util.List;
 
 public class CustomerService implements ICustomerService {
 
@@ -34,6 +37,16 @@ public class CustomerService implements ICustomerService {
         CustomerEntity customerEntity = customerDAO.findById(id);
         int p = customerEntity.getLoyaltyPoint();
         return p;
+    }
+
+    @Override
+    public List<ManageUserDTO> getInfoUser() {
+        return customerDAO.getInfoUser();
+    }
+
+    @Override
+    public boolean updateStatusAccount(Long userId, EnumAccountStatus status) {
+        return customerDAO.updateStatusAccount(userId, status);
     }
 
     @Override

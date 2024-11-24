@@ -6,6 +6,7 @@ import com.webecommerce.dao.discount.IProductDiscountDAO;
 import com.webecommerce.dao.order.IOrderDAO;
 import com.webecommerce.dao.order.IOrderInfoDAO;
 import com.webecommerce.dao.people.ICustomerDAO;
+import com.webecommerce.dao.product.IProductDAO;
 import com.webecommerce.dao.product.IProductVariantDAO;
 import com.webecommerce.dto.OrderDTO;
 import com.webecommerce.dto.OrderDetailDTO;
@@ -21,6 +22,7 @@ import com.webecommerce.entity.order.OrderEntity;
 import com.webecommerce.entity.order.OrderInfoEntity;
 import com.webecommerce.entity.order.OrderStatusEntity;
 import com.webecommerce.entity.people.CustomerEntity;
+import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.entity.product.ProductVariantEntity;
 import com.webecommerce.mapper.Impl.OrderInfoMapper;
 import com.webecommerce.mapper.Impl.OrderMapper;
@@ -81,6 +83,9 @@ public class OrderService implements IOrderService {
     @Inject
     private ICustomerDAO customerDAO;
 
+    @Inject
+    private IProductDAO productDAO;
+
 
 
     @Override
@@ -88,8 +93,6 @@ public class OrderService implements IOrderService {
         OrderDTO orderDTO = new OrderDTO();
         String status=null;
         StringBuilder message = new StringBuilder();
-//        OrderEntity order = new OrderEntity();
-//        List<OrderDetailEntity> orderDetails = new ArrayList<>();
         List<OrderDetailDTO> orderDetailDTOS = new ArrayList<>();
         BillDiscountDTO billDiscountDTO = billDiscountService.findBillDiscountByCode(checkOutRequestDTO.getBillDiscountCode());
         if(!checkOutRequestDTO.getBillDiscountCode().trim().isEmpty()){
@@ -109,6 +112,14 @@ public class OrderService implements IOrderService {
         for(ProductOrderDTO product : checkOutRequestDTO.getSelectedProductsId()){
             ProductVariantEntity productVariantEntity = productVariantDAO.findById(product.getProductVariantId());
             ProductVariantDTO productVariantDTO = productVariantMapper.toDTO(productVariantEntity);
+            if(productVariantEntity.getProduct().getProductDiscount() !=null){
+                ProductDiscountEntity discount = productVariantEntity.getProduct().getProductDiscount();
+                if(discount.getEndDate().isBefore(LocalDateTime.now())||
+                        discount.getStartDate().isAfter(LocalDateTime.now())){
+                        productVariantEntity.getProduct().setProductDiscount(null);
+
+                }
+            }
 
             if(productVariantDTO.getQuantity()<product.getQuantity()){
                 if(status==null){
@@ -121,7 +132,7 @@ public class OrderService implements IOrderService {
 
             orderDetailDTOS.add(new OrderDetailDTO(product.getQuantity(),productVariantDTO, productDiscountMapper.toDTO(productVariantEntity.getProduct().getProductDiscount())));
         }
-        orderDTO.setOrderInfoDTO(orderInfoService.findDefaultOrderInfoByIdUser(checkOutRequestDTO.getIdUser()));
+//        orderDTO.setOrderInfoDTO(orderInfoService.findDefaultOrderInfoByIdUser(checkOutRequestDTO.getIdUser()));
         orderDTO.setOrderDetails(orderDetailDTOS);
         if(!orderDTO.calculateTotal()){
             status="error";

@@ -131,10 +131,12 @@ public class ProductService implements IProductService {
     @Transactional
     public ProductDTO save(ProductDTO product) {
         try { // tiến hành lưu ảnh
-            imageServiceImpl.setRealPath(product.getRealPathFile());
-            imageServiceImpl.setPath(product.getSizeConversionTable());
-            imageServiceImpl.saveImageToDisk();
-            product.setSizeConversionTableUrl(imageServiceImpl.getId());
+            if (product.getSizeConversionTable() != null) {
+                imageServiceImpl.setRealPath(product.getRealPathFile());
+                imageServiceImpl.setPath(product.getSizeConversionTable());
+                imageServiceImpl.saveImageToDisk();
+                product.setSizeConversionTableUrl(imageServiceImpl.getId());
+            }
 
             for (ProductVariantDTO productVariant : product.getProductVariants()) {
                 imageServiceImpl.setRealPath(product.getRealPathFile());
@@ -235,6 +237,20 @@ public class ProductService implements IProductService {
     // dùng cho controller product admin
     public List<ProductDTO> findProductSelling() {
         List <ProductEntity> productEntities = productDAO.findProductByStatus(EnumProductStatus.SELLING);
+        if (productEntities == null) return new ArrayList<>();
+
+        return getProductsWithDiscount(productEntities);
+    }
+
+    public List <ProductDTO> findProductSellingByCategoryAndName(String categoryCode, String name) {
+        List <ProductEntity> productEntities = productDAO.findProductByCategoryOrStatusOrName(categoryCode,EnumProductStatus.SELLING,name);
+        if (productEntities == null) return new ArrayList<>();
+
+        return getProductsWithDiscount(productEntities);
+    }
+
+    public List <ProductDTO> findProductStopSellingByCategoryAndName(String categoryCode, String name) {
+        List <ProductEntity> productEntities = productDAO.findProductByCategoryOrStatusOrName(categoryCode,EnumProductStatus.STOP_SELLING,name);
         if (productEntities == null) return new ArrayList<>();
 
         return getProductsWithDiscount(productEntities);
@@ -388,6 +404,29 @@ public class ProductService implements IProductService {
         return list;
     }
 
+    @Override
+    public List<Map.Entry<ProductDTO, Integer>> findLowestSellingProducts(int limit) {
+        List<Object[]> results = productDAO.findLowestSellingProducts(limit);
+        List<Map.Entry<ProductDTO, Integer>> list = new ArrayList<>();
+        for(Object[] result : results){
+            ProductEntity product = (ProductEntity)result[0];
+            ProductDTO productDTO = productMapper.toDTO(product);
+            ProductVariantEntity productVariant = productVariantDAO.getProductVariantByProduct(product);
+            if (productVariant != null) {
+                productDTO.setPhoto(productVariant.getImageUrl());
+                productDTO.setPrice(productVariant.getPrice());
+            }
+            CategoryEntity categoryEntity = categoryDAO.findById(product.getCategory().getId());
+            if(categoryEntity!=null){
+                productDTO.setCategory(categoryMapper.toDTO(categoryEntity));
+            }
+            Integer sales = ((Long) result[1]).intValue();;
+            Map.Entry<ProductDTO, Integer> entry = new AbstractMap.SimpleEntry<>(productDTO, sales);
+            list.add(entry);
+        }
+        return list;
+    }
+
     public int totalProducts(){
         return productDAO.totalProducts();
     }
@@ -401,6 +440,10 @@ public class ProductService implements IProductService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public int countByStatus(EnumProductStatus status) {
+        return productDAO.countByStatus(status);
+    }
     @Override
     public RevenueDTO getRevenue() {
         return productDAO.getRevenue();

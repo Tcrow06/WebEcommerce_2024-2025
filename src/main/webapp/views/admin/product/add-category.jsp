@@ -15,14 +15,14 @@
                 <div class="row">
                     <div class="col-lg-6 col-sm-6 col-12">
                         <div class="form-group">
-                            <label>Category Name</label>
-                            <input type="text" name="name" value="">
+                            <label>Tên loại sản phẩm</label>
+                            <input type="text" name="name" value="" placeholder="Nhập tên loại sản phẩm ở đây">
                         </div>
                     </div>
                     <div class="col-lg-6 col-sm-6 col-12">
                         <div class="form-group">
                             <label>Category Code</label>
-                            <input type="text" name="code" value="">
+                            <input type="text" name="code" value="" placeholder="Nhập code ở đây">
                         </div>
                     </div>
                     <div class="col-lg-12">
@@ -36,50 +36,8 @@
             <div class="card-body">
                 <div class="table-top">
                     <div class="search-set">
-                        <div class="search-path">
-                            <a class="btn btn-filter" id="filter_search">
-                                <img src="<c:url value='/static/admin/assets/img/icons/filter.svg'/> " alt="img">
-                                <span><img src="assets/img/icons/closes.svg" alt="img"></span>
-                            </a>
-                        </div>
                         <div class="search-input">
                             <a class="btn btn-searchset"><img src="<c:url value='/static/admin/assets/img/icons/search-white.svg'/> " alt="img"></a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card" id="filter_inputs">
-                    <div class="card-body pb-0">
-                        <div class="row">
-                            <div class="col-lg-2 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <select class="select">
-                                        <option>Choose Category</option>
-                                        <option>Computers</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-2 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <select class="select">
-                                        <option>Choose Sub Category</option>
-                                        <option>Fruits</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-2 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <select class="select">
-                                        <option>Choose Sub Brand</option>
-                                        <option>Iphone</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-1 col-sm-6 col-12 ms-auto">
-                                <div class="form-group">
-                                    <a class="btn btn-filters ms-auto"><img src="assets/img/icons/search-whites.svg" alt="img"></a>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -174,6 +132,10 @@
                         contentType: 'application/json',  // Đảm bảo gửi dữ liệu dưới dạng JSON
                         data: JSON.stringify(data),  // Chuyển đối tượng thành JSON
                         dataType: 'json',
+                        beforeSend: function () {
+                            // Hiển thị loader trước khi AJAX bắt đầu
+                            $('#global-loader').css('display', 'flex');
+                        },
                         success: function (response, textStatus, xhr) {
                             if (xhr.status === 200) {
                                 alert(response); // Thông báo thành công
@@ -187,7 +149,16 @@
                             }
                         },
                         error: function (xhr, status, error) {
-                            alert('Failed to add category: ' + error);
+                            if (xhr.status === 409) {
+                                alert("Lỗi: " + xhr.responseText); // Hiển thị thông báo lỗi khi mã code đã tồn tại
+                            } else if (xhr.status === 400) {
+                                alert("Lỗi: Dữ liệu không hợp lệ.");
+                            } else {
+                                alert("Đã xảy ra lỗi: " + error);
+                            }
+                        },
+                        complete: function () {
+                            $('#global-loader').css('display', 'none');
                         }
                     });
                 });

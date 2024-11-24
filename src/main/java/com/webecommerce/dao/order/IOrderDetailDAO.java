@@ -15,5 +15,7 @@ public interface IOrderDetailDAO extends GenericDAO<OrderDetailEntity> {
     EnumOrderStatus getCurrentStatus(Long orderId);
 
     DisplayOrderDetailDTO findOrderDetail(Long orderDetailId);
+    List<DisplayOrderDetailDTO> showOrderDetailAdmin(Long orderId);
+
 
 }
