@@ -182,7 +182,21 @@
                                         id="bank"
                                 />
                                 <label class="form-check-label">
-                                    Thanh toán bằng chuyển khoản
+                                    Thanh toán bằng QR Code
+                                </label>
+                            </div>
+                            <br />
+                            <div class="form-check">
+                                <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="payment"
+                                        checked
+                                        value="vnpay"
+                                        id="vnpay"
+                                />
+                                <label class="form-check-label">
+                                    Thanh toán bằng VN Pay
                                 </label>
                             </div>
                             <br />
@@ -398,6 +412,16 @@
                 callApiWard(host + "d/" + districtId + "?depth=2");
             }
         });
+
+        // Note: Nếu thanh toán thành công thì hiển thị
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('vnp_ResponseCode') === '00') {
+            Swal.fire({
+                icon: 'success',
+                title: 'Thanh toán thành công',
+                text: 'Cảm ơn bạn đã hoàn tất quá trình thanh toán!',
+            });
+        }
     });
 
     var currentUrl = window.location.href;
@@ -490,27 +514,48 @@
 
         await fetchTransactions(fromDate, toDate);
 
+        // Lấy dữ liệu order
+        let order = JSON.parse('${orderDTOJson}');
+        let recipient = document.getElementById("recipient-hidden").value;
+        let phone = document.getElementById("phone-hidden").value;
+        let address = {
+            city: document.getElementById("city-hidden").value,
+            district: document.getElementById("district-hidden").value,
+            commune: document.getElementById("commune-hidden").value,
+            concrete: document.getElementById("concrete-hidden").value
+        };
+        console.log({ recipient, phone, address });
+        const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
+
+        delete order.orderInfoDTO;
+        order.orderInfoDTO = {
+            recipient: recipient,
+            phone: phone,
+            address: address,
+        };
+        order.paymentMethod = paymentMethod
+
+        // Đưa danh sách biến động số dư và order vào payload
+        const payload = {
+            dataFiller: dataFiller,
+            order: order
+        };
+
         // Gửi ajax khi có dữ liệu
         if (dataFiller.length > 0) {
-            const totalMoney = document.getElementById('total-money').textContent.trim().replace(/[^\d]/g, '');
-            const phoneNumber = encodeURIComponent(document.getElementById('phone-number').textContent.trim());
-            dataFiller.push({
-                description: phoneNumber,
-                amount: totalMoney
-            })
             $.ajax({
                 url: "/api-kiem-tra-thanh-toan",
                 method: "POST",
                 contentType: "application/json",
-                data: JSON.stringify(dataFiller),
+                data: JSON.stringify(payload),
                 success: function (response) {
                     if (response.success) {
                         Swal.fire({
                             icon: 'success',
                             title: 'Thành công!',
-                            text: 'Thanh toán của bạn đã được xác nhận, thông tin chi tiết có thể xem ở email.'
+                            text: 'Thanh toán của bạn đã được xác nhận.'
                         }).then(() => {
-                            cardBody.parent().remove();
+
                         });
                     } else {
                         Swal.fire({
@@ -534,6 +579,27 @@
     // Gọi modal hiện QR thanh toán
     document.getElementById('placed-order').addEventListener('click', function () {
 
+        // Lấy thông tin
+        let order = JSON.parse('${orderDTOJson}');
+        let recipient = document.getElementById("recipient-hidden").value;
+        let phone = document.getElementById("phone-hidden").value;
+        let address = {
+            city: document.getElementById("city-hidden").value,
+            district: document.getElementById("district-hidden").value,
+            commune: document.getElementById("commune-hidden").value,
+            concrete: document.getElementById("concrete-hidden").value
+        };
+        console.log({ recipient, phone, address });
+        const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
+
+        delete order.orderInfoDTO;
+        order.orderInfoDTO = {
+            recipient: recipient,
+            phone: phone,
+            address: address,
+        };
+        order.paymentMethod = paymentMethod
+
         // Xử lý thanh toán tiên mặt
         if (document.querySelector('input[name="payment"]:checked').value === "cash") {
             let isValid= true;
@@ -551,56 +617,96 @@
                 }
             });
 
-
-            if (isValid){
-                let order = JSON.parse('${orderDTOJson}');
-                let recipient = document.getElementById("recipient-hidden").value;
-                let phone = document.getElementById("phone-hidden").value;
-                let address = {
-                    city: document.getElementById("city-hidden").value,
-                    district: document.getElementById("district-hidden").value,
-                    commune: document.getElementById("commune-hidden").value,
-                    concrete: document.getElementById("concrete-hidden").value
-                };
-                console.log({ recipient, phone, address });
-                const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
-
-                delete order.orderInfoDTO;
-                order.orderInfoDTO = {
-                    recipient: recipient,
-                    phone: phone,
-                    address: address,
-                };
-                order.paymentMethod =paymentMethod
-
-
+            if (isValid) {
                 $.ajax({
                     type: "POST",
                     url: "/thanh-toan",
                     contentType: "application/json",
                     data: JSON.stringify(order),
                     success: function(response) {
-                        if(response.status ==="success"){
-                            alert(response.message);
-                            window.location.href = response.redirectUrl.toString() ;
-
+                        if (response.status === "success") {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Thông báo',
+                                text: 'Đơn hàng đã được xác nhận, vui lòng hoàn tất quá trình thanh toán.',
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = response.redirectUrl.toString();
+                                }
+                            });
                         }else if(response.status ==="error"){
-                            alert(response.message);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Thông báo',
+                                text: 'Lỗi trong quá trình xác nhận đơn hàng.'
+                            });
                             window.location.href = response.redirectUrl.toString() ;
 
                         }else if( response.status==="warning"){
-                            alert(response.message);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Thông báo',
+                                text: 'Lỗi cảnh báo, đơn hàng không hợp lệ.'
+                            });
                             window.location.reload();
                         }
                     },
                     error: function(xhr, status, error) {
                         window.location.href = response.redirectUrl.toString() ;
-                        // Xử lý khi có lỗi
-                        console.error("Lỗi: ", error);
-                        alert("Có lỗi xảy ra, vui lòng thử lại.");
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi hệ thống',
+                            text: 'Lỗi: ,' + error
+                        });
                     }
                 });
             }
+        } else if (document.querySelector('input[name="payment"]:checked').value === "vnpay") {
+            $.ajax({
+                type: "POST",
+                url: "/thanh-toan-vnpay",
+                contentType: "application/json",
+                data: JSON.stringify(order),
+                success: function(response) {
+                    if (response.status === "success"){
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Thông báo',
+                            text: 'Đơn hàng đã được xác nhận, vui lòng hoàn tất quá trình thanh toán.',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = response.redirectUrl.toString();
+                            }
+                        });
+
+                    } else if(response.status ==="error"){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Thông báo',
+                            text: 'Lỗi trong quá trình xác nhận đơn hàng.'
+                        });
+                        window.location.href = response.redirectUrl.toString() ;
+
+                    } else if( response.status==="warning"){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Thông báo',
+                            text: 'Lỗi cảnh báo, đơn hàng không hợp lệ.'
+                        });
+                        window.location.reload();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    window.location.href = response.redirectUrl.toString() ;
+                    // Xử lý khi có lỗi
+                    console.error("Lỗi: ", error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi hệ thống',
+                        text: 'Lỗi: ,' + error
+                    });
+                }
+            });
         } else {
             // Xử lý chuyển khoản
             const accountName = encodeURIComponent(document.getElementById('account-name').textContent.trim());

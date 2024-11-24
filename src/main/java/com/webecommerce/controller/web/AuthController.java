@@ -36,11 +36,6 @@ public class AuthController extends HttpServlet {
     ResourceBundle resourceBundle = ResourceBundle.getBundle("message");
 
     @Inject
-    private ICustomerDAO customerDAO;
-
-    @Inject
-    private CartItemMapper cartItemMapper;
-    @Inject
     private ICartItemService cartItemService;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
