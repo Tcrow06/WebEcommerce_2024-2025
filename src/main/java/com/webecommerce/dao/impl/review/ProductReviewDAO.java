@@ -4,6 +4,7 @@ import com.webecommerce.dao.GenericDAO;
 import com.webecommerce.dao.impl.AbstractDAO;
 import com.webecommerce.dao.review.IProductReviewDAO;
 import com.webecommerce.entity.discount.ProductDiscountEntity;
+import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.entity.review.ProductReviewEntity;
 
 import javax.persistence.NoResultException;
@@ -14,6 +15,33 @@ public class ProductReviewDAO extends AbstractDAO<ProductReviewEntity> implement
     public ProductReviewDAO() {
         super(ProductReviewEntity.class);
     }
+
+    @Override
+    public int calculateStarByProduct(Long productId) {
+        String query = "SELECT AVG(d.numberOfStars) FROM ProductReviewEntity d " +
+                "JOIN d.orderDetail od JOIN od.productVariant pv " +
+                "WHERE pv.product.id = :productId";
+
+        Double averageStars = (Double) entityManager.createQuery(query)
+                .setParameter("productId", productId)
+                .getSingleResult();
+
+        return averageStars != null ? (int) Math.round(averageStars) : 0;
+    }
+
+    @Override
+    public int countProductReviewByProduct(Long productId) {
+        String query = "SELECT count(*) FROM ProductReviewEntity d " +
+                "JOIN d.orderDetail od JOIN od.productVariant pv " +
+                "WHERE pv.product.id = :productId";
+
+        Long reviewCount = (Long) entityManager.createQuery(query)
+                .setParameter("productId", productId)
+                .getSingleResult();
+
+        return reviewCount != null ? reviewCount.intValue() : 0;
+    }
+
 
     public List<ProductReviewEntity> getProductReviewByProduct (Long productId) {
         String query = "SELECT d FROM ProductReviewEntity d " +

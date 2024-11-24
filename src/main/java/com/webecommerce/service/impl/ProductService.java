@@ -1,10 +1,13 @@
 package com.webecommerce.service.impl;
 
 import com.webecommerce.constant.EnumProductStatus;
+import com.webecommerce.dao.impl.review.ProductReviewDAO;
 import com.webecommerce.dao.product.ICategoryDAO;
 import com.webecommerce.dao.product.IProductDAO;
 import com.webecommerce.dao.product.IProductVariantDAO;
+import com.webecommerce.dao.review.IProductReviewDAO;
 import com.webecommerce.dto.ProductDTO;
+import com.webecommerce.dto.ProductReviewDTO;
 import com.webecommerce.dto.ProductVariantDTO;
 import com.webecommerce.dto.discount.ProductDiscountDTO;
 import com.webecommerce.dto.notinentity.RevenueDTO;
@@ -49,6 +52,9 @@ public class ProductService implements IProductService {
 
     @Inject
     private CategoryMapper categoryMapper;
+
+    @Inject
+    private IProductReviewDAO productReviewDAO;
 
     // Lây danh sách brand có trong product -> load giao diện
     public List<String> getBrands() {
@@ -129,6 +135,17 @@ public class ProductService implements IProductService {
     }
 
     @Transactional
+    public ProductDTO stopSelling (Long productId) {
+
+        ProductEntity productEntity = productDAO.findById(productId);
+        if (productEntity == null) return null;
+
+        productEntity.setStatus(EnumProductStatus.STOP_SELLING);
+
+        return productMapper.toDTO(productDAO.update(productEntity));
+    }
+
+    @Transactional
     public ProductDTO save(ProductDTO product) {
         try { // tiến hành lưu ảnh
             if (product.getSizeConversionTable() != null) {
@@ -168,17 +185,6 @@ public class ProductService implements IProductService {
         return productMapper.toDTO(productDAO.insert(productEntity));
     }
 
-    @Transactional
-    public ProductDTO stopSelling (Long productId) {
-
-        ProductEntity productEntity = productDAO.findById(productId);
-        if (productEntity == null) return null;
-
-        productEntity.setStatus(EnumProductStatus.STOP_SELLING);
-
-        return productMapper.toDTO(productDAO.update(productEntity));
-    }
-
     private ProductDTO getProduct (ProductEntity product) {
         ProductDTO productDTO = productMapper.toDTO(product);
         //lấy discount cho từng sản phâm
@@ -190,6 +196,11 @@ public class ProductService implements IProductService {
                 );
             }
         }
+
+        // lấy số sao
+        productDTO.setAverageStars(productReviewDAO.calculateStarByProduct(product.getId()));
+        productDTO.setCountProductReview(productReviewDAO.countProductReviewByProduct(product.getId()));
+
         productDTO.setProductVariants(
                 productVariantMapper.toDTOList(
                         productVariantDAO.getProductVariantsByProduct(product)
@@ -280,6 +291,10 @@ public class ProductService implements IProductService {
                     );
                 }
             }
+            // lấy đánh giá
+            productDTO.setAverageStars(
+                    productReviewDAO.calculateStarByProduct(product.getId())
+            );
 
             // lấy productvariant để lấy ảnh và giá (lấy product variant rẻ nhất)
             ProductVariantEntity productVariant = productVariantDAO.getProductVariantByProduct(product);

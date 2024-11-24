@@ -88,6 +88,39 @@
     .size-options label:not(:last-child) {
         border-right: none;
     }
+
+    <c:if test="${model.status == 'STOP_SELLING'}">
+        #detail-image {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .product__details__pic__item {
+            position: relative; /* Làm gốc tham chiếu cho phần tử con dùng position: absolute */
+        }
+
+        .product__details__pic__item .overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150px;
+            height: 150px;
+            background-color: rgba(0, 0, 0, 0.7); /* Màu nền trong suốt */
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff; /* Màu chữ trắng */
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            z-index: 1; /* Đảm bảo lớp phủ hiển thị phía trên hình ảnh */
+            pointer-events: none; /* Không chặn các tương tác chuột */
+        }
+    </c:if>
+
 </style>
 
 <!-- Shop Details Section Begin -->
@@ -120,12 +153,15 @@
                     </ul>
                 </div>
 
-                <div class="col-lg-6 col-md-9">
+                <div class="col-lg-6 col-md-9 img-detail-container">
                     <div class="tab-content">
                         <c:forEach var="item" items="${model.productVariants}" varStatus="status">
                             <div class="tab-pane <c:if test="${status.index == 0}">active</c:if>" id="tabs-${status.index + 1}" role="tabpanel">
                                 <div class="product__details__pic__item">
                                     <img src="<c:url value='/api-image?path=${item.imageUrl}'/>" alt="" id="detail-image">
+                                    <c:if test="${model.status == 'STOP_SELLING'}">
+                                        <div class="overlay">Đã ngừng<br>kinh doanh</div>
+                                    </c:if>
                                 </div>
                             </div>
                         </c:forEach>
@@ -140,13 +176,12 @@
                 <div class="col-lg-8">
                     <div class="product__details__text">
                         <h4>${model.name}</h4>
+
                         <div class="rating">
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                            <span> - 5 Reviews</span>
+                            <c:forEach var="i" begin="1" end="5">
+                                <i class="fa ${i <= model.averageStars ? ' fa-star' : ' fa-star-o'}"></i>
+                            </c:forEach>
+                            <span> - ${model.countProductReview} Lượt đánh giá</span>
                         </div>
                         <h3 id="price-product">${model.getDiscountedPrice()}
                             <c:if test="${model.productDiscount != null}">
@@ -173,26 +208,24 @@
                             </div>
                         </div>
 
-                        <div class="product__details__cart__option">
-                            <form id="add-to-cart-form">
-                                <div class="quantity">
-                                    <div class="pro-qty">
-                                        <input type="number" value="1" name="quantity" id="quantity">
+                        <c:if test="${model.status == 'SELLING'}">
+                            <div class="product__details__cart__option">
+                                <form id="add-to-cart-form">
+                                    <div class="quantity">
+                                        <div class="pro-qty">
+                                            <input type="number" value="1" name="quantity" id="quantity">
+                                        </div>
                                     </div>
+                                    <button type="button" id="add-to-cart-btn" class="primary-btn" style="margin-top: 10px">add to cart</button>
+                                    <input type="hidden" name="productId" value="${model.id}">
+                                    <input type="hidden" id="productVariantId" name="productVariantId" value="">
+                                </form>
+                                <div id="product-quantity" style="display: none; margin-top: 10px">
+                                    <p>34 products available</p>
                                 </div>
-                                <button type="button" id="add-to-cart-btn" class="primary-btn" style="margin-top: 10px">add to cart</button>
-                                <input type="hidden" name="productId" value="${model.id}">
-                                <input type="hidden" id="productVariantId" name="productVariantId" value="">
-                            </form>
-                            <div id="product-quantity" style="display: none; margin-top: 10px">
-                                <p>34 products available</p>
                             </div>
-                        </div>
+                        </c:if>
 
-                        <div class="product__details__btns__option">
-                            <a href="#"><i class="fa fa-heart"></i> add to wishlist</a>
-                            <a href="#"><i class="fa fa-exchange"></i> Add To Compare</a>
-                        </div>
                         <div class="product__details__last__option">
                             <h5><span>Guaranteed Safe Checkout</span></h5>
                             <img src="<c:url value="/static/img/shop-details/details-payment.png"/>" alt="">

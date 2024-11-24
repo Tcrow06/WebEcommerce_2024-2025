@@ -7,6 +7,7 @@ import com.webecommerce.dao.review.IProductReviewDAO;
 import com.webecommerce.dto.review.ProductReviewDTO;
 import com.webecommerce.entity.order.OrderDetailEntity;
 import com.webecommerce.entity.people.CustomerEntity;
+import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.entity.review.ProductReviewEntity;
 import com.webecommerce.mapper.Impl.ProductReviewMapper;
 import com.webecommerce.mapper.Impl.ReviewFeedbackMapper;
@@ -34,6 +35,11 @@ public class ProductReviewService implements IProductReviewService {
 
     @Inject
     private ProductReviewMapper productReviewMapper;
+
+    // tính điểm theo sản phẩm
+    public int calculateStarByProduct(Long productId) {
+        return productReviewDAO.calculateStarByProduct(productId);
+    }
 
     public ProductReviewDTO findByOrderDetailId(Long OrderDetailId) {
         ProductReviewEntity productReviewEntity = productReviewDAO.getProductReviewByOrderDetailId(OrderDetailId);
