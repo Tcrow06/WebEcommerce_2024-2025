@@ -54,9 +54,6 @@ public class OrderService implements IOrderService {
     private ProductVariantMapper productVariantMapper;
 
     @Inject
-    private IOrderInfoService orderInfoService;
-
-    @Inject
     private OrderInfoMapper orderInfoMapper;
 
     @Inject
@@ -69,7 +66,7 @@ public class OrderService implements IOrderService {
     private ICustomerDAO customerDAO;
 
     @Inject
-    private IProductDAO productDAO;
+    private ISendEmailService sendEmailService;
 
 
 
@@ -182,9 +179,17 @@ public class OrderService implements IOrderService {
         OrderEntity orderEntity;
         if(status == null){
             orderEntity = createOrder(orderDTO,idUser);
+
+            // Biến tạm để gán gửi email
+            var orderSendEmail = orderDTO;
+
             orderDTO = orderMapper.toDTO(orderEntity);
             status ="success";
             message =new StringBuilder("Đặt hàng thành công");
+
+            // Gửi mail sau khi đặt hàng thành công
+            sendEmailService.sendEmail(orderSendEmail, idUser);
+
         }else if(status.equals("warning")){
             message.append(" Vui lòng tải lại trang để xem lại hóa đơn!");
         }else{
