@@ -1,5 +1,6 @@
 package com.webecommerce.entity.other;
 
+import com.webecommerce.constant.EnumAccountStatus;
 import com.webecommerce.entity.people.CustomerEntity;
 
 import javax.persistence.*;
@@ -15,11 +16,10 @@ public class SocialAccountEntity {
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private CustomerEntity customer;
 
-//    @OneToOne(mappedBy = "socialAccount")
-//    private CustomerEntity customer;
-
     private String ggID;
     private String fbID;
+
+    private EnumAccountStatus status=EnumAccountStatus.ACTIVE;
 
     public String getGgID() {
         return ggID;
@@ -51,5 +51,14 @@ public class SocialAccountEntity {
 
     public void setCustomer(CustomerEntity customer) {
         this.customer = customer;
+    }
+
+
+    public EnumAccountStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(EnumAccountStatus status) {
+        this.status = status;
     }
 }

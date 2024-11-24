@@ -25,7 +25,7 @@ public class JWTUtil {
         Algorithm algorithm = Algorithm.HMAC256(SECRET);
         JWTCreator.Builder buildToken = JWT.create()
                 .withClaim("id", user.getId())
-                .withClaim("role",user.getRole())
+                .withClaim("role",user.getRole().toString())
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .withIssuedAt(new Date())
                 .withJWTId(UUID.randomUUID().toString());
