@@ -59,6 +59,7 @@ public class ProductReviewAPI extends HttpServlet {
             if (productReview != null) {
                 productReview = productReviewService.save(productReview);
                 if (productReview != null) {
+
                     mapper.writeValue(resp.getWriter(), "Thành công !");
                 }
             }

@@ -263,9 +263,7 @@
                                     <div class="card-body p-4">
                                         <div class="row">
                                             <div class="col">
-
                                                 <c:forEach var="item" items="${review}">
-
                                                     <div class="d-flex flex-start" style="margin-top: 20px">
                                                         <img class="rounded-circle shadow-1-strong me-3"
                                                              src="https://icons.veryicon.com/png/o/miscellaneous/standard/avatar-15.png" alt="avatar" width="65"
@@ -274,69 +272,56 @@
                                                             <div>
                                                                 <div class="d-flex justify-content-between align-items-center">
                                                                     <p class="mb-1">
-                                                                        ${item.nameCustomer} <span class="small">
-                                                                            - ${item.getDateString()}</span>
+                                                                            ${item.nameCustomer} <span class="small"> - ${item.getDateString()}</span>
                                                                     </p>
                                                                     <div class="rating">
                                                                         <c:forEach var="i" begin="1" end="5">
                                                                             <i class="fa ${i <= item.numberOfStars ? 'fa-star' : 'fa-star-o'}"></i>
                                                                         </c:forEach>
-
                                                                     </div>
                                                                 </div>
                                                                 <p class="small mb-0">
                                                                         ${item.content}
                                                                 </p>
+
+                                                                <c:if test="${item.reviewFeedback != null}">
+                                                                    <button class="btn btn-sm btn-link view-feedback-btn" data-feedback-id="${item.id}">
+                                                                        Xem phản hồi
+                                                                    </button>
+                                                                    <div class="feedback-content" style="display: none; margin-top: 10px;">
+                                                                        <strong>Phản hồi của shop:</strong>
+                                                                        <p>${item.reviewFeedback.content}</p>
+                                                                        <span class="small text-muted">Phản hồi vào: ${item.reviewFeedback.getDateString()}</span>
+                                                                    </div>
+                                                                </c:if>
                                                                 <c:if test="${item.reviewFeedback == null && role == 'OWNER'}">
                                                                     <a class="reply-btn"><img src="https://icons.iconarchive.com/icons/bootstrap/bootstrap/512/Bootstrap-reply-icon.png" width="20px" height="20px"><span class="small"> reply</span></a>
                                                                 </c:if>
-                                                            </div>
-                                                            <c:if test="${item.reviewFeedback != null}">
-                                                            <div class="d-flex flex-start mt-4">
-                                                                <a class="me-3" href="#">
-                                                                    <img class="rounded-circle shadow-1-strong"
-                                                                         src="<c:url value='/api-image?path=logo-shop'/>" alt="avatar"
-                                                                         width="65" height="65" />
-                                                                </a>
+                                                                <c:if test="${item.reviewFeedback == null && role == 'OWNER'}">
+                                                                    <div class="card-footer py-3 border-0 review-feedback-section" style="background-color: #ffff; display: none">
+                                                                        <div class="d-flex flex-start w-100 review-feedback-form">
+                                                                            <img class="rounded-circle shadow-1-strong me-3"
+                                                                                 src="<c:url value='/api-image?path=logo-shop'/>" alt="avatar" width="40"
+                                                                                 height="40" />
 
+                                                                            <input type="hidden" class="productReviewId" name="id-feedback" value="${item.id}">
 
-                                                                    <div class="flex-grow-1 flex-shrink-1">
-                                                                        <div>
-                                                                            <div class="d-flex justify-content-between align-items-center">
-                                                                                <p class="mb-1">
-                                                                                    Elevent Shop <span class="small">- ${item.reviewFeedback.getDateString()}</span>
-                                                                                </p>
-                                                                            </div>
-                                                                            <p class="small mb-0">
-                                                                                ${item.reviewFeedback.content}
-                                                                            </p>
-                                                                        </div>
-                                                                    </div>
-                                                            </div>
-                                                            </c:if>
-                                                            <c:if test="${item.reviewFeedback == null && role == 'OWNER'}">
-                                                                <div class="card-footer py-3 border-0 review-feedback-section" style="background-color: #ffff; display: none">
-                                                                    <div class="d-flex flex-start w-100 review-feedback-form">
-                                                                        <img class="rounded-circle shadow-1-strong me-3"
-                                                                             src="<c:url value='/api-image?path=logo-shop'/>" alt="avatar" width="40"
-                                                                             height="40" />
-
-                                                                        <input type="hidden" class="productReviewId" name="id-feedback" value="${item.id}">
-
-                                                                        <div data-mdb-input-init class="form-outline w-100">
+                                                                            <div data-mdb-input-init class="form-outline w-100">
                                                                           <textarea class="form-control content" id="textAreaExample" rows="4"
                                                                                     style="background: #ffff;" placeholder="Nhập nội dung"></textarea>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="float-end mt-2 pt-1">
+                                                                            <button  type="button" data-mdb-button-init data-mdb-ripple-init class="submit-feedback btn btn-dark btn-sm">Post comment</button>
                                                                         </div>
                                                                     </div>
-                                                                    <div class="float-end mt-2 pt-1">
-                                                                        <button  type="button" data-mdb-button-init data-mdb-ripple-init class="submit-feedback btn btn-dark btn-sm">Post comment</button>
-                                                                    </div>
-                                                                </div>
-                                                            </c:if>
+                                                                </c:if>
+                                                            </div>
                                                         </div>
                                                     </div>
-
                                                 </c:forEach>
+
+
                                             </div>
                                         </div>
                                     </div>
@@ -525,7 +510,6 @@
                 // Tìm phần tử cha gần nhất chứa review và phần tử card-footer
                 let parentDiv = $(this).closest(".flex-grow-1");
                 let replySection = parentDiv.find(".card-footer");
-
                 // Kiểm tra nếu phần tử replySection tồn tại và áp dụng hiệu ứng
                 if (replySection.length > 0) {
                     replySection.stop(true, true).slideToggle(300); // Hiệu ứng trượt lên/xuống
@@ -642,6 +626,13 @@
             });
         }
 
+        $(document).ready(function () {
+            $(".view-feedback-btn").on("click", function () {
+                const feedbackContent = $(this).siblings(".feedback-content");
+                feedbackContent.slideToggle(300);
+            });
+        });
+
 
         // Hàm xử lý sự kiện khi nhấn nút "Thêm vào giỏ hàng"
         $(document).ready(function () {
@@ -731,6 +722,8 @@
                         alert("Lỗi: " + xhr.responseText);
                     },
                 });
+                window.location.href = '/san-pham?id=' + $('input[name="productId"]').val();
+
             });
         });
     </script>

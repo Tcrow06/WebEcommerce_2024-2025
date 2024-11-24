@@ -18,10 +18,7 @@ public class SocialAccountEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private EnumAccountStatus status;
-
-//    @OneToOne(mappedBy = "socialAccount")
-//    private CustomerEntity customer;
+    private EnumAccountStatus status =EnumAccountStatus.ACTIVE;
 
     private String ggID;
     private String fbID;
@@ -56,5 +53,14 @@ public class SocialAccountEntity {
 
     public void setCustomer(CustomerEntity customer) {
         this.customer = customer;
+    }
+
+
+    public EnumAccountStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(EnumAccountStatus status) {
+        this.status = status;
     }
 }

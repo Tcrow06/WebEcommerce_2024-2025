@@ -4,11 +4,13 @@ import com.webecommerce.dao.order.IOrderDAO;
 import com.webecommerce.dao.order.IOrderDetailDAO;
 import com.webecommerce.dao.people.ICustomerDAO;
 import com.webecommerce.dao.review.IProductReviewDAO;
+import com.webecommerce.dao.review.IReviewFeedbackDAO;
 import com.webecommerce.dto.review.ProductReviewDTO;
 import com.webecommerce.entity.order.OrderDetailEntity;
 import com.webecommerce.entity.people.CustomerEntity;
 import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.entity.review.ProductReviewEntity;
+import com.webecommerce.entity.review.ReviewFeedbackEntity;
 import com.webecommerce.mapper.Impl.ProductReviewMapper;
 import com.webecommerce.mapper.Impl.ReviewFeedbackMapper;
 import com.webecommerce.service.IProductReviewService;
@@ -36,10 +38,9 @@ public class ProductReviewService implements IProductReviewService {
     @Inject
     private ProductReviewMapper productReviewMapper;
 
-    // tính điểm theo sản phẩm
-    public int calculateStarByProduct(Long productId) {
-        return productReviewDAO.calculateStarByProduct(productId);
-    }
+    @Inject
+    private IReviewFeedbackDAO reviewFeedbackDAO;
+
 
     public ProductReviewDTO findByOrderDetailId(Long OrderDetailId) {
         ProductReviewEntity productReviewEntity = productReviewDAO.getProductReviewByOrderDetailId(OrderDetailId);
@@ -80,9 +81,15 @@ public class ProductReviewService implements IProductReviewService {
 
     public List<ProductReviewDTO> getProductReviewByProductId(Long productId) {
         List <ProductReviewEntity> productReviewEntities = productReviewDAO.getProductReviewByProduct(productId);
+
+
         List <ProductReviewDTO> productReviewDTOS = new ArrayList<>();
 
         if (productReviewEntities != null) {
+            for(ProductReviewEntity  pre: productReviewEntities){
+                ReviewFeedbackEntity reviewFeedbackEntity = reviewFeedbackDAO.findReviewFeedbackByProductReviewId(pre.getId());
+                pre.setReviewFeedback(reviewFeedbackEntity);
+            }
             for (ProductReviewEntity productReviewEntity : productReviewEntities) {
                 ProductReviewDTO productReviewDTO = productReviewMapper.toDTO(productReviewEntity);
                 // lấy reviewfeedback nếu có

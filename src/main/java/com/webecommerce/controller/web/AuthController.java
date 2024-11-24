@@ -1,5 +1,6 @@
 package com.webecommerce.controller.web;
 
+import com.webecommerce.constant.EnumAccountStatus;
 import com.webecommerce.constant.EnumRole;
 import com.webecommerce.dao.people.ICustomerDAO;
 import com.webecommerce.dto.CartItemDTO;
@@ -80,25 +81,35 @@ public class AuthController extends HttpServlet {
         CheckOutRequestDTO checkOutRequestDTO =(CheckOutRequestDTO) session.getAttribute("orderNotHandler");
         if(action != null && action.equals("login")) {
             AccountRequest account = FormUtils.toModel(AccountRequest.class, request);
-            UserResponse user = accountService.findByUserNameAndPasswordAndStatus(account.getUserName(), account.getPassword(), "ACTIVE");
+
+            UserResponse foundUser = accountService.findByUserNameAndPasswordAndStatus(account.getUserName(), account.getPassword(), "UNVERIFIED");
+            if (foundUser != null) {
+                accountService.sendOTPToEmail(foundUser.getEmail(), foundUser.getId(), "register");
+                response.sendRedirect(request.getContextPath() + "/dang-ky?action=verify&id=" + foundUser.getId() + "&message=unverified&alert=danger");
+                return;
+            }
+
+            UserResponse user = accountService.findByUserNameAndPassword(account.getUserName(), account.getPassword());
             if(user != null) {
+                if (user.getStatus().equals(EnumAccountStatus.BLOCK)){
+                    session.setAttribute("loginData", account);
+                    response.sendRedirect(request.getContextPath() + "/dang-nhap?action=login&message=username_is_block&alert=danger");
+                    return;
+                }
                 response.setContentType("application/json");
                 String path=null,jwtToken=null;
 
                 SessionUtil.getInstance().putValue(request, "USERINFO", user);
-                if(user.getRole().equals(EnumRole.OWNER.toString())) {
+                if(user.getRole().equals(EnumRole.OWNER)) {
                     jwtToken = JWTUtil.generateToken(user);
-                    path = "/chu-doanh-nghiep";
+                    path = "/chu-cua-hang";
                 }
-                else if(user.getRole().equals(EnumRole.CUSTOMER.toString())) {
+                else if(user.getRole().equals(EnumRole.CUSTOMER)) {
                     HashMap<Long, CartItemDTO> cart = (HashMap<Long, CartItemDTO>) session.getAttribute("cart");
                     cart=cartItemService.updateCartWhenLogin(cart,user.getId());
                     if(checkOutRequestDTO!=null){
                         cart = cartItemService.updateCartWhenBuy(user.getId(),checkOutRequestDTO);
                     }
-//                    else{
-//                        cart=cartItemService.updateCartWhenLogin(cart,user.getId());
-//                    }
                     request.getSession().setAttribute("cart", cart);
                     jwtToken = JWTUtil.generateToken(user);
                     path="/trang-chu";
@@ -159,10 +170,11 @@ public class AuthController extends HttpServlet {
             int count = accountService.verifyOTP(id, otp);
             if (count == 0) {
                 response.sendRedirect(request.getContextPath() + "/dang-nhap?action=login&message=verify_success&alert=success");
-            }else  if (count == 5) {
+            }else  if (count == -1) {
                 response.sendRedirect(request.getContextPath() + "/dang-ky?action=verify&id=" + id +"&message=verify_failed&alert=danger");
-            }
-            else {
+            } else if (count == -2) {
+                response.sendRedirect(request.getContextPath() + "/dang-ky?action=verify&id=" + id +"&message=expired_otp&alert=danger");
+            } else {
                 response.sendRedirect(request.getContextPath() + "/dang-ky?action=verify&id=" + id +"&message=verify_retry&alert=danger");
             }
         }

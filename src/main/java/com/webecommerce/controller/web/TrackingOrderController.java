@@ -27,9 +27,10 @@ public class TrackingOrderController extends HttpServlet {
 
         try {
             Long customerId = JWTUtil.getIdUser(request);
+            System.out.println("CustomerID: " + customerId);
             List<DisplayOrderDTO> orders = orderService.getOrderDisplay(customerId);
-
-            request.setAttribute("orders", orders);
+            System.out.println(orders.get(1).getDateTime());
+            request.setAttribute("orders", orders); 
 
             request.getRequestDispatcher("/views/web/order/tracking-order.jsp").forward(request,response);
         }catch (Exception e){
@@ -51,7 +52,6 @@ public class TrackingOrderController extends HttpServlet {
         }
         Long customerId = JWTUtil.getIdUser(request);
         List<DisplayOrderDTO> orders = orderService.getOrderDisplay(customerId);
-
         request.setAttribute("orders", orders);
         request.getRequestDispatcher("/views/web/order/tracking-order.jsp").forward(request,response);
     }

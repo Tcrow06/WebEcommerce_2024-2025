@@ -19,7 +19,7 @@ public class ReviewFeedbackEntity {
     private LocalDateTime date;
 
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "review_feedback_id", referencedColumnName = "id")
     private ProductReviewEntity productReview;
 
