@@ -77,6 +77,8 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
 
     private int countProductReview;
 
+    private List<ProductReviewDTO> productReviews;
+
     public LocalDateTime getIsNewProduct() {
         return isNewProduct;
     }
@@ -318,5 +320,13 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
 
     public void setCountProductReview(int countProductReview) {
         this.countProductReview = countProductReview;
+    }
+
+    public List<ProductReviewDTO> getProductReviews() {
+        return productReviews;
+    }
+
+    public void setProductReviews(List<ProductReviewDTO> productReviews) {
+        this.productReviews = productReviews;
     }
 }
