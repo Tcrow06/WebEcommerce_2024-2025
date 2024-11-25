@@ -90,14 +90,14 @@ public class PaymentController extends HttpServlet {
         orderDTO = orderService.findInfoPayment(orderDTO, JWTUtil.getIdUser(request));
 
         if (orderDTO.getStatus().contains("error")) {
-            jsonResponse.put("redirectUrl", "/gio-hang");
+            jsonResponse.put("redirectUrl", "/thanh-toan");
             jsonResponse.put("message",orderDTO.getMessage().toString());
             jsonResponse.put("status","error");
         } else if (orderDTO.getStatus().contains("warning")) {
             jsonResponse.put("message",orderDTO.getMessage().toString());
             jsonResponse.put("status","warning");
         } else {
-            jsonResponse.put("redirectUrl", "/gio-hang");
+            jsonResponse.put("redirectUrl", "/thanh-toan");
             jsonResponse.put("message",orderDTO.getMessage().toString());
             jsonResponse.put("status","success");
         }
