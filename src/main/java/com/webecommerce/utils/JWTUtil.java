@@ -105,7 +105,6 @@ public class JWTUtil {
         return null;
     }
 
-
     public static Long getIdUserFromToken(String token) {
         if (token != null && !token.isEmpty()) {
             Map<String, Object> claims = getClaimsFromToken(token);
@@ -125,4 +124,6 @@ public class JWTUtil {
         }
         return null; // Trả về null nếu không tìm thấy role
     }
+
+
 }
