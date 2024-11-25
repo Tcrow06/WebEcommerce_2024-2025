@@ -96,4 +96,24 @@ public class JWTUtil {
         return null;
     }
 
+
+    public static Long getIdUserFromToken(String token) {
+        if (token != null && !token.isEmpty()) {
+            Map<String, Object> claims = getClaimsFromToken(token);
+            if (claims != null && !claims.isEmpty()) {
+                return (Long) claims.get("id");
+            }
+        }
+        return null;
+    }
+
+    public static String getRoleFromToken(String token) {
+        if (token != null && !token.isEmpty()) {
+            Map<String, Object> claims = getClaimsFromToken(token);
+            if (claims != null && !claims.isEmpty()) {
+                return (String) claims.get("role"); // Trích xuất role từ claims
+            }
+        }
+        return null; // Trả về null nếu không tìm thấy role
+    }
 }

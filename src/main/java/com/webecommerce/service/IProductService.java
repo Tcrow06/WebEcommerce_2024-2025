@@ -55,4 +55,6 @@ public interface IProductService {
     Long getTotalItems();
 
     List<ProductDTO> searchProductsByName(String name);
+
+    List<ProductDTO> findAllByName (Pageable pageable, String name);
 }

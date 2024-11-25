@@ -36,4 +36,6 @@ public interface IProductDAO extends GenericDAO <ProductEntity> {
 
     Long getTotalItems();
     List<ProductEntity> searchProductsByName(String name);
+
+    List<ProductEntity> findAllByName(Pageable pageable, String name);
 }
