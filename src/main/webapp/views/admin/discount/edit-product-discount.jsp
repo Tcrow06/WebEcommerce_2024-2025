@@ -271,6 +271,7 @@
                     },
                     success: function (response) {
                         alert("Đã gửi thông tin thành công!" + response);
+                        window.location.href = 'giam-gia-cho-san-pham'
                     },
                     error: function (xhr, status, error) {
                         alert("Lỗi: " + error);

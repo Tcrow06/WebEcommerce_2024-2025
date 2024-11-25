@@ -127,14 +127,14 @@
                         <!-- Minimum Order Value -->
                         <div class="form-group">
                             <label for="minOrderValue">Giá trị đơn hàng tối thiểu</label>
-                            <input type="text" class="form-control" id="minOrderValue" placeholder="Nhập vào">
+                            <input type="number" class="form-control" id="minOrderValue" placeholder="Nhập vào">
                             <div class="error-message" id="minOrderValueError" style="font-size: 12px"></div>
                         </div>
 
                         <!-- Usage Limit -->
                         <div class="form-group">
                             <label for="usageLimit">Số tiền được giảm tối đa</label>
-                            <input type="text" class="form-control" id="usageLimit" placeholder="Nhập vào">
+                            <input type="number" class="form-control" id="usageLimit" placeholder="Nhập vào">
                             <small class="form-text text-muted">Số tiền được giảm tối đa</small>
                             <div class="error-message" id="maximumAmountError" style="font-size: 12px"></div>
                         </div>
@@ -411,6 +411,7 @@
                     },
                     success: function(response) {
                         alert(response);
+                        window.location.href = 'giam-gia-cho-don-hang'
                     },
                     error: function(xhr, status, error) {
                         if (xhr.status === 409) {

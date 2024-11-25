@@ -232,6 +232,9 @@ public class ProductAPI extends HttpServlet {
         } catch (ServletException e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             objectMapper.writeValue(response.getWriter(), "Servlet error");
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            objectMapper.writeValue(response.getWriter(), "Lỗi khác");
         }
     }
 
