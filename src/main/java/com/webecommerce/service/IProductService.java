@@ -71,6 +71,4 @@ public interface IProductService {
 
     int countByStatus(EnumProductStatus status);
     RevenueDTO getRevenue();
-
-
 }
