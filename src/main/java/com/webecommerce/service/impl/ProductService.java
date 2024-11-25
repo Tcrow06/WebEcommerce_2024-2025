@@ -103,6 +103,10 @@ public class ProductService implements IProductService {
 
     @Transactional
     public ProductDTO update(ProductDTO product) {
+
+        ProductEntity productEntity = productDAO.findById(product.getId());
+        if (productEntity == null) return null;
+
         try { // tiến hành lưu ảnh
 
             if (product.getSizeConversionTable() != null) {
@@ -125,9 +129,6 @@ public class ProductService implements IProductService {
             e.printStackTrace();
             return null;
         }
-
-        ProductEntity productEntity = productDAO.findById(product.getId());
-        if (productEntity == null) return null;
 
         dtoToEntity(product, productEntity);
 
