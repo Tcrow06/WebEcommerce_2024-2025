@@ -452,10 +452,23 @@ public class ProductService implements IProductService {
 
     @Override
     public List<ProductDTO> searchProductsByName(String name) {
+        List <ProductDTO> productDTOS = new ArrayList<ProductDTO>();
         List<ProductEntity> products = productDAO.searchProductsByName(name);
-        return products.stream()
-                .map(productMapper::toDTO)
-                .collect(Collectors.toList());
+        if (products != null) {
+            for (ProductEntity product : products) {
+                ProductDTO productDTO = productMapper.toDTO(product);
+                ProductVariantEntity productVariant = productVariantDAO.getProductVariantByProduct(product);
+                if (productVariant != null) {
+                    productDTO.setPrice(productVariant.getPrice());
+                }
+                productDTOS.add(productDTO);
+            }
+        }
+        return productDTOS;
+//        List<ProductEntity> products = productDAO.searchProductsByName(name);
+//        return products.stream()
+//                .map(productMapper::toDTO)
+//                .collect(Collectors.toList());
     }
 
     @Override
@@ -466,4 +479,31 @@ public class ProductService implements IProductService {
     public RevenueDTO getRevenue() {
         return productDAO.getRevenue();
     }
+
+    @Override
+    public List<ProductDTO> findAllByName(Pageable pageable, String name) {
+        List <ProductDTO> productDTOS = new ArrayList<ProductDTO>();
+        List<ProductEntity> products = productDAO.findAllByName(pageable, name);
+        if (products != null) {
+            for (ProductEntity product : products) {
+                ProductDTO productDTO = productMapper.toDTO(product);
+                ProductVariantEntity productVariant = productVariantDAO.getProductVariantByProduct(product);
+                if (productVariant != null) {
+                    productDTO.setPhoto(productVariant.getImageUrl());
+                    productDTO.setPrice(productVariant.getPrice());
+                }
+                productDTOS.add(productDTO);
+            }
+        }
+        return productDTOS;
+    }
+
+    public int countByStatus(EnumProductStatus status) {
+        return productDAO.countByStatus(status);
+    }
+    @Override
+    public RevenueDTO getRevenue() {
+        return productDAO.getRevenue();
+    }
+
 }

@@ -1,6 +1,12 @@
 {
-  "chat": "Chào bạn! Bạn muốn hỏi về vấn đề gì? (ví dụ: sản phẩm, vận chuyển, hỗ trợ)",
+  "chat": "Chào bạn! Bạn muốn hỏi về vấn đề gì? (ví dụ: sản phẩm, vận chuyển, hỗ trợ, một mặt hàng cụ thể, ...)",
   "sản phẩm": "Vui lòng chờ, chúng tôi đang tìm danh sách sản phẩm...",
-  "vận chuyển": "Chúng tôi hỗ trợ giao hàng trên toàn quốc với nhiều tùy chọn khác nhau.",
-  "hỗ trợ": "Bạn có thể liên hệ qua hotline 0123456789 để được hỗ trợ."
+  "giao hàng": "Chúng tôi hỗ trợ giao hàng trên toàn quốc với nhiều tùy chọn khác nhau.",
+  "trợ giúp": "Bạn có thể liên hệ qua hotline 0123456789 để được hỗ trợ.",
+  "giờ làm việc": "Cửa hàng chúng tôi hoạt động từ 8:00 đến 20:00 hàng tuần.",
+  "đổi trả": "Bạn có thể đổi trả sản phẩm trong 7 ngày kể từ ngày mua, với điều kiện sản phẩm còn nguyên tem mác nhé!",
+  "mặt hàng": "Vui lòng chờ, chúng tôi đang tìm danh sách sản phẩm...",
+  "hoạt động": "Cửa hàng chúng tôi hoạt động từ 8:00 đến 20:00 hàng tuần.",
+  "hỗ trợ": "Bạn có thể liên hệ qua hotline 0123456789 để được hỗ trợ.",
+  "ship": "Chúng tôi hỗ trợ giao hàng trên toàn quốc với nhiều tùy chọn khác nhau."
 }
