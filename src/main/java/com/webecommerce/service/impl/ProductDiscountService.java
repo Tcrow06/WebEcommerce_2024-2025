@@ -37,10 +37,15 @@ public class ProductDiscountService implements IProductDiscountService {
     @Transactional
     public ProductDiscountDTO cancelProductDiscount(Long id) {
         ProductDiscountEntity productDiscountEntity = productDiscountDAO.findById(id);
-        productDiscountEntity.setEndDate(LocalDateTime.now().minusMinutes(1));
-        return productDiscountMapper.toDTO(
-                productDiscountDAO.update(productDiscountEntity)
-        );
+        if (productDiscountEntity != null) {
+            if (productDiscountEntity.getEndDate().isAfter(LocalDateTime.now())) {
+                productDiscountEntity.setEndDate(LocalDateTime.now().minusMinutes(1));
+                return productDiscountMapper.toDTO(
+                        productDiscountDAO.update(productDiscountEntity)
+                );
+            }
+        }
+        return null;
     }
 
 
