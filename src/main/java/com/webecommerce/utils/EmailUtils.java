@@ -9,7 +9,6 @@ import java.util.Properties;
 public class EmailUtils {
     private static final String SMTP_SERVER = "smtp.gmail.com";
     private static final String SMTP_PORT = "587";
-    private static final String EMAIL_FROM = "webecommerce@gmail.com";
     private static final String USERNAME = "elevenfashionshop11@gmail.com";
     private static final String PASSWORD = "zjka rzbm wojx mwqq";
 
@@ -33,7 +32,8 @@ public class EmailUtils {
             message.setFrom(new InternetAddress(USERNAME));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
             message.setSubject(subject);
-            message.setText(body);
+
+            message.setContent(body, "text/html; charset=UTF-8");
 
             // Gửi email
             Transport.send(message);
