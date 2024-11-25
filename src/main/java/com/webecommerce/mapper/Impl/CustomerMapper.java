@@ -1,5 +1,6 @@
 package com.webecommerce.mapper.Impl;
 
+import com.webecommerce.constant.EnumRole;
 import com.webecommerce.dto.request.people.CustomerRequest;
 import com.webecommerce.dto.response.people.CustomerResponse;
 import com.webecommerce.entity.people.CustomerEntity;
@@ -37,7 +38,7 @@ public class CustomerMapper implements ICustomerMapper{
         customerResponse.setName(customerEntity.getName());
         customerResponse.setEmail(customerEntity.getEmail());
         customerResponse.setAvatar(customerEntity.getAvatar());
-        customerResponse.setRole("CUSTOMER");
+        customerResponse.setRole(EnumRole.CUSTOMER);
         return customerResponse;
     }
 

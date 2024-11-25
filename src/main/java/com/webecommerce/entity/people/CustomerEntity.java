@@ -37,7 +37,7 @@ public class CustomerEntity extends UserEntity {
     @OneToOne(mappedBy = "customer")
     private AccountEntity account;
 
-    @OneToOne(mappedBy = "customer")
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.MERGE)
     private SocialAccountEntity socialAccount;
 
     @OneToMany(mappedBy = "customer")

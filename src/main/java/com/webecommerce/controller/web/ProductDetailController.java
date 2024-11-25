@@ -1,6 +1,5 @@
 package com.webecommerce.controller.web;
 
-import com.webecommerce.constant.EnumRole;
 import com.webecommerce.constant.ModelConstant;
 import com.webecommerce.dto.ProductDTO;
 import com.webecommerce.dto.review.ProductReviewDTO;
@@ -14,6 +13,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 
@@ -33,6 +33,7 @@ public class ProductDetailController extends HttpServlet {
             id = Long.valueOf(request.getParameter("id"));
         } catch (NumberFormatException e) {
             e.printStackTrace();
+            response.sendRedirect("/danh-sach-san-pham");
         }
         if (id != null) {
             ProductDTO product = productService.getProductById(id);
@@ -49,9 +50,9 @@ public class ProductDetailController extends HttpServlet {
                 request.setAttribute(ModelConstant.REVIEW, productReviewDTOList);
                 request.setAttribute(ModelConstant.MODEL, product);
                 request.getRequestDispatcher("/views/web/product-detail.jsp").forward(request, response);
-                return;
+            } else {
+                request.getRequestDispatcher("/views/web/product-not-found.jsp").forward(request, response);
             }
         }
-        response.sendRedirect("/danh-sach-san-pham");
     }
 }

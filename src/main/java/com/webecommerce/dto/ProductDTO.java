@@ -73,6 +73,12 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
 
     private int discountPercentage;
 
+    private int averageStars;
+
+    private int countProductReview;
+
+    private List<ProductReviewDTO> productReviews;
+
     public LocalDateTime getIsNewProduct() {
         return isNewProduct;
     }
@@ -143,6 +149,7 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
     public EnumProductStatus getStatus() {
         return status;
     }
+
     public void setStatus(String status) {
         this.status = EnumProductStatus.valueOf(status);
     }
@@ -297,5 +304,29 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
 
     public void setDiscountPercentage(int discountPercentage) {
         this.discountPercentage = discountPercentage;
+    }
+
+    public int getAverageStars() {
+        return averageStars;
+    }
+
+    public void setAverageStars(int averageStars) {
+        this.averageStars = averageStars;
+    }
+
+    public int getCountProductReview() {
+        return countProductReview;
+    }
+
+    public void setCountProductReview(int countProductReview) {
+        this.countProductReview = countProductReview;
+    }
+
+    public List<ProductReviewDTO> getProductReviews() {
+        return productReviews;
+    }
+
+    public void setProductReviews(List<ProductReviewDTO> productReviews) {
+        this.productReviews = productReviews;
     }
 }

@@ -4,10 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.webecommerce.constant.EnumOrderStatus;
 import com.webecommerce.dto.OrderDetailDTO;
 import com.webecommerce.dto.ReturnOrderDTO;
+import com.webecommerce.dto.notinentity.DisplayOrderDTO;
 import com.webecommerce.service.IOrderDetailService;
+import com.webecommerce.service.IOrderService;
 import com.webecommerce.service.IOrderStatusService;
 import com.webecommerce.service.IReturnOrderService;
 import com.webecommerce.utils.HttpUtils;
+import com.webecommerce.utils.JWTUtil;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -26,6 +29,8 @@ public class ReturnOrderAPI extends HttpServlet {
     private IOrderStatusService orderStatusService;
     @Inject
     private IOrderDetailService orderDetailService;
+    @Inject
+    private IOrderService orderService;
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
@@ -47,11 +52,15 @@ public class ReturnOrderAPI extends HttpServlet {
                 }
                 //load lai trang
 
-                objectMapper.writeValue(resp.getWriter(), "Return requests have been sent");
+//                objectMapper.writeValue(resp.getWriter(), "Return requests have been sent");
 
-                List<OrderDetailDTO> result = orderDetailService.findAllByOrderId(2L);
-                req.setAttribute("orderitemList", result);
-                req.getRequestDispatcher("/views/web/order-detail.jsp").forward(req,resp);
+                Long customerId = JWTUtil.getIdUser(req);
+                List<DisplayOrderDTO> orders = orderService.getOrderDisplay(customerId);
+
+                req.setAttribute("orders", orders);
+
+                req.getRequestDispatcher("/views/web/order/tracking-order.jsp").forward(req,resp);
+
             } else {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 objectMapper.writeValue(resp.getWriter(), "Invalid return order data");

@@ -25,7 +25,7 @@ public class JWTUtil {
         Algorithm algorithm = Algorithm.HMAC256(SECRET);
         JWTCreator.Builder buildToken = JWT.create()
                 .withClaim("id", user.getId())
-                .withClaim("role",user.getRole())
+                .withClaim("role",user.getRole().toString())
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .withIssuedAt(new Date())
                 .withJWTId(UUID.randomUUID().toString());
@@ -104,5 +104,26 @@ public class JWTUtil {
         }
         return null;
     }
+
+    public static Long getIdUserFromToken(String token) {
+        if (token != null && !token.isEmpty()) {
+            Map<String, Object> claims = getClaimsFromToken(token);
+            if (claims != null && !claims.isEmpty()) {
+                return (Long) claims.get("id");
+            }
+        }
+        return null;
+    }
+
+    public static String getRoleFromToken(String token) {
+        if (token != null && !token.isEmpty()) {
+            Map<String, Object> claims = getClaimsFromToken(token);
+            if (claims != null && !claims.isEmpty()) {
+                return (String) claims.get("role"); // Trích xuất role từ claims
+            }
+        }
+        return null; // Trả về null nếu không tìm thấy role
+    }
+
 
 }

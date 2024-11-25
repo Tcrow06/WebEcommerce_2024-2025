@@ -46,15 +46,15 @@ public class PaymentController extends HttpServlet {
             Long idUser  = JWTUtil.getIdUser(request);
             List<OrderInfoDTO> orderInfos = orderInfoService.getOrderInfoByCustomerId(idUser);
 
-
             String state = request.getParameter("order");
             HttpSession session = request.getSession();
-            if(state==null){
+            if(state==null) {
                 state = session.getAttribute("order").toString();
-            }else{
+            } else {
                 session.removeAttribute("order");
                 session.setAttribute("order",state);
             }
+
             // Giải mã dữ liệu
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new JavaTimeModule());
@@ -69,34 +69,34 @@ public class PaymentController extends HttpServlet {
                 request.setAttribute("orderInfos", orderInfos);
                 request.getRequestDispatcher("/views/web/payment.jsp").forward(request, response);
             } else {
-                response.sendRedirect("/error"); // Xử lý khi không có dữ liệu
+                response.sendRedirect("/error");
             }
-        }catch (Exception e){
+        } catch (Exception e){
             e.printStackTrace();
         }
     }
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         request.setCharacterEncoding("UTF-8");
+
+
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        request.setCharacterEncoding("utf-8");
+
         OrderDTO orderDTO =  HttpUtils.of(request.getReader()).toModel(OrderDTO.class);
         Map<String, Object> jsonResponse = new HashMap<>();
         orderDTO = orderService.findInfoPayment(orderDTO, JWTUtil.getIdUser(request));
-        if(orderDTO.getStatus().contains("error")){
+
+        if (orderDTO.getStatus().contains("error")) {
             jsonResponse.put("redirectUrl", "/gio-hang");
             jsonResponse.put("message",orderDTO.getMessage().toString());
             jsonResponse.put("status","error");
-        }else if (orderDTO.getStatus().contains("warning")){
+        } else if (orderDTO.getStatus().contains("warning")) {
             jsonResponse.put("message",orderDTO.getMessage().toString());
             jsonResponse.put("status","warning");
-        }
-        else
-        {
+        } else {
             jsonResponse.put("redirectUrl", "/gio-hang");
             jsonResponse.put("message",orderDTO.getMessage().toString());
             jsonResponse.put("status","success");

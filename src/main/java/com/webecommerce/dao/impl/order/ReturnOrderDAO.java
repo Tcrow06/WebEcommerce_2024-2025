@@ -147,7 +147,7 @@ public class ReturnOrderDAO extends AbstractDAO<ReturnOrderEntity> implements IR
             Long totalQuantityOrderDetail = (Long) result[1];
 
             // Kiểm tra số lượng mặt hàng đặt và số lượng mặt hàng trả
-            String checkQuantityReturnQuery = "SELECT COUNT(ro), SUM(ro.quantityReturn) FROM ReturnOrderEntity ro WHERE ro.orderDetail.order.id = :orderId";
+            String checkQuantityReturnQuery = "SELECT COUNT(ro), SUM(ro.quantityReturn) FROM ReturnOrderEntity ro WHERE ro.orderDetail.order.id = :orderId AND ro.status != 0";
 
             Query checkQuantityReturn = entityManager.createQuery(checkQuantityReturnQuery);
             checkQuantityReturn.setParameter("orderId", orderId);
@@ -158,7 +158,7 @@ public class ReturnOrderDAO extends AbstractDAO<ReturnOrderEntity> implements IR
 
 
             // Nếu không có trạng thái khác 1, thực hiện cập nhật trạng thái
-            if (Objects.equals(countReturnOrder, countOrderDetail) && Objects.equals(totalReturnOrderQuantity, totalQuantityOrderDetail) ) {
+            if (Objects.equals(countReturnOrder, countOrderDetail) && totalQuantityOrderDetail == 0) {
                 String checkProcessedStatusQuery = "SELECT COUNT(os) FROM OrderStatusEntity os WHERE os.order.id = :orderId AND os.status = :status";
                 Query checkProcessedStatus = entityManager.createQuery(checkProcessedStatusQuery);
                 checkProcessedStatus.setParameter("orderId", orderId);
@@ -197,9 +197,9 @@ public class ReturnOrderDAO extends AbstractDAO<ReturnOrderEntity> implements IR
             String query = "UPDATE ReturnOrderEntity ro SET ro.status = 1 WHERE ro.orderDetail.id = :orderDetailId";
             Query jpqlQuery = entityManager.createQuery(query);
             jpqlQuery.setParameter("orderDetailId", orderDetailId);
-            int rowsUpdated = jpqlQuery.executeUpdate();
+            int update = jpqlQuery.executeUpdate();
 
-            if (rowsUpdated == 0) {
+            if (update == 0) {
                 transaction.rollback();
                 return false;
             }

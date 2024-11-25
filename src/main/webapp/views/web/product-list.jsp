@@ -247,13 +247,13 @@
                                     <h6>${item.name}</h6>
                                         <%--                                    <a href="<c:url value="/them-gio-hang?id=${item.id}"/>" class="add-cart">View Detail</a>--%>
                                     <a href="san-pham?id=${item.id}" class="add-cart">View Detail</a>
+
                                     <div class="rating">
-                                        <i class="fa fa-star-o"></i>
-                                        <i class="fa fa-star-o"></i>
-                                        <i class="fa fa-star-o"></i>
-                                        <i class="fa fa-star-o"></i>
-                                        <i class="fa fa-star-o"></i>
+                                        <c:forEach var="i" begin="1" end="5">
+                                            <i ${i > item.averageStars ? 'style="color: #6c757d"' : ''} class="fa ${i <= item.averageStars ? ' fa-star' : ' fa-star-o'}"></i>
+                                        </c:forEach>
                                     </div>
+
                                     <h5>${item.getDiscountedPrice()}
                                         <c:if test="${item.productDiscount != null}">
                                             <span class="discounted-price">${item.price}</span>
@@ -620,7 +620,7 @@
         const searchTerm = normalizeString(searchInput.value.trim());
         suggestions.innerHTML = '';
         if(searchTerm.length > 0){
-            let matches = listNameProduct.filter(name => normalizeString(name).startsWith(searchTerm)).slice(0, 5);
+            let matches = listNameProduct.filter(name => normalizeString(name).startsWith(searchTerm)).slice(0, 4);
             if(matches.length > 0){
                 suggestions.style.display = 'block';
                 matches.forEach(math => {
@@ -643,6 +643,14 @@
         }else {
             suggestions.style.display = 'none';
 
+        }
+    });
+
+    searchInput.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            let name = document.getElementById('search-product').value;
+            window.location.href = '/danh-sach-san-pham?page=1&maxPageItem=9&ten=' + encodeURIComponent(name);
         }
     });
 
