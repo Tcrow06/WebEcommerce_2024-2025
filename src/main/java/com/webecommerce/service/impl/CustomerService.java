@@ -54,4 +54,17 @@ public class CustomerService implements ICustomerService {
         CustomerEntity customerEntity = customerDAO.findByEmail(email);
         return customerMapper.toCustomerResponse(customerEntity);
     }
+
+    public String updateInforCustomer(String id, String name, String email, String Phone) {
+        try {
+            CustomerEntity customerEntity = customerDAO.findById(Long.parseLong(id));
+            customerEntity.setName(name);
+            customerEntity.setEmail(email);
+            customerEntity.setPhone(Phone);
+            customerDAO.update(customerEntity);
+            return "oke";
+        } catch  (Exception e){
+            return "error";
+        }
+    }
 }

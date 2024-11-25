@@ -14,6 +14,8 @@ public interface ICustomerService {
     CustomerResponse findById(Long id);
     CustomerResponse findByEmail(String email);
     int getPointLoyaltyCustomer(Long id);
+
+    String updateInforCustomer(String id, String name, String email, String phone);
     List<ManageUserDTO> getInfoUser();
     boolean updateStatusAccount(Long userId, EnumAccountStatus status);
 

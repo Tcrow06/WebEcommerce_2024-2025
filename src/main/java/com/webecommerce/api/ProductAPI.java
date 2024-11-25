@@ -100,7 +100,7 @@ public class ProductAPI extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         request.setCharacterEncoding("UTF-8");
-        response.setCharacterEncoding("UTF-8"); // Thiết lập mã hóa UTF-8 cho phản hồi
+        response.setCharacterEncoding("UTF-8");
 
         String action = request.getServletPath();
         if (action.equals("/api-add-product"))
@@ -158,18 +158,18 @@ public class ProductAPI extends HttpServlet {
                 if(product != null) {
                     objectMapper.writeValue(response.getWriter(), "Thêm sản phẩm thành công !");
                 } else {
-                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST); // 400 Bad Request
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     objectMapper.writeValue(response.getWriter(), "Có lỗi trong khi thêm sản phẩm !");
                 }
             }
         } catch (NumberFormatException e) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST); // 400 Bad Request
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             objectMapper.writeValue(response.getWriter(), "Invalid number format");
         } catch (IOException e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); // 500 Internal Server Error
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             objectMapper.writeValue(response.getWriter(), "File processing error");
         } catch (ServletException e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); // 500 Internal Server Error
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             objectMapper.writeValue(response.getWriter(), "Servlet error");
         }
     }
@@ -219,18 +219,18 @@ public class ProductAPI extends HttpServlet {
                 if(product != null) {
                     objectMapper.writeValue(response.getWriter(), "Chỉnh sửa sản phẩm thành công !");
                 } else {
-                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST); // 400 Bad Request
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     objectMapper.writeValue(response.getWriter(), "Có lỗi trong khi thêm sản phẩm !");
                 }
             }
         } catch (NumberFormatException e) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST); // 400 Bad Request
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             objectMapper.writeValue(response.getWriter(), "Invalid number format");
         } catch (IOException e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); // 500 Internal Server Error
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             objectMapper.writeValue(response.getWriter(), "File processing error");
         } catch (ServletException e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); // 500 Internal Server Error
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             objectMapper.writeValue(response.getWriter(), "Servlet error");
         }
     }

@@ -1,12 +1,17 @@
 package com.webecommerce.dto.response.people;
 
+import com.webecommerce.constant.EnumAccountStatus;
+import com.webecommerce.constant.EnumRole;
+
 public class UserResponse {
     private Long id;
     private String name;
     private String email;
     private String phone;
     private  String avatar;
-    private String role;
+    private EnumRole role;
+
+    private EnumAccountStatus status;
 
     public UserResponse() {
     }
@@ -18,11 +23,11 @@ public class UserResponse {
         this.phone = phone;
     }
 
-    public String getRole() {
+    public EnumRole getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(EnumRole role) {
         this.role = role;
     }
 
@@ -65,5 +70,13 @@ public class UserResponse {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public EnumAccountStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(EnumAccountStatus status) {
+        this.status = status;
     }
 }

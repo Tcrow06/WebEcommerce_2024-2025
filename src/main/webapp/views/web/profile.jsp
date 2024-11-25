@@ -4,144 +4,253 @@
 <link rel="stylesheet" href="<c:url value='/static/admin/assets/css/style.css'/>" />
 
 <style>
+  /* Reset các phần cũ */
   .col-lg-3.col-md-3.d-flex.justify-content-end.align-items-center.gap-4,
   .header__menu.mobile-menu,
   .header__logo {
     display: none !important;
   }
 
-  .form-group label {
-    font-weight: bold;
+  body {
+    font-family: "Roboto", Arial, sans-serif;
+    background: linear-gradient(to bottom, #f8f9fa, #e9ecef);
+    color: #343a40;
+    line-height: 1.6;
   }
 
-   #form2Modal .modal-dialog {
-     max-width: 50%;
-   }
-
-  .badge.bg-primary-color {
-    background-color: #ff9f43;
-    color: white;
-    padding: 0.2em 0.5em;
-    font-weight: normal;
-    border-radius: 0.25em;
-    font-size: 0.85em;
+  .card {
+    border-radius: 12px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    background: #fff;
+    margin: 20px;
+    padding: 20px;
+    transition: transform 0.3s, box-shadow 0.3s;
   }
 
-  .btn-address {
-    color: #007bff;
-    text-decoration: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    transition: color 0.3s ease, background-color 0.3s ease;
+  .card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
   }
 
-
-  /* Đặt độ rộng mặc định của modal */
-  #form2Modal .modal-dialog {
-    transition: max-width 0.7s ease;
-    max-width: 600px;
+  .page-header {
+    background: linear-gradient(90deg, #ff7e5f, #feb47b);
+    color: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
 
-  /* Đặt độ rộng modal khi form thêm địa chỉ mới hiển thị */
-  #form2Modal.show-expanded .modal-dialog {
-    max-width: 680px;
-    /* Điều chỉnh độ rộng này theo ý bạn */
+  .page-title h4 {
+    margin: 0;
+    font-size: 1.8rem;
   }
 
-  .title-content {
-    font-weight: bold;
+  .page-title h6 {
+    font-size: 1rem;
+    margin-top: 5px;
+    opacity: 0.8;
+  }
+
+  .profile-contentimg img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 5px solid #f8f9fa;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    object-fit: cover; /* Giữ tỉ lệ và cắt phần thừa */
+  }
+
+  .profileupload input[type="file"] {
+    display: none;
+  }
+
+  .profileupload a {
+    position: absolute;
+    bottom: -10px;
+    right: 10px;
+    background: #ff9f43;
+    border-radius: 50%;
+    padding: 10px;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s ease, transform 0.3s ease;
+  }
+
+  .profileupload a:hover {
+    background: #f8c291;
+    transform: scale(1.1);
+  }
+
+  .login-with-google-btn, .login-with-facebook-btn {
+    display: inline-block;
+    padding: 10px 15px;
+    font-size: 14px;
+    color: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
   }
 
   .login-with-google-btn {
-    transition: background-color .3s, box-shadow .3s;
+    background-color: #4285f4;
+    margin-right: 10px;
+  }
 
-    padding: 12px 16px 12px 42px;
-    border: none;
-    border-radius: 3px;
-    box-shadow: 0 -1px 0 rgba(0, 0, 0, .04), 0 1px 1px rgba(0, 0, 0, .25);
-
-    color: #757575;
-    font-size: 14px;
-    font-weight: 500;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-
-    background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMTcuNiA5LjJsLS4xLTEuOEg5djMuNGg0LjhDMTMuNiAxMiAxMyAxMyAxMiAxMy42djIuMmgzYTguOCA4LjggMCAwIDAgMi42LTYuNnoiIGZpbGw9IiM0Mjg1RjQiIGZpbGwtcnVsZT0ibm9uemVybyIvPjxwYXRoIGQ9Ik05IDE4YzIuNCAwIDQuNS0uOCA2LTIuMmwtMy0yLjJhNS40IDUuNCAwIDAgMS04LTIuOUgxVjEzYTkgOSAwIDAgMCA4IDV6IiBmaWxsPSIjMzRBODUzIiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNNCAxMC43YTUuNCA1LjQgMCAwIDEgMC0zLjRWNUgxYTkgOSAwIDAgMCAwIDhsMy0yLjN6IiBmaWxsPSIjRkJCQzA1IiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNOSAzLjZjMS4zIDAgMi41LjQgMy40IDEuM0wxNSAyLjNBOSA5IDAgMCAwIDEgNWwzIDIuNGE1LjQgNS40IDAgMCAxIDUtMy43eiIgZmlsbD0iI0VBNDMzNSIgZmlsbC1ydWxlPSJub256ZXJvIi8+PHBhdGggZD0iTTAgMGgxOHYxOEgweiIvPjwvZz48L3N2Zz4=);
-    background-color: white;
-    background-repeat: no-repeat;
-    background-position: 12px 11px;
-
-    &:hover {
-      box-shadow: 0 -1px 0 rgba(0, 0, 0, .04), 0 2px 4px rgba(0, 0, 0, .25);
-    }
-
-    &:active {
-      background-color: #eeeeee;
-    }
-
-    &:focus {
-      outline: none;
-      box-shadow:
-              0 -1px 0 rgba(0, 0, 0, .04),
-              0 2px 4px rgba(0, 0, 0, .25),
-              0 0 0 3px #c8dafc;
-    }
-
-    &:disabled {
-      filter: grayscale(100%);
-      background-color: #ebebeb;
-      box-shadow: 0 -1px 0 rgba(0, 0, 0, .04), 0 1px 1px rgba(0, 0, 0, .25);
-      cursor: not-allowed;
-    }
+  .login-with-google-btn:hover {
+    background-color: #357ae8;
+    transform: translateY(-2px);
   }
 
   .login-with-facebook-btn {
-    transition: background-color .3s, box-shadow .3s;
+    background-color: #3b5998;
+  }
 
-    padding: 12px 16px 12px 42px;
-    border: none;
-    border-radius: 3px;
-    box-shadow: 0 -1px 0 rgba(0, 0, 0, .04), 0 1px 1px rgba(0, 0, 0, .25);
+  .login-with-facebook-btn:hover {
+    background-color: #2d4373;
+    transform: translateY(-2px);
+  }
 
-    color: #757575;
-    font-size: 14px;
-    font-weight: 500;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  .form-group {
+    margin-bottom: 20px;
+  }
 
-    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAADK0lEQVR4nO2Zz08TQRTHNzM0MQHixaMnI2jE4Mmr/4A/okej3r0oAn+AiYke9IYkpDNFDAkRqokHL4bEEzFelIqAJP5IDPvetrXQAhXSsrRjplYMboGdnd0th/0m79TN7Pcz8+bN7KthRIoUKZJUbNg8Qxj0UYZJwnCGcsxTjpv1yBOGH2u/cbNXPmscCCVy7YRDP2XwmXIUSsFgXgIbg9m28I3fFS1yJinDZWXjDhBcIgzvyDHDMR/Hk4RjStv4f0EYThsJOBGodxqHS5RD0W/z9F9arVEOFwMxTxLWDcrBDsw8/xtgE25dD2LmQzCP2xCUwQV/3A+ZHX+WVs9U24glOiey4uzLn6LreVZ0jGfE4afWXhBFud98qDbeN2wLR3H1TV5Mpctis1IVjXR5cnn3jc3hg1Z1qpVKj+YPDVti4vuG2E9X9gCoQcSxx5v70XQr5ZDzCvBwpriveTcA8pyQB6aH2Yd+r+aPjmVEeZeUUQbg8oyAPmUAT9eDevS+W2lotlCuiPupNXFzqrAdx55l9h+TwbySeXnZ0qk4498a5/65VznPY8YS6dOhpI+Mt5myw/zs8qbn8ajqZpbXXp2XzeVtB8DY1w0tAMpwXGEF8JPOyxYKToDHc7/0VoBjSmUFlvwGGNAEoBxyKgDlgweApUAA7k2viXypsiO2GhwBpa2q47l8qSK6X2QDAXCdQo9cnriNVBVCtI9Y/qeQyibWAfhR3ApsEyfDAJiEUkBlVLZHQgAYUNjYhONt1wAxbnarfKgcGU3viC8rzirEFtYdz7U+cZv/KGIs3eUaoL4KswolLtgyyhQvc6ppFDQA4WZvqB80vgIwXPLcvZMds2YDEIa3DK2PeobTzQIgHN4bSUENLfHF45TBavgA4ENbpS7Z7lNpbOkDgE0T5nnDT8l2n1sIPQCwCcNrRhCS7T43XTrPAAxWfZ95hxh0yo6Z3wBEbtghs8MIRbI6xbFnt2u3GgDkaqVSu9p40WC2TZ7YhMOcKoC8qhB5wjblL6YGkpet2qpwnHhtlgqLRbuybleFDLNoVx6kVi15Ja61R4atU832GylSJONg6DekIcfGE7hs2QAAAABJRU5ErkJggg==);
-    background-size: 30px;
-    background-color: white;
-    background-repeat: no-repeat;
-    background-position: 5px 6px;
+  .form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #343a40;
+  }
 
-    &:hover {
-      box-shadow: 0 -1px 0 rgba(0, 0, 0, .04), 0 2px 4px rgba(0, 0, 0, .25);
+  input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+
+  input[type="text"]:focus, input[type="password"]:focus {
+    border-color: #ff9f43;
+    box-shadow: 0 0 8px rgba(255, 159, 67, 0.4);
+  }
+
+  .btn-address {
+    background-color: #ff9f43;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.3s;
+  }
+
+  .btn-address:hover {
+    background-color: #ff7846;
+    transform: translateY(-2px);
+  }
+
+  .btn-submit {
+    background-color: #28a745;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+
+  .btn-submit:hover {
+    background-color: #218838;
+    transform: scale(1.05);
+  }
+
+  .btn-cancel {
+    background-color: #6c757d;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn-cancel:hover {
+    background-color: #5a6268;
+  }
+
+  #otpModal {
+    display: none; /* Hiển thị khi cần */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  #otpModal div {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 300px;
+    animation: slideIn 0.5s ease-out; /* Hiệu ứng */
+  }
+
+  @keyframes slideIn {
+    from {
+      transform: translateY(-50%);
+      opacity: 0;
     }
-
-    &:active {
-      background-color: #eeeeee;
-    }
-
-    &:focus {
-      outline: none;
-      box-shadow:
-              0 -1px 0 rgba(0, 0, 0, .04),
-              0 2px 4px rgba(0, 0, 0, .25),
-              0 0 0 3px #c8dafc;
-    }
-
-    &:disabled {
-      filter: grayscale(100%);
-      background-color: #ebebeb;
-      box-shadow: 0 -1px 0 rgba(0, 0, 0, .04), 0 1px 1px rgba(0, 0, 0, .25);
-      cursor: not-allowed;
+    to {
+      transform: translateY(0);
+      opacity: 1;
     }
   }
+
+  .card-body button {
+    transition: color 0.3s, transform 0.3s;
+  }
+
+  .card-body button:hover {
+    color: #ff7846;
+    transform: scale(1.05);
+  }
+
+  .modal-content {
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  }
+
+  .modal-header {
+    background: linear-gradient(to right, #ff7e5f, #feb47b);
+    color: #fff;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+  }
+
+  .modal-body {
+    padding: 20px;
+  }
+
+  .card-body {
+    border: 1px solid #f1f1f1;
+    border-radius: 8px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .card-body:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+
+
 </style>
 
 
-<div class="notifications">
-  <h2>Công Quý</h2>
-</div>
+<%--<div class="notifications">--%>
+<%--  <h2>Công Quý</h2>--%>
+<%--</div>--%>
 
 <div class="content">
   <div class="page-header">
@@ -207,38 +316,48 @@
         </div>
       </div>
       <div class="row">
+        <div id="otpModal">
+          <div>
+            <h3>Nhập mã OTP</h3>
+            <span id="otp-error" style="color: red; display: none;">Bạn chưa nhập mã OTP</span>
+            <input type="text" id="otp-input" data-key="otp" placeholder="Nhập mã OTP" />
+            <button id="submit-otp" style="margin-top: 10px;">Gửi</button>
+          </div>
+        </div>
         <div class="col-lg-6 col-sm-12">
           <div class="form-group">
             <label class="title-box">Họ và Tên</label>
-            <input type="text" placeholder="Nguyễn Công Quý" value="${userResponse.name}">
+            <input type="text" data-key="name" placeholder="Enter your name" value="${userResponse.name}">
           </div>
         </div>
         <div class="col-lg-6 col-sm-12">
           <div class="form-group">
             <label class="title-box">Email</label>
-            <input type="text" placeholder="nguyencongquy296@gmail.com" value="${userResponse.email}">
+            <input type="text" data-key="email" placeholder="enter your email" value="${userResponse.email}">
           </div>
         </div>
         <div class="col-lg-6 col-sm-12">
           <div class="form-group">
             <label class="title-box">Chưa biết để gì</label>
-            <input type="text" placeholder="Cái gì đó chưa nghỉ ra...">
+            <input type="text" data-key="" placeholder="oke">
+            <input type="hidden" data-key="id" value="${id}">
+
           </div>
         </div>
         <div class="col-lg-6 col-sm-12">
           <div class="form-group">
             <label class="title-box">Điện thoại</label>
-            <input type="text" placeholder="+976870127" value="${userResponse.phone}">
+            <input type="text" data-key="phone" placeholder="enter your phone number" value="${userResponse.phone}">
           </div>
         </div>
         <div class="col-lg-6 col-sm-12">
           <div class="form-group">
             <label class="title-box">Tên đăng nhập</label>
             <c:if test="${not empty accountResponse}">
-              <input type="text" placeholder="+1452 876 5432" value="${accountResponse.userName}" readonly>
+              <input type="text"  value="${accountResponse.userName}" readonly>
             </c:if>
             <c:if test="${empty accountResponse}">
-              <input type="text" placeholder="+1452 876 5432" value="Tên đăng nhập" readonly>
+              <input type="text" placeholder="enter your password" value="Tên đăng nhập" readonly>
             </c:if>
           </div>
         </div>
@@ -246,7 +365,7 @@
           <div class="form-group">
             <label class="title-box">Mật khẩu</label>
             <div class="passs-group">
-              <input type="password" class=" pass-input" placeholder="Thịnh kêu sang hash rồi nên không hiện mật khẩu chỗ này">
+              <input type="password" data-key="pass" class=" pass-input" placeholder="Thịnh kêu sang hash rồi nên không hiện mật khẩu chỗ này">
             </div>
           </div>
         </div>
@@ -621,6 +740,116 @@
     let text = 'Đã liên kết với Google thành công.';
     createToast(type, icon, title, text);
   }
+
+  const getUserInfo = () => {
+    const userData = {};
+    const inputs = document.querySelectorAll('input[data-key]');
+    inputs.forEach(input => {
+      const key = input.getAttribute('data-key');
+      if (key && key !== 'pass') {
+        userData[key] = input.value;
+      }
+    });
+    return userData;
+  };
+
+
+  document.querySelector('.btn-submit').addEventListener('click', () => {
+    const name = document.querySelector('input[data-key="name"]').value.trim();
+    const email = document.querySelector('input[data-key="email"]').value.trim();
+    const phone = document.querySelector('input[data-key="phone"]').value.trim();
+
+    if (!name || !email || !phone) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Thiếu thông tin',
+        text: 'Vui lòng điền đầy đủ Họ tên, Email và Số điện thoại trước khi lưu.'
+      });
+      return;
+    }
+    const passwordInput = document.querySelector('input[data-key="pass"]').value.trim() || "";
+    const id = document.querySelector('input[data-key="id"]').value.trim();
+    const otpModal = document.getElementById('otpModal');
+    const otpError = document.getElementById('otp-error');
+    const otpInput = document.getElementById('otp-input');
+    let otp = "";
+
+    if (passwordInput !== "") {
+      const sendOtp = {
+        id: id,
+        email: document.querySelector('input[data-key="email"]').value.trim()
+      }
+      fetch('/api/send-otp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(sendOtp),
+      })
+              .then(response => {
+                if (response.ok) {
+                  otpModal.style.display = 'flex';
+                } else {
+                  throw new Error('Không thể gửi OTP, vui lòng thử lại.');
+                }
+              })
+              .catch(error => {
+                console.error('Lỗi gửi OTP:', error);
+                alert('Không thể gửi OTP, vui lòng thử lại.');
+              });
+
+      document.getElementById('submit-otp').addEventListener('click', () => {
+        if (!otpInput.value.trim()) {
+          otpError.style.display = 'block';
+          return;
+        }
+        otp = otpInput.value.trim();
+        otpError.style.display = 'none';
+        otpModal.style.display = 'none';
+        sendDataToServer(passwordInput, otp);
+      });
+    } else {
+      sendDataToServer(passwordInput, otp);
+    }
+  });
+
+  function sendDataToServer(passwordInput, otp) {
+    const userInfo = getUserInfo();
+    const accountInfo = {
+      pass: passwordInput,
+    };
+
+    const payload = {
+      otp: otp,
+      user: userInfo,
+      account: accountInfo,
+    };
+
+    fetch('/api/update-user', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+            .then(response => {
+              if (response.ok) {
+                return response.json();
+              }
+              throw new Error('Có lỗi xảy ra trong quá trình gửi dữ liệu.');
+            })
+            .then(data => {
+              alert('Cập nhật thành công!');
+              window.location.reload();
+            })
+            .catch(error => {
+              console.error('Lỗi:', error);
+              alert('Không thể cập nhật thông tin, vui lòng thử lại.');
+            });
+  }
+
+
+
 
   function updateOrderInfo() {
 

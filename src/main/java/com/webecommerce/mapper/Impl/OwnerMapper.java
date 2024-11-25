@@ -1,5 +1,6 @@
 package com.webecommerce.mapper.Impl;
 
+import com.webecommerce.constant.EnumRole;
 import com.webecommerce.dto.request.people.OwnerRequest;
 import com.webecommerce.dto.response.people.CustomerResponse;
 import com.webecommerce.dto.response.people.OwnerResponse;
@@ -19,7 +20,7 @@ public class OwnerMapper implements IOwnerMapper {
         ownerResponse.setPhone(ownerResponse.getPhone());
         ownerResponse.setEmail(ownerResponse.getEmail());
         ownerResponse.setAvatar(ownerResponse.getAvatar());
-        ownerResponse.setRole("OWNER");
+        ownerResponse.setRole(EnumRole.OWNER);
         return ownerResponse;
     }
 

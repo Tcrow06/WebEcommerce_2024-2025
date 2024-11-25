@@ -24,20 +24,24 @@ public class ReviewFeedBackService implements IReviewFeedBackService {
 
     public ReviewFeedBackDTO save (ReviewFeedBackDTO reviewFeedback) {
 
-        ReviewFeedbackEntity reviewFeedbackEntity = reviewFeedbackMapper.toEntity(reviewFeedback);
+        try {
+            ReviewFeedbackEntity reviewFeedbackEntity = reviewFeedbackMapper.toEntity(reviewFeedback);
 
-        ProductReviewEntity productReviewEntity = productReviewDAO.findById(reviewFeedback.getProductReview().getId());
+            ProductReviewEntity productReviewEntity = productReviewDAO.findById(reviewFeedback.getProductReview().getId());
 
-        if (productReviewEntity != null && reviewFeedbackEntity != null) {
-            // thiết lập liên kết
-            reviewFeedbackEntity.setDate(LocalDateTime.now());
-            reviewFeedbackEntity.setProductReview(productReviewEntity);
-            productReviewEntity.setReviewFeedback(reviewFeedbackEntity);
+            if (productReviewEntity != null && reviewFeedbackEntity != null) {
+                // thiết lập liên kết
+                reviewFeedbackEntity.setDate(LocalDateTime.now());
+                reviewFeedbackEntity.setProductReview(productReviewEntity);
+                productReviewEntity.setReviewFeedback(reviewFeedbackEntity);
 
-            productReviewEntity = productReviewDAO.update(productReviewEntity);
+                reviewFeedbackDAO.insert(reviewFeedbackEntity);
+                ProductReviewEntity productReviewEntity1 = productReviewDAO.findById(reviewFeedback.getProductReview().getId());
 
-            if (productReviewEntity != null)
-                return reviewFeedbackMapper.toDTO(productReviewEntity.getReviewFeedback());
+                return reviewFeedbackMapper.toDTO(reviewFeedbackEntity);
+            }
+        }catch (Exception e) {
+            return null;
         }
 
         return null;

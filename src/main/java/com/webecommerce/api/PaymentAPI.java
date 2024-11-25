@@ -1,8 +1,12 @@
 package com.webecommerce.api;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.webecommerce.dto.OrderDTO;
 import com.webecommerce.service.IPaymentService;
+import com.webecommerce.utils.JWTUtil;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -12,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +32,10 @@ public class PaymentAPI extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("application/json");
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+
         BufferedReader reader = request.getReader();
         StringBuilder json = new StringBuilder();
         String line;
@@ -36,17 +43,20 @@ public class PaymentAPI extends HttpServlet {
             json.append(line);
         }
 
-        // Chuyển đổi JSON thành List<Map<String, String>> bằng Gson
-        Gson gson = new Gson();
-        Type listType = new TypeToken<List<Map<String, String>>>() {}.getType();
-        List<Map<String, String>> dataFilter = gson.fromJson(json.toString(), listType);
+        // Chuyển đối Json thành một map
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
+        Map<String, Object> payload = objectMapper.readValue(json.toString(), new TypeReference<Map<String, Object>>() {});
 
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+        // Từ payload đã lấy, transfer data thành những thứ cần thiết
+        List<Map<String, String>> dataFiller = (List<Map<String, String>>) payload.get("dataFiller");
+        Map<String, Object> orderMap = (Map<String, Object>) payload.get("order");
+        OrderDTO orderDTO = objectMapper.convertValue(orderMap, OrderDTO.class);
 
-        // Gọi logic nghiệp vụ đã xử lý để kiểm tra
-        var result = paymentService.checkPayment(dataFilter);
+        var result = paymentService.checkPayment(dataFiller, orderDTO, JWTUtil.getIdUser(request));
+
         if (result) {
             response.getWriter().write("{\"status\":\"success\"}");
         } else {

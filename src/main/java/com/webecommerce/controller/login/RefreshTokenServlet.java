@@ -2,6 +2,7 @@ package com.webecommerce.controller.login;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.google.gson.Gson;
+import com.webecommerce.constant.EnumRole;
 import com.webecommerce.dao.people.ICustomerDAO;
 import com.webecommerce.dto.CartItemDTO;
 import com.webecommerce.dto.response.people.OwnerResponse;
@@ -42,7 +43,7 @@ public class RefreshTokenServlet extends HttpServlet {
             String role = decodedJWT.getClaim("role").asString();
             UserResponse userModel = new OwnerResponse();
             userModel.setId(id);
-            userModel.setRole(role);
+            userModel.setRole(EnumRole.valueOf(role));
             String token = JWTUtil.generateToken(userModel);
             Cookie tokenCookie = new Cookie("token", token);
 //            tokenCookie.setPath("/");
