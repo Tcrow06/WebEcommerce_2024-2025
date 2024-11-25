@@ -1,13 +1,13 @@
 package com.webecommerce.service.impl;
 
-import com.webecommerce.configuration.SendEmailConfig;
+import com.webecommerce.configuration.VNPayConfig;
 import com.webecommerce.dao.people.ICustomerDAO;
 import com.webecommerce.dto.OrderDTO;
 import com.webecommerce.dto.OrderDetailDTO;
 import com.webecommerce.service.ISendEmailService;
+import com.webecommerce.utils.EmailUtils;
 
 import javax.inject.Inject;
-import javax.mail.MessagingException;
 
 public class SendEmailService implements ISendEmailService {
 
@@ -21,11 +21,7 @@ public class SendEmailService implements ISendEmailService {
         String subject = "Hóa đơn mua hàng của bạn";
         String content = buildEmailContent(orderDTO);
 
-        try {
-            SendEmailConfig.sendEmail(recipientEmail, subject, content);
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        }
+        EmailUtils.sendEmail(recipientEmail, subject, content);
     }
 
     // Hàm xây dựng nội dung HTML cho email
@@ -47,7 +43,7 @@ public class SendEmailService implements ISendEmailService {
         html.append("<p>Cảm ơn bạn đã mua sắm tại ElevenShop. Dưới đây là thông tin hóa đơn của bạn:</p>");
 
         // Thông tin tổng quan hóa đơn
-        html.append("<p><strong>Mã hóa đơn:</strong> ").append(orderDTO.getId()).append("</p>");
+        html.append("<p><strong>Mã hóa đơn:</strong> ").append(VNPayConfig.getRandomNumber(8)).append("</p>");
         html.append("<p><strong>Tổng tiền:</strong> ").append(orderDTO.getTotal()).append(" VND</p>");
         html.append("<p><strong>Phí vận chuyển:</strong> ").append(orderDTO.getShippingFee()).append(" VND</p>");
         html.append("<p><strong>Trạng thái:</strong> ").append(orderDTO.getStatus()).append("</p>");
