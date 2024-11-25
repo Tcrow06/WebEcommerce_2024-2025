@@ -103,6 +103,7 @@ public class CustomerDAO extends AbstractDAO<CustomerEntity> implements ICustome
                      HAVING COUNT(DISTINCT os1.status) = 2
                         AND SUM(CASE WHEN os1.status = 'CANCELLED' THEN 1 ELSE 0 END) > 0
                  ))
+            WHERE a.role = 'CUSTOMER' OR sa.id != NULL
             GROUP BY cus.id, cus.name, cus.phone, cus.loyaltyPoint, a.status, sa.status
 """;
 
