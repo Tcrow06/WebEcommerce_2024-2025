@@ -2,8 +2,10 @@ package com.webecommerce.controller.login;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.webecommerce.constant.EnumAccountStatus;
 import com.webecommerce.dao.people.ICustomerDAO;
 import com.webecommerce.dto.CartItemDTO;
+import com.webecommerce.dto.PlacedOrder.CheckOutRequestDTO;
 import com.webecommerce.dto.request.people.CustomerRequest;
 import com.webecommerce.dto.response.people.CustomerResponse;
 import com.webecommerce.entity.cart.CartEntity;
@@ -22,7 +24,9 @@ import javax.servlet.http.*;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 @WebServlet(urlPatterns = {"/three-party-login","/dang-xuat"})
 public class ThreePartyLoginController extends HttpServlet {
@@ -91,32 +95,41 @@ public class ThreePartyLoginController extends HttpServlet {
     }
     public void handleUserLogin(CustomerRequest customerRequest, String provider, String sendDirection, HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        HashMap<Long, CartItemDTO> cart = new HashMap<>();
         HttpSession session = request.getSession();
+        CheckOutRequestDTO checkOutRequestDTO =(CheckOutRequestDTO) session.getAttribute("orderNotHandler");
         CustomerResponse existingUser;
-        if (provider.equals("google")) {
-
-            //Chưa chỉnh sửa nhất quan về thông tin đăng nhập bằng gg
-            existingUser = socialAccountService.findByGgID(customerRequest.getGgID());
-            if(existingUser==null){
-                existingUser = customerService.findByEmail(customerRequest.getEmail());
-            }
-        } else {
-            existingUser = socialAccountService.findByFbID(customerRequest.getFbID());
-        }
-        if (existingUser == null) {
-            existingUser = socialAccountService.save(customerRequest);
-        }
-        existingUser.setRole("CUSTOMER");
-
-        //Neu da ton tai thi tien hanh update chua xu ly
-//        else {
-//            existingUser = new CustomerResponse();
-////            userModel.setId(existingUser.getId());
-////            userModel = customerService.update(userModel);
+        String path="";
+        existingUser = socialAccountService.findAccount(customerRequest,provider);
+//        if (provider.equals("google")) {
+//            //Chưa chỉnh sửa nhất quan về thông tin đăng nhập bằng gg
+//            existingUser = socialAccountService.findByGgID(customerRequest.getGgID());
+//            if(existingUser==null){
+//                existingUser = socialAccountService.saveSocialByEmail(customerRequest);
+//            }
+//        } else {
+//            existingUser = socialAccountService.findByFbID(customerRequest.getFbID());
 //        }
-        cart=cartItemService.LoadCart(JWTUtil.getIdUser(request));
+//        if (existingUser == null) {
+//            existingUser = socialAccountService.save(customerRequest);
+//        }
+        if(existingUser.getStatus().equals(EnumAccountStatus.BLOCK)){
+            response.sendRedirect(request.getContextPath() + "/dang-nhap?action=login&message=username_is_block&alert=danger");
+            return;
+        }
+        HashMap<Long, CartItemDTO> cart = (HashMap<Long, CartItemDTO>) session.getAttribute("cart");
+        cart = cartItemService.updateCartWhenLogin(cart,existingUser.getId());
+        if(checkOutRequestDTO!=null){
+            cart = cartItemService.updateCartWhenBuy(existingUser.getId(),checkOutRequestDTO);
+        }
         request.getSession().setAttribute("cart", cart);
+
+        path="/trang-chu";
+        if(session.getAttribute("send-direction")!=null){
+
+            path = session.getAttribute("send-direction").toString();
+            session.removeAttribute("send-direction");
+        }
+
         response.setContentType("application/json");
         String jwtToken = JWTUtil.generateToken(existingUser);
 
@@ -124,18 +137,10 @@ public class ThreePartyLoginController extends HttpServlet {
 
         Cookie cookie = new Cookie("token", jwtToken);
 
-        CartEntity cartEntity = customerDAO.findById(existingUser.getId()).getCart();
-
-        for (CartItemEntity cartItemEntity : cartEntity.getCartItems()) {
-            CartItemDTO cartItemDTO = cartItemMapper.toDTO(cartItemEntity);
-            cart.put(cartItemDTO.getId(), cartItemDTO);
-        }
-        request.getSession().setAttribute("cart", cart);
 //        cookie.setPath("/");
 //        cookie.setHttpOnly(true);
         response.addCookie(cookie);
-        response.sendRedirect(request.getContextPath()+ "/trang-chu");
-//        response.sendRedirect(request.getContextPath() + "/" + sendDirection);
+        response.sendRedirect(request.getContextPath()+ path);
 
     }
 

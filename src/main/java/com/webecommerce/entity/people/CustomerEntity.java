@@ -37,7 +37,7 @@ public class CustomerEntity extends UserEntity {
     @OneToOne(mappedBy = "customer")
     private AccountEntity account;
 
-    @OneToOne(mappedBy = "customer")
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.MERGE)
     private SocialAccountEntity socialAccount;
 
     @OneToMany(mappedBy = "customer")
@@ -47,6 +47,9 @@ public class CustomerEntity extends UserEntity {
     @JoinTable(name = "[customer_notification]", joinColumns = @JoinColumn(name = "customer_id"),
             inverseJoinColumns = @JoinColumn(name = "notification_id"))
     private List<NotificationEntity> notifications = new ArrayList<>();
+
+
+    private String avatar;
 
     public CartEntity getCart() {
         return cart;
@@ -126,5 +129,14 @@ public class CustomerEntity extends UserEntity {
 
     public void setLoyaltyPoint(int loyaltyPoint) {
         this.loyaltyPoint = loyaltyPoint;
+    }
+
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

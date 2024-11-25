@@ -12,13 +12,24 @@ public class TransferListDTO{
     private Long quantity;
     private int status;
 
-    public TransferListDTO(Long id, LocalDate returnDate, String nameProduct, String colorProduct, Long quantity, int status) {
+    private Long orderId;
+
+    public TransferListDTO(Long id, LocalDate returnDate, String nameProduct, String colorProduct, Long quantity, int status, Long orderId) {
         this.id = id;
         this.returnDate = returnDate;
         this.nameProduct = nameProduct;
         this.colorProduct = colorProduct;
         this.quantity = quantity;
         this.status = status;
+        this.orderId = orderId;
+    }
+
+    public Long getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
     }
 
     public Long getId() {

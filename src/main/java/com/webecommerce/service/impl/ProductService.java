@@ -1,16 +1,23 @@
 package com.webecommerce.service.impl;
 
 import com.webecommerce.constant.EnumProductStatus;
+import com.webecommerce.dao.impl.review.ProductReviewDAO;
 import com.webecommerce.dao.product.ICategoryDAO;
 import com.webecommerce.dao.product.IProductDAO;
 import com.webecommerce.dao.product.IProductVariantDAO;
+import com.webecommerce.dao.review.IProductReviewDAO;
 import com.webecommerce.dto.ProductDTO;
+import com.webecommerce.dto.ProductReviewDTO;
 import com.webecommerce.dto.ProductVariantDTO;
 import com.webecommerce.dto.discount.ProductDiscountDTO;
+import com.webecommerce.dto.notinentity.RevenueDTO;
+import com.webecommerce.entity.cart.CartItemEntity;
 import com.webecommerce.entity.discount.ProductDiscountEntity;
+import com.webecommerce.entity.product.CategoryEntity;
 import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.entity.product.ProductVariantEntity;
 import com.webecommerce.mapper.GenericMapper;
+import com.webecommerce.mapper.Impl.CategoryMapper;
 import com.webecommerce.paging.Pageable;
 import com.webecommerce.service.IProductService;
 
@@ -42,6 +49,12 @@ public class ProductService implements IProductService {
 
     @Inject
     private GenericMapper<ProductDiscountDTO, ProductDiscountEntity> productDiscountMapper;
+
+    @Inject
+    private CategoryMapper categoryMapper;
+
+    @Inject
+    private IProductReviewDAO productReviewDAO;
 
     // Lây danh sách brand có trong product -> load giao diện
     public List<String> getBrands() {
@@ -90,6 +103,10 @@ public class ProductService implements IProductService {
 
     @Transactional
     public ProductDTO update(ProductDTO product) {
+
+        ProductEntity productEntity = productDAO.findById(product.getId());
+        if (productEntity == null) return null;
+
         try { // tiến hành lưu ảnh
 
             if (product.getSizeConversionTable() != null) {
@@ -113,32 +130,42 @@ public class ProductService implements IProductService {
             return null;
         }
 
-        ProductEntity productEntity = productDAO.findById(product.getId());
-        if (productEntity == null) return null;
-
         dtoToEntity(product, productEntity);
 
         return productMapper.toDTO(productDAO.update(productEntity));
     }
 
     @Transactional
+    public ProductDTO stopSelling (Long productId) {
+
+        ProductEntity productEntity = productDAO.findById(productId);
+        if (productEntity == null) return null;
+
+        productEntity.setStatus(EnumProductStatus.STOP_SELLING);
+
+        return productMapper.toDTO(productDAO.update(productEntity));
+    }
+
+    @Transactional
     public ProductDTO save(ProductDTO product) {
-//        try { // tiến hành lưu ảnh
-//            imageServiceImpl.setRealPath(product.getRealPathFile());
-//            imageServiceImpl.setPath(product.getSizeConversionTable());
-//            imageServiceImpl.saveImageToDisk();
-//            product.setSizeConversionTableUrl(imageServiceImpl.getId());
-//
-//            for (ProductVariantDTO productVariant : product.getProductVariants()) {
-//                imageServiceImpl.setRealPath(product.getRealPathFile());
-//                imageServiceImpl.setPath(productVariant.getImage());
-//                imageServiceImpl.saveImageToDisk();
-//                productVariant.setImageUrl(imageServiceImpl.getId());
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return null;
-//        }
+        try { // tiến hành lưu ảnh
+            if (product.getSizeConversionTable() != null) {
+                imageServiceImpl.setRealPath(product.getRealPathFile());
+                imageServiceImpl.setPath(product.getSizeConversionTable());
+                imageServiceImpl.saveImageToDisk();
+                product.setSizeConversionTableUrl(imageServiceImpl.getId());
+            }
+
+            for (ProductVariantDTO productVariant : product.getProductVariants()) {
+                imageServiceImpl.setRealPath(product.getRealPathFile());
+                imageServiceImpl.setPath(productVariant.getImage());
+                imageServiceImpl.saveImageToDisk();
+                productVariant.setImageUrl(imageServiceImpl.getId());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
 
         ProductEntity productEntity = productMapper.toEntity(product);
         if (productEntity == null) return null;
@@ -159,17 +186,6 @@ public class ProductService implements IProductService {
         return productMapper.toDTO(productDAO.insert(productEntity));
     }
 
-    @Transactional
-    public ProductDTO stopSelling (Long productId) {
-
-        ProductEntity productEntity = productDAO.findById(productId);
-        if (productEntity == null) return null;
-
-        productEntity.setStatus(EnumProductStatus.STOP_SELLING);
-
-        return productMapper.toDTO(productDAO.update(productEntity));
-    }
-
     private ProductDTO getProduct (ProductEntity product) {
         ProductDTO productDTO = productMapper.toDTO(product);
         //lấy discount cho từng sản phâm
@@ -181,6 +197,11 @@ public class ProductService implements IProductService {
                 );
             }
         }
+
+        // lấy số sao
+        productDTO.setAverageStars(productReviewDAO.calculateStarByProduct(product.getId()));
+        productDTO.setCountProductReview(productReviewDAO.countProductReviewByProduct(product.getId()));
+
         productDTO.setProductVariants(
                 productVariantMapper.toDTOList(
                         productVariantDAO.getProductVariantsByProduct(product)
@@ -233,6 +254,20 @@ public class ProductService implements IProductService {
         return getProductsWithDiscount(productEntities);
     }
 
+    public List <ProductDTO> findProductSellingByCategoryAndName(String categoryCode, String name) {
+        List <ProductEntity> productEntities = productDAO.findProductByCategoryOrStatusOrName(categoryCode,EnumProductStatus.SELLING,name);
+        if (productEntities == null) return new ArrayList<>();
+
+        return getProductsWithDiscount(productEntities);
+    }
+
+    public List <ProductDTO> findProductStopSellingByCategoryAndName(String categoryCode, String name) {
+        List <ProductEntity> productEntities = productDAO.findProductByCategoryOrStatusOrName(categoryCode,EnumProductStatus.STOP_SELLING,name);
+        if (productEntities == null) return new ArrayList<>();
+
+        return getProductsWithDiscount(productEntities);
+    }
+
     // dùng cho controller product admin
     public List<ProductDTO> findProductStopSelling() {
         List <ProductEntity> productEntities = productDAO.findProductByStatus(EnumProductStatus.STOP_SELLING);
@@ -257,6 +292,10 @@ public class ProductService implements IProductService {
                     );
                 }
             }
+            // lấy đánh giá
+            productDTO.setAverageStars(
+                    productReviewDAO.calculateStarByProduct(product.getId())
+            );
 
             // lấy productvariant để lấy ảnh và giá (lấy product variant rẻ nhất)
             ProductVariantEntity productVariant = productVariantDAO.getProductVariantByProduct(product);
@@ -293,7 +332,9 @@ public class ProductService implements IProductService {
 
     public ProductDTO getProductById(Long id) {
         ProductEntity productEntity = productDAO.findById(id);
-        return getProduct(productEntity);
+        if (productEntity != null)
+            return getProduct(productEntity);
+        return null;
     }
 
     public List<String> getListColorBySize (String size, Long productId) {
@@ -359,6 +400,57 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    public List<Map.Entry<ProductDTO, Integer>> findBestSellerProduct(int limit){
+        List<Object[]> results = productDAO.findBestSellerProduct(limit);
+        List<Map.Entry<ProductDTO, Integer>> list = new ArrayList<>();
+        for(Object[] result : results){
+            ProductEntity product = (ProductEntity)result[0];
+            ProductDTO productDTO = productMapper.toDTO(product);
+            ProductVariantEntity productVariant = productVariantDAO.getProductVariantByProduct(product);
+            if (productVariant != null) {
+                productDTO.setPhoto(productVariant.getImageUrl());
+                productDTO.setPrice(productVariant.getPrice());
+            }
+            CategoryEntity categoryEntity = categoryDAO.findById(product.getCategory().getId());
+            if(categoryEntity!=null){
+                productDTO.setCategory(categoryMapper.toDTO(categoryEntity));
+            }
+            Integer sales = ((Long) result[1]).intValue();;
+            Map.Entry<ProductDTO, Integer> entry = new AbstractMap.SimpleEntry<>(productDTO, sales);
+            list.add(entry);
+        }
+        return list;
+    }
+
+    @Override
+    public List<Map.Entry<ProductDTO, Integer>> findLowestSellingProducts(int limit) {
+        List<Object[]> results = productDAO.findLowestSellingProducts(limit);
+        List<Map.Entry<ProductDTO, Integer>> list = new ArrayList<>();
+        for(Object[] result : results){
+            ProductEntity product = (ProductEntity)result[0];
+            ProductDTO productDTO = productMapper.toDTO(product);
+            ProductVariantEntity productVariant = productVariantDAO.getProductVariantByProduct(product);
+            if (productVariant != null) {
+                productDTO.setPhoto(productVariant.getImageUrl());
+                productDTO.setPrice(productVariant.getPrice());
+            }
+            CategoryEntity categoryEntity = categoryDAO.findById(product.getCategory().getId());
+            if(categoryEntity!=null){
+                productDTO.setCategory(categoryMapper.toDTO(categoryEntity));
+            }
+            Integer sales = ((Long) result[1]).intValue();;
+            Map.Entry<ProductDTO, Integer> entry = new AbstractMap.SimpleEntry<>(productDTO, sales);
+            list.add(entry);
+        }
+        return list;
+    }
+
+    public int totalProducts(){
+        return productDAO.totalProducts();
+    }
+
+
+    @Override
     public List<ProductDTO> searchProductsByName(String name) {
         List <ProductDTO> productDTOS = new ArrayList<ProductDTO>();
         List<ProductEntity> products = productDAO.searchProductsByName(name);
@@ -377,6 +469,15 @@ public class ProductService implements IProductService {
 //        return products.stream()
 //                .map(productMapper::toDTO)
 //                .collect(Collectors.toList());
+    }
+
+    @Override
+    public int countByStatus(EnumProductStatus status) {
+        return productDAO.countByStatus(status);
+    }
+    @Override
+    public RevenueDTO getRevenue() {
+        return productDAO.getRevenue();
     }
 
     @Override

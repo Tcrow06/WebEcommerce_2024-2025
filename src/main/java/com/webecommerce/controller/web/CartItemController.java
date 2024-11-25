@@ -1,12 +1,17 @@
 package com.webecommerce.controller.web;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.webecommerce.dto.CartItemDTO;
 import com.webecommerce.dto.discount.BillDiscountDTO;
+import com.webecommerce.entity.cart.CartEntity;
+import com.webecommerce.entity.cart.CartItemEntity;
 import com.webecommerce.service.IBillDiscountService;
+import com.webecommerce.service.ICartItemService;
 import com.webecommerce.service.impl.CartItemService;
 import com.webecommerce.service.impl.ProductVariantService;
+import com.webecommerce.utils.HttpUtils;
 import com.webecommerce.utils.JWTUtil;
 
 import javax.inject.Inject;
@@ -18,15 +23,18 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.fasterxml.jackson.core.type.TypeReference;
 
+@SuppressWarnings("ALL")
 @WebServlet(urlPatterns = {"/gio-hang", "/them-gio-hang", "/sua-gio-hang", "/xoa-gio-hang"})
 public class CartItemController extends HttpServlet {
 
     @Inject
-    private CartItemService cartItemService;
+    private ICartItemService cartItemService;
 
     @Inject
     private ProductVariantService productVariantService;
@@ -46,7 +54,7 @@ public class CartItemController extends HttpServlet {
             } else {
                 response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "Không thể thực hiện thao tác này.");
             }
-        }catch (Exception e){
+        }catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -54,99 +62,87 @@ public class CartItemController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String path = request.getServletPath();
-        if (path.equals("/sua-gio-hang")) {
-            handleUpdateCart(request, response);
+        Long userId = JWTUtil.getIdUser(request);
+
+        if (path.equals("/sua-gio-hang") || path.equals("/xoa-gio-hang")) {
+            handleUpdateCart(request, response, userId);
         } else {
-            handleCart(request, response, path);
+            handleAddCart(request, response, path, userId);
         }
     }
 
-    private void handleUpdateCart(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void handleUpdateCart(HttpServletRequest request, HttpServletResponse response, Long userId) throws IOException {
         HttpSession session = request.getSession();
 
-        // Trả dữ liệu qua JSON
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
 
-        // Lấy dữ liệu JSON từ request
-        String jsonData = request.getReader().lines().reduce("", (accumulator, actual) -> accumulator + actual);
+        HashMap<Long, CartItemDTO> updatedCart;
+        if(request.getServletPath().equals("/sua-gio-hang")){
+            // Lấy dữ liệu JSON từ request
+            String jsonData = request.getReader().lines().reduce("", (accumulator, actual) -> accumulator + actual);
+            Type type = new TypeToken<Map<String, Object>>() {}.getType();
+            Map<String, Object> data = new Gson().fromJson(jsonData, type);
 
-        // Parse JSON thành Map
-        Type type = new TypeToken<Map<String, Object>>(){}.getType();
-        Map<String, Object> data = new Gson().fromJson(jsonData, type);
-
-        Long userId = JWTUtil.getIdUser(request);
-        List<Map<String, Object>> cartItems = (List<Map<String, Object>>) data.get("cartItems");
-
-        // Lấy HashMap từ session: Chứa các sản phẩm được load từ db
-        HashMap<Long, CartItemDTO> cart = (HashMap<Long, CartItemDTO>) session.getAttribute("cart");
-        for (Map<String, Object> item : cartItems) {
-            Long productVariantId = ((Double) item.get("productVariantId")).longValue();
-            int quantity = ((Double) item.get("quantity")).intValue();
-
-            CartItemDTO cartItemDTO = new CartItemDTO();
-            cartItemDTO.setProductVariant(productVariantService.findById(productVariantId));
-            cartItemDTO.setQuantity(quantity);
-
-            cart.put(productVariantId, cartItemDTO);
+            List<Map<String, Object>> cartItems = (List<Map<String, Object>>) data.get("cartItems");
+            HashMap<Long, CartItemDTO> newCart = new HashMap<>();
+            for (Map<String, Object> item : cartItems) {
+                Long productVariantId = ((Double) item.get("productVariantId")).longValue();
+                int quantity = ((Double) item.get("quantity")).intValue();
+                CartItemDTO cartItemDTO = new CartItemDTO();
+                cartItemDTO.setProductVariant(productVariantService.findById(productVariantId));
+                cartItemDTO.setQuantity(quantity);
+                newCart.put(productVariantId, cartItemDTO);
+            }
+            updatedCart = cartItemService.updateCartItem(userId, newCart);
+        }
+        else {
+            String json = HttpUtils.converter(request.getReader());
+            ObjectMapper objectMapper = new ObjectMapper();
+            List<Long> productVariantIds = objectMapper.readValue(json, new TypeReference<List<Long>>() {});
+            updatedCart = cartItemService.deleteCartItem(userId,productVariantIds);
         }
 
-        // Tiến hành update
-        cartItemService.editCart(userId, cart);
-        session.setAttribute("cart", cart);
+        session.setAttribute("cart", updatedCart);
 
-        // Sẽ bỏ các dòng này khi có tính năng chọn sản phẩm để thanh toán
-        session.setAttribute("totalPrice", cartItemService.getPriceOfCart(cart));
-        session.setAttribute("totalQuantity", cartItemService.getQuantityOfCart(cart));
+        // Trả về JSON
         Map<String, Object> result = new HashMap<>();
-        result.put("totalPrice", session.getAttribute("totalPrice"));
-        result.put("totalQuantity", session.getAttribute("totalQuantity"));
-
-        String referer = request.getHeader("referer");
-        response.sendRedirect(referer != null ? referer : "/gio-hang");
+        result.put("totalPrice", cartItemService.getPriceOfCart(updatedCart));
+        result.put("totalQuantity", cartItemService.getQuantityOfCart(updatedCart));
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
         response.getWriter().write(new Gson().toJson(result));
     }
 
-    private void handleCart(HttpServletRequest request, HttpServletResponse response, String path)
-            throws IOException {
-        // Trả về JSON
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-
+    private void handleAddCart(HttpServletRequest request, HttpServletResponse response, String path, Long userId) throws IOException {
         HttpSession session = request.getSession();
 
         Long productVariantId = Long.parseLong(request.getParameter("productVariantId"));
-        int quantity = 0;
-        if (path.equals("/them-gio-hang") || path.equals("/sua-gio-hang")) {
-            quantity = Integer.parseInt(request.getParameter("quantity"));
-        }
-
         HashMap<Long, CartItemDTO> cart = (HashMap<Long, CartItemDTO>) session.getAttribute("cart");
-
+        String message="" ;
+        String status="";
         if (cart == null) {
             cart = new HashMap<>();
         }
+        int quantity = Integer.parseInt(request.getParameter("quantity"));
 
-        switch (path) {
-            case "/them-gio-hang" -> cart = cartItemService.addCart(productVariantId, quantity, cart);
-            case "/xoa-gio-hang" -> cart = cartItemService.deleteCart(productVariantId, cart);
-            default ->
-                    response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "Không thể thực hiện thao tác này.");
+        if(quantity > 0) {
+            if (JWTUtil.getIdUser(request) == null) {
+                List<CartItemDTO> cartItemDTOS = new ArrayList<>(cart.values());
+                cartItemDTOS = cartItemService.addCartAnonymous(cartItemDTOS, productVariantId, quantity);
+                for (CartItemDTO item : cartItemDTOS) {
+                    cart.put(item.getProductVariant().getId(), item); // Sử dụng productVariantId làm key
+                }
+            } else {
+                cart = cartItemService.addCartItem(productVariantId, quantity, userId);
+            }
         }
-
+        Map<String, Object> jsonResponse = new HashMap<>();
+        jsonResponse.put("status",status);
+        jsonResponse.put("message",message);
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.writeValue(response.getWriter(), jsonResponse);
         session.setAttribute("cart", cart);
 
-        // Sẽ bỏ 2 dòng này khi có tính năng chọn sản phẩm để thanh toán
-        session.setAttribute("totalPrice", cartItemService.getPriceOfCart(cart));
-        session.setAttribute("totalQuantity", cartItemService.getQuantityOfCart(cart));
-
-        String referer = request.getHeader("referer");
-        response.sendRedirect(referer != null ? referer : "/gio-hang");
-
-        // Dữ liệu JSON trả về
-        Map<String, Object> result = new HashMap<>();
-        result.put("totalPrice", session.getAttribute("totalPrice"));
-        result.put("totalQuantity", session.getAttribute("totalQuantity"));
-        response.getWriter().write(new Gson().toJson(result));
+        response.sendRedirect(request.getHeader("referer") != null ? request.getHeader("referer") : "/gio-hang");
     }
+
 }

@@ -6,11 +6,7 @@ import com.webecommerce.mapper.Impl.OrderInfoMapper;
 import com.webecommerce.service.IOrderInfoService;
 
 import javax.inject.Inject;
-import com.webecommerce.dao.impl.order.OrderInfoDAO;
 import com.webecommerce.entity.order.OrderInfoEntity;
-import com.webecommerce.service.IOrderInfoService;
-
-import javax.inject.Inject;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,26 +24,29 @@ public class OrderInfoService implements IOrderInfoService {
         return orderInfoMapper.toDTO(orderInfoDAO.findDefaultOrderInfoByUserId(idUser));
     }
 
-
-
     @Override
-    public OrderInfoEntity addOrderInfo(OrderInfoEntity orderInfo) {
-        return orderInfoDAO.insert(orderInfo);
+    public OrderInfoDTO getOrderInfoById(Long orderInfoId) {
+        return orderInfoMapper.toDTO(orderInfoDAO.findById(orderInfoId));
     }
 
     @Override
-    public OrderInfoEntity updateOrderInfo(OrderInfoEntity orderInfo) {
+    public OrderInfoDTO addOrderInfo(OrderInfoDTO orderInfo) {
+        return orderInfoMapper.toDTO(orderInfoDAO.insert(orderInfoMapper.toEntity(orderInfo)));
+    }
+
+    @Override
+    public OrderInfoDTO updateOrderInfo(OrderInfoDTO orderInfo) {
         OrderInfoEntity oldOrderInfo = orderInfoDAO.findById(orderInfo.getId());
         if (oldOrderInfo != null) {
-            return orderInfoDAO.update(orderInfo);
+            return orderInfoMapper.toDTO(orderInfoDAO.update(orderInfoMapper.toEntity(orderInfo)));
         }
         return null;
     }
 
     @Override
-    public OrderInfoEntity getOrderInfoDefault(Long id) {
-        List<OrderInfoEntity> orderInfos = getAllOrderInfos();
-        Optional<OrderInfoEntity> orderInfoDefault = orderInfos.stream()
+    public OrderInfoDTO getOrderInfoDefault(Long customerId) {
+        List<OrderInfoDTO> orderInfos = getOrderInfoByCustomerId(customerId);
+        Optional<OrderInfoDTO> orderInfoDefault = orderInfos.stream()
                 .filter(orderInfo -> orderInfo.getIsDefault() == 1)
                 .findFirst();
         return orderInfoDefault.isPresent() ? orderInfoDefault.get() : null;
@@ -59,7 +58,17 @@ public class OrderInfoService implements IOrderInfoService {
     }
 
     @Override
-    public List<OrderInfoEntity> getAllOrderInfos() {
-        return orderInfoDAO.findAll();
+    public boolean setOrderInfoDefault(OrderInfoDTO orderInfo) {
+        return orderInfoDAO.setOrderInfoDefault(orderInfoMapper.toEntity(orderInfo));
+    }
+
+    @Override
+    public List<OrderInfoDTO> getAllOrderInfos() {
+        return orderInfoMapper.toDTOList(orderInfoDAO.findAll());
+    }
+
+    @Override
+    public List<OrderInfoDTO> getOrderInfoByCustomerId(Long customerId) {
+        return orderInfoMapper.toDTOList(orderInfoDAO.findOrderInfoByCustomerId(customerId));
     }
 }

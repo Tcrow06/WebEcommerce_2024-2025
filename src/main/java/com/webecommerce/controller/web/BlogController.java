@@ -11,6 +11,6 @@ import java.io.IOException;
 public class BlogController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/views/web/blog.jsp").forward(req, resp);
+        req.getRequestDispatcher("/views/web/blog/blog-main.jsp").forward(req, resp);
     }
 }

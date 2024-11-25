@@ -1,9 +1,16 @@
 package com.webecommerce.controller.web;
 
+import com.auth0.jwt.JWT;
+import com.webecommerce.dto.OrderInfoDTO;
+import com.webecommerce.dto.response.other.AccountResponse;
+import com.webecommerce.dto.response.people.CustomerResponse;
+import com.webecommerce.dto.response.people.UserResponse;
 import com.webecommerce.entity.order.OrderInfoEntity;
 import com.webecommerce.entity.other.AddressEntity;
-import com.webecommerce.service.IAddressService;
-import com.webecommerce.service.IOrderInfoService;
+import com.webecommerce.service.*;
+import com.webecommerce.service.impl.CustomerService;
+import com.webecommerce.service.impl.UserService;
+import com.webecommerce.utils.JWTUtil;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -14,17 +21,32 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(urlPatterns = {"/trang-chu/thong-tin-ca-nhan"})
+@WebServlet(urlPatterns = {"/thong-tin-ca-nhan"})
 public class AccountController extends HttpServlet {
 
     @Inject
     private IOrderInfoService orderInfoService;
+    @Inject
+    private ICustomerService customerService;
+    @Inject
+    private IAccountService accountService;
+
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<OrderInfoEntity> addressList = orderInfoService.getAllOrderInfos();
-        request.setAttribute("addressList", addressList);
-        request.getRequestDispatcher("/views/web/profile.jsp").forward(request, response);
+        try {
+            Long customerId = JWTUtil.getIdUser(request);
+            List<OrderInfoDTO> orderInfos = orderInfoService.getOrderInfoByCustomerId(customerId);
+            UserResponse customerResponse = customerService.findById(customerId);
+            AccountResponse accountResponse = accountService.findByCustomerId(customerId);
+            request.setAttribute("id", customerId);
+            request.setAttribute("orderInfos", orderInfos);
+            request.setAttribute("userResponse", customerResponse);
+            request.setAttribute("accountResponse", accountResponse);
+            request.getRequestDispatcher("/views/web/profile.jsp").forward(request, response);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -33,22 +55,5 @@ public class AccountController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
 
 
-    }
-
-
-    // Hàm xử lý CRUD địa chỉ
-    private void handleAddress(HttpServletRequest request, HttpServletResponse response,
-                               String action) throws ServletException, IOException {
-
-    }
-
-    // Hàm lấy thông tin địa chỉ từ request gửi lên
-    private AddressEntity getAddressRequest(HttpServletRequest request) {
-        AddressEntity address = new AddressEntity();
-        address.setCity(request.getParameter("city"));
-        address.setDistrict(request.getParameter("district"));
-        address.setCommune(request.getParameter("commune"));
-        address.setConcrete(request.getParameter("concrete"));
-        return address;
     }
 }

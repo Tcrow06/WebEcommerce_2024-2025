@@ -224,24 +224,16 @@
         <div class="row">
             <div class="col-lg-3 col-md-3">
                 <div class="header__logo">
-                    <a href="<c:url value="/trang-chu"/>"><img src="<c:url value="/static/img/logo.png"/>" alt=""></a>
+                    <a href="<c:url value="/trang-chu"/>"><img src="<c:url value="/static/img/logoshop.jpg"/>" alt=""></a>
                 </div>
             </div>
             <div class="col-lg-6 col-md-6">
                 <nav class="header__menu mobile-menu">
                     <ul>
-                        <li class="active"><a href="<c:url value="/trang-chu"/>">Home</a></li>
-                        <li><a href="<c:url value="/danh-sach-san-pham?page=1&maxPageItem=9"/>">Shop</a></li>
-                        <li><a href="#">Pages</a>
-                            <ul class="dropdown">
-                                <li><a href="<c:url value="/ve-chung-toi"/>">About Us</a></li>
-                                <li><a href="<c:url value="/san-pham?action=ten-san-pham-o-day"/>">Shop Details</a></li>
-                                <li><a href="<c:url value="/gio-hang"/>">Shopping Cart</a></li>
-                                <li><a href="<c:url value="/thanh-toan"/>">Check Out</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="<c:url value="/blog"/>">Blog</a></li>
-                        <li><a href="<c:url value="/ve-chung-toi"/>">Contacts</a></li>
+                        <li class="active"><a href="<c:url value="/trang-chu"/>">Trang chủ</a></li>
+                        <li><a href="<c:url value="/danh-sach-san-pham?page=1&maxPageItem=9"/>">Thời trang</a></li>
+                        <li><a href="<c:url value="/blog"/>">Bài viết</a></li>
+                        <li><a href="<c:url value="/ve-chung-toi"/>">Liên hệ</a></li>
                     </ul>
                 </nav>
             </div>
@@ -267,7 +259,8 @@
                                 </a>
 
                                 <ul class="dropdown-menu custom-dropdown-menu" aria-labelledby="userDropdown">
-                                    <li><a class="dropdown-item" href="<c:url value="/trang-chu/thong-tin-ca-nhan"/>">Thông tin tài khoản</a></li>
+
+                                    <li><a class="dropdown-item" href="<c:url value="/thong-tin-ca-nhan"/>">Thông tin tài khoản</a></li>
                                     <li><a class="dropdown-item" href="<c:url value="/trang-chu/don-hang"/>">Đơn hàng của tôi</a></li>
                                     <li><a class="dropdown-item" href="#">Danh sách yêu thích</a></li>
                                     <li><a class="dropdown-item" href="#">Cài đặt</a></li>
@@ -498,7 +491,7 @@
         const chatRoomMessages = document.getElementById("chatRoomMessages");
         const chatRoomInput = document.getElementById("chatRoomInput");
         const sendChatRoomBtn = document.getElementById("sendChatRoomBtn");
-        document.getElementById('chatRoomInput').addEventListener('keydown', checkEnter);
+        document.getElementById('chatRoomInput').addEventListener('keydown', checkEnterChat);
         let wsUrl = "ws://localhost:8080/chat-room";  // URL cơ bản của WebSocket
         if (token) {
             wsUrl += `?token=` + token;  // Nếu có token, thêm nó vào URL
@@ -521,18 +514,18 @@
         };
 
         // Hàm kiểm tra phím Enter
-        function checkEnter(event) {
+        function checkEnterChat(event) {
             if (event.key === 'Enter') {
                 event.preventDefault(); // Ngăn chặn hành động mặc định của Enter (tạo dòng mới)
-                sendMessage(); // Gọi hàm gửi tin nhắn
+                sendMessageChat(); // Gọi hàm gửi tin nhắn
             }
         }
 
         // Gửi tin nhắn
-        sendChatRoomBtn.addEventListener("click", sendMessage);
+        sendChatRoomBtn.addEventListener("click", sendMessageChat);
 
         // Hàm gửi tin nhắn
-        function sendMessage() {
+        function sendMessageChat() {
             const message = chatRoomInput.value.trim();
             if (message) {
                 chatRoomSocket.send(message);

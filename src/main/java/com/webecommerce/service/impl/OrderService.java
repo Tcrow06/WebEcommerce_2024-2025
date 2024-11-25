@@ -6,6 +6,7 @@ import com.webecommerce.dao.discount.IProductDiscountDAO;
 import com.webecommerce.dao.order.IOrderDAO;
 import com.webecommerce.dao.order.IOrderInfoDAO;
 import com.webecommerce.dao.people.ICustomerDAO;
+import com.webecommerce.dao.product.IProductDAO;
 import com.webecommerce.dao.product.IProductVariantDAO;
 import com.webecommerce.dto.OrderDTO;
 import com.webecommerce.dto.OrderDetailDTO;
@@ -21,6 +22,7 @@ import com.webecommerce.entity.order.OrderEntity;
 import com.webecommerce.entity.order.OrderInfoEntity;
 import com.webecommerce.entity.order.OrderStatusEntity;
 import com.webecommerce.entity.people.CustomerEntity;
+import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.entity.product.ProductVariantEntity;
 import com.webecommerce.mapper.Impl.OrderInfoMapper;
 import com.webecommerce.mapper.Impl.OrderMapper;
@@ -35,8 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OrderService implements IOrderService {
-    @Inject
-    private IProductService productService;
 
     @Inject
     private IBillDiscountService billDiscountService;
@@ -47,21 +47,11 @@ public class OrderService implements IOrderService {
     @Inject
     private IBillDiscountDAO billDiscountDAO;
 
-
-    @Inject
-    private ProductVariantService productVariantService;
-
-    @Inject
-    private IProductDiscountService productDiscountService;
-
     @Inject
     private ProductDiscountMapper productDiscountMapper;
 
     @Inject
     private ProductVariantMapper productVariantMapper;
-
-    @Inject
-    private IOrderInfoService orderInfoService;
 
     @Inject
     private OrderInfoMapper orderInfoMapper;
@@ -73,13 +63,10 @@ public class OrderService implements IOrderService {
     private OrderMapper orderMapper;
 
     @Inject
-    private IOrderInfoDAO orderInfoDAO;
-
-    @Inject
-    private IProductDiscountDAO productDiscountDAO;
-
-    @Inject
     private ICustomerDAO customerDAO;
+
+    @Inject
+    private ISendEmailService sendEmailService;
 
 
 
@@ -88,8 +75,6 @@ public class OrderService implements IOrderService {
         OrderDTO orderDTO = new OrderDTO();
         String status=null;
         StringBuilder message = new StringBuilder();
-//        OrderEntity order = new OrderEntity();
-//        List<OrderDetailEntity> orderDetails = new ArrayList<>();
         List<OrderDetailDTO> orderDetailDTOS = new ArrayList<>();
         BillDiscountDTO billDiscountDTO = billDiscountService.findBillDiscountByCode(checkOutRequestDTO.getBillDiscountCode());
         if(!checkOutRequestDTO.getBillDiscountCode().trim().isEmpty()){
@@ -109,6 +94,14 @@ public class OrderService implements IOrderService {
         for(ProductOrderDTO product : checkOutRequestDTO.getSelectedProductsId()){
             ProductVariantEntity productVariantEntity = productVariantDAO.findById(product.getProductVariantId());
             ProductVariantDTO productVariantDTO = productVariantMapper.toDTO(productVariantEntity);
+            if(productVariantEntity.getProduct().getProductDiscount() !=null){
+                ProductDiscountEntity discount = productVariantEntity.getProduct().getProductDiscount();
+                if(discount.getEndDate().isBefore(LocalDateTime.now())||
+                        discount.getStartDate().isAfter(LocalDateTime.now())){
+                        productVariantEntity.getProduct().setProductDiscount(null);
+
+                }
+            }
 
             if(productVariantDTO.getQuantity()<product.getQuantity()){
                 if(status==null){
@@ -121,7 +114,7 @@ public class OrderService implements IOrderService {
 
             orderDetailDTOS.add(new OrderDetailDTO(product.getQuantity(),productVariantDTO, productDiscountMapper.toDTO(productVariantEntity.getProduct().getProductDiscount())));
         }
-        orderDTO.setOrderInfoDTO(orderInfoService.findDefaultOrderInfoByIdUser(checkOutRequestDTO.getIdUser()));
+//        orderDTO.setOrderInfoDTO(orderInfoService.findDefaultOrderInfoByIdUser(checkOutRequestDTO.getIdUser()));
         orderDTO.setOrderDetails(orderDetailDTOS);
         if(!orderDTO.calculateTotal()){
             status="error";
@@ -186,9 +179,17 @@ public class OrderService implements IOrderService {
         OrderEntity orderEntity;
         if(status == null){
             orderEntity = createOrder(orderDTO,idUser);
+
+            // Biến tạm để gán gửi email
+            var orderSendEmail = orderDTO;
+
             orderDTO = orderMapper.toDTO(orderEntity);
             status ="success";
             message =new StringBuilder("Đặt hàng thành công");
+
+            // Gửi mail sau khi đặt hàng thành công
+            sendEmailService.sendEmail(orderSendEmail, idUser);
+
         }else if(status.equals("warning")){
             message.append(" Vui lòng tải lại trang để xem lại hóa đơn!");
         }else{
@@ -206,8 +207,13 @@ public class OrderService implements IOrderService {
         return orderDAO.changeConfirmStatus(orderId);
     }
 
+    @Override
+    public List<DisplayOrderDTO> getListOrder() {
+        return orderDAO.getListOrder();
+    }
+
     @Transactional
-    public OrderEntity createOrder(OrderDTO orderDTO, Long idUser) {
+    public OrderEntity  createOrder(OrderDTO orderDTO, Long idUser) {
        try {
            OrderEntity orderEntity = new OrderEntity();
            String city = orderDTO.getOrderInfoDTO().getAddress().getCity().trim();

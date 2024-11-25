@@ -1,10 +1,12 @@
 package com.webecommerce.dto.discount;
 
+import com.webecommerce.constant.DiscountConstant;
 import com.webecommerce.dto.BaseDTO;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 public abstract class DiscountDTO extends BaseDTO<DiscountDTO> {
 
@@ -17,9 +19,11 @@ public abstract class DiscountDTO extends BaseDTO<DiscountDTO> {
     private int discountPercentage;
 
     private boolean isOutStanding ;
+
     public boolean getIsOutStanding() {
         return isOutStanding;
     }
+
     public void setOutStanding(boolean outStanding) {
         isOutStanding = outStanding;
     }
@@ -34,11 +38,13 @@ public abstract class DiscountDTO extends BaseDTO<DiscountDTO> {
     }
 
     public String getStringEndDate () {
-        return this.endDate.format(DateTimeFormatter.ofPattern("MMMM d, yyyy, HH:mm"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d 'tháng' M 'năm' yyyy, HH:mm", new Locale("vi", "VN"));
+        return this.endDate.format(formatter);
     }
 
     public String getStringStartDate () {
-        return this.startDate.format(DateTimeFormatter.ofPattern("MMMM d, yyyy, HH:mm"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d 'tháng' M 'năm' yyyy, HH:mm", new Locale("vi", "VN"));
+        return this.startDate.format(formatter);
     }
 
     public long getRemainingDates () {
@@ -102,6 +108,25 @@ public abstract class DiscountDTO extends BaseDTO<DiscountDTO> {
         this.discountPercentage = discountPercentage;
     }
 
+    private String status;
 
+    public String getStatus() {
 
+        if (status != null) return status;
+
+        if (endDate.isAfter(LocalDateTime.now()) && startDate.isAfter(LocalDateTime.now())) {
+            status = DiscountConstant.UPCOMING;
+        } else if (startDate.isBefore(LocalDateTime.now()) && endDate.isAfter(LocalDateTime.now())) {
+            status = DiscountConstant.VALID;
+        } else
+            status = DiscountConstant.EXPIRED;
+
+        return status;
+    }
+
+    public String getBootstrapClassStatus () {
+        return DiscountConstant.getClassBootstrap(
+                this.getStatus()
+        );
+    }
 }

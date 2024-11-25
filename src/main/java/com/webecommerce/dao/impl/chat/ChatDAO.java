@@ -37,7 +37,6 @@ public class ChatDAO extends AbstractDAO<ChatEntity> implements IChatDAO {
             typedQuery.setParameter("userId", userId);
             return typedQuery.getSingleResult();
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Lỗi khi lấy tên khách hàng với userId: " + userId, e);
             return null;
         }
     }
@@ -50,7 +49,6 @@ public class ChatDAO extends AbstractDAO<ChatEntity> implements IChatDAO {
             typedQuery.setParameter("userId", userId);
             return typedQuery.getSingleResult();
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Lỗi khi lấy tên khách hàng với userId: " + userId, e);
             return null;
         }
     }

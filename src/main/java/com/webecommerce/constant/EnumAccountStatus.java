@@ -2,6 +2,6 @@ package com.webecommerce.constant;
 
 public enum EnumAccountStatus {
     ACTIVE,
-    DELETED,
+    BLOCK,
     UNVERIFIED,
 }

@@ -9,6 +9,7 @@ import com.webecommerce.dto.response.admin.SizeVariantDTO;
 import javax.servlet.http.Part;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,6 +70,14 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
 
 
     private String photo;
+
+    private int discountPercentage;
+
+    private int averageStars;
+
+    private int countProductReview;
+
+    private List<ProductReviewDTO> productReviews;
 
     public LocalDateTime getIsNewProduct() {
         return isNewProduct;
@@ -140,6 +149,7 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
     public EnumProductStatus getStatus() {
         return status;
     }
+
     public void setStatus(String status) {
         this.status = EnumProductStatus.valueOf(status);
     }
@@ -214,18 +224,31 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
     public void setProductDiscount(ProductDiscountDTO productDiscount) {
         this.productDiscount = productDiscount;
     }
-    
-    public double getDiscountedPrice() {
+
+    private String formatVND(double price) {
+        DecimalFormat formatter = new DecimalFormat("#,###");
+        return formatter.format(price) + " VND";
+    }
+
+    public String getDiscountedPrice() {
         if (price == 0) {
             for (ProductVariantDTO productVariantDTO : this.productVariants) {
-                if (price == 0 || productVariantDTO.getPrice() < productVariantDTO.getPrice())
+                if (price == 0 || productVariantDTO.getPrice() < price)
                     price = productVariantDTO.getPrice();
             }
         }
-        if (this.productDiscount == null) return price;
-        return new BigDecimal(
-                price - (price / 100) * productDiscount.getDiscountPercentage()
-        ).setScale(2, RoundingMode.HALF_UP).doubleValue();
+
+        if (discountPercentage != 0) {
+            return formatVND(new BigDecimal(
+                    (price - (price / 100) * discountPercentage))
+                    .setScale(2, RoundingMode.HALF_UP).doubleValue());
+        }
+
+        if (this.productDiscount == null) return formatVND(price);
+
+        double discountedPrice = price - (price / 100) * productDiscount.getDiscountPercentage();
+        BigDecimal finalPrice = new BigDecimal(discountedPrice).setScale(2, RoundingMode.HALF_UP);
+        return formatVND(finalPrice.doubleValue());
     }
 
     public String getSizeConversionTableUrl() {
@@ -275,4 +298,35 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
         return productVariantColors;
     }
 
+    public int getDiscountPercentage() {
+        return discountPercentage;
+    }
+
+    public void setDiscountPercentage(int discountPercentage) {
+        this.discountPercentage = discountPercentage;
+    }
+
+    public int getAverageStars() {
+        return averageStars;
+    }
+
+    public void setAverageStars(int averageStars) {
+        this.averageStars = averageStars;
+    }
+
+    public int getCountProductReview() {
+        return countProductReview;
+    }
+
+    public void setCountProductReview(int countProductReview) {
+        this.countProductReview = countProductReview;
+    }
+
+    public List<ProductReviewDTO> getProductReviews() {
+        return productReviews;
+    }
+
+    public void setProductReviews(List<ProductReviewDTO> productReviews) {
+        this.productReviews = productReviews;
+    }
 }

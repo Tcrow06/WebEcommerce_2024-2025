@@ -1,6 +1,8 @@
 package com.webecommerce.service.impl;
 
+import com.webecommerce.constant.EnumAccountStatus;
 import com.webecommerce.dao.people.ICustomerDAO;
+import com.webecommerce.dto.notinentity.ManageUserDTO;
 import com.webecommerce.dto.request.people.CustomerRequest;
 import com.webecommerce.dto.response.people.CustomerResponse;
 import com.webecommerce.entity.people.CustomerEntity;
@@ -8,6 +10,7 @@ import com.webecommerce.mapper.ICustomerMapper;
 import com.webecommerce.service.ICustomerService;
 
 import javax.inject.Inject;
+import java.util.List;
 
 public class CustomerService implements ICustomerService {
 
@@ -37,8 +40,31 @@ public class CustomerService implements ICustomerService {
     }
 
     @Override
+    public List<ManageUserDTO> getInfoUser() {
+        return customerDAO.getInfoUser();
+    }
+
+    @Override
+    public boolean updateStatusAccount(Long userId, EnumAccountStatus status) {
+        return customerDAO.updateStatusAccount(userId, status);
+    }
+
+    @Override
     public CustomerResponse findByEmail(String email) {
         CustomerEntity customerEntity = customerDAO.findByEmail(email);
         return customerMapper.toCustomerResponse(customerEntity);
+    }
+
+    public String updateInforCustomer(String id, String name, String email, String Phone) {
+        try {
+            CustomerEntity customerEntity = customerDAO.findById(Long.parseLong(id));
+            customerEntity.setName(name);
+            customerEntity.setEmail(email);
+            customerEntity.setPhone(Phone);
+            customerDAO.update(customerEntity);
+            return "oke";
+        } catch  (Exception e){
+            return "error";
+        }
     }
 }

@@ -5,6 +5,7 @@ import com.webecommerce.dto.notinentity.DisplayOrderDTO;
 import com.webecommerce.dto.notinentity.DisplayOrderDetailDTO;
 import com.webecommerce.service.IOrderService;
 import com.webecommerce.service.IOrderStatusService;
+import com.webecommerce.utils.JWTUtil;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -24,25 +25,33 @@ public class TrackingOrderController extends HttpServlet {
     private IOrderStatusService orderStatusService;
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        //Long customerId = JWTUtil.getIdUser(request);
-        Long customerId = 1L;
-        List<DisplayOrderDTO> orders = orderService.getOrderDisplay(customerId);
+        try {
+            Long customerId = JWTUtil.getIdUser(request);
+            System.out.println("CustomerID: " + customerId);
+            List<DisplayOrderDTO> orders = orderService.getOrderDisplay(customerId);
+            System.out.println(orders.get(1).getDateTime());
+            request.setAttribute("orders", orders); 
 
-        request.setAttribute("orders", orders);
-
-        request.getRequestDispatcher("/views/web/order/tracking-order.jsp").forward(request,response);
+            request.getRequestDispatcher("/views/web/order/tracking-order.jsp").forward(request,response);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String orderDetailIdStr = request.getParameter("firstIdOrderDetail");
-
+        String actionType = request.getParameter("actionType");
         if (orderDetailIdStr != null) {
             Long orderDetailId = Long.parseLong(orderDetailIdStr);
-            boolean updateStatusReceive = orderStatusService.changeStatus(orderDetailId, EnumOrderStatus.RECEIVED);
+            if ("CONFIRM".equals(actionType)) {
+                boolean updateStatusReceive = orderStatusService.changeStatus(orderDetailId, EnumOrderStatus.RECEIVED);
+            }
+            else if("CANCLE".equals(actionType)) {
+                boolean updateStatusCancle = orderStatusService.changeStatus(orderDetailId, EnumOrderStatus.CANCELLED);
+            }
         }
-        Long customerId = 1L;
+        Long customerId = JWTUtil.getIdUser(request);
         List<DisplayOrderDTO> orders = orderService.getOrderDisplay(customerId);
-
         request.setAttribute("orders", orders);
         request.getRequestDispatcher("/views/web/order/tracking-order.jsp").forward(request,response);
     }

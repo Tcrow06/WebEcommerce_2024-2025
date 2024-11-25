@@ -3,6 +3,7 @@ package com.webecommerce.dao.impl.order;
 import com.webecommerce.constant.EnumOrderStatus;
 import com.webecommerce.dao.impl.AbstractDAO;
 import com.webecommerce.dao.order.IOrderDAO;
+import com.webecommerce.dao.order.IOrderDetailDAO;
 import com.webecommerce.dao.order.IReturnOrderDAO;
 import com.webecommerce.dto.notinentity.ProductReturnDTO;
 import com.webecommerce.dto.notinentity.TransferListDTO;
@@ -18,6 +19,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ReturnOrderDAO extends AbstractDAO<ReturnOrderEntity> implements IReturnOrderDAO {
     @Inject
@@ -34,11 +36,8 @@ public class ReturnOrderDAO extends AbstractDAO<ReturnOrderEntity> implements IR
                 "JOIN od.productVariant pv " +
                 "JOIN pv.product p";
 
-        // Thực thi câu lệnh JPQL thông qua EntityManager
         List<Object[]> result = entityManager.createQuery(jpql, Object[].class).getResultList();
 
-        // Khởi tạo DTO để chứa dữ liệu
-        // Duyệt qua kết quả và chuyển đổi thành DTO
         List<TransferListDTO> transferItems = new ArrayList<>();
         for (Object[] row : result) {
             Long id = (Long) row[0];
@@ -47,9 +46,8 @@ public class ReturnOrderDAO extends AbstractDAO<ReturnOrderEntity> implements IR
             Long quantityReturn = (Long) row[3];
             String color = (String) row[4];
             String productName = (String) row[5];
-
-            // Tạo đối tượng TransferItemDTO từ các trường dữ liệu
-            TransferListDTO item = new TransferListDTO(id, returnDate, productName,color, quantityReturn , status);
+            Long orderId = orderDAO.findOrderId(id);
+            TransferListDTO item = new TransferListDTO(id, returnDate, productName,color, quantityReturn , status, orderId);
             transferItems.add(item);
         }
         return transferItems;
@@ -135,17 +133,32 @@ public class ReturnOrderDAO extends AbstractDAO<ReturnOrderEntity> implements IR
 
             Long orderId = (Long) findOrderId.getSingleResult();
 
-            String checkStatusQuery = "SELECT COUNT(od) FROM OrderDetailEntity od " +
-                    "WHERE od.order.id = :orderId " +
-                    "AND od.id IN (SELECT ro.orderDetail.id FROM ReturnOrderEntity ro WHERE ro.status != 1)";
+//            String checkStatusQuery = "SELECT COUNT(od) FROM OrderDetailEntity od " +
+//                    "WHERE od.order.id = :orderId " +
+//                    "AND od.id IN (SELECT ro.orderDetail.id FROM ReturnOrderEntity ro WHERE ro.status != 1)";
 
-            Query checkStatus = entityManager.createQuery(checkStatusQuery);
-            checkStatus.setParameter("orderId", orderId);
+            String checkQuantityOrderQuery = "SELECT COUNT(od), SUM(od.quantity) FROM OrderDetailEntity od WHERE od.order.id = :orderId";
 
-            long count = (long) checkStatus.getSingleResult();
+            Query checkQuantityOrder = entityManager.createQuery(checkQuantityOrderQuery);
+            checkQuantityOrder.setParameter("orderId", orderId);
+
+            Object[] result = (Object[]) checkQuantityOrder.getSingleResult();
+            Long countOrderDetail = (Long) result[0];
+            Long totalQuantityOrderDetail = (Long) result[1];
+
+            // Kiểm tra số lượng mặt hàng đặt và số lượng mặt hàng trả
+            String checkQuantityReturnQuery = "SELECT COUNT(ro), SUM(ro.quantityReturn) FROM ReturnOrderEntity ro WHERE ro.orderDetail.order.id = :orderId AND ro.status != 0";
+
+            Query checkQuantityReturn = entityManager.createQuery(checkQuantityReturnQuery);
+            checkQuantityReturn.setParameter("orderId", orderId);
+
+            Object[] result2 = (Object[]) checkQuantityReturn.getSingleResult();
+            Long countReturnOrder = (Long) result2[0];
+            Long totalReturnOrderQuantity = (Long) result2[1];
+
 
             // Nếu không có trạng thái khác 1, thực hiện cập nhật trạng thái
-            if (count == 0) {
+            if (Objects.equals(countReturnOrder, countOrderDetail) && totalQuantityOrderDetail == 0) {
                 String checkProcessedStatusQuery = "SELECT COUNT(os) FROM OrderStatusEntity os WHERE os.order.id = :orderId AND os.status = :status";
                 Query checkProcessedStatus = entityManager.createQuery(checkProcessedStatusQuery);
                 checkProcessedStatus.setParameter("orderId", orderId);
@@ -179,21 +192,18 @@ public class ReturnOrderDAO extends AbstractDAO<ReturnOrderEntity> implements IR
     public boolean updateStatusOrder(Long orderDetailId) {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
-            // Bắt đầu giao dịch
             transaction.begin();
 
-            // Cập nhật trạng thái của đơn hàng trong bảng ReturnOrderEntity
             String query = "UPDATE ReturnOrderEntity ro SET ro.status = 1 WHERE ro.orderDetail.id = :orderDetailId";
             Query jpqlQuery = entityManager.createQuery(query);
             jpqlQuery.setParameter("orderDetailId", orderDetailId);
-            int rowsUpdated = jpqlQuery.executeUpdate();
+            int update = jpqlQuery.executeUpdate();
 
-            if (rowsUpdated == 0) {
+            if (update == 0) {
                 transaction.rollback();
-                return false; // Nếu không cập nhật được trạng thái, rollback
+                return false;
             }
 
-            // Cập nhật số lượng sản phẩm trong bảng ProductVariantEntity
             String selectQuery = "SELECT ro.quantityReturn, od.productVariant.id " +
                     "FROM ReturnOrderEntity ro " +
                     "JOIN ro.orderDetail od " +
@@ -206,14 +216,22 @@ public class ReturnOrderDAO extends AbstractDAO<ReturnOrderEntity> implements IR
             Long productVariantId = (Long) result[1];
             Integer quantityReturn = quantityReturnL.intValue();
 
-            if (quantityReturn != null && productVariantId != null) {
+            if (productVariantId != null) {
+                // Tăng lại sản phẩm
                 String updateQuery = "UPDATE ProductVariantEntity pv SET pv.quantity = pv.quantity + :quantityReturn WHERE pv.id = :productVariantId";
                 int productUpdateCount = entityManager.createQuery(updateQuery)
                         .setParameter("quantityReturn", quantityReturn)
                         .setParameter("productVariantId", productVariantId)
                         .executeUpdate();
 
-                if (productUpdateCount == 0) {
+                //Giảm sản phẩm trong đơn
+                String updateQuantityQuery = "UPDATE OrderDetailEntity od SET od.quantity = od.quantity - :quantityReturn WHERE od.id = :orderDetailId";
+                int orderUpdateCount = entityManager.createQuery(updateQuantityQuery)
+                        .setParameter("orderDetailId", orderDetailId)
+                        .setParameter("quantityReturn", quantityReturn)
+                        .executeUpdate();
+
+                if (productUpdateCount == 0 && orderUpdateCount == 0) {
                     transaction.rollback();
                     return false;
                 }
@@ -277,26 +295,18 @@ public class ReturnOrderDAO extends AbstractDAO<ReturnOrderEntity> implements IR
                     "WHERE od.order.id = :orderId " +
                     "AND od.id IN (SELECT ro.orderDetail.id FROM ReturnOrderEntity ro WHERE ro.status = 0)";
 
-            String checkAtLeastOrderReturn = "SELECT COUNT(od) FROM OrderDetailEntity od " +
-                    "WHERE od.order.id = :orderId " +
-                    "AND od.id IN (SELECT ro.orderDetail.id FROM ReturnOrderEntity ro WHERE ro.status = 2)";
-
             Query checkSuccess = entityManager.createQuery(checkOrderSuccess);
             checkSuccess.setParameter("orderId", orderId);
 
-            Query checkReturn = entityManager.createQuery(checkAtLeastOrderReturn);
-            checkReturn.setParameter("orderId", orderId);
 
             long countSuccess = (long) checkSuccess.getSingleResult();
-            long countReturn = (long) checkReturn.getSingleResult();
-
 
             // Neu khong co don hoan tra nao chua xu li
-            if (countSuccess == 0 && countReturn >= 1) {
+            if (countSuccess == 0) {
                 String checkProcessedStatusQuery = "SELECT COUNT(os) FROM OrderStatusEntity os WHERE os.order.id = :orderId AND os.status = :status";
                 Query checkProcessedStatus = entityManager.createQuery(checkProcessedStatusQuery);
                 checkProcessedStatus.setParameter("orderId", orderId);
-                checkProcessedStatus.setParameter("status", EnumOrderStatus.valueOf("PROCESSED"));
+                checkProcessedStatus.setParameter("status", EnumOrderStatus.PROCESSED);
 
                 long processedCount = (long) checkProcessedStatus.getSingleResult();
 

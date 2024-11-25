@@ -8,6 +8,12 @@ public abstract class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    public UserEntity(Long id) {
+        this.id = id;
+    }
+
+    public UserEntity() {}
+
     @Column(name = "[name]")
     private String name;
 

@@ -27,7 +27,7 @@
                     <div class="breadcrumb__text">
                         <h4>Shop</h4>
                         <div class="breadcrumb__links">
-                            <a href="<c:url value=" /trang-chu" />">Home</a>
+                            <a href="<c:url value="/trang-chu" />">Home</a>
                             <span>Shop</span>
                         </div>
                     </div>
@@ -254,16 +254,11 @@
             <div class="related-news mb-5" style="font-family: 'Poppins', sans-serif;">
                 <h4 class="text-danger-emphasis fs-5 mb-2 fw-bold">Tin tức liên quan</h4>
                 <ul>
-                    <li><a href="#" style=" text-decoration: none; color: #E693C7;">Mách Nàng Cách Xắn Tay Áo Vest Chuẩn
-                            Đẹp Và Thời Thượng</a></li>
-                    <li><a href="#" style=" text-decoration: none; color: #E693C7;">Lưu Ngay Cách Giặt Áo Phao Không Bị
-                            Dồn Bông Phải Biết</a></li>
-                    <li><a href="#" style=" text-decoration: none; color: #E693C7;">Gợi Ý 10 Cách Tẩy Mực Bút Lông Trên
-                            Áo Đơn Giản Tại Nhà</a></li>
-                    <li><a href="#" style=" text-decoration: none; color: #E693C7;">Ngâm Quần Áo Mới Với Muối: 6 Lợi Ích
-                            Không Tưởng Bạn Có Biết?</a></li>
-                    <li><a href="#" style=" text-decoration: none; color: #E693C7;">Giặt Áo Trắng Dính Cafe: Gợi Ý 9
-                            Cách Hữu Hiệu Nên Biết</a></li>
+                    <li><a href="<c:url value='/views/web/blog/blog-6.jsp'/>" style=" text-decoration: none; color: #E693C7;">Phối đồ nơi công sở: Tạo phong cách chuyên nghiệp và lịch sự</a></li>
+                    <li><a href="<c:url value='/views/web/blog/blog-5.jsp'/>" style=" text-decoration: none; color: #E693C7;">Sản Xuất Thời Trang Bảo Vệ Môi Trường: Xu Hướng Bền Vững Cho Tương Lai</a></li>
+                    <li><a href="<c:url value='/views/web/blog/blog-4.jsp'/>" style=" text-decoration: none; color: #E693C7;">  Thời Trang Thể Thao: Sự Kết Hợp Hoàn Hảo Giữa Phong Cách và Tiện Ích</a></li>
+                    <li><a href="<c:url value='/views/web/blog/blog-3.jsp'/>" style=" text-decoration: none; color: #E693C7;">Phối Màu Quần Áo: Nghệ Thuật Tạo Dựng Phong Cách Cá Nhân</a></li>
+                    <li><a href="<c:url value='/views/web/blog/blog-2.jsp'/>" style=" text-decoration: none; color: #E693C7;">Cách Mặc Sơ Mi Đúng Cách: Tự Tin Và Lịch Lãm</a></li>
                 </ul>
             </div>
         </div>

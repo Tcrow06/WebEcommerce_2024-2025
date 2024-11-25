@@ -1,3 +1,5 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
 <!-- Footer Section Begin -->
 <footer class="footer">
     <div class="container">
@@ -5,39 +7,39 @@
             <div class="col-lg-3 col-md-6 col-sm-6">
                 <div class="footer__about">
                     <div class="footer__logo">
-                        <a href="#"><img src="<c:url value="/static/img/footer-logo.png"/>" alt=""></a>
+                        <a href="#"><img src="<c:url value="/static/img/logoshop.jpg"/>" alt=""></a>
                     </div>
-                    <p>The customer is at the heart of our unique business model, which includes design.</p>
+                    <p>Eleven Fashion cung cấp trang phục đa dạng, chất lượng với giá hợp lý, phù hợp mọi phong cách. Đến với Eleven Fashion để thể hiện cá tính của bạn!</p>
                     <a href="#"><img src="<c:url value="/static/img/payment.png"/>" alt=""></a>
                 </div>
             </div>
             <div class="col-lg-2 offset-lg-1 col-md-3 col-sm-6">
                 <div class="footer__widget">
-                    <h6>Shopping</h6>
+                    <h6>Thời trang</h6>
                     <ul>
-                        <li><a href="#">Clothing Store</a></li>
-                        <li><a href="#">Trending Shoes</a></li>
-                        <li><a href="#">Accessories</a></li>
-                        <li><a href="#">Sale</a></li>
+                        <li><a href="#">Thương hiệu nổi tiếng</a></li>
+                        <li><a href="#">Trang phục sang trọng</a></li>
+                        <li><a href="#">Bộ sưu tập giới hạn</a></li>
+                        <li><a href="#">Đa dạng thiết kế</a></li>
                     </ul>
                 </div>
             </div>
             <div class="col-lg-2 col-md-3 col-sm-6">
                 <div class="footer__widget">
-                    <h6>Shopping</h6>
+                    <h6>Dịch vụ</h6>
                     <ul>
-                        <li><a href="#">Contact Us</a></li>
-                        <li><a href="#">Payment Methods</a></li>
-                        <li><a href="#">Delivary</a></li>
-                        <li><a href="#">Return & Exchanges</a></li>
+                        <li><a href="#">Giảm giá sản phẩm</a></li>
+                        <li><a href="#">Ưu đãi khách VIP</a></li>
+                        <li><a href="#">Giao hàng siêu tốc</a></li>
+                        <li><a href="#">Hỗ trợ 24/7</a></li>
                     </ul>
                 </div>
             </div>
             <div class="col-lg-3 offset-lg-1 col-md-6 col-sm-6">
                 <div class="footer__widget">
-                    <h6>NewLetter</h6>
+                    <h6>Nhận thông báo</h6>
                     <div class="footer__newslatter">
-                        <p>Be the first to know about new arrivals, look books, sales & promos!</p>
+                        <p>Đăng ký để nhận những ưu đãi mới nhất về cửa hàng thời trang của chúng tôi!</p>
                         <form action="#">
                             <input type="text" placeholder="Your email">
                             <button type="submit"><span class="icon_mail_alt"></span></button>
@@ -54,8 +56,7 @@
                         <script>
                             document.write(new Date().getFullYear());
                         </script>2020
-                        All rights reserved | This template is made with <i class="fa fa-heart-o"
-                                                                            aria-hidden="true"></i> by <a href="<c:url value="https://colorlib.com"/>" target="_blank">Colorlib</a>
+                        All rights reserved
                     </p>
                     <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
                 </div>

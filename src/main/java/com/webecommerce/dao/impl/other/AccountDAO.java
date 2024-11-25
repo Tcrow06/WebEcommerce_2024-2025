@@ -16,6 +16,7 @@ import com.webecommerce.mapper.Impl.OwnerMapper;
 import com.webecommerce.utils.HibernateUtil;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
@@ -24,10 +25,13 @@ import java.util.List;
 
 public class AccountDAO extends AbstractDAO<AccountEntity> implements IAccountDAO {
 
-    private IAccountMapper accountMapper = new AccountMapper();
+    @Inject
+    private IAccountMapper accountMapper;
     private EntityManagerFactory entityManagerFactory;
-    private ICustomerMapper customerMapper = new CustomerMapper();
-    private IOwnerMapper ownerMapper = new OwnerMapper();
+    @Inject
+    private ICustomerMapper customerMapper ;
+    @Inject
+    private IOwnerMapper ownerMapper ;
 
 
     @PersistenceContext
@@ -105,6 +109,47 @@ public class AccountDAO extends AbstractDAO<AccountEntity> implements IAccountDA
         return count > 0;
     }
 
+    @Override
+    public AccountEntity findByCustomerId(Long id) {
+        try {
+            String jpql = "SELECT a FROM AccountEntity a WHERE a.customer.id = :customerId";
+            Query query = entityManager.createQuery(jpql);
+            query.setParameter("customerId", id);
+            AccountEntity accountEntity = (AccountEntity) query.getSingleResult();
+            return accountEntity;
+        }catch (Exception e){
+            return null;
+        }
+    }
 
-//
+    @Override
+    public UserResponse findByUserNameAndPassword(String userName, String password) {
+        UserResponse userResponse = new UserResponse();
+        String jpql = "SELECT a FROM AccountEntity a WHERE a.username = :username";
+
+        List<AccountEntity> resultList = entityManager.createQuery(jpql, AccountEntity.class)
+                .setParameter("username", userName)
+                .getResultList();
+
+        if (resultList != null && !resultList.isEmpty()) {
+            AccountEntity accountEntity = resultList.get(0);
+            AccountResponse accountResponse = accountMapper.toAccountResponse(accountEntity);
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+
+
+            if (passwordEncoder.matches(password, accountEntity.getPassword())) {
+                if (accountResponse.getRole().equals("CUSTOMER")) {
+                    userResponse = customerMapper.toCustomerResponse(accountEntity.getCustomer());
+                    userResponse.setStatus(accountEntity.getStatus());
+                } else if (accountResponse.getRole().equals("OWNER")) {
+                    userResponse = ownerMapper.toOwnerResponse(accountEntity.getOwner());
+                    userResponse.setStatus(accountEntity.getStatus());
+                }
+                return userResponse;
+            }
+        }
+        return null;
+    }
+
 }

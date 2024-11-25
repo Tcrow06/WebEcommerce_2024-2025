@@ -5,8 +5,8 @@
 <div class="content">
     <div class="page-header">
         <div class="page-title">
-            <h4>Transfer List</h4>
-            <h6>Transfer your stocks to one store another store.</h6>
+            <h4>Danh sách mặt hàng hoàn trả</h4>
+            <h6>Những mặt hàng được hoàn trả theo yêu cầu của khách hàng</h6>
         </div>
 <%--        <div class="page-btn">--%>
 <%--            <a href="addtransfer.html" class="btn btn-added"><img src="/static/admin/assets/img/icons/plus.svg" alt="img"--%>
@@ -89,6 +89,7 @@
                         <th>Sản phẩm</th>
                         <th>Màu</th>
                         <th>Số lượng</th>
+                        <th>Mã đơn</th>
                         <th>Trạng thái</th>
                         <th>Hành động</th>
                     </tr>
@@ -101,6 +102,7 @@
                             <td>${productReturn.nameProduct}</td>
                             <td>${productReturn.colorProduct}</td>
                             <td>${productReturn.quantity}</td>
+                            <td>ELV${productReturn.orderId}</td>
                             <td>
                                 <c:choose>
                                     <c:when test="${productReturn.status == 0}">

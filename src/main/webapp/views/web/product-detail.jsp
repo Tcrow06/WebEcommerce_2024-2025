@@ -88,6 +88,39 @@
     .size-options label:not(:last-child) {
         border-right: none;
     }
+
+    <c:if test="${model.status == 'STOP_SELLING'}">
+        #detail-image {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .product__details__pic__item {
+            position: relative; /* Làm gốc tham chiếu cho phần tử con dùng position: absolute */
+        }
+
+        .product__details__pic__item .overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150px;
+            height: 150px;
+            background-color: rgba(0, 0, 0, 0.7); /* Màu nền trong suốt */
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff; /* Màu chữ trắng */
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            z-index: 1; /* Đảm bảo lớp phủ hiển thị phía trên hình ảnh */
+            pointer-events: none; /* Không chặn các tương tác chuột */
+        }
+    </c:if>
+
 </style>
 
 <!-- Shop Details Section Begin -->
@@ -120,12 +153,15 @@
                     </ul>
                 </div>
 
-                <div class="col-lg-6 col-md-9">
+                <div class="col-lg-6 col-md-9 img-detail-container">
                     <div class="tab-content">
                         <c:forEach var="item" items="${model.productVariants}" varStatus="status">
                             <div class="tab-pane <c:if test="${status.index == 0}">active</c:if>" id="tabs-${status.index + 1}" role="tabpanel">
                                 <div class="product__details__pic__item">
                                     <img src="<c:url value='/api-image?path=${item.imageUrl}'/>" alt="" id="detail-image">
+                                    <c:if test="${model.status == 'STOP_SELLING'}">
+                                        <div class="overlay">Đã ngừng<br>kinh doanh</div>
+                                    </c:if>
                                 </div>
                             </div>
                         </c:forEach>
@@ -140,15 +176,14 @@
                 <div class="col-lg-8">
                     <div class="product__details__text">
                         <h4>${model.name}</h4>
+
                         <div class="rating">
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star-o"></i>
-                            <span> - 5 Reviews</span>
+                            <c:forEach var="i" begin="1" end="5">
+                                <i class="fa ${i <= model.averageStars ? ' fa-star' : ' fa-star-o'}"></i>
+                            </c:forEach>
+                            <span> - ${model.countProductReview} Lượt đánh giá</span>
                         </div>
-                        <h3 id="price-product">$${model.getDiscountedPrice()}
+                        <h3 id="price-product">${model.getDiscountedPrice()}
                             <c:if test="${model.productDiscount != null}">
                                 <span class="discounted-price">${model.price}</span>
                             </c:if></h3>
@@ -173,26 +208,24 @@
                             </div>
                         </div>
 
-                        <div class="product__details__cart__option">
-                            <form id="add-to-cart-form">
-                                <div class="quantity">
-                                    <div class="pro-qty">
-                                        <input type="text" value="1" name="quantity" id="quantity">
+                        <c:if test="${model.status == 'SELLING'}">
+                            <div class="product__details__cart__option">
+                                <form id="add-to-cart-form">
+                                    <div class="quantity">
+                                        <div class="pro-qty">
+                                            <input type="number" value="1" name="quantity" id="quantity">
+                                        </div>
                                     </div>
+                                    <button type="button" id="add-to-cart-btn" class="primary-btn" style="margin-top: 10px">add to cart</button>
+                                    <input type="hidden" name="productId" value="${model.id}">
+                                    <input type="hidden" id="productVariantId" name="productVariantId" value="">
+                                </form>
+                                <div id="product-quantity" style="display: none; margin-top: 10px">
+                                    <p>34 products available</p>
                                 </div>
-                                <button type="button" id="add-to-cart-btn" class="primary-btn" style="margin-top: 10px">add to cart</button>
-                                <input type="hidden" name="productId" value="${model.id}">
-                                <input type="hidden" id="productVariantId" name="productVariantId" value="">
-                            </form>
-                            <div id="product-quantity" style="display: none; margin-top: 10px">
-                                <p>34 products available</p>
                             </div>
-                        </div>
+                        </c:if>
 
-                        <div class="product__details__btns__option">
-                            <a href="#"><i class="fa fa-heart"></i> add to wishlist</a>
-                            <a href="#"><i class="fa fa-exchange"></i> Add To Compare</a>
-                        </div>
                         <div class="product__details__last__option">
                             <h5><span>Guaranteed Safe Checkout</span></h5>
                             <img src="<c:url value="/static/img/shop-details/details-payment.png"/>" alt="">
@@ -227,31 +260,70 @@
                             </div>
                             <div class="tab-pane" id="tabs-6" role="tabpanel">
                                 <div class="product__details__tab__content">
-                                    <div class="product__details__tab__content__item">
-                                        <h5>Products Infomation</h5>
-                                        <p>A Pocket PC is a handheld computer, which features many of the same
-                                            capabilities as a modern PC. These handy little devices allow
-                                            individuals to retrieve and store e-mail messages, create a contact
-                                            file, coordinate appointments, surf the internet, exchange text messages
-                                            and more. Every product that is labeled as a Pocket PC must be
-                                            accompanied with specific software to operate the unit and must feature
-                                            a touchscreen and touchpad.</p>
-                                        <p>As is the case with any new technology product, the cost of a Pocket PC
-                                            was substantial during it’s early release. For approximately $700.00,
-                                            consumers could purchase one of top-of-the-line Pocket PCs in 2003.
-                                            These days, customers are finding that prices have become much more
-                                            reasonable now that the newness is wearing off. For approximately
-                                            $350.00, a new Pocket PC can now be purchased.</p>
-                                    </div>
-                                    <div class="product__details__tab__content__item">
-                                        <h5>Material used</h5>
-                                        <p>Polyester is deemed lower quality due to its none natural quality’s. Made
-                                            from synthetic materials, not natural like wool. Polyester suits become
-                                            creased easily and are known for not being breathable. Polyester suits
-                                            tend to have a shine to them compared to wool and cotton suits, this can
-                                            make the suit look cheap. The texture of velvet is luxurious and
-                                            breathable. Velvet is a great choice for dinner party jacket and can be
-                                            worn all year round.</p>
+                                    <div class="card-body p-4">
+                                        <div class="row">
+                                            <div class="col">
+                                                <c:forEach var="item" items="${review}">
+                                                    <div class="d-flex flex-start" style="margin-top: 20px">
+                                                        <img class="rounded-circle shadow-1-strong me-3"
+                                                             src="https://icons.veryicon.com/png/o/miscellaneous/standard/avatar-15.png" alt="avatar" width="65"
+                                                             height="65" />
+                                                        <div class="flex-grow-1 flex-shrink-1">
+                                                            <div>
+                                                                <div class="d-flex justify-content-between align-items-center">
+                                                                    <p class="mb-1">
+                                                                            ${item.nameCustomer} <span class="small"> - ${item.getDateString()}</span>
+                                                                    </p>
+                                                                    <div class="rating">
+                                                                        <c:forEach var="i" begin="1" end="5">
+                                                                            <i class="fa ${i <= item.numberOfStars ? 'fa-star' : 'fa-star-o'}"></i>
+                                                                        </c:forEach>
+                                                                    </div>
+                                                                </div>
+                                                                <p class="small mb-0">
+                                                                        ${item.content}
+                                                                </p>
+
+                                                                <c:if test="${item.reviewFeedback != null}">
+                                                                    <button class="btn btn-sm btn-link view-feedback-btn" data-feedback-id="${item.id}">
+                                                                        Xem phản hồi
+                                                                    </button>
+                                                                    <div class="feedback-content" style="display: none; margin-top: 10px;">
+                                                                        <strong>Phản hồi của shop:</strong>
+                                                                        <p>${item.reviewFeedback.content}</p>
+                                                                        <span class="small text-muted">Phản hồi vào: ${item.reviewFeedback.getDateString()}</span>
+                                                                    </div>
+                                                                </c:if>
+                                                                <c:if test="${item.reviewFeedback == null && role == 'OWNER'}">
+                                                                    <a class="reply-btn"><img src="https://icons.iconarchive.com/icons/bootstrap/bootstrap/512/Bootstrap-reply-icon.png" width="20px" height="20px"><span class="small"> reply</span></a>
+                                                                </c:if>
+                                                                <c:if test="${item.reviewFeedback == null && role == 'OWNER'}">
+                                                                    <div class="card-footer py-3 border-0 review-feedback-section" style="background-color: #ffff; display: none">
+                                                                        <div class="d-flex flex-start w-100 review-feedback-form">
+                                                                            <img class="rounded-circle shadow-1-strong me-3"
+                                                                                 src="<c:url value='/api-image?path=logo-shop'/>" alt="avatar" width="40"
+                                                                                 height="40" />
+
+                                                                            <input type="hidden" class="productReviewId" name="id-feedback" value="${item.id}">
+
+                                                                            <div data-mdb-input-init class="form-outline w-100">
+                                                                          <textarea class="form-control content" id="textAreaExample" rows="4"
+                                                                                    style="background: #ffff;" placeholder="Nhập nội dung"></textarea>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="float-end mt-2 pt-1">
+                                                                            <button  type="button" data-mdb-button-init data-mdb-ripple-init class="submit-feedback btn btn-dark btn-sm">Post comment</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </c:if>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </c:forEach>
+
+
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -431,6 +503,22 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+
+        $(document).ready(function () {
+            // Xử lý sự kiện khi nhấn nút reply
+            $(".reply-btn").on("click", function () {
+                // Tìm phần tử cha gần nhất chứa review và phần tử card-footer
+                let parentDiv = $(this).closest(".flex-grow-1");
+                let replySection = parentDiv.find(".card-footer");
+                // Kiểm tra nếu phần tử replySection tồn tại và áp dụng hiệu ứng
+                if (replySection.length > 0) {
+                    replySection.stop(true, true).slideToggle(300); // Hiệu ứng trượt lên/xuống
+                }
+            });
+        });
+
+
+
         // Mở lightbox
         function openLightbox() {
             $("#lightbox").fadeIn();
@@ -538,6 +626,13 @@
             });
         }
 
+        $(document).ready(function () {
+            $(".view-feedback-btn").on("click", function () {
+                const feedbackContent = $(this).siblings(".feedback-content");
+                feedbackContent.slideToggle(300);
+            });
+        });
+
 
         // Hàm xử lý sự kiện khi nhấn nút "Thêm vào giỏ hàng"
         $(document).ready(function () {
@@ -587,5 +682,51 @@
             });
         });
     </script>
+
+    <script>
+        $(document).ready(function () {
+            // Lắng nghe sự kiện click nút "Post comment"
+            $(".review-feedback-section").on("click", ".submit-feedback", function () {
+                // Tìm thẻ cha gần nhất chứa form tương ứng
+                const parentSection = $(this).closest(".review-feedback-section");
+
+                // Lấy dữ liệu từ các trường trong form tương ứng
+                const formData = {
+                    content: parentSection.find(".content").val(), // Lấy nội dung từ textarea
+                    productReview: {
+                        id: parentSection.find(".productReviewId").val(), // Lấy ID từ hidden input
+                    },
+                };
+
+                // Kiểm tra nội dung trước khi gửi
+                if (!formData.content.trim()) {
+                    alert("Vui lòng nhập nội dung phản hồi.");
+                    return;
+                }
+
+                // Gửi request POST tới API
+                $.ajax({
+                    url: "/api-review-feedback", // Địa chỉ servlet của bạn
+                    type: "POST",
+                    contentType: "application/json; charset=UTF-8",
+                    data: JSON.stringify(formData), // Chuyển đổi dữ liệu sang JSON
+                    success: function (response) {
+                        alert("Phản hồi thành công: " + response);
+                        // Ẩn form sau khi gửi thành công
+                        parentSection.slideUp(300, function () {
+                            // Xóa nội dung đã nhập
+                            parentSection.find(".content").val("");
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Lỗi: " + xhr.responseText);
+                    },
+                });
+                window.location.href = '/san-pham?id=' + $('input[name="productId"]').val();
+
+            });
+        });
+    </script>
+
 </section>
 <!-- Related Section End -->

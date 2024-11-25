@@ -7,10 +7,16 @@ import java.util.List;
 
 public interface IBillDiscountDAO extends GenericDAO<BillDiscountEntity> {
     List<BillDiscountEntity> getAllDiscountEligible(Long idUser);
+
     List<BillDiscountEntity> getBillDiscountByOutStanding(boolean outstanding);
 
+    boolean billDiscountCodeExists (String code);
+
     BillDiscountEntity findBillDiscountByCode(String code);
+
     BillDiscountEntity findBillDiscountByCodeAndValid(String code);
+
+    List <BillDiscountEntity> findBillDiscountOutStandingAndStillValid ();
 
 
     List <BillDiscountEntity> findBillDiscountUpComming ();
@@ -18,4 +24,5 @@ public interface IBillDiscountDAO extends GenericDAO<BillDiscountEntity> {
     List <BillDiscountEntity> findExpiredBillDiscount ();
 
     List <BillDiscountEntity> findBillDiscountValid ();
+    int countDiscountValid();
 }

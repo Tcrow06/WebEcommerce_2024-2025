@@ -1,5 +1,6 @@
 package com.webecommerce.mapper.Impl;
 
+import com.webecommerce.constant.EnumRole;
 import com.webecommerce.dto.request.people.CustomerRequest;
 import com.webecommerce.dto.response.people.CustomerResponse;
 import com.webecommerce.entity.people.CustomerEntity;
@@ -14,6 +15,7 @@ public class CustomerMapper implements ICustomerMapper{
         CustomerEntity customerEntity = new CustomerEntity();
         customerEntity.setName(customerRequest.getName());
         customerEntity.setEmail(customerRequest.getEmail());
+        customerEntity.setAvatar(customerRequest.getAvatar());
         return customerEntity;
     }
 
@@ -23,6 +25,7 @@ public class CustomerMapper implements ICustomerMapper{
         customerEntity.setName(customerRequest.getName());
         customerEntity.setPhone(customerRequest.getPhone());
         customerEntity.setEmail(customerRequest.getEmail());
+        customerEntity.setAvatar(customerEntity.getAvatar());
         return customerEntity;
     }
 
@@ -34,7 +37,8 @@ public class CustomerMapper implements ICustomerMapper{
         customerResponse.setId(customerEntity.getId());
         customerResponse.setName(customerEntity.getName());
         customerResponse.setEmail(customerEntity.getEmail());
-        customerResponse.setRole("CUSTOMER");
+        customerResponse.setAvatar(customerEntity.getAvatar());
+        customerResponse.setRole(EnumRole.CUSTOMER);
         return customerResponse;
     }
 
@@ -43,6 +47,7 @@ public class CustomerMapper implements ICustomerMapper{
         CustomerEntity customerEntity = new CustomerEntity();
         customerEntity.setId(customerResponse.getId());
         customerEntity.setName(customerResponse.getName());
+        customerEntity.setAvatar(customerResponse.getAvatar());
         ///////
         return customerEntity;
     }

@@ -12,6 +12,7 @@
         <entry key="file://$PROJECT_DIR$/src/main/webapp/views/web/product-detail.jsp" value="file://$PROJECT_DIR$/src/main/webapp/views/web" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/views/web/product-list.jsp" value="file://$PROJECT_DIR$/src/main/webapp/views/web" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/views/web/profile.jsp" value="file://$PROJECT_DIR$/src/main/webapp/views/web" />
+        <entry key="file://$PROJECT_DIR$/src/main/webapp/views/admin/discount/add-product-discount.jsp" value="file://$PROJECT_DIR$/src/main/webapp/views/admin/discount" />
       </map>
     </option>
   </component>

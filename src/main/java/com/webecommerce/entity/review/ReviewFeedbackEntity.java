@@ -18,10 +18,9 @@ public class ReviewFeedbackEntity {
     @Column(name = "date")
     private LocalDateTime date;
 
-    @OneToOne(mappedBy = "reviewFeedback")
-    private OwnerEntity owner;
 
-    @OneToOne(mappedBy = "reviewFeedback")
+    @OneToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "review_feedback_id", referencedColumnName = "id")
     private ProductReviewEntity productReview;
 
     public Long getId() {
@@ -46,14 +45,6 @@ public class ReviewFeedbackEntity {
 
     public void setDate(LocalDateTime date) {
         this.date = date;
-    }
-
-    public OwnerEntity getOwner() {
-        return owner;
-    }
-
-    public void setOwner(OwnerEntity owner) {
-        this.owner = owner;
     }
 
     public ProductReviewEntity getProductReview() {

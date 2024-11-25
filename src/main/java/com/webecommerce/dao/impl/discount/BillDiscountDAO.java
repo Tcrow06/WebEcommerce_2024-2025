@@ -6,6 +6,7 @@ import com.webecommerce.entity.discount.BillDiscountEntity;
 import com.webecommerce.entity.discount.ProductDiscountEntity;
 
 import javax.persistence.NoResultException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Level;
@@ -26,9 +27,10 @@ public class BillDiscountDAO extends AbstractDAO<BillDiscountEntity> implements 
     public BillDiscountDAO() {
         super(BillDiscountEntity.class);
     }
+
     public List<BillDiscountEntity> getAllDiscountEligible(Long idUser) {
         String query = "SELECT b FROM BillDiscountEntity b JOIN CustomerEntity c " +
-                "ON b.loyaltyPointsRequired < c.loyaltyPoint " +
+                "ON b.loyaltyPointsRequired <= c.loyaltyPoint " +
                 "WHERE c.id = :idUser " +
                 "AND CURRENT_TIMESTAMP BETWEEN b.startDate AND b.endDate";
         EntityManager entityManager = HibernateUtil.getEmFactory().createEntityManager();
@@ -53,6 +55,10 @@ public class BillDiscountDAO extends AbstractDAO<BillDiscountEntity> implements 
         }
     }
 
+    public boolean billDiscountCodeExists (String code) {
+        return super.existsByAttribute("code", code);
+    }
+
 
     public List<BillDiscountEntity> getBillDiscountByOutStanding(boolean outstanding) {
         return super.findByAttribute("isOutStanding", outstanding);
@@ -63,6 +69,8 @@ public class BillDiscountDAO extends AbstractDAO<BillDiscountEntity> implements 
         List<BillDiscountEntity> list = findByAttribute("code", code);
         return list.isEmpty()? null : list.get(0);
     }
+
+
     @Override
     public BillDiscountEntity findBillDiscountByCodeAndValid(String code) {
         String query = "SELECT e FROM " + BillDiscountEntity.class.getSimpleName() +
@@ -81,6 +89,26 @@ public class BillDiscountDAO extends AbstractDAO<BillDiscountEntity> implements 
             return null;
         }
     }
+
+    public List <BillDiscountEntity> findBillDiscountOutStandingAndStillValid () {
+        String query = "SELECT b FROM BillDiscountEntity b " +
+                "WHERE b.endDate >= :now and b.isOutStanding = :isOutStanding"; ;
+
+        try {
+            return entityManager.createQuery(query, BillDiscountEntity.class)
+                    .setParameter("now", LocalDateTime.now())
+                    .setParameter("isOutStanding", true)
+                    .getResultList();
+        } catch (NoResultException e) {
+            LOGGER.log(Level.WARNING, "Không tìm thấy biến thể giảm giá nào", e);
+            return null;
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi lấy biến thể giảm giá", e);
+            return null;
+        }
+    }
+
+
     public List <BillDiscountEntity> findBillDiscountValid () {
         String query = "SELECT b FROM BillDiscountEntity b " +
                 "WHERE b.startDate <= :start and b.endDate >= :start"; ;
@@ -97,6 +125,9 @@ public class BillDiscountDAO extends AbstractDAO<BillDiscountEntity> implements 
             return null;
         }
     }
+
+
+
 
     public List <BillDiscountEntity> findBillDiscountUpComming () {
         String query = "SELECT b FROM BillDiscountEntity b " +
@@ -130,6 +161,24 @@ public class BillDiscountDAO extends AbstractDAO<BillDiscountEntity> implements 
             LOGGER.log(Level.SEVERE, "Lỗi khi lấy biến thể giảm giá", e);
             return null;
         }
+    }
+
+    @Override
+    public int countDiscountValid() {
+        String jpql = "SELECT count(b) from BillDiscountEntity b " +
+                "WHERE b.startDate <= :current_date " +
+                "AND b.endDate >= :current_date";
+        try {
+            Long count = entityManager.createQuery(jpql,Long.class)
+                    .setParameter("current_date", LocalDateTime.now())
+                    .getSingleResult();
+            return count == null ? 0 : count.intValue();
+        }catch (NoResultException e) {
+            LOGGER.log(Level.WARNING, "Không tìm thấy biến thể giảm giá nào", e);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi lấy biến thể giảm giá", e);
+        }
+        return 0;
     }
 
 }

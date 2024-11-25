@@ -9,7 +9,8 @@ public class CartItemDTO extends BaseDTO<CartItemDTO> {
     private double totalPrice;
 
     private ProductVariantDTO productVariant;
-    private int isActive=0;
+
+    private int isActive = 0;
 
     public double getTotalPrice() {
         return totalPrice;

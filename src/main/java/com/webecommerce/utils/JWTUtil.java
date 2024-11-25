@@ -6,6 +6,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.webecommerce.constant.EnumRole;
 import com.webecommerce.dto.response.people.CustomerResponse;
 import com.webecommerce.dto.response.people.UserResponse;
 
@@ -24,7 +25,7 @@ public class JWTUtil {
         Algorithm algorithm = Algorithm.HMAC256(SECRET);
         JWTCreator.Builder buildToken = JWT.create()
                 .withClaim("id", user.getId())
-                .withClaim("role",user.getRole())
+                .withClaim("role",user.getRole().toString())
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .withIssuedAt(new Date())
                 .withJWTId(UUID.randomUUID().toString());
@@ -92,6 +93,14 @@ public class JWTUtil {
         Map<String, Object> hashMap = JWTUtil.getClaimsFromToken(JWTUtil.getToken(request));
         if (hashMap != null && !hashMap.isEmpty()) {
             return (Long) hashMap.get("id");
+        }
+        return null;
+    }
+
+    public static String getRole(HttpServletRequest request) {
+        Map<String, Object> hashMap = JWTUtil.getClaimsFromToken(JWTUtil.getToken(request));
+        if (hashMap != null && !hashMap.isEmpty()) {
+            return hashMap.get("role").toString();
         }
         return null;
     }

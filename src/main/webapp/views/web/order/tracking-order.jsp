@@ -5,8 +5,8 @@
 <style>
     body {
         margin: 0;
-        font-family: Arial, sans-serif;
-        background-color: #f9f9f9;
+        font-family: 'Arial', sans-serif;
+        background-color: #f3f4f7;
         color: #333;
     }
 
@@ -17,26 +17,121 @@
     .order-status-bar {
         display: flex;
         justify-content: space-around;
-        background-color: #fff;
-        padding: 10px 0;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        background-color: black;
+        padding: 15px 0;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
     }
 
     .order-status-bar a {
         text-decoration: none;
-        color: #333;
-        padding: 10px 15px;
+        color: #fff;
+        padding: 12px 20px;
         font-size: 16px;
         font-weight: bold;
+        transition: all 0.3s ease;
+        border-radius: 8px;
     }
 
     .order-status-bar a.active {
-        color: #e60023;
-        border-bottom: 3px solid #e60023;
+        color: black;
+        background-color: #fff;
+        border-bottom: none;
+        transform: scale(1.1);
     }
 
     .order-status-bar a:hover {
+        color: black;
+        background-color: #fff;
+        transform: scale(1.05);
+    }
+
+    .order-content {
+        padding: 30px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+    }
+
+    .order-item {
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 15px;
+        background-color: #ffffff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: all 0.3s ease;
+    }
+
+    .order-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        background-color: #f9f9f9;
+    }
+
+    .order-info {
+        flex: 3;
+        padding-left: 15px;
+        font-size: 15px;
+        line-height: 1.6;
+    }
+
+    .order-image {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .order-info strong {
         color: #e60023;
+    }
+
+    .order-image img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 10%;
+        border: 2px solid #ddd;
+    }
+
+    .order-actions {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .order-actions a {
+        display: inline-block;
+        text-decoration: none;
+        color: #fff;
+        background-color: #343a40;
+        padding: 12px 25px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .order-actions a:hover {
+        background-color: #495057;
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .no-order-message {
+        font-size: 24px;
+        color: #666;
+        text-align: center;
+        font-weight: bold;
+        padding: 20px;
+        display: none;
     }
 
     .order-content {
@@ -48,76 +143,6 @@
         margin-top: 0;
     }
 
-    .order-content {
-        padding: 20px;
-        background-color: #f9f9f9;
-        min-height: 100px;
-    }
-
-    .order-item {
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        padding: 15px;
-        margin-bottom: 10px;
-        background-color: white;
-
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .order-info {
-        flex: 3; /* Chiếm 3 phần */
-    }
-
-    .order-image {
-        flex: 1; /* Chiếm 1 phần */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .order-image img {
-        /* width: 100%;
-        height: auto;
-        max-width: 120px;
-        border-radius: 5px;  */
-        width: 100px;        /* Đặt chiều rộng ảnh là 100px */
-        height: 100px;       /* Đặt chiều cao ảnh là 100px */
-        object-fit: cover;   /* Đảm bảo ảnh sẽ được cắt và giữ tỷ lệ 100x100px mà không bị méo */
-    }
-
-    .order-actions {
-        flex: 1; /* Chiếm 1 phần */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .order-actions a {
-        display: inline-block;
-        text-decoration: none;
-        color: white;
-        background-color: black;
-        padding: 10px 20px;
-        border-radius: 5px;
-        font-size: 14px;
-        transition: background-color 0.3s ease;
-    }
-
-    .order-actions a:hover {
-        background-color: #333;
-    }
-
-    .no-order-message {
-        font-size: 24px;
-        color: #666;
-        text-align: center;
-        font-weight: bold;
-        padding: 20px;
-    }
-
-    /* Responsive Styles */
     @media (max-width: 768px) {
         .steps {
             flex-direction: column;
@@ -161,7 +186,6 @@
         <a href="#" id="cancelled" onclick="showOrders('CANCELLED')">Đã hủy</a>
     </div>
 
-    <!-- Nội dung đơn hàng -->
     <div class="order-content">
         <div id="no-orders-message" class="no-order-message" style="display: none;">
             Không có đơn hàng
@@ -170,7 +194,7 @@
         <c:forEach var="order" items="${orders}">
             <div class="order-item" data-status="${order.status}">
                 <div class="order-image">
-                    <img src="${order.imgUrl}" alt="Hình ảnh đơn hàng ${order.id}">
+                    <img src="<c:url value='/api-image?path=${order.imgUrl}'/>"  alt="Hình ảnh đơn hàng ${order.id}">
                 </div>
                 <div class="order-info">
                     <strong>Mã đơn hàng:</strong> ELV${order.id} <br>
@@ -179,8 +203,9 @@
                     <strong>Tổng số lượng sản phẩm:</strong> ${order.allQuantity} sản phẩm
                 </div>
                 <div class="order-actions">
-                    <a href="/trang-chu/don-hang/danh-sach-don-hang?id=${order.id}" target="_blank">Xem chi tiết</a>
+                    <a href="/trang-chu/don-hang/danh-sach-don-hang?id=${order.id}">Xem chi tiết</a>
                 </div>
+
             </div>
         </c:forEach>
 

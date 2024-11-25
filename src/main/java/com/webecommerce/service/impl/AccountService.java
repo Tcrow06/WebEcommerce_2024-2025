@@ -43,24 +43,33 @@ public class AccountService implements IAccountService {
     @Transactional
     @Override
     public CustomerResponse save(CustomerRequest customerRequest) {
-        if (accountDAO.existsByEmail(customerRequest.getEmail())) {
-            throw new DuplicateFieldException("email");
-        }
-        if (accountDAO.existsByPhone(customerRequest.getPhone())) {
-            throw new DuplicateFieldException("phone");
-        }
-        if (accountDAO.existsByUsername(customerRequest.getUserName())) {
-            throw new DuplicateFieldException("username");
-        }
+        try {
+            if (accountDAO.existsByEmail(customerRequest.getEmail())) {
+                throw new DuplicateFieldException("email");
+            }
+            if (accountDAO.existsByPhone(customerRequest.getPhone())) {
+                throw new DuplicateFieldException("phone");
+            }
+            if (accountDAO.existsByUsername(customerRequest.getUserName())) {
+                throw new DuplicateFieldException("username");
+            }
 
-        CustomerEntity customerEntity = customerMapper.toCustomerEntityFull(customerRequest);
-        customerEntity.setCart(new CartEntity());
-        AccountEntity accountEntity = accountMapper.toAccountEntity(customerRequest);
-        accountEntity.setCustomer(customerEntity);
-        accountDAO.insert(accountEntity);
-        return customerMapper.toCustomerResponse(accountEntity.getCustomer());
+            CustomerEntity customerEntity = customerMapper.toCustomerEntityFull(customerRequest);
+            customerEntity.setCart(new CartEntity());
+            AccountEntity accountEntity = accountMapper.toAccountEntity(customerRequest);
+            accountEntity.setCustomer(customerEntity);
+            accountDAO.insert(accountEntity);
+            return customerMapper.toCustomerResponse(accountEntity.getCustomer());
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
+    public AccountResponse findByCustomerId(Long idCustomer) {
+        AccountEntity accountEntity = accountDAO.findByCustomerId(idCustomer);
+        return accountMapper.toAccountResponse(accountEntity);
+    }
     @Override
     public void setPassword(long id, String password) {
         AccountEntity accountEntity = accountDAO.findById(id);
@@ -93,7 +102,7 @@ public class AccountService implements IAccountService {
             // Send Email
             String subject = null;
             String body = null;
-            if (purpose == "register") {
+            if (purpose.equals("register")) {
                 subject = "Mã xác thực (OTP) để hoàn tất đăng ký tài khoản của bạn";
                 body = "Xin chào,\n\n"
                         + "Cảm ơn bạn đã đăng ký tài khoản của chúng tôi! "
@@ -106,7 +115,7 @@ public class AccountService implements IAccountService {
                         + "Lưu ý: Mã OTP này sẽ hết hạn sau 3 phút.\n\n";
             }
 
-            EmailUtils.sendEmail(email, subject, body);
+           EmailUtils.sendEmail(email, subject, body);
             return true;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -119,19 +128,56 @@ public class AccountService implements IAccountService {
         String key = String.format("user:%s:otp", id);
         String otpFound = cacheService.getKey(key);
         String otpCountKey = String.format("user:%s:otp:count", id);
+        AccountEntity accountEntity = accountDAO.findByCustomerId(Long.parseLong(id));
+
+        if (otpFound == null) {
+            int newOtp = RandomUtils.generateSixDigit();
+            cacheService.setKey(key, String.valueOf(newOtp), 60 * 3); // TTL 3 phút
+            cacheService.setKey(otpCountKey, "0", 60 * 3); // Reset số lần nhập sai
+
+            String subject = "Mã xác thực (OTP) để hoàn tất đăng ký tài khoản của bạn";
+            String body = "Xin chào,\n\n"
+                    + "OTP của bạn đã hết hạn. Chúng tôi đã gửi mã xác thực OTP mới để hoàn tất quá trình đăng ký:\n\n"
+                    + "Mã OTP mới của bạn là: " + newOtp + "\n\n"
+                    + "Lưu ý: Mã OTP này sẽ hết hạn sau 3 phút.\n\n";
+
+            EmailUtils.sendEmail(accountEntity.getCustomer().getEmail(), subject, body);
+            return -2; // OTP hết hạn và đã gửi lại mã mới
+        }
+
         if (otpFound.equals(otp)) {
             // Update Active
-            AccountEntity accountEntity = accountDAO.findById(Long.parseLong(id));
+            accountEntity = accountDAO.findByCustomerId(Long.parseLong(id));
             accountEntity.setStatus(EnumAccountStatus.ACTIVE);
             accountDAO.update(accountEntity);
-            return 0;
+
+            cacheService.delete(key);
+            cacheService.delete(otpCountKey);
+            return 0; // Thanh cong
         } else {
             cacheService.increment(otpCountKey);
             String otpCount = cacheService.getKey(otpCountKey);
-            if (otpFound.equals("5")) {
-                cacheService.delete(key);
+            if (Integer.parseInt(otpCount) >= 5) {
+                int newOtp = RandomUtils.generateSixDigit();
+                cacheService.setKey(key, String.valueOf(newOtp), 60 * 3);
+                cacheService.setKey(otpCountKey, "0", 60 * 3);
+
+                String subject = "Mã xác thực (OTP) để hoàn tất đăng ký tài khoản của bạn";
+                String body = "Xin chào,\n\n"
+                        + "Cảm ơn bạn đã đăng ký tài khoản của chúng tôi! "
+                        + "Để hoàn tất quá trình đăng ký, vui lòng nhập mã xác thực OTP dưới đây:\n\n"
+                        + "Mã OTP của bạn là: " + newOtp + "\n\n"
+                        + "Lưu ý: Mã OTP này sẽ hết hạn sau 3 phút.\n\n";
+
+                EmailUtils.sendEmail(accountEntity.getCustomer().getEmail(), subject, body);
+                return -1; // Sai qua 5 lan, gui ma OTP moi
             }
-            return Integer.parseInt(otpCount);
+            return Integer.parseInt(otpCount); // So lan nhap sai
         }
+    }
+
+    @Override
+    public UserResponse findByUserNameAndPassword(String userName, String password) {
+        return accountDAO.findByUserNameAndPassword(userName,password);
     }
 }

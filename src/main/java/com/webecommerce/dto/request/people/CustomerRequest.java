@@ -8,6 +8,8 @@ public class CustomerRequest extends UserRequest{
     private String userName;
     private String password;
 
+    private String avatar;
+
     public String getUserName() {
         return userName;
     }
@@ -41,4 +43,13 @@ public class CustomerRequest extends UserRequest{
         this.fbID = fbID;
     }
 
+    @Override
+    public String getAvatar() {
+        return avatar;
+    }
+
+    @Override
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
 }
