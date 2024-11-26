@@ -8,6 +8,14 @@ public class BaseDTO <T> {
     private String realPathFile;
     private int page;
     private Integer maxPageItem;
+
+    public BaseDTO(Long id) {
+        this.id = id;
+    }
+
+    public BaseDTO() {
+    }
+
     private int totalPage;
     private Long totalItem;
     private String sortBy;

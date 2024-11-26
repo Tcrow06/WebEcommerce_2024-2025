@@ -90,6 +90,35 @@ public abstract class AbstractDAO<T> implements GenericDAO<T> {
     }
 
     // Find object by attribute
+    protected List<T> findByAttributeCustom(String attributeName, Object value) {
+        // Điều chỉnh câu truy vấn dựa trên việc value có phải null hay không
+        String query = "SELECT e FROM " + entityClass.getSimpleName() + " e WHERE ";
+        if (value == null) {
+            query += "e." + attributeName + " IS NULL";
+        } else {
+            query += "e." + attributeName + " = :value";
+        }
+
+        EntityManager em = getEntityManager();
+
+        try {
+            var typedQuery = em.createQuery(query, entityClass);
+
+            // Chỉ đặt tham số nếu value không phải null
+            if (value != null) {
+                typedQuery.setParameter("value", value);
+            }
+
+            return typedQuery.getResultList();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error finding object by attribute: " + attributeName + " with value: " + value, e);
+            return null;
+        } finally {
+            closeEntityManager(em);
+        }
+    }
+
+    // Find object by attribute
     protected T findOneByAttribute(String attributeName, Object value) {
         // Xây dựng câu truy vấn động
         String query = "SELECT e FROM " + entityClass.getSimpleName() + " e WHERE ";

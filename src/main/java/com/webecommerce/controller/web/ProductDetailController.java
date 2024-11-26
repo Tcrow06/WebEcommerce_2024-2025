@@ -33,7 +33,6 @@ public class ProductDetailController extends HttpServlet {
             id = Long.valueOf(request.getParameter("id"));
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            response.sendRedirect("/danh-sach-san-pham");
         }
         if (id != null) {
             ProductDTO product = productService.getProductById(id);
@@ -49,10 +48,12 @@ public class ProductDetailController extends HttpServlet {
 
                 request.setAttribute(ModelConstant.REVIEW, productReviewDTOList);
                 request.setAttribute(ModelConstant.MODEL, product);
+
+                request.setAttribute(ModelConstant.SUGGEST, productService.findProductSuggestion(product.getCategory().getId(),4,product.getId()));
                 request.getRequestDispatcher("/views/web/product-detail.jsp").forward(request, response);
-            } else {
-                request.getRequestDispatcher("/views/web/product-not-found.jsp").forward(request, response);
+                return;
             }
         }
+        request.getRequestDispatcher("/views/web/product-not-found.jsp").forward(request, response);
     }
 }
