@@ -2,8 +2,10 @@ package com.webecommerce.controller.chat;
 
 import com.google.gson.Gson;
 import com.webecommerce.dto.CategoryDTO;
+import com.webecommerce.dto.ProductDTO;
 import com.webecommerce.service.ICategoryService;
-import javax.servlet.annotation.WebServlet;
+import com.webecommerce.service.IProductService;
+
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.FileReader;
@@ -11,21 +13,19 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import javax.enterprise.inject.spi.CDI;
 
 @ServerEndpoint("/chat")
-public class ChatEndpoint {
+public class ChatController {
 
     private static Map<String, Session> userSessions = new ConcurrentHashMap<>();
     private static Map<String, String> questions;
-    private static final ExecutorService executorService = Executors.newCachedThreadPool();
 
     private ICategoryService categoryService;
+    private IProductService productService;
 
     static {
-        try (Reader reader = new FileReader(ChatEndpoint.class.getClassLoader().getResource("chat.json").getFile())) {
+        try (Reader reader = new FileReader(ChatController.class.getClassLoader().getResource("chat.json").getFile())) {
             Gson gson = new Gson();
             questions = gson.fromJson(reader, Map.class);
         } catch (IOException e) {
@@ -38,38 +38,53 @@ public class ChatEndpoint {
         userSessions.put(session.getId(), session);
         System.out.println("Client connected: " + session.getId());
         categoryService = CDI.current().select(ICategoryService.class).get();
+        productService = CDI.current().select(IProductService.class).get();
     }
 
     @OnMessage
     public void onMessage(String message, Session session) throws IOException {
-        System.out.println("Received from " + session.getId() + ": " + message);
-
-        String keyFormat = null;
-        String responseKey = forecast(questions, message, "key");
-        if (responseKey.startsWith("Có vẻ")) {
-            sendPrivateMessage(session.getId(), responseKey);
-            responseKey = formatKey(responseKey);
+        List<ProductDTO> productDTOList = new ArrayList<>();
+        List<String> words = splitIntoWords(message);
+        for (String word : words) {
+            List<ProductDTO> list = searchProduct(word);
+            if (list != null && list.size() > 0) {
+                productDTOList.addAll(list);
+            }
         }
+        if (!productDTOList.isEmpty()) {
+            StringBuilder response = new StringBuilder("Có vẻ bạn quan tâm đến các sản phẩm sau:\n");
+            for (ProductDTO product : productDTOList) {
+                response.append("- ").append(product.getName()).append(": ").append(product.getPrice()).append(" VND\n");
+            }
+            sendPrivateMessage(session.getId(), response.toString());
+        } else {
+            String keyFormat = null;
+            String responseKey = forecast(questions, message, "key");
+            if (responseKey.startsWith("Có vẻ")) {
+                sendPrivateMessage(session.getId(), responseKey);
+                responseKey = formatKey(responseKey);
+            }
 
-        String responseValue = forecast(questions, message, "value");
-        sendPrivateMessage(session.getId(), responseValue);
+            String responseValue = forecast(questions, message, "value");
+            sendPrivateMessage(session.getId(), responseValue);
 
-        if ("sản phẩm".equalsIgnoreCase(responseKey)) {
-            new Thread(() -> {
-                List<String> products = fetchProductsFromDB();
-                try {
-                    if (products.isEmpty()) {
-                        sendPrivateMessage(session.getId(), "Hiện tại không có sản phẩm nào.");
-                    } else {
-                        sendPrivateMessage(session.getId(), "Danh sách sản phẩm: " + String.join(", ", products));
-                        for (String product : products) {
-                            System.out.println("Sản phẩm: " + product);
+            if ("sản phẩm".equalsIgnoreCase(responseKey) || "mặt hàng".equalsIgnoreCase(responseKey)) {
+                new Thread(() -> {
+                    List<String> products = searchCategory();
+                    try {
+                        if (products.isEmpty()) {
+                            sendPrivateMessage(session.getId(), "Hiện tại không có sản phẩm nào.");
+                        } else {
+                            sendPrivateMessage(session.getId(), "Danh sách sản phẩm: " + String.join(", ", products));
+                            for (String product : products) {
+                                System.out.println("Sản phẩm: " + product);
+                            }
                         }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }).start();
+                }).start();
+            }
         }
     }
 
@@ -95,13 +110,18 @@ public class ChatEndpoint {
         }
     }
 
-    private List<String> fetchProductsFromDB() {
-        List<String> products = new ArrayList<>();
-        List<CategoryDTO> productsSearch = categoryService.findAll();
-        for (CategoryDTO categoryDTO : productsSearch) {
-            products.add(categoryDTO.getName());
+    private List<String> searchCategory() {
+        List<String> categories = new ArrayList<>();
+        List<CategoryDTO> categoriessSearch = categoryService.findAll();
+        for (CategoryDTO categoryDTO : categoriessSearch) {
+            categories.add(categoryDTO.getName());
         }
-        return products;
+        return categories;
+    }
+
+    private List<ProductDTO> searchProduct(String name) {
+        List<ProductDTO> productsSearch = productService.searchProductsByName(name);
+        return productsSearch;
     }
 
     private int levenshteinDistance(String a, String b) {
@@ -155,5 +175,19 @@ public class ChatEndpoint {
             return key.substring(prefix.length());
         }
         return null;
+    }
+
+    private List<String> splitIntoWords(String input) {
+        if (input == null || input.isEmpty()) {
+            return new ArrayList<>();
+        }
+        String[] words = input.trim().toLowerCase().split("[\\s\\p{Punct}]+");
+        List<String> wordList = new ArrayList<>();
+        for (String word : words) {
+            if (!word.isEmpty()) {
+                wordList.add(word);
+            }
+        }
+        return wordList;
     }
 }

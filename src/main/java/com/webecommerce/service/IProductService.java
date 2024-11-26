@@ -69,8 +69,8 @@ public interface IProductService {
 
     List<ProductDTO> searchProductsByName(String name);
 
+    List<ProductDTO> findAllByName (Pageable pageable, String name);
+
     int countByStatus(EnumProductStatus status);
     RevenueDTO getRevenue();
-
-
 }
