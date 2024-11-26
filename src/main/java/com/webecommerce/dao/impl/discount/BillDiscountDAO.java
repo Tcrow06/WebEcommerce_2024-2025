@@ -94,8 +94,10 @@ public class BillDiscountDAO extends AbstractDAO<BillDiscountEntity> implements 
         String query = "SELECT b FROM BillDiscountEntity b " +
                 "WHERE b.endDate >= :now and b.isOutStanding = :isOutStanding"; ;
 
+        EntityManager em = super.getEntityManager();
+
         try {
-            return entityManager.createQuery(query, BillDiscountEntity.class)
+            return em.createQuery(query, BillDiscountEntity.class)
                     .setParameter("now", LocalDateTime.now())
                     .setParameter("isOutStanding", true)
                     .getResultList();
@@ -105,6 +107,8 @@ public class BillDiscountDAO extends AbstractDAO<BillDiscountEntity> implements 
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Lỗi khi lấy biến thể giảm giá", e);
             return null;
+        } finally {
+            super.closeEntityManager(em);
         }
     }
 
