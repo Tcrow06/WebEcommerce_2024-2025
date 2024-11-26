@@ -16,6 +16,8 @@ public interface IAccountService {
     boolean sendOTPToEmail(String email, long id, String purpose);
     int verifyOTP(String email, String otp);
 
+    String checkLogin(AccountRequest accountRequest);
+
 
 
 
