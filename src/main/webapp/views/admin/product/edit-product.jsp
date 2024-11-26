@@ -758,12 +758,21 @@
                     $('#global-loader').css('display', 'flex');
                 },
                 success: function(response) {
-                    alert(response);
-                    window.location.href = 'danh-sach-san-pham'
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công',
+                        text: response.toString()
+                    }).then(() => {
+                        window.location.href = 'danh-sach-san-pham'
+                    });
                 },
                 error: function(xhr, status, error) {
                     const errorMessage = xhr.responseJSON ? xhr.responseJSON.message : error;
-                    alert("Failed to add product: " + errorMessage);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi hệ thống',
+                        text: "Không thể chỉnh sửa sản phẩm: " + errorMessage
+                    });
                 },
                 complete: function () {
                     $('#global-loader').css('display', 'none');

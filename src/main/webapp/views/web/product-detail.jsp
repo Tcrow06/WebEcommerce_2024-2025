@@ -569,7 +569,7 @@
                             if (productVariant.id !== -1 && productVariant.quantity > 0) {
 
                                 $('#product-quantity p').text(productVariant.quantity + ' products available').css('color', 'green');
-                                $('#price-product').text("$" + productVariant.price)
+                                $('#price-product').text(productVariant.price + " VND")
                                 // Kích hoạt lại button
                                 $('#add-your-cart').prop('disabled', false).css({
                                     'opacity': '1',        // Khôi phục độ trong suốt

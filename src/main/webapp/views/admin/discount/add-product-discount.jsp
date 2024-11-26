@@ -422,11 +422,21 @@
                         $('#global-loader').css('display', 'flex');
                     },
                     success: function (response) {
-                        alert("Đã gửi thông tin thành công!" + response);
-                        window.location.href = 'giam-gia-cho-san-pham'
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành công',
+                            text: response.toString()
+                        }).then(() => {
+                            window.location.href = 'giam-gia-cho-san-pham'
+                        });
                     },
                     error: function (xhr, status, error) {
-                        alert("Lỗi: " + error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi',
+                            text: error
+                        });
                     },complete: function () {
                         $('#global-loader').css('display', 'none');
                     }
