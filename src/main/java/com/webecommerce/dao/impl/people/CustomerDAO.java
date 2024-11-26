@@ -83,7 +83,7 @@ public class CustomerDAO extends AbstractDAO<CustomerEntity> implements ICustome
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
-            // Câu này đang lỗi numOfCancel
+
             String jpql = """
             SELECT cus.id AS customerId,
                    cus.name AS customerName,

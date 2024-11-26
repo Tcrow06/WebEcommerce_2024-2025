@@ -81,13 +81,13 @@ public class OrderService implements IOrderService {
             if(billDiscountDTO!=null){
                 if(billDiscountDTO.getStartDate().isAfter(LocalDateTime.now())||billDiscountDTO.getEndDate().isBefore(LocalDateTime.now())){
                     status="error";
-                    message.append(" Mã giảm giá đã hết hạn, vui lòng chọn mã giảm giá khác <br/>");
+                    message.append(" Mã giảm giá đã hết hạn, vui lòng chọn mã giảm giá khác.\n");
                 }else{
                     orderDTO.setBillDiscount(billDiscountDTO);
                 }
             }else{
                 status="error";
-                message.append(" Mã giảm giá không hợp lệ, vui lòng chọn mã giảm giá khác <br/>");
+                message.append(" Mã giảm giá không hợp lệ, vui lòng chọn mã giảm giá khác.\n");
             }
         }
 
@@ -109,7 +109,7 @@ public class OrderService implements IOrderService {
                 }
                 message.append(productVariantDTO.getName() + " "
                         + productVariantDTO.getColor() +" " + productVariantDTO.getSize()
-                        + " chỉ còn: " + productVariantDTO.getQuantity() + " sản phẩm trong kho <br/> ");
+                        + " chỉ còn: " + productVariantDTO.getQuantity() + " sản phẩm trong kho\n ");
             }
 
             orderDetailDTOS.add(new OrderDetailDTO(product.getQuantity(),productVariantDTO, productDiscountMapper.toDTO(productVariantEntity.getProduct().getProductDiscount())));
@@ -118,7 +118,7 @@ public class OrderService implements IOrderService {
         orderDTO.setOrderDetails(orderDetailDTOS);
         if(!orderDTO.calculateTotal()){
             status="error";
-            message.append("Mã giảm giá hóa đơn không đủ điều kiện để áp dụng <br/>");
+            message.append("Mã giảm giá hóa đơn không đủ điều kiện để áp dụng.\n");
         }
         if(status==null){
             status ="success";
@@ -136,7 +136,7 @@ public class OrderService implements IOrderService {
             if(orderDTO.getBillDiscount()!=null){
                 if(billDiscountDAO.findBillDiscountByCodeAndValid(orderDTO.getBillDiscount().getCode())==null){
                     status ="warning";
-                    message.append("Mã giảm giá cho hóa đơn đã hết hạn ! <br/>");
+                    message.append("Mã giảm giá cho hóa đơn đã hết hạn!\n");
                     orderDTO.setBillDiscount(null);
                     orderDTO.calculateTotal();
                 }
@@ -155,7 +155,7 @@ public class OrderService implements IOrderService {
                                 .append(productVariantEntity.getColor())
                                 .append(" ")
                                 .append(productVariantEntity.getSize())
-                                .append(" đã hết hạn! <br/> ");
+                                .append(" đã hết hạn!\n");
                     }
                 }
                 if(productVariantEntity.getQuantity()<orderDetailDTO.getQuantity()){
@@ -169,7 +169,7 @@ public class OrderService implements IOrderService {
                             .append(productVariantEntity.getSize())
                             .append(" chỉ còn: ")
                             .append(productVariantEntity.getQuantity())
-                            .append(" sản phẩm trong kho <br/>");
+                            .append(" sản phẩm trong kho.\n");
 
                 }
             }
@@ -278,6 +278,11 @@ public class OrderService implements IOrderService {
            e.printStackTrace();
        }
        return null;
+    }
+
+    @Override
+    public List<DisplayOrderDTO> getOrderDisplay() {
+        return orderDAO.getOrderDisplay();
     }
 
     @Override
