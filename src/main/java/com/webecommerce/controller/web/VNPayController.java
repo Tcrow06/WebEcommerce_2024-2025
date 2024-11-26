@@ -41,7 +41,7 @@ public class VNPayController extends HttpServlet {
 
 
         if (resultOrderDTO.getStatus().contains("error")) {
-            jsonResponse.put("redirectUrl", "/gio-hang");
+            jsonResponse.put("redirectUrl", "/thanh-toan");
             jsonResponse.put("message",resultOrderDTO.getMessage().toString());
             jsonResponse.put("status","error");
         } else if (resultOrderDTO.getStatus().contains("warning")) {
