@@ -237,7 +237,7 @@ public class CartItemService implements ICartItemService {
         if(cart == null){
             return convertCartForSession(cartEntity);
         }
-        List<CartItemEntity> result = new ArrayList<>();
+        // List<CartItemEntity> result = new ArrayList<>();
         List<CartItemEntity> cartItemEntityList = cartEntity.getCartItems();
         for(CartItemDTO cartItemDTO : new ArrayList<>(cart.values())){
             cartItemEntityList.stream()
@@ -259,6 +259,7 @@ public class CartItemService implements ICartItemService {
         cartEntity.setCartItems(cartItemEntityList);
         return convertCartForSession(cartEntity);
     }
+
     @Transactional
     @Override
     public HashMap<Long, CartItemDTO> deleteCartItem(Long userId,List<Long> productVariantIds){

@@ -471,14 +471,6 @@ public class ProductService implements IProductService {
 //                .collect(Collectors.toList());
     }
 
-    @Override
-    public int countByStatus(EnumProductStatus status) {
-        return productDAO.countByStatus(status);
-    }
-    @Override
-    public RevenueDTO getRevenue() {
-        return productDAO.getRevenue();
-    }
 
     @Override
     public List<ProductDTO> findAllByName(Pageable pageable, String name) {

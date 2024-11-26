@@ -242,6 +242,9 @@
                     <a href="#" class="search-switch"><img src="<c:url value="/static/img/icon/search.png"/>" alt=""></a>
                 </div>
                 <div class="header__nav__option">
+                    <a href="<c:url value="/thong-bao"/>"><img src="<c:url value="/static/img/icon/bell.png"/>" alt=""> </a>
+                </div>
+                <div class="header__nav__option">
                     <a href="<c:url value="/gio-hang"/>"><img src="<c:url value="/static/img/icon/cart.png"/>" alt=""> <span>0</span></a>
                 </div>
 
