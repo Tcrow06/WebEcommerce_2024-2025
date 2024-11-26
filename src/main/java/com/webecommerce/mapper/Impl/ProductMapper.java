@@ -28,7 +28,8 @@ public class ProductMapper implements GenericMapper <ProductDTO, ProductEntity> 
         dto.setStatus(entity.getStatus());
 
         CategoryDTO category = new CategoryDTO();
-        category.setId(entity.getCategory().getId());
+//        category.setId(entity.getCategory().getId());
+        category.setId(1L);
         dto.setCategory(category);
 
         if (entity.getIsNew() != null && ChronoUnit.DAYS.between(entity.getIsNew(), LocalDateTime.now()) > 7) {

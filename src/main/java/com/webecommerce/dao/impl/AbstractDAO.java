@@ -1,7 +1,6 @@
 package com.webecommerce.dao.impl;
 
 import com.webecommerce.dao.GenericDAO;
-import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.utils.HibernateUtil;
 
 import javax.persistence.EntityManager;
@@ -157,6 +156,7 @@ public abstract class AbstractDAO<T> implements GenericDAO<T> {
         try {
             em.persist(entity);  // Insert the object
             em.flush();  // Đảm bảo dữ liệu được ghi vào DB
+            em.refresh(entity);
             em.clear();  // Làm trống bộ nhớ đệm sau khi ghi
             trans.commit();      // Commit the transaction
             LOGGER.log(Level.INFO, "Inserted object: {0}", entity);

@@ -166,7 +166,7 @@
                 <strong>Up ảnh bảng size</strong>
                     <div class="product-image">
                         <div class="item active">
-                            <img src="<c:url value='/static/img/product/404.jpg'/>" class="img-responsive product-img" alt="Product Image" id = "previewSizeTable">
+                            <img src="<c:url value='/static/img/not-delete/404-img.jpg'/>" class="img-responsive product-img" alt="Product Image" id = "previewSizeTable">
                         </div>
                     </div>
                     <div class="form-group" style="max-width: 360px; max-height: 200px">
@@ -193,7 +193,7 @@
                         <div class="product-image">
                             <div class="item active">
 <%--                                <img src="<c:url value='/static/img/product/404.jpg'/>" class="img-responsive" alt="Product Image">--%>
-                                <img src="https://ih1.redbubble.net/image.2487419682.3594/cposter,small,product,750x1000.2.jpg" class="img-responsive" alt="Product Image">
+                                <img src="<c:url value='/static/img/not-delete/404.jpg'/>" class="img-responsive" alt="Product Image">
                             </div>
                         </div>
                     </div>
@@ -267,6 +267,7 @@
                         <button type="button" class="btn btn-dark btn-sm remove-row-btn ms-2" style="font-size: 0.8rem;" onclick="removeSizeRow(this)">🗑</button>
                     </div>
                 </div>
+                <div class="error-message text-danger" style="margin: 10px"></div>
             </div>
         </fieldset>
     </template>
@@ -421,30 +422,32 @@
                 }
 
                 $(this).find('.single-size-row').each(function() {
+                    let isValidVariant = true;
                     hasSizeRow = true;
+
                     const price = $(this).find('.variant-price').val();
                     const quantity = $(this).find('.variant-quantity').val();
                     const size = $(this).find('.variant-size').val();
 
                     if (!size) {
-                        $(this).find('.variant-size').next('.error-message').text('Vui lòng nhập kích cỡ.');
+                        isValidVariant = false;
                         isValid = false;
-                    } else {
-                        $(this).find('.variant-size').next('.error-message').text('');
                     }
 
                     if (!quantity || isNaN(quantity) || parseInt(quantity) <= 0) {
-                        $(this).find('.variant-quantity').next('.error-message').text('Vui lòng nhập số lượng hợp lệ.');
+                        isValidVariant = false;
                         isValid = false;
-                    } else {
-                        $(this).find('.variant-quantity').next('.error-message').text('');
                     }
 
                     if (!price || isNaN(price) || parseFloat(price) <= 0) {
-                        $(this).find('.variant-price').next('.error-message').text('Vui lòng nhập giá hợp lệ.');
+                        isValidVariant = false;
                         isValid = false;
+                    }
+
+                    if (!isValidVariant) {
+                        $(this).find('.error-message').text("Phân loại hàng không hợp lệ !");
                     } else {
-                        $(this).find('.variant-price').next('.error-message').text('');
+                        $(this).find('.error-message').text(""); // Clear lỗi nếu hợp lệ
                     }
                 });
 

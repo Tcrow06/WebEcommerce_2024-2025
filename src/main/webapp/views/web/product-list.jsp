@@ -620,7 +620,7 @@
         const searchTerm = normalizeString(searchInput.value.trim());
         suggestions.innerHTML = '';
         if(searchTerm.length > 0){
-            let matches = listNameProduct.filter(name => normalizeString(name).startsWith(searchTerm)).slice(0, 5);
+            let matches = listNameProduct.filter(name => normalizeString(name).startsWith(searchTerm)).slice(0, 4);
             if(matches.length > 0){
                 suggestions.style.display = 'block';
                 matches.forEach(math => {
@@ -643,6 +643,14 @@
         }else {
             suggestions.style.display = 'none';
 
+        }
+    });
+
+    searchInput.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            let name = document.getElementById('search-product').value;
+            window.location.href = '/danh-sach-san-pham?page=1&maxPageItem=9&ten=' + encodeURIComponent(name);
         }
     });
 
