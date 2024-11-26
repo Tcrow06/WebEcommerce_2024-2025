@@ -41,6 +41,7 @@
   <!-- Additional Scripts -->
   <script src="<c:url value='/template/paging/jquery.twbsPagination.js' />"></script>
   <script src="<c:url value='/static/web/js/token/refreshToken.js'/> "></script>
+  <script src="<c:url value="https://cdn.jsdelivr.net/npm/sweetalert2@11"/>"></script>
 </head>
 
 <body>
