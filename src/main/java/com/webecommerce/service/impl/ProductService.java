@@ -490,4 +490,12 @@ public class ProductService implements IProductService {
         return productDTOS;
     }
 
+    public int countByStatus(EnumProductStatus status) {
+        return productDAO.countByStatus(status);
+    }
+    @Override
+    public RevenueDTO getRevenue() {
+        return productDAO.getRevenue();
+    }
+
 }

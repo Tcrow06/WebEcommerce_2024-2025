@@ -111,6 +111,7 @@
                                     <c:if test="${item.productDiscount != null}">
                                         <input class="form-check-input" type="checkbox" value="" id="flexCheckCheckedDisabled_${item.id}" checked disabled/>
                                         <label class="form-check-label" for="flexCheckCheckedDisabled_${item.id}">Giảm_${item.productDiscount.discountPercentage}%</label>
+                                        <span class="badge badge-${item.productDiscount.getBootstrapClassStatus()} rounded-pill d-inline">${item.productDiscount.getStatus()}</span>
                                     </c:if>
                                     <c:if test="${item.productDiscount == null}">
                                         <div class="flex-column ms-4">
