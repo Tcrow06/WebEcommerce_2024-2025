@@ -145,6 +145,120 @@ public class OrderDAO extends AbstractDAO<OrderEntity> implements IOrderDAO {
         }
     }
 
+    @Override
+    public List<DisplayOrderDTO> getOrderDisplay() {
+        try {
+            String jpql = """
+        SELECT\s
+            o.id AS orderId,
+            MAX(os.date) AS statusDate,
+            SUM(od.quantity * pv.price *\s
+                CASE\s
+                    WHEN pd IS NOT NULL THEN (1 - pd.discountPercentage / 100)\s
+                    ELSE 1\s
+                END) AS totalOrder,
+            SUM(od.quantity) AS allQuantity,
+            MIN(pv.imageUrl) AS imgUrl,
+            os.status AS status
+        FROM\s
+            OrderEntity o
+        JOIN\s
+            o.orderDetails od
+        JOIN\s
+            od.productVariant pv
+        LEFT JOIN\s
+            od.productDiscount pd
+        JOIN\s
+            o.orderStatuses os
+        WHERE\s
+            os.date = (
+                SELECT MAX(os2.date)
+                FROM OrderStatusEntity os2
+                WHERE os2.order.id = o.id
+            )
+        GROUP BY\s
+            o.id, os.status
+    """;
+
+            List<Object[]> rawResults = entityManager.createQuery(jpql, Object[].class)
+                    .getResultList();
+
+            //nhap
+
+            String query = """
+        SELECT\s
+            o.id AS orderId,
+            SUM(ro.quantityReturn * pv.price *\s
+                CASE\s
+                    WHEN pd IS NOT NULL THEN (1 - pd.discountPercentage / 100)\s
+                    ELSE 1\s
+                END) AS totalOrder,
+            SUM(ro.quantityReturn) AS allQuantity
+        FROM\s
+            ReturnOrderEntity ro
+        JOIN\s
+            ro.orderDetail od
+        JOIN\s
+            od.order o
+        JOIN\s
+            od.productVariant pv
+        LEFT JOIN\s
+            od.productDiscount pd
+        GROUP BY\s
+        o.id
+    """;
+
+            List<Object[]> rawOldResult = entityManager.createQuery(query, Object[].class)
+                    .getResultList();
+
+            List<Object[]> savedData = new ArrayList<>();
+
+            for (Object[] result : rawOldResult) {
+                Long orderId = (Long) result[0];
+                Double totalOrder = (Double) result[1];
+                Long allQuantity = ((Number) result[2]).longValue();
+
+                savedData.add(new Object[]{orderId, totalOrder, allQuantity});
+            }
+
+            //het nhap
+
+            List<DisplayOrderDTO> resultList = new ArrayList<>();
+
+            for (Object[] result : rawResults) {
+                Long orderId = (Long) result[0];
+                LocalDateTime statusDate = (LocalDateTime) result[1];
+                Double totalOrder = (Double) result[2];
+                Long allQuantity = ((Number) result[3]).longValue();
+                String imgUrl = (String) result[4];
+                EnumOrderStatus status = (EnumOrderStatus) result[5];
+
+                if(allQuantity == 0) {
+                    for (Object[] saved : savedData) {
+                        Long savedOrderId = (Long) saved[0];
+                        if (savedOrderId.equals(orderId)) {
+                            totalOrder = (Double) saved[1];
+                            allQuantity = ((Number) saved[2]).longValue();
+                            break;
+                        }
+                    }
+                }
+
+                resultList.add(new DisplayOrderDTO(orderId, statusDate, totalOrder, allQuantity, imgUrl, status));
+            }
+            Collections.sort(resultList, new Comparator<DisplayOrderDTO>() {
+                @Override
+                public int compare(DisplayOrderDTO o1, DisplayOrderDTO o2) {
+                    return o2.getDateTime().compareTo(o1.getDateTime());
+                }
+            });
+            return resultList;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public OrderEntity merge(OrderEntity orderEntity) {
         EntityManager em = HibernateUtil.getEmFactory().createEntityManager();
         EntityTransaction trans = em.getTransaction();
