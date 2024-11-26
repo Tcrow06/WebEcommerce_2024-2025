@@ -136,6 +136,22 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
             return null;
         }
     }
+    @Override
+    public List<ProductEntity> findProductSuggestion(Long categoryId,int limit, Long productId) {
+        String query = "SELECT p FROM ProductEntity p " +
+                "WHERE p.category.id = : categoryId and p.id <> :productId and p.status = :status";
+        try {
+            return entityManager.createQuery(query, ProductEntity.class)
+                    .setParameter("categoryId", categoryId)
+                    .setParameter("productId", productId)
+                    .setParameter("status", EnumProductStatus.SELLING)
+                    .setMaxResults(limit)
+                    .getResultList();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi tìm kiếm sản phẩm không có discount hoặc discount đã hết hạn và bán sau 7 ngày", e);
+            return null;
+        }
+    }
 
 
     public List<ProductEntity> findProductByStatus(EnumProductStatus status) {

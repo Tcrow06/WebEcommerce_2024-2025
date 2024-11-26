@@ -2,6 +2,85 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <style>
+    .product__item__pic {
+        position: relative; /* Để chứa các thẻ con có position absolute */
+    }
+
+    .div_label_product {
+        position: absolute;
+        left: 10px;
+        font-size: 14px;
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+
+    /* Nhãn Sale ở phía trên */
+    .div_label_product:nth-child(1) {
+        top: 10px; /* Nhãn Sale nằm ở trên cùng */
+    }
+
+    /* Nhãn New ở phía dưới */
+    .div_label_product:nth-child(2) {
+        top:40px; /* Nhãn New nằm ở dưới cùng */
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+    }
+
+    .pagination li {
+        display: inline-block;
+        margin-right: 5px;
+    }
+
+    .pagination li.active a {
+        color: white !important; /* Màu chữ khi trang đang được chọn */
+        background-color: black !important; /* Màu nền khi trang được chọn */
+    }
+
+    .pagination li.active {
+        background-color: black !important; /* Màu nền của ô active */
+    }
+
+    .pagination li a {
+        color: black !important; /* Thay đổi màu chữ thành đen */
+    }
+
+    .pagination li:hover a {
+        color: black !important; /* Màu chữ khi hover */
+    }
+
+    .discounted-price {
+        text-decoration: line-through;  /* Gạch ngang */
+        font-size: 0.9em;               /* Giảm kích thước font */
+        color: darkgray;                   /* Làm mờ màu sắc */
+        opacity: 0.6;                  /* Làm mờ thêm */
+    }
+
+
+    .suggestions-dropdown {
+        position: absolute;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        width: 100%;
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 10;
+    }
+    .dropdown-item {
+        padding: 5px 10px;
+        cursor: pointer;
+    }
+    .dropdown-item:hover {
+        background-color: #f0f0f0;
+    }
+
+
+</style>
+
+<style>
 
     /* Lightbox container (ẩn mặc định) */
     #lightbox {
@@ -357,148 +436,61 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
-                <h3 class="related-title">Related Product</h3>
+                <h3 class="related-title">Sản phẩm liên quan</h3>
             </div>
         </div>
         <div class="row">
-            <div class="col-lg-3 col-md-6 col-sm-6 col-sm-6">
-                <div class="product__item">
-                    <div class="product__item__pic set-bg" data-setbg="<c:url value="/static/img/product/product-1.jpg"/>">
-                        <span class="label">New</span>
-                        <ul class="product__hover">
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/heart.png"/>" alt=""></a></li>
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/compare.png"/>" alt=""> <span>Compare</span></a></li>
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/search.png"/>" alt=""></a></li>
-                        </ul>
-                    </div>
-                    <div class="product__item__text">
-                        <h6>Piqué Biker Jacket</h6>
-                        <a href="#" class="add-cart">+ Add To Cart</a>
-                        <div class="rating">
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
+
+
+            <c:forEach var="item" items="${suggest}">
+                <div class="col-lg-3 col-md-6 col-sm-6 ">
+                    <div class="product__item sale">
+                        <div class="product__item__pic set-bg" data-setbg="<c:url value='/api-image?path=${item.photo}'/>">
+
+                            <c:if test="${item.productDiscount != null}">
+                                <div class="div_label_product"><span class="label">Sale_${item.productDiscount.discountPercentage}%</span></div>
+                            </c:if>
+                            <c:if test="${item.isNew}">
+                                <div class="div_label_product"><span class="label">New</span></div>
+                            </c:if>
+                            <ul class="product__hover">
+                                <li><a href="#"><img src="<c:url value="/static/img/icon/heart.png"/>" alt=""></a></li>
+                                <li><a href="#"><img src="<c:url value="/static/img/icon/compare.png"/>" alt=""> <span>Compare</span></a></li>
+                                <li><a href="san-pham?id=${item.id}"><img src="<c:url value="/static/img/icon/search.png"/>" alt=""></a></li>
+                            </ul>
                         </div>
-                        <h5>$67.24</h5>
-                        <div class="product__color__select">
-                            <label for="pc-1">
-                                <input type="radio" id="pc-1">
-                            </label>
-                            <label class="active black" for="pc-2">
-                                <input type="radio" id="pc-2">
-                            </label>
-                            <label class="grey" for="pc-3">
-                                <input type="radio" id="pc-3">
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-6 col-sm-6">
-                <div class="product__item">
-                    <div class="product__item__pic set-bg" data-setbg="<c:url value="/static/img/product/product-2.jpg"/>">
-                        <ul class="product__hover">
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/heart.png"/>" alt=""></a></li>
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/compare.png"/>" alt=""> <span>Compare</span></a></li>
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/search.png"/>" alt=""></a></li>
-                        </ul>
-                    </div>
-                    <div class="product__item__text">
-                        <h6>Piqué Biker Jacket</h6>
-                        <a href="#" class="add-cart">+ Add To Cart</a>
-                        <div class="rating">
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                        </div>
-                        <h5>$67.24</h5>
-                        <div class="product__color__select">
-                            <label for="pc-4">
-                                <input type="radio" id="pc-4">
-                            </label>
-                            <label class="active black" for="pc-5">
-                                <input type="radio" id="pc-5">
-                            </label>
-                            <label class="grey" for="pc-6">
-                                <input type="radio" id="pc-6">
-                            </label>
+                        <div class="product__item__text">
+                            <h6>${item.name}</h6>
+                                <%--                                    <a href="<c:url value="/them-gio-hang?id=${item.id}"/>" class="add-cart">View Detail</a>--%>
+                            <a href="san-pham?id=${item.id}" class="add-cart">View Detail</a>
+
+                            <div class="rating">
+                                <c:forEach var="i" begin="1" end="5">
+                                    <i ${i > item.averageStars ? 'style="color: #6c757d"' : ''} class="fa ${i <= item.averageStars ? ' fa-star' : ' fa-star-o'}"></i>
+                                </c:forEach>
+                            </div>
+
+                            <h5>${item.getDiscountedPrice()}
+                                <c:if test="${item.productDiscount != null}">
+                                    <span class="discounted-price">${item.price}</span>
+                                </c:if>
+                            </h5>
+                            <div class="product__color__select">
+                                <label for="pc-4">
+                                    <input type="radio" id="pc-4">
+                                </label>
+                                <label class="active black" for="pc-5">
+                                    <input type="radio" id="pc-5">
+                                </label>
+                                <label class="grey" for="pc-6">
+                                    <input type="radio" id="pc-6">
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-6 col-sm-6">
-                <div class="product__item sale">
-                    <div class="product__item__pic set-bg" data-setbg="<c:url value="/static/img/product/product-3.jpg"/>">
-                        <span class="label">Sale</span>
-                        <ul class="product__hover">
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/heart.png"/>" alt=""></a></li>
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/compare.png"/>" alt=""> <span>Compare</span></a></li>
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/search.png"/>" alt=""></a></li>
-                        </ul>
-                    </div>
-                    <div class="product__item__text">
-                        <h6>Multi-pocket Chest Bag</h6>
-                        <a href="#" class="add-cart">+ Add To Cart</a>
-                        <div class="rating">
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star-o"></i>
-                        </div>
-                        <h5>$43.48</h5>
-                        <div class="product__color__select">
-                            <label for="pc-7">
-                                <input type="radio" id="pc-7">
-                            </label>
-                            <label class="active black" for="pc-8">
-                                <input type="radio" id="pc-8">
-                            </label>
-                            <label class="grey" for="pc-9">
-                                <input type="radio" id="pc-9">
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-6 col-sm-6">
-                <div class="product__item">
-                    <div class="product__item__pic set-bg" data-setbg="<c:url value="/static/img/product/product-4.jpg"/>">
-                        <ul class="product__hover">
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/heart.png"/>" alt=""></a></li>
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/compare.png"/>" alt=""> <span>Compare</span></a></li>
-                            <li><a href="#"><img src="<c:url value="/static/img/icon/search.png"/>" alt=""></a></li>
-                        </ul>
-                    </div>
-                    <div class="product__item__text">
-                        <h6>Diagonal Textured Cap</h6>
-                        <a href="#" class="add-cart">+ Add To Cart</a>
-                        <div class="rating">
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                        </div>
-                        <h5>$60.9</h5>
-                        <div class="product__color__select">
-                            <label for="pc-10">
-                                <input type="radio" id="pc-10">
-                            </label>
-                            <label class="active black" for="pc-11">
-                                <input type="radio" id="pc-11">
-                            </label>
-                            <label class="grey" for="pc-12">
-                                <input type="radio" id="pc-12">
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            </c:forEach>
+
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

@@ -48,6 +48,8 @@ public class ProductDetailController extends HttpServlet {
 
                 request.setAttribute(ModelConstant.REVIEW, productReviewDTOList);
                 request.setAttribute(ModelConstant.MODEL, product);
+
+                request.setAttribute(ModelConstant.SUGGEST, productService.findProductSuggestion(product.getCategory().getId(),4,product.getId()));
                 request.getRequestDispatcher("/views/web/product-detail.jsp").forward(request, response);
                 return;
             }

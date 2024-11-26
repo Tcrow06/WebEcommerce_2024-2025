@@ -72,5 +72,8 @@ public interface IProductService {
     List<ProductDTO> findAllByName (Pageable pageable, String name);
 
     int countByStatus(EnumProductStatus status);
+
     RevenueDTO getRevenue();
+
+    List<ProductDTO> findProductSuggestion(Long categoryId,int limit, Long productId);
 }

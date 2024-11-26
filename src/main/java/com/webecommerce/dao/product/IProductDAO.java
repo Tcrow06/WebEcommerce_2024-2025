@@ -51,4 +51,6 @@ public interface IProductDAO extends GenericDAO <ProductEntity> {
     RevenueDTO getRevenue();
 
     List<ProductEntity> findProductByCategoryOrStatusOrName(String category, EnumProductStatus status, String name);
+
+    List<ProductEntity> findProductSuggestion(Long categoryId,int limit, Long productId);
 }
