@@ -44,6 +44,8 @@ public interface IProductDAO extends GenericDAO <ProductEntity> {
 
     List<ProductEntity> searchProductsByName(String name);
 
+    List<ProductEntity> findAllByName(Pageable pageable, String name);
+
     int countByStatus(EnumProductStatus status);
 
     RevenueDTO getRevenue();
