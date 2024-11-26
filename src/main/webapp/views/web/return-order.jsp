@@ -123,9 +123,7 @@
 
 <script>
     $('#submit-button').click(function () {
-        // Tạo một mảng chứa dữ liệu hoàn trả của các sản phẩm
         const returnOrders = [];
-        // Duyệt qua tất cả các phần tử sản phẩm
         $('.section-wrapper').each(function () {
             const section = $(this);
 
@@ -138,7 +136,6 @@
             const quantityReturn = section.find('.product__quantity span').text();
             const today = new Date();
             const returnDate = today.toISOString().split('T')[0];
-            // Thêm dữ liệu sản phẩm và mảng
             returnOrders.push({
                 orderDetailId: orderDetailId,
                 reason: reason,

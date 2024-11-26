@@ -281,6 +281,11 @@ public class OrderService implements IOrderService {
     }
 
     @Override
+    public List<DisplayOrderDTO> getOrderDisplay() {
+        return orderDAO.getOrderDisplay();
+    }
+
+    @Override
     public List<DisplayOrderDTO> getOrderDisplay(Long customerId) {
         return orderDAO.getOrderDisplay(customerId);
     }
