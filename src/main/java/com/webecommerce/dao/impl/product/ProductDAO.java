@@ -322,7 +322,7 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
                 "ORDER BY totalSales DESC";
 
         TypedQuery<Object[]> query = entityManager.createQuery(jpql, Object[].class);
-        query.setParameter("status", EnumOrderStatus.WAITING);
+        query.setParameter("status", EnumOrderStatus.PENDING);
         query.setMaxResults(limit); // Giới hạn kết quả trả về
         return query.getResultList();
     }
@@ -339,7 +339,7 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
                 "GROUP BY p.id " +
                 "ORDER BY totalSales ASC ";
         TypedQuery<Object[]> query = entityManager.createQuery(jpql, Object[].class);
-        query.setParameter("status", EnumOrderStatus.WAITING);
+        query.setParameter("status", EnumOrderStatus.PENDING);
         query.setMaxResults(limit); // Giới hạn kết quả trả về
         return query.getResultList();
     }
