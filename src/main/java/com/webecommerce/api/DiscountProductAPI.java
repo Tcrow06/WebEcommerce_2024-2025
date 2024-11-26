@@ -54,17 +54,23 @@ public class DiscountProductAPI extends HttpServlet {
     }
 
     private void addProductDiscount (HttpServletRequest req, HttpServletResponse resp, ProductDiscountDTO productDiscount) throws IOException {
-        productDiscount = productDiscountService.save(productDiscount);
-        if(productDiscount != null) {
-            mapper.writeValue(resp.getWriter(), "Thêm giảm giá thành công !");
-        } else mapper.writeValue(resp.getWriter(), "error");
+        try {
+            productDiscount = productDiscountService.save(productDiscount);
+            if(productDiscount != null) {
+                mapper.writeValue(resp.getWriter(), "Thêm giảm giá thành công !");
+            } else mapper.writeValue(resp.getWriter(), "Có lỗi trong quá trình thêm giảm giá !");
+        }
+        catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write(e.getMessage());
+        }
     }
 
     private void updateProductDiscount (HttpServletRequest req, HttpServletResponse resp, ProductDiscountDTO productDiscount) throws IOException {
         productDiscount = productDiscountService.update(productDiscount);
         if(productDiscount != null) {
             mapper.writeValue(resp.getWriter(), "Cập nhật giảm giá thành công !");
-        } else mapper.writeValue(resp.getWriter(), "error");
+        } else mapper.writeValue(resp.getWriter(), "Có lỗi trong quá trình cập nhật mã giảm giá ");
     }
 
     private void cancelProductDiscount(HttpServletRequest req, HttpServletResponse resp, ProductDiscountDTO productDiscount) throws IOException {

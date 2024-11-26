@@ -17,11 +17,12 @@ public class ProductVariantDAO extends AbstractDAO <ProductVariantEntity> implem
 
     public ProductVariantEntity getProductVariantByProduct(ProductEntity productEntity) {
         String query = "SELECT e FROM " + ProductVariantEntity.class.getSimpleName() +
-                " e WHERE e.product = :product ORDER BY e.price ASC";
+                " e WHERE e.product = :product  and e.status =: status ORDER BY e.price ASC";
 
         try {
             return entityManager.createQuery(query, ProductVariantEntity.class)
                     .setParameter("product", productEntity)
+                    .setParameter("status",EnumProductStatus.SELLING)
                     .setMaxResults(1) // Giới hạn kết quả về 1
                     .getSingleResult(); // Lấy kết quả duy nhất
         } catch (NoResultException e) {
