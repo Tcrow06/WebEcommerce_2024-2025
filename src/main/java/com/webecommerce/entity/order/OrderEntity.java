@@ -26,7 +26,7 @@ public class OrderEntity {
     @JoinColumn(name = "bill_discount_id", referencedColumnName = "id")
     private BillDiscountEntity billDiscount;
 
-    @OneToMany(mappedBy = "order",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<OrderStatusEntity> orderStatuses = new ArrayList<>();
 
     @OneToMany(mappedBy = "order",cascade = CascadeType.ALL)
