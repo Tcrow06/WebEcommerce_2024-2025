@@ -43,7 +43,7 @@ public class ProductDiscountService implements IProductDiscountService {
                 return productDiscountMapper.toDTO(
                         productDiscountDAO.update(productDiscountEntity)
                 );
-            }
+            } else throw new IllegalArgumentException("Không thể chỉnh sửa chương trình giảm giá đã kết thúc");
         }
         return null;
     }
@@ -83,7 +83,7 @@ public class ProductDiscountService implements IProductDiscountService {
                 productDiscountEntity.setOutStanding(productDiscount.getIsOutStanding());
 
                 return productDiscountMapper.toDTO(productDiscountDAO.update(productDiscountEntity));
-            }
+            } else throw new IllegalArgumentException("Mã giảm giá này không cho phép chỉnh sửa !"); // sử dụng khi tham số đầu vào hoặc trạng thái không hợp lệ
         }
         return null;
     }

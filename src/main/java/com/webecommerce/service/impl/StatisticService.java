@@ -33,7 +33,7 @@ public class StatisticService implements IStatisticService {
     private IProductDiscountDAO productDiscountDAO;
 
     @Override
-    public StatisticDTO calculateHomeAdmin(int year) {
+    public StatisticDTO calculateHomeAdmin() {
         StatisticDTO statisticDTO = new StatisticDTO();
         List<Map.Entry<ProductDTO, Integer>> list = productService.findBestSellerProduct(5);
         Double revenue = orderDAO.calculateTotalRevenue();

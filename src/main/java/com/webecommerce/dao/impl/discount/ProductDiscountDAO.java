@@ -3,7 +3,9 @@ package com.webecommerce.dao.impl.discount;
 import com.webecommerce.dao.discount.IProductDiscountDAO;
 import com.webecommerce.dao.impl.AbstractDAO;
 import com.webecommerce.entity.discount.ProductDiscountEntity;
+import com.webecommerce.utils.HibernateUtil;
 
+import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,12 +26,15 @@ public class ProductDiscountDAO extends AbstractDAO<ProductDiscountEntity> imple
      * @return discount
      */
     public List<ProductDiscountEntity> findDiscounthaveProductByDate(LocalDateTime start) {
+        EntityManager em = super.getEntityManager();
+
+
         String query = "SELECT d FROM ProductDiscountEntity d " +
                 "JOIN d.product p " +
                 "WHERE p IS NOT NULL and d.startDate >= :start and d.endDate >= :start";
 
         try {
-            return entityManager.createQuery(query, ProductDiscountEntity.class)
+            return em.createQuery(query, ProductDiscountEntity.class)
                     .setParameter("start", start)
                     .getResultList();
         } catch (NoResultException e) {
@@ -38,6 +43,8 @@ public class ProductDiscountDAO extends AbstractDAO<ProductDiscountEntity> imple
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Lỗi khi lấy biến thể giảm giá", e);
             return null;
+        } finally {
+            super.closeEntityManager(em);
         }
     }
 
@@ -47,12 +54,15 @@ public class ProductDiscountDAO extends AbstractDAO<ProductDiscountEntity> imple
      * @return discount
      */
     public List<ProductDiscountEntity> findDiscounthaveProductByDate() {
+
+        EntityManager em = super.getEntityManager();
+
         String query = "SELECT d FROM ProductDiscountEntity d " +
                 "JOIN d.product p " +
                 "WHERE p IS NOT NULL and d.startDate <= :start and d.endDate >= :start"; ;
 
         try {
-            return entityManager.createQuery(query, ProductDiscountEntity.class)
+            return em.createQuery(query, ProductDiscountEntity.class)
                     .setParameter("start", LocalDateTime.now())
                     .getResultList();
         } catch (NoResultException e) {
@@ -61,8 +71,11 @@ public class ProductDiscountDAO extends AbstractDAO<ProductDiscountEntity> imple
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Lỗi khi lấy biến thể giảm giá", e);
             return null;
+        } finally {
+            super.closeEntityManager(em);
         }
     }
+
     @Override
     public int countDiscountValid(){
         String query ="SELECT count(d) FROM ProductDiscountEntity d " +

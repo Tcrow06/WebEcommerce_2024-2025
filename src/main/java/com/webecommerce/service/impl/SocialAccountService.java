@@ -91,6 +91,9 @@ public class SocialAccountService implements ISocialAccountService {
             if(customerEntity.getAvatar()==null){
                 customerEntity.setAvatar(customerRequest.getAvatar());
             }
+            if(customerEntity.getCart()==null){
+                customerEntity.setCart(new CartEntity());
+            }
             customerDAO.update(customerEntity);
             CustomerResponse customerResponse = customerMapper.toCustomerResponse(customerEntity);
             customerResponse.setStatus(account.getStatus());
