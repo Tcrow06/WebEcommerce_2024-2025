@@ -279,6 +279,7 @@
     <div id="productVariantsContainer" class="row mt-4">
         <br>
         <strong>Chi tiết sản phẩm </strong>
+        <div class="error-message text-danger" style="margin: 10px"></div>
     </div>
 
 
@@ -410,9 +411,12 @@
                 $('#productBrandError').text('');
             }
 
+            let isProductVariant = false;
+
             $('#productVariantsContainer .product-variant-card').each(function(index) {
                 const color = $(this).find('.variant-color').val();
                 let hasSizeRow = false;
+                isProductVariant = true;
 
                 if (!color) {
                     $(this).find('.variant-color').next('.error-message').text('Vui lòng nhập màu.');
@@ -459,6 +463,13 @@
                 }
 
             });
+
+            if (!isProductVariant) {
+                $('#productVariantsContainer').find('.error-message').text("Vui lòng thêm ít nhất một phân loại sản phẩm")
+                isValid = false;
+            }
+            else $('#productVariantsContainer').find('.error-message').text("")
+
             return isValid
         }
 

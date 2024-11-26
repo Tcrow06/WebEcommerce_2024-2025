@@ -139,7 +139,7 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
 
 
     public List<ProductEntity> findProductByStatus(EnumProductStatus status) {
-        return super.findByAttribute("status", status);
+        return super.findByAttributeCustom("status", status);
     }
 
     public List<ProductEntity> findProductByCategoryOrStatusOrName(String categoryCode, EnumProductStatus status, String name) {
