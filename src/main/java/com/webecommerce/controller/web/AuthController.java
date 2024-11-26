@@ -76,7 +76,12 @@ public class AuthController extends HttpServlet {
         CheckOutRequestDTO checkOutRequestDTO =(CheckOutRequestDTO) session.getAttribute("orderNotHandler");
         if(action != null && action.equals("login")) {
             AccountRequest account = FormUtils.toModel(AccountRequest.class, request);
-
+            String messageStr = accountService.checkLogin(account);
+            if(!messageStr.trim().isEmpty()){
+                session.setAttribute("loginData", account);
+                response.sendRedirect(request.getContextPath() + "/dang-nhap?action=login&message="+messageStr+"&alert=danger");
+                return;
+            }
             UserResponse foundUser = accountService.findByUserNameAndPasswordAndStatus(account.getUserName(), account.getPassword(), "UNVERIFIED");
             if (foundUser != null) {
                 accountService.sendOTPToEmail(foundUser.getEmail(), foundUser.getId(), "register");
@@ -144,11 +149,11 @@ public class AuthController extends HttpServlet {
                 session.setAttribute("registrationData", customerRequest);
                 String errorMessage;
                 switch (e.getFieldName()) {
-                    case "email":
-                        errorMessage = "duplicate_email";
-                        break;
                     case "phone":
                         errorMessage = "duplicate_phone";
+                        break;
+                    case "email":
+                        errorMessage = "duplicate_email";
                         break;
                     case "username":
                         errorMessage = "duplicate_username";
