@@ -251,30 +251,26 @@ public class ReturnOrderDAO extends AbstractDAO<ReturnOrderEntity> implements IR
     public boolean updateStatusNoReturn(Long orderDetailId) {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
-            // Bắt đầu giao dịch
             transaction.begin();
 
-            // Cập nhật trạng thái của đơn hàng trong bảng ReturnOrderEntity
             String query = "UPDATE ReturnOrderEntity ro SET ro.status = 2 WHERE ro.orderDetail.id = :orderDetailId";
             Query jpqlQuery = entityManager.createQuery(query);
             jpqlQuery.setParameter("orderDetailId", orderDetailId);
             int rowsUpdated = jpqlQuery.executeUpdate();
 
             if (rowsUpdated == 0) {
-                transaction.rollback();  // Nếu không có dòng nào bị cập nhật, rollback giao dịch
+                transaction.rollback();
                 return false;
             }
 
-            // Nếu thành công, commit giao dịch
             transaction.commit();
             return true;
         }
         catch (Exception e) {
-            // Nếu có lỗi, rollback giao dịch và ghi lại thông tin lỗi
             if (transaction.isActive()) {
                 transaction.rollback();
             }
-            e.printStackTrace();  // Hoặc bạn có thể log lỗi ở đây
+            e.printStackTrace();
             return false;
         }
     }

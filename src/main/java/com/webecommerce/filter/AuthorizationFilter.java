@@ -79,7 +79,7 @@ public class AuthorizationFilter implements Filter {
         request.setAttribute("status", 200);
         if (url.startsWith("/dang-nhap")||url.startsWith("/dang-ki")) {
             response.sendRedirect(request.getContextPath() + "/");
-        } else if (url.startsWith("/chu-cua-hang")) {
+        } else if (url.startsWith("/chu-cua-hang1")) {
             if (role.equals(EnumRole.OWNER.toString())) {
                 filterChain.doFilter(request, response);
             } else {
