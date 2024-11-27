@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface IOrderDAO extends GenericDAO<OrderEntity> {
+    List<DisplayOrderDTO> getOrderDisplay();
     List<DisplayOrderDTO> getOrderDisplay(Long customerId);
 
     OrderEntity merge(OrderEntity orderEntity);

@@ -220,7 +220,7 @@
                     const data = {
                         id: productDiscountId
                     };
-                    sendAPI(data, '/api-huy-giam-gia')
+                    sendAPI(data, 'DELETE')
                 });
             })
 
@@ -255,21 +255,37 @@
                         }
                     };
 
-                    sendAPI(data, '/api-product-discount')
+                    sendAPI(data, 'POST')
                 });
             });
 
-            function sendAPI (data,url) {
+            function sendAPI (data,method) {
                 $.ajax({
-                    url: url,
-                    type: 'POST',
+                    url: '/api-product-discount',
+                    type: method,
                     contentType: 'application/json',
                     data: JSON.stringify(data),
+                    beforeSend: function () {
+                        // Hiển thị loader trước khi AJAX bắt đầu
+                        $('#global-loader').css('display', 'flex');
+                    },
                     success: function (response) {
-                        alert("Đã gửi thông tin thành công!" + response);
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành công',
+                            text: response.toString()
+                        }).then(() => {
+                            window.location.href = 'giam-gia-cho-san-pham'
+                        });
                     },
                     error: function (xhr, status, error) {
-                        alert("Lỗi: " + error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi',
+                            text: error
+                        });
+                    },complete: function () {
+                        $('#global-loader').css('display', 'none');
                     }
                 });
             }

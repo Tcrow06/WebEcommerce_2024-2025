@@ -31,7 +31,10 @@ public class OrderDetailDTO {
 
     private void calculateTotal() {
         double sum= productVariant.getPrice()*quantity;
-        if(productDiscount!=null && productDiscount.getEndDate().isAfter(LocalDateTime.now()) && productDiscount.getStartDate().isBefore(LocalDateTime.now())){
+        if(productDiscount!=null &&
+            (productDiscount.getEndDate().isAfter(LocalDateTime.now()) || productDiscount.getEndDate().equals(LocalDateTime.now()))
+            && (productDiscount.getStartDate().isBefore(LocalDateTime.now())||productDiscount.getStartDate().equals(LocalDateTime.now()))
+        ){
             sum *= (double) (100 - productDiscount.getDiscountPercentage()) /100;
         }
         this.total= sum;

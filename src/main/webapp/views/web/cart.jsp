@@ -273,6 +273,10 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $(document).ready(function () {
+        calculateTotalPrice();
+        toggleDeleteButton();
+
+        // Sự kiện click vào nút tăng/giảm số lượng
         $(document).on('click', '.pro-qty-2 .qtybtn', function () {
             let $button = $(this);
             let $input = $button.siblings('input');
@@ -361,7 +365,6 @@
 
     function updateCart() {
         const cartData = getCartData();
-
         $.ajax({
             type: "POST",
             url: "/sua-gio-hang",
@@ -370,11 +373,20 @@
                 cartItems: cartData
             }),
             success: function(response) {
-                alert("Cập nhật giỏ hàng thành công.");
-                refreshCart();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thông báo',
+                    text: 'Cập nhật giỏ hàng thành công.',
+                }).then(() => {
+                    refreshCart();
+                });
             },
             error: function(xhr) {
-                alert("Không thể cập nhật giỏ hàng.");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi hệ thống',
+                    text: 'Cập nhật giỏ hàng thất bại, liên hệ với quản trị viên để được giải quyết.',
+                });
             }
         });
     }
@@ -388,25 +400,29 @@
             const productVariantId = $(this).data('product-id');
             const quantity = $(this).closest('tr').find('input[type="text"]').val();
 
-            selectedItems.push({
-                productVariantId: productVariantId,
-                quantity: parseInt(quantity, 10)
-            });
+            selectedItems.push(productVariantId);
         });
 
         $.ajax({
             type: "POST",
             url: "/xoa-gio-hang",
             contentType: "application/json",
-            data: JSON.stringify({
-                cartItems: selectedItems
-            }),
+            data: JSON.stringify(selectedItems),
             success: function(response) {
-                alert("Xóa sản phẩm khỏi giỏ hàng thành công.");
-                refreshCart();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thông báo',
+                    text: 'Xóa sản phẩm khỏi giỏ hàng thành công.',
+                }).then(() => {
+                    refreshCart();
+                });
             },
             error: function(xhr) {
-                alert("Không thể xóa sản phẩm khỏi giỏ hàng.");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi hệ thống',
+                    text: 'Xóa sản phẩm hỏi giỏ hàng thất bại, liên hệ với quản trị viên để được giải quyết.',
+                });
             }
         });
     }
@@ -437,7 +453,11 @@
                 location.reload();
             },
             error: function(xhr) {
-                alert("Không thể tải giỏ hàng.");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi hệ thống',
+                    text: 'Giỏ hàng không thể tải. Đừng lo! Mọi chuyện sẽ được giải quyết nhanh thôi.',
+                })
             }
         });
     }
@@ -569,7 +589,11 @@
 
 
         if (selectedProducts.length === 0) {
-            alert("Vui lòng chọn ít nhất một sản phẩm để thanh toán.");
+            Swal.fire({
+                icon: 'warning',
+                title: 'Cảnh báo',
+                text: 'Vui lòng chọn sản phẩm để thanh toán.',
+            });
             return;
         }
         $.ajax({
@@ -585,7 +609,11 @@
                     window.location.href = response.redirectUrl.toString() ;
                 }
                 else if(response.status==="error"){
-                    alert(response.message.toString());
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi hệ thống',
+                        text: response.message,
+                    });
                 }
                 // Xử lý khi thành công
                 else{
@@ -596,7 +624,11 @@
                 window.location.href = response.redirectUrl.toString() + "?order=" + encodeURIComponent(JSON.stringify(response.order));
                 // Xử lý khi có lỗi
                 console.error("Lỗi: ", error);
-                alert("Có lỗi xảy ra, vui lòng thử lại.");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi hệ thống',
+                    text: 'Có vẻ hệ thống đã gặp vấn đề. Đừng lo ! Mọi chuyện sẽ được giải quyết.',
+                });
             }
         });
     });

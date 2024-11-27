@@ -46,7 +46,6 @@ public class ProductController extends HttpServlet {
             request.setAttribute(ModelConstant.CATEGORY, categoryService.findAll());
 
             ProductDTO productDTO = productService.getProductById(id);
-            List<ProductVariantColorDTO> productVariantColorDTO = productDTO.getProductVariantColorsss();
 
             request.setAttribute( ModelConstant.MODEL,productDTO);
 
@@ -63,22 +62,30 @@ public class ProductController extends HttpServlet {
             throws ServletException, IOException {
 
         String type = request.getParameter("type");
+
+        String category = request.getParameter("category");
+        String name = request.getParameter("name");
+
+        if (category != null) {
+            if (category.equals("all") || category.equals("")) {
+                category = null;
+            }
+        }
+
         List <ProductDTO> productDTOS = null ;
 
         if (type != null) {
-
             if (type.equals("ngung-kinh-doanh"))
-                productDTOS = productService.findProductStopSelling();
-            else type = "dang-kinh-doanh";
-
-            request.setAttribute(ModelConstant.TYPE_DISCOUNT,type);
+                productDTOS = productService.findProductStopSellingByCategoryAndName(category,name);
         }
 
         if (productDTOS == null) {
-            productDTOS = productService.findProductSelling();
+            productDTOS = productService.findProductSellingByCategoryAndName(category,name);
+            type = "dang-kinh-doanh";
         }
 
-
+        request.setAttribute(ModelConstant.TYPE_DISCOUNT,type);
+        request.setAttribute(ModelConstant.CATEGORY, categoryService.findAll());
         request.setAttribute(ModelConstant.MODEL, productDTOS);
         request.getRequestDispatcher("/views/admin/product/product-list.jsp").forward(request, response);
     }

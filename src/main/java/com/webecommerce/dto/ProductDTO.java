@@ -71,6 +71,14 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
 
     private String photo;
 
+    private int discountPercentage;
+
+    private int averageStars;
+
+    private int countProductReview;
+
+    private List<ProductReviewDTO> productReviews;
+
     public LocalDateTime getIsNewProduct() {
         return isNewProduct;
     }
@@ -141,6 +149,7 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
     public EnumProductStatus getStatus() {
         return status;
     }
+
     public void setStatus(String status) {
         this.status = EnumProductStatus.valueOf(status);
     }
@@ -228,6 +237,13 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
                     price = productVariantDTO.getPrice();
             }
         }
+
+        if (discountPercentage != 0) {
+            return formatVND(new BigDecimal(
+                    (price - (price / 100) * discountPercentage))
+                    .setScale(2, RoundingMode.HALF_UP).doubleValue());
+        }
+
         if (this.productDiscount == null) return formatVND(price);
 
         double discountedPrice = price - (price / 100) * productDiscount.getDiscountPercentage();
@@ -282,4 +298,35 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
         return productVariantColors;
     }
 
+    public int getDiscountPercentage() {
+        return discountPercentage;
+    }
+
+    public void setDiscountPercentage(int discountPercentage) {
+        this.discountPercentage = discountPercentage;
+    }
+
+    public int getAverageStars() {
+        return averageStars;
+    }
+
+    public void setAverageStars(int averageStars) {
+        this.averageStars = averageStars;
+    }
+
+    public int getCountProductReview() {
+        return countProductReview;
+    }
+
+    public void setCountProductReview(int countProductReview) {
+        this.countProductReview = countProductReview;
+    }
+
+    public List<ProductReviewDTO> getProductReviews() {
+        return productReviews;
+    }
+
+    public void setProductReviews(List<ProductReviewDTO> productReviews) {
+        this.productReviews = productReviews;
+    }
 }

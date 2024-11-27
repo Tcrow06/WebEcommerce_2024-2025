@@ -14,6 +14,12 @@ public class CategoryDTO extends BaseDTO<CategoryDTO> {
         this.code = code;
     }
 
+    public CategoryDTO(Long id) {
+        super(id);
+    }
+
+    public CategoryDTO() {}
+
     public String getName() {
         return name;
     }
@@ -21,5 +27,7 @@ public class CategoryDTO extends BaseDTO<CategoryDTO> {
     public void setName(String name) {
         this.name = name;
     }
+
+
 
 }

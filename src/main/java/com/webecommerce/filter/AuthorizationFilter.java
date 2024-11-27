@@ -71,7 +71,7 @@ public class AuthorizationFilter implements Filter {
         if(userResponse == null){
             request.setAttribute("status", 404);
             JWTUtil.destroyToken(request,response);
-            response.sendRedirect(request.getContextPath() + "/dang-nhap?message=token_invalid&alert=danger");
+            response.sendRedirect(request.getContextPath() + "/dang-nhap?action=login&message=token_invalid&alert=danger");
             return;
         }
         userResponse.setId(-1L);
@@ -79,13 +79,20 @@ public class AuthorizationFilter implements Filter {
         request.setAttribute("status", 200);
         if (url.startsWith("/dang-nhap")||url.startsWith("/dang-ki")) {
             response.sendRedirect(request.getContextPath() + "/");
-        } else if (url.startsWith("/chu-doanh-nghiep")) {
+        } else if (url.startsWith("/chu-cua-hang1")) {
             if (role.equals(EnumRole.OWNER.toString())) {
                 filterChain.doFilter(request, response);
             } else {
-                response.sendRedirect(request.getContextPath() + "/trang-chu?message=not_permission&alert=danger");
+                response.sendRedirect(request.getContextPath() + "/trang-chu?message=not_permission_access&alert=danger");
             }
-        } else {
+        }else if (checkAdminNotAccess(url)){
+            if (role.equals(EnumRole.CUSTOMER.toString())) {
+                filterChain.doFilter(request, response);
+            } else {
+                response.sendRedirect(request.getContextPath() + "/chu-cua-hang?message=not_permission_access&alert=danger");
+            }
+        }
+        else {
             filterChain.doFilter(request, response);
         }
 
@@ -97,12 +104,12 @@ public class AuthorizationFilter implements Filter {
         if (checkURLForNoToken(url)) {
             filterChain.doFilter(request, response);
         } else {
-            response.sendRedirect(request.getContextPath() + "/dang-nhap?message=token_expired&alert=danger");
+            response.sendRedirect(request.getContextPath() + "/dang-nhap?action=login&message=token_expired&alert=danger");
         }
     }
 
     private void handleInvalidToken(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        response.sendRedirect(request.getContextPath() + "/dang-nhap?message=token_invalid&alert=danger");
+        response.sendRedirect(request.getContextPath() + "/dang-nhap?action=login&message=token_invalid&alert=danger");
     }
 
     private void handleNoToken(String url, HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -110,12 +117,17 @@ public class AuthorizationFilter implements Filter {
         if (checkURLForNoToken(url)) {
             filterChain.doFilter(request, response);
         } else {
-            response.sendRedirect(request.getContextPath() + "/dang-nhap?message=not_permission&alert=danger");
+            response.sendRedirect(request.getContextPath() + "/dang-nhap?action=login&message=not_permission_access&alert=danger");
         }
     }
 
     private boolean checkURLForNoToken(String url) {
-        return !url.startsWith("/chu-doanh-nghiep");
+
+        return !(url.startsWith("/chu-cua-hang")||url.startsWith("/thanh-toan"));
+    }
+    private boolean checkAdminNotAccess(String url){
+        return (url.startsWith("/kiem-tra-san-pham")||url.startsWith("/thanh-toan")
+                ||url.startsWith("/gio-hang"));
     }
 
     @Override

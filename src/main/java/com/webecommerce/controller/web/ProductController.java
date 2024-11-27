@@ -76,13 +76,11 @@ public class ProductController extends HttpServlet {
 
         List<ProductDTO> productDTOList = productService.findAll(pageable);
         if (searchName != null && !searchName.isEmpty()) {
-            productDTOList = productService.searchProductsByName(searchName);
+            productDTOList = productService.findAllByName(pageable, searchName);
         }
         product.setResultList(productDTOList);
 
-        //product.setTotalItem(productService.getTotalItem());
-
-        //nháp tí
+        //nháp
 
         product.setTotalItem(productService.getTotalItems());
 

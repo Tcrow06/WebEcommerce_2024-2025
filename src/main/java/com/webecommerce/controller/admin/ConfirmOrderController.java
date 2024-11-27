@@ -1,6 +1,7 @@
 package com.webecommerce.controller.admin;
 
 
+import com.webecommerce.dao.impl.order.OrderDAO;
 import com.webecommerce.dto.notinentity.DisplayOrderDTO;
 import com.webecommerce.service.IOrderService;
 import com.webecommerce.utils.JWTUtil;
@@ -19,8 +20,8 @@ public class ConfirmOrderController extends HttpServlet {
     @Inject
     private IOrderService orderService;
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Long customerId = JWTUtil.getIdUser(request);
-        List<DisplayOrderDTO> orders = orderService.getOrderDisplay(customerId);
+
+        List<DisplayOrderDTO> orders = orderService.getOrderDisplay();
 
         request.setAttribute("orders", orders);
 

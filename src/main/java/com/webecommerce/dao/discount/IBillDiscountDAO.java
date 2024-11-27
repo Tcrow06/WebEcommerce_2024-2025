@@ -11,6 +11,8 @@ public interface IBillDiscountDAO extends GenericDAO<BillDiscountEntity> {
 
     List<BillDiscountEntity> getBillDiscountByOutStanding(boolean outstanding);
 
+    boolean billDiscountCodeExists (String code);
+
     BillDiscountEntity findBillDiscountByCode(String code);
 
     BillDiscountEntity findBillDiscountByCodeAndValid(String code);

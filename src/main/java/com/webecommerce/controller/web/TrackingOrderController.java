@@ -28,7 +28,6 @@ public class TrackingOrderController extends HttpServlet {
         try {
             Long customerId = JWTUtil.getIdUser(request);
             List<DisplayOrderDTO> orders = orderService.getOrderDisplay(customerId);
-
             request.setAttribute("orders", orders);
 
             request.getRequestDispatcher("/views/web/order/tracking-order.jsp").forward(request,response);
@@ -51,7 +50,6 @@ public class TrackingOrderController extends HttpServlet {
         }
         Long customerId = JWTUtil.getIdUser(request);
         List<DisplayOrderDTO> orders = orderService.getOrderDisplay(customerId);
-
         request.setAttribute("orders", orders);
         request.getRequestDispatcher("/views/web/order/tracking-order.jsp").forward(request,response);
     }

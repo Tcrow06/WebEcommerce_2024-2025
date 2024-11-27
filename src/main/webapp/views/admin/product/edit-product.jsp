@@ -30,7 +30,7 @@
     .custom-legend {
         font-size: 12px;
         font-weight: bold;
-        background-color: #f9f9f9;
+        background-color: #FFFFFF;
         position: absolute;
         top: -10px;
         left: 20px;
@@ -62,6 +62,14 @@
         object-fit: contain; /* Giữ tỉ lệ ảnh trong vùng hiển thị */
     }
 
+    .header-shopping {
+        background-image: url("https://images.unsplash.com/photo-1487744480471-9ca1bca6fb7d?q=80&w=2091&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" );
+        background-size: 100%, 100%;
+        color: rgb(241, 239, 239);
+        margin-bottom: 20px;
+        padding: 100px; height: 400px
+    }
+
 </style>
 
 
@@ -74,6 +82,14 @@
     </div>
 
     <div class="product-content product-wrap clearfix product-deatil">
+
+        <header class="bg-light header-shopping">
+            <div class="container text-center">
+                <h1 class="display-4">Chính sửa sản phẩm</h1>
+                <p class="lead">Mua sắm cùng Eleven !</p>
+            </div>
+        </header>
+
         <div class="row">
             <div class="form-group">
                 <h2 class="name">
@@ -127,7 +143,7 @@
                     </ul>
                 </div>
             </div>
-            <hr />
+            <hr>
             <div class="description description-tabs">
                 <div class="tab-content" style="height: 400px">
                     <br />
@@ -137,7 +153,6 @@
                     </div>
                 </div>
             </div>
-            <hr/>
             <div class="size-table">
                 <br />
                 <strong>Up ảnh bảng size</strong>
@@ -165,11 +180,12 @@
     <template id="productCardTemplate">
         <div class="product-variant-card card mb-4">
             <div class="card-body">
+
                 <div class="row">
                     <div class="col-md-5 col-sm-12 col-xs-12">
                         <div class="product-image">
                             <div class="item active">
-                                <img src="<c:url value='/static/img/product/404.jpg'/>" class="img-responsive" alt="Product Image">
+                                <img src="<c:url value='/static/img/not-delete/404.jpg'/>" class="img-responsive" alt="Product Image">
                             </div>
                         </div>
                     </div>
@@ -180,14 +196,15 @@
                                     <span class="input-group-text btn-primary" id="inputGroup-sizing-sm" style="color: white;" >Color</span>
                                 </div>
                                 <input type="text" class="form-control variant-color" name="name" aria-label="Small" aria-describedby="inputGroup-sizing-sm" value="" style="max-width: 150px;">
-                                <div class="error-message text-danger"></div>
+                                <div class="error-message text-danger" style="margin: 10px"></div>
                             </div>
                         </div>
                         <div class="w-100"></div>
                         <div class="row size-container">
                             <!-- Các ô Size, Quantity và Price sẽ được thêm vào đây -->
                         </div>
-                        <button type="button" class="col align-items-center btn btn-primary add-size-btn mt-5" style="max-width: 200px; max-height: 40px;" onclick="addSize(this)">Thêm Size</button>
+                        <div class="error-message text-danger" style="margin: 10px"></div>
+                        <button type="button" class="col align-items-center btn btn-primary btn-rounded add-size-btn mt-5" style="max-width: 200px; max-height: 40px;" onclick="addSize(this)">Thêm Size</button>
                         <div class="w-100"></div>
                         <div class="col" style="margin-top: 20px;">
                             <div class="form-group">
@@ -202,7 +219,7 @@
                             </div>
                         </div>
                         <div class="mt-3 d-flex justify-content-end">
-                            <button class="btn btn-danger" onclick="removeProductVariantCard(this)" >Hủy</button>
+                            <button class="btn btn-dark" onclick="removeProductVariantCard(this)" >Hủy</button>
                         </div>
                     </div>
 
@@ -224,25 +241,28 @@
                             placeholder="Size"
                             aria-label="Size"
                     />
-                    <span class="input-group-text">@</span>
+                    <span class="input-group-text">-</span>
                     <input
                             type="number"
                             class="form-control variant-quantity"
                             placeholder="Quantity"
                             aria-label="Quantity"
                     />
-                    <span class="input-group-text">@</span>
+                    <span class="input-group-text">-</span>
                     <input
                             type="text"
                             class="form-control variant-price"
                             placeholder="Price"
                             aria-label="Price"
                     />
+                    <span class="input-group-text">VND</span>
                     <div class="d-flex align-items-center justify-content-center">
-                        <button type="button" class="btn btn-danger btn-sm remove-row-btn ms-2" style="font-size: 0.8rem;" onclick="removeSizeRow(this)">🗑</button>
+                        <button type="button" class="btn btn-dark btn-sm remove-row-btn ms-2" style="font-size: 0.8rem;" onclick="removeSizeRow(this)">🗑</button>
                     </div>
                 </div>
+                <div class="error-message text-danger" style="margin: 10px"></div>
             </div>
+
         </fieldset>
     </template>
 
@@ -253,6 +273,7 @@
     <div id="productVariantsContainer" class="row mt-4">
         <br>
         <strong>Chi tiết sản phẩm </strong>
+        <div class="error-message text-danger" style="margin: 10px"></div>
 
         <c:forEach var="item" items="${model.getProductVariantColorsss()}">
             <div class="product-variant-card card mb-4">
@@ -293,7 +314,7 @@
                                                         aria-label="Size"
                                                         value="${sizeProduct.size}"
                                                 />
-                                                <span class="input-group-text">@</span>
+                                                <span class="input-group-text">-</span>
                                                 <input
                                                         type="number"
                                                         class="form-control variant-quantity"
@@ -301,7 +322,7 @@
                                                         aria-label="Quantity"
                                                         value="${sizeProduct.quantity}"
                                                 />
-                                                <span class="input-group-text">@</span>
+                                                <span class="input-group-text">-</span>
                                                 <input
                                                         type="text"
                                                         class="form-control variant-price"
@@ -309,15 +330,17 @@
                                                         aria-label="Price"
                                                         value="${sizeProduct.price}"
                                                 />
+                                                <span class="input-group-text">VND</span>
                                                 <div class="d-flex align-items-center justify-content-center">
-                                                    <button type="button" class="btn btn-danger btn-sm remove-row-btn ms-2" style="font-size: 0.8rem;" onclick="removeSizeRow(this)">🗑</button>
+                                                    <button type="button" class="btn btn-dark btn-sm remove-row-btn ms-2" style="font-size: 0.8rem;" onclick="removeSizeRow(this)">🗑</button>
                                                 </div>
                                             </div>
+                                            <div class="error-message text-danger" style="margin: 10px"></div>
                                         </div>
                                     </fieldset>
                                 </c:forEach>
                             </div>
-                            <button type="button" class="col btn btn-primary add-size-btn mt-3" style="max-width: 200px; max-height: 40px;" onclick="addSize(this)">Thêm Size</button>
+                            <button type="button" class="col align-items-center btn btn-primary btn-rounded add-size-btn mt-5" style="max-width: 200px; max-height: 40px;" onclick="addSize(this)">Thêm Size</button>
                             <div class="w-100"></div>
                             <div class="col" style="margin-top: 20px;">
                                 <div class="form-group">
@@ -332,7 +355,7 @@
                                 </div>
                             </div>
                             <div class="mt-3 d-flex justify-content-end">
-                                <button class="btn btn-danger" onclick="removeProductVariantCard(this)" >Hủy</button>
+                                <button class="btn btn-dark" onclick="removeProductVariantCard(this)" >Hủy</button>
                             </div>
                         </div>
 
@@ -529,9 +552,12 @@
                 $('#productBrandError').text('');
             }
 
+            let isProductVariant = false;
+
             $('#productVariantsContainer .product-variant-card').each(function(index) {
                 const color = $(this).find('.variant-color').val();
                 let hasSizeRow = false;
+                isProductVariant = true;
 
                 if (!color) {
                     $(this).find('.variant-color').next('.error-message').text('Vui lòng nhập màu.');
@@ -540,31 +566,34 @@
                     $(this).find('.variant-color').next('.error-message').text('');
                 }
 
+
                 $(this).find('.single-size-row').each(function() {
+                    let isValidVariant = true;
                     hasSizeRow = true;
+
                     const price = $(this).find('.variant-price').val();
                     const quantity = $(this).find('.variant-quantity').val();
                     const size = $(this).find('.variant-size').val();
 
                     if (!size) {
-                        $(this).find('.variant-size').next('.error-message').text('Vui lòng nhập kích cỡ.');
+                        isValidVariant = false;
                         isValid = false;
-                    } else {
-                        $(this).find('.variant-size').next('.error-message').text('');
                     }
 
                     if (!quantity || isNaN(quantity) || parseInt(quantity) <= 0) {
-                        $(this).find('.variant-quantity').next('.error-message').text('Vui lòng nhập số lượng hợp lệ.');
+                        isValidVariant = false;
                         isValid = false;
-                    } else {
-                        $(this).find('.variant-quantity').next('.error-message').text('');
                     }
 
                     if (!price || isNaN(price) || parseFloat(price) <= 0) {
-                        $(this).find('.variant-price').next('.error-message').text('Vui lòng nhập giá hợp lệ.');
+                        isValidVariant = false;
                         isValid = false;
+                    }
+
+                    if (!isValidVariant) {
+                        $(this).find('.error-message').text("Phân loại hàng không hợp lệ !");
                     } else {
-                        $(this).find('.variant-price').next('.error-message').text('');
+                        $(this).find('.error-message').text(""); // Clear lỗi nếu hợp lệ
                     }
                 });
 
@@ -576,6 +605,13 @@
                 }
                 
             });
+
+            if (!isProductVariant) {
+                $('#productVariantsContainer').find('.error-message').text("Vui lòng thêm ít nhất một phân loại sản phẩm")
+                isValid = false;
+            }
+            else $('#productVariantsContainer').find('.error-message').text("")
+
             return isValid
         }
 
@@ -728,12 +764,29 @@
                 data: data,
                 processData: false,  // Không xử lý dữ liệu
                 contentType: false,  // Để trình duyệt tự xử lý content-type
+                beforeSend: function () {
+                    // Hiển thị loader trước khi AJAX bắt đầu
+                    $('#global-loader').css('display', 'flex');
+                },
                 success: function(response) {
-                    alert(response);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công',
+                        text: response.toString()
+                    }).then(() => {
+                        window.location.href = 'danh-sach-san-pham'
+                    });
                 },
                 error: function(xhr, status, error) {
                     const errorMessage = xhr.responseJSON ? xhr.responseJSON.message : error;
-                    alert("Failed to add product: " + errorMessage);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi hệ thống',
+                        text: "Không thể chỉnh sửa sản phẩm: " + errorMessage
+                    });
+                },
+                complete: function () {
+                    $('#global-loader').css('display', 'none');
                 }
             });
         }

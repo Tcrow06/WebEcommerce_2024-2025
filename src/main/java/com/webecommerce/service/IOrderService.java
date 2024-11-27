@@ -8,6 +8,7 @@ import com.webecommerce.dto.PlacedOrder.CheckOutRequestDTO;
 import java.util.List;
 
 public interface IOrderService {
+    List<DisplayOrderDTO> getOrderDisplay();
     List<DisplayOrderDTO> getOrderDisplay(Long customerId);
     OrderDTO findInfoCheckOut(CheckOutRequestDTO checkOutRequestDTO);
     OrderDTO findInfoPayment(OrderDTO orderDTO, Long idUser);

@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet ({"/api-product-discount","/api-huy-giam-gia"})
+@WebServlet ({"/api-product-discount"})
 public class DiscountProductAPI extends HttpServlet {
     @Inject
     IProductDiscountService productDiscountService;
@@ -25,34 +25,52 @@ public class DiscountProductAPI extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
 
         HttpUtils httpUtils =  HttpUtils.of(request.getReader());
         ProductDiscountDTO productDiscount = httpUtils.toModel(ProductDiscountDTO.class);
 
         if(productDiscount != null) {
-            String action = request.getServletPath();
-            if (action.equals("/api-product-discount")) {
-                updateProductDiscount(request, response,productDiscount);
-            } else if (action.equals("/api-huy-giam-gia")) {
-                cancelProductDiscount(request, response, productDiscount);
-            }
+            if (productDiscount.getId() == null)
+                addProductDiscount(request,response,productDiscount);
+            else updateProductDiscount(request,response,productDiscount);
         }
         else response.setStatus(HttpServletResponse.SC_BAD_REQUEST); // 400 Bad Request
     }
 
-    private void updateProductDiscount(HttpServletRequest req, HttpServletResponse resp, ProductDiscountDTO productDiscount) throws IOException {
-        if (productDiscount.getId() == null) {
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        HttpUtils httpUtils =  HttpUtils.of(request.getReader());
+        ProductDiscountDTO productDiscount = httpUtils.toModel(ProductDiscountDTO.class);
+
+        if(productDiscount != null) {
+            cancelProductDiscount(request, response, productDiscount);
+        }
+        else response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+    }
+
+    private void addProductDiscount (HttpServletRequest req, HttpServletResponse resp, ProductDiscountDTO productDiscount) throws IOException {
+        try {
             productDiscount = productDiscountService.save(productDiscount);
             if(productDiscount != null) {
                 mapper.writeValue(resp.getWriter(), "Thêm giảm giá thành công !");
-            } else mapper.writeValue(resp.getWriter(), "error");
+            } else mapper.writeValue(resp.getWriter(), "Có lỗi trong quá trình thêm giảm giá !");
         }
-        else {
-            productDiscount = productDiscountService.update(productDiscount);
-            if(productDiscount != null) {
-                mapper.writeValue(resp.getWriter(), "Cập nhật giảm giá thành công !");
-            } else mapper.writeValue(resp.getWriter(), "error");
+        catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write(e.getMessage());
         }
+    }
+
+    private void updateProductDiscount (HttpServletRequest req, HttpServletResponse resp, ProductDiscountDTO productDiscount) throws IOException {
+        productDiscount = productDiscountService.update(productDiscount);
+        if(productDiscount != null) {
+            mapper.writeValue(resp.getWriter(), "Cập nhật giảm giá thành công !");
+        } else mapper.writeValue(resp.getWriter(), "Có lỗi trong quá trình cập nhật mã giảm giá ");
     }
 
     private void cancelProductDiscount(HttpServletRequest req, HttpServletResponse resp, ProductDiscountDTO productDiscount) throws IOException {

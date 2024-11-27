@@ -25,12 +25,13 @@
             <%
                 AccountRequest account = (AccountRequest) session.getAttribute("loginData");
             %>
-            <form action="<c:url value='/dang-nhap'/>" class="sign-in-form" method="post">
+            <form action="<c:url value='/dang-nhap'/>" class="sign-in-form" method="post" id="loginForm">
                 <c:if test="${not empty message}">
                     <div class="alert alert-${alert}" role="alert" id="login-error-message">
                             ${message}
                     </div>
                 </c:if>
+                <label id="message_login" style="color: red"></label>
                 <h2 class="title">Đăng nhập</h2>
                 <div class="input-field">
                     <i class="fas fa-user"></i>
@@ -45,7 +46,7 @@
                     <a href="<c:url value='/quen-mat-khau'/>" class="forgot-password" style="color: #bca58c;">Quên mật khẩu?</a>
                 </div>
                 <input type="hidden" name="action" value="login" />
-                <input id="btn-login" type="submit" value="Đăng nhập" class="btn solid" />
+                <input id="btn-login" type="button" value="Đăng nhập" class="btn solid" onclick="validateAndSubmit()"/>
                 <p class="social-text">Hoặc đăng nhập bằng phương thức khác</p>
                 <div class="social-media">
                     <a id="facebook-id" href="https://www.facebook.com/v20.0/dialog/oauth?client_id=1217837109270713&redirect_uri=http://localhost:8080/three-party-login&scope=email,public_profile" class="social-icon">
@@ -62,12 +63,14 @@
                 CustomerRequest registrationData = (CustomerRequest) session.getAttribute("registrationData");
             %>
 
-            <form action="<c:url value='/dang-ky'/>" class="sign-up-form" method="post">
+            <form action="<c:url value='/dang-ky'/>" class="sign-up-form" method="post" id="form-register">
                 <c:if test="${not empty message}">
                     <div class="alert alert-${alert}" role="alert" id="register-error-message">
                             ${message}
                     </div>
                 </c:if>
+
+                <label id="message_register" style="color: red"></label>
                 <h2 class="title">Tạo tài khoản</h2>
 
                 <div class="input-field">
@@ -90,16 +93,16 @@
 
                 <div class="input-field">
                     <i class="fas fa-user"></i>
-                    <input type="text" placeholder="Tên đăng nhập" name="userName"
+                    <input type="text" placeholder="Tên đăng nhập" name="userName" id = "user-regis"
                            value="<%= registrationData != null ? registrationData.getUserName() : "" %>"/>
                 </div>
 
                 <div class="input-field">
                     <i class="fas fa-lock"></i>
-                    <input type="password" placeholder="Mật khẩu" name="password" />
+                    <input type="password" placeholder="Mật khẩu" name="password" id = "pass-regis"/>
                 </div>
                 <input type="hidden" name="action" value="register" />
-                <input type="submit" value="Đăng ký" class="btn" />
+                <input type="button" value="Đăng ký" class="btn" onclick="validateAndSubmitRegister()"/>
             </form>
             <%
                 String queryString = request.getQueryString();
@@ -146,7 +149,7 @@
 </div>
 
 <script src="<c:url value="/static/auth/app.js"/>"></script>
-<script src="<c:url value='/static/auth/js/sendDirection.js'/> " type="text/javascript"></script>
+
 
 <script type="text/javascript">
     (function() {
@@ -160,8 +163,73 @@
         }
     })();
 </script>
+<script>
+    // Xóa tham số khỏi URL
+    if (window.location.search) {
+        const baseUrl = window.location.origin + window.location.pathname;
+        history.replaceState(null, "", baseUrl);
+    }
+
+    function validateAndSubmitRegister() {
+        const userName = document.getElementById('user-regis').value.trim();
+        const name = document.getElementById('name').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const pass = document.getElementById('pass-regis').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const messageRegis = document.getElementById('message_register');
+
+        // Kiểm tra giá trị của các trường nhập
+        if(!name){
+            messageRegis.textContent = "Vui lòng nhập tên.";
+            return false;
+        }
+        if(!phone){
+            messageRegis.textContent = "Vui lòng nhập số điện thoại.";
+            return false;
+        }
+        if(!email){
+            messageRegis.textContent = "Vui lòng nhập email.";
+            return false;
+        }
+        if (!userName) {
+            messageRegis.textContent = "Vui lòng nhập tên đăng nhập.";
+            return false;
+        }
+
+        if (!pass) {
+            messageRegis.textContent = "Vui lòng nhập mật khẩu.";
+            return false;
+        }
+
+        // Nếu không có lỗi, submit form
+        messageRegis.textContent = ""; // Xóa thông báo lỗi (nếu có)
+        document.getElementById('form-register').submit();
+    }
+    function validateAndSubmit() {
+        const userName = document.getElementById('userName').value.trim();
+        const password = document.getElementById('password').value.trim();
+        const messageLogin = document.getElementById('message_login');
+
+        // Kiểm tra giá trị của các trường nhập
+        if (!userName) {
+            messageLogin.textContent = "Vui lòng nhập tên đăng nhập.";
+            return false;
+        }
+
+        if (!password) {
+            messageLogin.textContent = "Vui lòng nhập mật khẩu.";
+            return false;
+        }
+
+        // Nếu không có lỗi, submit form
+        messageLogin.textContent = ""; // Xóa thông báo lỗi (nếu có)
+        document.getElementById('loginForm').submit();
+    }
+</script>
+<script src="<c:url value='/static/auth/js/sendDirection.js'/> " type="text/javascript"></script>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 
 </body>
 </html>

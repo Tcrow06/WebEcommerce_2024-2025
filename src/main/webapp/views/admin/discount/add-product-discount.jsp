@@ -99,11 +99,11 @@
 
                                 <!-- Confirm and Cancel Buttons -->
                                 <div class="mt-3 d-flex justify-content-end">
-                                    <button id="cancel-button" class="btn btn-secondary">Dừng giảm giá</button>
+                                    <button type="button" id="cancel-button" class="btn btn-secondary">Dừng giảm giá</button>
                                 </div>
 
                                 <div class="mt-3 d-flex justify-content-end">
-                                    <button id="update-button" class="btn btn-primary">Cập nhật</button>
+                                    <button type="button" id="update-button" class="btn btn-primary">Cập nhật</button>
                                 </div>
 
                             </form>
@@ -161,7 +161,7 @@
                                     <td>
                                         <input type="radio" name="product" value="${item.id}"
                                                data-photo="${item.photo}" data-id="${item.id}"
-                                               data-name="${item.name}" data-price="${item.price}"
+                                               data-name="${item.name}" data-price="${item.getDiscountedPrice()}"
                                                data-brand="${item.brand}"
                                         <c:if test="${item.productDiscount != null}">
                                                 data-productdiscountid="${item.productDiscount.id}"
@@ -174,13 +174,21 @@
                                         >
                                     </td>
                                     <td>
-                                        <img
-                                                src="<c:url value='/api-image?path=${item.photo}'/>"
-                                                alt="th"
-                                                style="width: 45px; height: 45px"
-                                                class="rounded-circle"
-                                        />
-                                        ${item.name}
+
+                                        <div class="d-flex align-items-center">
+                                            <img
+                                                    src="<c:url value='/api-image?path=${item.photo}'/>"
+                                                    alt="th"
+                                                    style="width: 45px; height: 45px"
+                                                    class="rounded-circle"
+                                            />
+                                            <div class="flex-column ms-4">
+                                                <c:if test="${item.productDiscount != null}">
+                                                    <span class="badge bg-${item.productDiscount.getBootstrapClassStatus ()}">${item.productDiscount.getStatus()}</span>
+                                                </c:if>
+                                                <p class="mb-0">${item.name}</p>
+                                            </div>
+                                        </div>
                                     </td>
                                     <td>
                                         <c:if test="${item.productDiscount != null}">
@@ -351,6 +359,40 @@
                 }
             });
 
+            $('#update-button').click(function () {
+
+                if (!checkInput()) return
+
+                showConfirmationModal().then((result) => {
+                    if (!result) {
+                        console.log("User cancelled the action.");
+                        return; // Người dùng chọn "Cancel", dừng xử lý
+                    }
+
+                    const id = $('#id-product-discount').val();
+                    const name = $('#discountName').val();
+                    const productId = $('#id-productselected').val();
+                    const startDate = $('#startTime-discount').val();
+                    const endDate = $('#endTime-discount').val();
+                    const discountPercentage = $('#discountPercentage').val();
+                    const isOutstanding = $('#isOutstanding').is(':checked');
+
+                    const data = {
+                        id: id,
+                        name: name,
+                        startDate: startDate,
+                        endDate: endDate,
+                        discountPercentage: discountPercentage,
+                        isOutStanding: isOutstanding,
+                        product: {
+                            id: productId
+                        }
+                    };
+
+                    sendAPI(data, 'POST')
+                });
+            });
+
             $('#cancel-button').click(function (){
                 showConfirmationModal().then((result) => {
                     if (!result) {
@@ -365,7 +407,7 @@
                     const data = {
                         id: productDiscountId
                     };
-                    sendAPI(data, '/api-huy-giam-gia')
+                    sendAPI(data, 'DELETE')
                 });
             })
 
@@ -399,21 +441,38 @@
                         }
                     };
 
-                    sendAPI(data, '/api-product-discount')
+                    sendAPI(data, 'POST')
                 });
             });
 
-            function sendAPI (data,url) {
+            function sendAPI (data,method) {
                 $.ajax({
-                    url: url,
-                    type: 'POST',
+                    url: '/api-product-discount',
+                    type: method,
                     contentType: 'application/json',
                     data: JSON.stringify(data),
+                    beforeSend: function () {
+                        // Hiển thị loader trước khi AJAX bắt đầu
+                        $('#global-loader').css('display', 'flex');
+                    },
                     success: function (response) {
-                        alert("Đã gửi thông tin thành công!" + response);
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành công',
+                            text: response.toString()
+                        }).then(() => {
+                            window.location.href = 'giam-gia-cho-san-pham'
+                        });
                     },
                     error: function (xhr, status, error) {
-                        alert("Lỗi: " + error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi',
+                            text: error
+                        });
+                    },complete: function () {
+                        $('#global-loader').css('display', 'none');
                     }
                 });
             }
@@ -440,7 +499,7 @@
                     $('#dateInput').text(""); // Xóa lỗi nếu đã chọn ngày hợp lệ
                 }
 
-                // Kiểm tra nếu endDate nhỏ hơn startDate
+
                 if (new Date(endDate) < new Date(startDate)) {
                     $('#dateInput').text("Ngày kết thúc không thể nhỏ hơn ngày bắt đầu.");
                     return false;
@@ -454,6 +513,33 @@
 
         });
 
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            // Lắng nghe sự kiện khi người dùng nhập vào ô tìm kiếm
+            $('#productSearch').on('input', function () {
+                var searchValue = $(this).val().toLowerCase(); // Lấy giá trị tìm kiếm và chuyển về chữ thường
+
+                // Lọc các dòng trong bảng theo tên sản phẩm
+                $('#productModal table tbody tr').each(function () {
+                    var productName = $(this).find('td:nth-child(2)').text().toLowerCase(); // Lấy tên sản phẩm trong cột thứ 2 (Sản Phẩm)
+
+                    // Kiểm tra nếu tên sản phẩm chứa từ khóa tìm kiếm
+                    if (productName.indexOf(searchValue) > -1) {
+                        $(this).show(); // Hiển thị dòng nếu tìm thấy
+                    } else {
+                        $(this).hide(); // Ẩn dòng nếu không tìm thấy
+                    }
+                });
+            });
+
+            // Optional: Reset lại khi đóng modal
+            $('#productModal').on('hidden.bs.modal', function () {
+                $('#productSearch').val('');  // Xóa giá trị tìm kiếm khi modal đóng
+                $('#productModal table tbody tr').show(); // Hiển thị lại tất cả các dòng
+            });
+        });
     </script>
 
 </div>

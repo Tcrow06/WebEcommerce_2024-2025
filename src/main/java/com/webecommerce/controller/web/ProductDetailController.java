@@ -1,6 +1,5 @@
 package com.webecommerce.controller.web;
 
-import com.webecommerce.constant.EnumRole;
 import com.webecommerce.constant.ModelConstant;
 import com.webecommerce.dto.ProductDTO;
 import com.webecommerce.dto.review.ProductReviewDTO;
@@ -14,6 +13,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 
@@ -48,10 +48,12 @@ public class ProductDetailController extends HttpServlet {
 
                 request.setAttribute(ModelConstant.REVIEW, productReviewDTOList);
                 request.setAttribute(ModelConstant.MODEL, product);
+
+                request.setAttribute(ModelConstant.SUGGEST, productService.findProductSuggestion(product.getCategory().getId(),4,product.getId()));
                 request.getRequestDispatcher("/views/web/product-detail.jsp").forward(request, response);
                 return;
             }
         }
-        response.sendRedirect("/danh-sach-san-pham");
+        request.getRequestDispatcher("/views/web/product-not-found.jsp").forward(request, response);
     }
 }

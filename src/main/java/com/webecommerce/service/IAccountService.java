@@ -15,4 +15,14 @@ public interface IAccountService {
     boolean existsUsernameAndEmail(String username, String email);
     boolean sendOTPToEmail(String email, long id, String purpose);
     int verifyOTP(String email, String otp);
+
+    String checkLogin(AccountRequest accountRequest);
+
+
+
+
+
+
+
+    UserResponse findByUserNameAndPassword(String userName, String password);
 }

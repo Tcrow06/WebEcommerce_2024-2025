@@ -36,10 +36,15 @@ public class ProductDiscountService implements IProductDiscountService {
     @Transactional
     public ProductDiscountDTO cancelProductDiscount(Long id) {
         ProductDiscountEntity productDiscountEntity = productDiscountDAO.findById(id);
-        productDiscountEntity.setEndDate(LocalDateTime.now().minusMinutes(1));
-        return productDiscountMapper.toDTO(
-                productDiscountDAO.update(productDiscountEntity)
-        );
+        if (productDiscountEntity != null) {
+            if (productDiscountEntity.getEndDate().isAfter(LocalDateTime.now())) {
+                productDiscountEntity.setEndDate(LocalDateTime.now().minusMinutes(1));
+                return productDiscountMapper.toDTO(
+                        productDiscountDAO.update(productDiscountEntity)
+                );
+            } else throw new IllegalArgumentException("Không thể chỉnh sửa chương trình giảm giá đã kết thúc");
+        }
+        return null;
     }
 
 
@@ -77,7 +82,7 @@ public class ProductDiscountService implements IProductDiscountService {
                 productDiscountEntity.setOutStanding(productDiscount.getIsOutStanding());
 
                 return productDiscountMapper.toDTO(productDiscountDAO.update(productDiscountEntity));
-            }
+            } else throw new IllegalArgumentException("Mã giảm giá này không cho phép chỉnh sửa !"); // sử dụng khi tham số đầu vào hoặc trạng thái không hợp lệ
         }
         return null;
     }
@@ -125,6 +130,9 @@ public class ProductDiscountService implements IProductDiscountService {
             productDiscountDTO.setProduct(
                     productMapper.toDTO(productDiscountEntity.getProduct())
             );
+
+            productDiscountDTO.getProduct().setDiscountPercentage(productDiscountDTO.getDiscountPercentage());
+
             if (productVariant != null) {
                 productDiscountDTO.getProduct().setPhoto(productVariant.getImageUrl());
                 productDiscountDTO.getProduct().setPrice(productVariant.getPrice());

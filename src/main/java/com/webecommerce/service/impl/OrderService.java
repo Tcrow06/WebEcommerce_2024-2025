@@ -1,11 +1,13 @@
 package com.webecommerce.service.impl;
 
 import com.webecommerce.constant.EnumOrderStatus;
+import com.webecommerce.constant.EnumProductStatus;
 import com.webecommerce.dao.discount.IBillDiscountDAO;
 import com.webecommerce.dao.discount.IProductDiscountDAO;
 import com.webecommerce.dao.order.IOrderDAO;
 import com.webecommerce.dao.order.IOrderInfoDAO;
 import com.webecommerce.dao.people.ICustomerDAO;
+import com.webecommerce.dao.product.IProductDAO;
 import com.webecommerce.dao.product.IProductVariantDAO;
 import com.webecommerce.dto.OrderDTO;
 import com.webecommerce.dto.OrderDetailDTO;
@@ -21,6 +23,7 @@ import com.webecommerce.entity.order.OrderEntity;
 import com.webecommerce.entity.order.OrderInfoEntity;
 import com.webecommerce.entity.order.OrderStatusEntity;
 import com.webecommerce.entity.people.CustomerEntity;
+import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.entity.product.ProductVariantEntity;
 import com.webecommerce.mapper.Impl.OrderInfoMapper;
 import com.webecommerce.mapper.Impl.OrderMapper;
@@ -35,8 +38,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OrderService implements IOrderService {
-    @Inject
-    private IProductService productService;
 
     @Inject
     private IBillDiscountService billDiscountService;
@@ -47,21 +48,11 @@ public class OrderService implements IOrderService {
     @Inject
     private IBillDiscountDAO billDiscountDAO;
 
-
-    @Inject
-    private ProductVariantService productVariantService;
-
-    @Inject
-    private IProductDiscountService productDiscountService;
-
     @Inject
     private ProductDiscountMapper productDiscountMapper;
 
     @Inject
     private ProductVariantMapper productVariantMapper;
-
-    @Inject
-    private IOrderInfoService orderInfoService;
 
     @Inject
     private OrderInfoMapper orderInfoMapper;
@@ -73,13 +64,10 @@ public class OrderService implements IOrderService {
     private OrderMapper orderMapper;
 
     @Inject
-    private IOrderInfoDAO orderInfoDAO;
-
-    @Inject
-    private IProductDiscountDAO productDiscountDAO;
-
-    @Inject
     private ICustomerDAO customerDAO;
+
+    @Inject
+    private ISendEmailService sendEmailService;
 
 
 
@@ -94,19 +82,27 @@ public class OrderService implements IOrderService {
             if(billDiscountDTO!=null){
                 if(billDiscountDTO.getStartDate().isAfter(LocalDateTime.now())||billDiscountDTO.getEndDate().isBefore(LocalDateTime.now())){
                     status="error";
-                    message.append(" Mã giảm giá đã hết hạn, vui lòng chọn mã giảm giá khác <br/>");
+                    message.append(" Mã giảm giá đã hết hạn, vui lòng chọn mã giảm giá khác.\n");
                 }else{
                     orderDTO.setBillDiscount(billDiscountDTO);
                 }
             }else{
                 status="error";
-                message.append(" Mã giảm giá không hợp lệ, vui lòng chọn mã giảm giá khác <br/>");
+                message.append(" Mã giảm giá không hợp lệ, vui lòng chọn mã giảm giá khác.\n");
             }
         }
 
         for(ProductOrderDTO product : checkOutRequestDTO.getSelectedProductsId()){
             ProductVariantEntity productVariantEntity = productVariantDAO.findById(product.getProductVariantId());
             ProductVariantDTO productVariantDTO = productVariantMapper.toDTO(productVariantEntity);
+            if(productVariantEntity.getProduct().getProductDiscount() !=null){
+                ProductDiscountEntity discount = productVariantEntity.getProduct().getProductDiscount();
+                if(discount.getEndDate().isBefore(LocalDateTime.now())||
+                        discount.getStartDate().isAfter(LocalDateTime.now())){
+                        productVariantEntity.getProduct().setProductDiscount(null);
+
+                }
+            }
 
             if(productVariantDTO.getQuantity()<product.getQuantity()){
                 if(status==null){
@@ -114,7 +110,16 @@ public class OrderService implements IOrderService {
                 }
                 message.append(productVariantDTO.getName() + " "
                         + productVariantDTO.getColor() +" " + productVariantDTO.getSize()
-                        + " chỉ còn: " + productVariantDTO.getQuantity() + " sản phẩm trong kho <br/> ");
+                        + " chỉ còn: " + productVariantDTO.getQuantity() + " sản phẩm trong kho\n ");
+            }
+            if(productVariantEntity.getProduct().getStatus().equals(EnumProductStatus.STOP_SELLING)||
+                    productVariantEntity.getStatus().equals(EnumProductStatus.STOP_SELLING)){
+                if(status==null){
+                    status="error";
+                }
+                message.append(productVariantDTO.getName() + " "
+                        + productVariantDTO.getColor() +" " + productVariantDTO.getSize()
+                        + " không còn bán nữa\n ");
             }
 
             orderDetailDTOS.add(new OrderDetailDTO(product.getQuantity(),productVariantDTO, productDiscountMapper.toDTO(productVariantEntity.getProduct().getProductDiscount())));
@@ -123,7 +128,7 @@ public class OrderService implements IOrderService {
         orderDTO.setOrderDetails(orderDetailDTOS);
         if(!orderDTO.calculateTotal()){
             status="error";
-            message.append("Mã giảm giá hóa đơn không đủ điều kiện để áp dụng <br/>");
+            message.append("Mã giảm giá hóa đơn không đủ điều kiện để áp dụng.\n");
         }
         if(status==null){
             status ="success";
@@ -141,7 +146,7 @@ public class OrderService implements IOrderService {
             if(orderDTO.getBillDiscount()!=null){
                 if(billDiscountDAO.findBillDiscountByCodeAndValid(orderDTO.getBillDiscount().getCode())==null){
                     status ="warning";
-                    message.append("Mã giảm giá cho hóa đơn đã hết hạn ! <br/>");
+                    message.append("Mã giảm giá cho hóa đơn đã hết hạn!\n");
                     orderDTO.setBillDiscount(null);
                     orderDTO.calculateTotal();
                 }
@@ -160,7 +165,7 @@ public class OrderService implements IOrderService {
                                 .append(productVariantEntity.getColor())
                                 .append(" ")
                                 .append(productVariantEntity.getSize())
-                                .append(" đã hết hạn! <br/> ");
+                                .append(" đã hết hạn!\n");
                     }
                 }
                 if(productVariantEntity.getQuantity()<orderDetailDTO.getQuantity()){
@@ -174,7 +179,7 @@ public class OrderService implements IOrderService {
                             .append(productVariantEntity.getSize())
                             .append(" chỉ còn: ")
                             .append(productVariantEntity.getQuantity())
-                            .append(" sản phẩm trong kho <br/>");
+                            .append(" sản phẩm trong kho.\n");
 
                 }
             }
@@ -184,9 +189,17 @@ public class OrderService implements IOrderService {
         OrderEntity orderEntity;
         if(status == null){
             orderEntity = createOrder(orderDTO,idUser);
+
+            // Biến tạm để gán gửi email
+            var orderSendEmail = orderDTO;
+
             orderDTO = orderMapper.toDTO(orderEntity);
             status ="success";
             message =new StringBuilder("Đặt hàng thành công");
+
+            // Gửi mail sau khi đặt hàng thành công
+            sendEmailService.sendEmail(orderSendEmail, idUser);
+
         }else if(status.equals("warning")){
             message.append(" Vui lòng tải lại trang để xem lại hóa đơn!");
         }else{
@@ -210,7 +223,7 @@ public class OrderService implements IOrderService {
     }
 
     @Transactional
-    public OrderEntity createOrder(OrderDTO orderDTO, Long idUser) {
+    public OrderEntity  createOrder(OrderDTO orderDTO, Long idUser) {
        try {
            OrderEntity orderEntity = new OrderEntity();
            String city = orderDTO.getOrderInfoDTO().getAddress().getCity().trim();
@@ -275,6 +288,11 @@ public class OrderService implements IOrderService {
            e.printStackTrace();
        }
        return null;
+    }
+
+    @Override
+    public List<DisplayOrderDTO> getOrderDisplay() {
+        return orderDAO.getOrderDisplay();
     }
 
     @Override

@@ -45,34 +45,38 @@
                     <div class="card-body pb-0">
                         <div class="row">
                             <div class="col-lg-12 col-sm-12">
-                                <div class="row">
-                                    <div class="col-lg col-sm-6 col-12">
-                                        <div class="form-group">
-                                            <select class="select">
-                                                <option>Choose Category</option>
-                                                <option>Computers</option>
-                                                <option>Fruits</option>
-                                            </select>
+                                <form action="danh-sach-san-pham" method="get">
+                                    <div class="row">
+                                        <input type="hidden" name="type" value="${type}">
+                                        <div class="col-lg-2 col-sm-6 col-12">
                                         </div>
-                                    </div>
-                                    <div class="col-lg col-sm-6 col-12">
-                                        <div class="form-group">
-                                            <select class="select">
-                                                <option>Choose Sub Category</option>
-                                                <option>Computer</option>
-                                            </select>
+                                        <div class="col-lg-3 col-sm-6 col-12">
+                                            <div class="form-group">
+                                                <select class="select" name="category">
+                                                    <option value="all">Tất cả</option>
+                                                    <c:forEach var="item" items="${category}">
+                                                        <option value="${item.code}">${item.name}</option>
+                                                    </c:forEach>
+                                                </select>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-lg col-sm-6 col-12">
-                                        <div class="form-outline" data-mdb-input-init>
-                                            <input type="text" id="typeText" class="form-control" />
-                                            <label class="form-label" for="typeText">Tên sản phẩm</label>
+                                        <div class="col-lg-3 col-sm-6 col-12">
+                                            <div class="form-outline" data-mdb-input-init>
+                                                <input type="text"  name="name" id="typeText" class="form-control" />
+                                                <label class="form-label" for="typeText">Tên sản phẩm</label>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <a class="btn btn-primary" href="tao-giam-gia-cho-don-hang">Lọc</a>
+                                        <div class="col-lg-3 col-sm-6 col-12">
+                                            <button type="submit" class="btn btn-primary">Lọc</button>
+<%--                                            <a class="btn btn-primary" href="tao-giam-gia-cho-don-hang">Lọc</a>--%>
+                                        </div>
 
-                                </div>
+                                        <div class="col-lg-2 col-sm-6 col-12">
+                                        </div>
+
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -105,8 +109,9 @@
                                 <td class="align-middle">
 
                                     <c:if test="${item.productDiscount != null}">
-                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked/>
-                                        <label class="form-check-label" for="flexCheckChecked">Giảm_${item.productDiscount.discountPercentage}%</label>
+                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckCheckedDisabled_${item.id}" checked disabled/>
+                                        <label class="form-check-label" for="flexCheckCheckedDisabled_${item.id}">Giảm_${item.productDiscount.discountPercentage}%</label>
+                                        <span class="badge badge-${item.productDiscount.getBootstrapClassStatus()} rounded-pill d-inline">${item.productDiscount.getStatus()}</span>
                                     </c:if>
                                     <c:if test="${item.productDiscount == null}">
                                         <div class="flex-column ms-4">
@@ -115,7 +120,10 @@
                                     </c:if>
                                 </td>
                                 <td class="align-middle">
-                                    <p class="mb-0" style="font-weight: 500;">${item.price}</p>
+                                    <p class="mb-0" style="font-weight: 500;">${item.getDiscountedPrice()}</p>
+                                    <c:if test="${item.productDiscount != null}">
+                                        <span style="text-decoration: line-through; color: grey;">${item.price}</span>
+                                    </c:if>
                                 </td>
                                 <td class="align-middle">
                                     <c:if test="${type == 'dang-kinh-doanh'}">

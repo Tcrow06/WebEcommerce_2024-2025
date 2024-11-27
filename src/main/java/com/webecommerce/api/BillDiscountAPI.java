@@ -1,12 +1,12 @@
 package com.webecommerce.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.webecommerce.dto.CategoryDTO;
 import com.webecommerce.dto.discount.BillDiscountDTO;
 import com.webecommerce.service.impl.BillDiscountService;
 import com.webecommerce.utils.HttpUtils;
 
 import javax.inject.Inject;
+import javax.persistence.EntityExistsException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -40,7 +40,11 @@ public class BillDiscountAPI extends HttpServlet {
                 }
             }
 
-        } catch (Exception e) {
+        } catch (EntityExistsException entityExistsException) {
+            resp.setStatus(HttpServletResponse.SC_CONFLICT);
+            mapper.writeValue(resp.getWriter(),  entityExistsException.getMessage());
+        }
+        catch (Exception e) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             mapper.writeValue(resp.getWriter(), "Lỗi xử lý: " + e.getMessage());
         }
@@ -75,6 +79,7 @@ public class BillDiscountAPI extends HttpServlet {
             mapper.writeValue(resp.getWriter(),"Thêm chương trình thất bại !");
         }
     }
+
 
     private void updateBillDiscount (HttpServletRequest req, HttpServletResponse resp, BillDiscountDTO billDiscount) throws IOException {
         billDiscount = billDiscountService.update(billDiscount);

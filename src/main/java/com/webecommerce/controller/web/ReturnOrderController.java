@@ -30,15 +30,20 @@ public class ReturnOrderController extends HttpServlet {
         String[] selectedItems = request.getParameterValues("selectedItems");
 
         List<DisplayOrderDetailDTO> selectedOrderItems = new ArrayList<>();
-        Map<Long, Integer> quantities = new HashMap<>();
+        Map<Long, Long> quantities = new HashMap<>();
         if (selectedItems != null) {
             for (String idStr : selectedItems) {
                 Long id = Long.parseLong(idStr);
-                int quantity = quantities.get(id);
-                DisplayOrderDetailDTO dto = orderDetailService.findOrderDetail(id);
-                if(dto != null) {
-                    dto.setQuantity(quantity);
-                    selectedOrderItems.add(dto);
+                String quantityStr = request.getParameter("quantities[" + id + "]");
+                if (quantityStr != null) {
+                    int quantityInteger = Integer.parseInt(quantityStr);
+                    Long quantity = (long) quantityInteger;
+                    quantities.put(id, quantity);
+                    DisplayOrderDetailDTO dto = orderDetailService.findOrderDetail(id);
+                    if(dto != null) {
+                        dto.setQuantity(quantity);
+                        selectedOrderItems.add(dto);
+                    }
                 }
             }
         }

@@ -22,6 +22,8 @@
 </style>
 
 <link rel="stylesheet" href="/static/web/css/return-order.css" type="text/css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- Breadcrumb Section Begin -->
 <section class="breadcrumb-blog set-bg" data-setbg="/static/web/img/bg-return-order.jpg">
@@ -121,19 +123,19 @@
 
 <script>
     $('#submit-button').click(function () {
-        // Tạo một mảng chứa dữ liệu hoàn trả của các sản phẩm
         const returnOrders = [];
-        // Duyệt qua tất cả các phần tử sản phẩm
         $('.section-wrapper').each(function () {
             const section = $(this);
 
             const orderDetailId = section.find('.product__id span').text();
-            const reason = section.find('textarea[name="description_' + orderDetailId + '"]').val();
+            let reason = section.find('textarea[name="description_' + orderDetailId + '"]').val();
+            if (!reason) {
+                reason = "Không có lý do";
+            }
             const status = 0;
             const quantityReturn = section.find('.product__quantity span').text();
             const today = new Date();
             const returnDate = today.toISOString().split('T')[0];
-            // Thêm dữ liệu sản phẩm và mảng
             returnOrders.push({
                 orderDetailId: orderDetailId,
                 reason: reason,
@@ -152,10 +154,22 @@
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (response) {
-                alert("Đã gửi thông tin thành công!");
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thành công!',
+                    text: 'Đã gửi yêu cầu trả hàng thành công!',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    window.location.href = '/trang-chu/don-hang';
+                });
             },
             error: function (xhr, status, error) {
-                alert("Lỗi: " + error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi!',
+                    text: 'Đã xảy ra lỗi: ' + error,
+                    confirmButtonText: 'OK'
+                });
             }
         });
     });

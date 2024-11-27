@@ -127,14 +127,14 @@
                         <!-- Minimum Order Value -->
                         <div class="form-group">
                             <label for="minOrderValue">Giá trị đơn hàng tối thiểu</label>
-                            <input type="text" class="form-control" id="minOrderValue" placeholder="Nhập vào">
+                            <input type="number" class="form-control" id="minOrderValue" placeholder="Nhập vào">
                             <div class="error-message" id="minOrderValueError" style="font-size: 12px"></div>
                         </div>
 
                         <!-- Usage Limit -->
                         <div class="form-group">
                             <label for="usageLimit">Số tiền được giảm tối đa</label>
-                            <input type="text" class="form-control" id="usageLimit" placeholder="Nhập vào">
+                            <input type="number" class="form-control" id="usageLimit" placeholder="Nhập vào">
                             <small class="form-text text-muted">Số tiền được giảm tối đa</small>
                             <div class="error-message" id="maximumAmountError" style="font-size: 12px"></div>
                         </div>
@@ -405,11 +405,38 @@
                     method: method,
                     contentType: 'application/json',
                     data: JSON.stringify(data),
+                    beforeSend: function () {
+                        // Hiển thị loader trước khi AJAX bắt đầu
+                        $('#global-loader').css('display', 'flex');
+                    },
                     success: function(response) {
-                        alert(response);
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành công',
+                            text: response.toString()
+                        }).then(() => {
+                            window.location.href = 'giam-gia-cho-don-hang'
+                        });
                     },
                     error: function(xhr, status, error) {
-                        alert('Có lỗi xảy ra khi gửi dữ liệu!');
+                        let notice;
+
+                        if (xhr.status === 409) {
+                            notice = ("Lỗi: " + xhr.responseText); // Hiển thị thông báo lỗi khi mã code đã tồn tại
+                        } else if (xhr.status === 400) {
+                            notice = ("Lỗi: Dữ liệu không hợp lệ.");
+                        } else {
+                            notice = ("Đã xảy ra lỗi: " + error);
+                        }
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi',
+                            text: notice
+                        });
+                    },
+                    complete: function () {
+                        $('#global-loader').css('display', 'none');
                     }
                 });
             }

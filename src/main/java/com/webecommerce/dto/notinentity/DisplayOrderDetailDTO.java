@@ -4,7 +4,7 @@ import com.webecommerce.constant.EnumOrderStatus;
 
 public class DisplayOrderDetailDTO {
     private Long id;
-    private Integer quantity;
+    private Long quantity;
     private String imageUrl;
     private Double price;
     private String color;
@@ -12,7 +12,7 @@ public class DisplayOrderDetailDTO {
     private String productName;
     private EnumOrderStatus status;
 
-    public DisplayOrderDetailDTO(Long id, Integer quantity, String imageUrl, String color, String size, String productName, Double price) {
+    public DisplayOrderDetailDTO(Long id, Long quantity, String imageUrl, String color, String size, String productName, Double price) {
         this.id = id;
         this.quantity = quantity;
         this.imageUrl = imageUrl;
@@ -30,11 +30,11 @@ public class DisplayOrderDetailDTO {
         this.id = id;
     }
 
-    public Integer getQuantity() {
+    public Long getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(Long quantity) {
         this.quantity = quantity;
     }
 
