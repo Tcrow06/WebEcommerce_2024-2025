@@ -8,6 +8,7 @@ import com.webecommerce.entity.discount.ProductDiscountEntity;
 import javax.persistence.NoResultException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import com.webecommerce.entity.product.ProductEntity;
@@ -40,8 +41,6 @@ public class BillDiscountDAO extends AbstractDAO<BillDiscountEntity> implements 
             List<BillDiscountEntity> result = entityManager.createQuery(query, BillDiscountEntity.class)
                     .setParameter("idUser", idUser)
                     .getResultList();
-
-            // Kiểm tra nếu kết quả trả về không có mã giảm giá
             if (result.isEmpty()) {
                 LOGGER.log(Level.INFO, "Không có mã giảm giá phù hợp cho khách hàng ID: " + idUser);
             }
@@ -55,7 +54,79 @@ public class BillDiscountDAO extends AbstractDAO<BillDiscountEntity> implements 
             entityManager.close();
         }
     }
+    public List<BillDiscountEntity> findBillDiscountByTime(LocalDateTime inputTime) {
+        String query = "SELECT b FROM BillDiscountEntity b " +
+                "WHERE :inputTime BETWEEN b.startDate AND b.endDate";
 
+        EntityManager entityManager = HibernateUtil.getEmFactory().createEntityManager();
+        try {
+            // Truyền thời gian đầu vào vào truy vấn
+            List<BillDiscountEntity> result = entityManager.createQuery(query, BillDiscountEntity.class)
+                    .setParameter("inputTime", inputTime)
+                    .getResultList();
+
+            if (result.isEmpty()) {
+                LOGGER.log(Level.INFO, "Không có mã giảm giá nào có thời gian nằm giữa startDate và endDate.");
+            }
+
+            return result;
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi lấy mã giảm giá có thời gian nằm giữa startDate và endDate", e);
+            return null;
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    public List<BillDiscountEntity> findBillDiscountByPercent(String percent) {
+        String query = "SELECT b FROM BillDiscountEntity b " +
+                "WHERE b.discountPercentage > :percent " +
+                "AND CURRENT_TIMESTAMP BETWEEN b.startDate AND b.endDate";
+
+        EntityManager entityManager = HibernateUtil.getEmFactory().createEntityManager();
+        try {
+            int discountPercent = Integer.parseInt(percent);
+
+            List<BillDiscountEntity> result = entityManager.createQuery(query, BillDiscountEntity.class)
+                    .setParameter("percent", discountPercent)
+                    .getResultList();
+
+            if (result.isEmpty()) {
+                LOGGER.log(Level.INFO, "Không có mã giảm giá có phần trăm lớn hơn " + percent);
+            }
+
+            return result;
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi lấy mã giảm giá có phần trăm lớn hơn: " + percent, e);
+            return null;
+        } finally {
+            entityManager.close();
+        }
+    }
+
+
+    public List<BillDiscountEntity> getAllBillDiscount() {
+        String query = "SELECT b FROM BillDiscountEntity b " +
+                "WHERE b.endDate > CURRENT_TIMESTAMP";
+
+        EntityManager entityManager = HibernateUtil.getEmFactory().createEntityManager();
+        List<BillDiscountEntity> list = new ArrayList<>();
+        try {
+            entityManager.getTransaction().begin();
+            list = entityManager.createQuery(query, BillDiscountEntity.class)
+                    .getResultList();
+
+            entityManager.getTransaction().commit();
+        } catch (Exception e) {
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
+            }
+            e.printStackTrace(); // Log lỗi
+        } finally {
+            entityManager.close();
+        }
+        return list;
+    }
 
     public List<BillDiscountEntity> getBillDiscountByOutStanding(boolean outstanding) {
         return super.findByAttribute("isOutStanding", outstanding);

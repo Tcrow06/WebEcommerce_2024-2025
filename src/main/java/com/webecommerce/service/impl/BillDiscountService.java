@@ -2,9 +2,7 @@ package com.webecommerce.service.impl;
 
 import com.webecommerce.dao.discount.IBillDiscountDAO;
 import com.webecommerce.dto.discount.BillDiscountDTO;
-import com.webecommerce.dto.discount.ProductDiscountDTO;
 import com.webecommerce.entity.discount.BillDiscountEntity;
-import com.webecommerce.entity.discount.ProductDiscountEntity;
 import com.webecommerce.mapper.GenericMapper;
 import com.webecommerce.service.IBillDiscountService;
 
@@ -90,6 +88,12 @@ public class BillDiscountService implements IBillDiscountService {
         return billDiscountMapper.toDTOList(list);
     }
 
+    @Override
+    public List<BillDiscountDTO> getAllBillDiscount() {
+        List<BillDiscountEntity> list = billDiscountDAO.getAllBillDiscount();
+        return billDiscountMapper.toDTOList(list);
+    }
+
     public List<BillDiscountDTO> findAllOutStanding () {
         List<BillDiscountEntity> billDiscountEntities = billDiscountDAO.findBillDiscountOutStandingAndStillValid();
         if (billDiscountEntities == null)
@@ -117,6 +121,12 @@ public class BillDiscountService implements IBillDiscountService {
     public List <BillDiscountDTO> findBillDiscountValid () {
         return billDiscountMapper.toDTOList(billDiscountDAO.findBillDiscountValid());
     }
-
-
+    @Override
+    public List<BillDiscountDTO> findBillDiscountByPercent(String percent) {
+        return billDiscountMapper.toDTOList(billDiscountDAO.findBillDiscountByPercent(percent));
+    }
+    @Override
+    public List<BillDiscountDTO> findBillDiscountByTime(LocalDateTime inputTime) {
+        return billDiscountMapper.toDTOList(billDiscountDAO.findBillDiscountByTime(inputTime));
+    }
 }

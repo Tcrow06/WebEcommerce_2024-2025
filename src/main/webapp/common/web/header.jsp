@@ -270,7 +270,7 @@
 
                                     <li><a class="dropdown-item" href="<c:url value="/thong-tin-ca-nhan"/>">Thông tin tài khoản</a></li>
                                     <li><a class="dropdown-item" href="<c:url value="/trang-chu/don-hang"/>">Đơn hàng của tôi</a></li>
-                                    <li><a class="dropdown-item" href="#">Danh sách yêu thích</a></li>
+                                    <li><a class="dropdown-item" href="<c:url value="/danh-sach-ma-giam-gia"/>">Kho mã giảm giá</a></li>
                                     <li><a class="dropdown-item" href="#">Cài đặt</a></li>
                                     <hr class="dropdown-divider">
                                     <li><a class="dropdown-item text-danger" href="#">Đăng xuất</a></li>

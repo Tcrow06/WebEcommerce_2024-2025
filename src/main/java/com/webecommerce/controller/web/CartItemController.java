@@ -43,7 +43,7 @@ public class CartItemController extends HttpServlet {
             Long id = JWTUtil.getIdUser(request);
             List<BillDiscountDTO> billDiscountDTOS = billDiscountService.getAllDiscountEligible(id);
             request.setAttribute("discountList", billDiscountDTOS);
-                String path = request.getServletPath();
+            String path = request.getServletPath();
             if (path.equals("/gio-hang")) {
                 request.getRequestDispatcher("/views/web/cart.jsp").forward(request, response);
             } else {
@@ -53,7 +53,6 @@ public class CartItemController extends HttpServlet {
             e.printStackTrace();
         }
     }
-
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String path = request.getServletPath();

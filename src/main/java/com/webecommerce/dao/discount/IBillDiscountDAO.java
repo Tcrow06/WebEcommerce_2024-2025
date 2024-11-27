@@ -3,6 +3,7 @@ package com.webecommerce.dao.discount;
 import com.webecommerce.dao.GenericDAO;
 import com.webecommerce.entity.discount.BillDiscountEntity;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface IBillDiscountDAO extends GenericDAO<BillDiscountEntity> {
@@ -23,4 +24,10 @@ public interface IBillDiscountDAO extends GenericDAO<BillDiscountEntity> {
 
     List <BillDiscountEntity> findBillDiscountValid ();
     int countDiscountValid();
+
+    List<BillDiscountEntity> getAllBillDiscount();
+
+    List<BillDiscountEntity> findBillDiscountByPercent(String percent);
+
+    List<BillDiscountEntity> findBillDiscountByTime(LocalDateTime inputTime);
 }
