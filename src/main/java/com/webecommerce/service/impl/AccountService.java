@@ -67,7 +67,7 @@ public class AccountService implements IAccountService {
     }
     @Override
     public void setPassword(long id, String password) {
-        AccountEntity accountEntity = accountDAO.findById(id);
+        AccountEntity accountEntity = accountDAO.findByCustomerId(id);
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         accountEntity.setPassword(passwordEncoder.encode(password));
         accountDAO.update(accountEntity);

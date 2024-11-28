@@ -36,6 +36,7 @@ public class CustomerMapper implements ICustomerMapper{
             return null;
         customerResponse.setId(customerEntity.getId());
         customerResponse.setName(customerEntity.getName());
+        customerResponse.setPhone(customerEntity.getPhone());
         customerResponse.setEmail(customerEntity.getEmail());
         customerResponse.setAvatar(customerEntity.getAvatar());
         customerResponse.setRole(EnumRole.CUSTOMER);

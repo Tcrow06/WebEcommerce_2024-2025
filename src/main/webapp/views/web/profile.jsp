@@ -338,40 +338,40 @@
         </div>
         <div class="col-lg-6 col-sm-12">
           <div class="form-group">
-            <label class="title-box">Chưa biết để gì</label>
-            <input type="text" data-key="" placeholder="oke">
-            <input type="hidden" data-key="id" value="${id}">
-
-          </div>
-        </div>
-        <div class="col-lg-6 col-sm-12">
-          <div class="form-group">
             <label class="title-box">Điện thoại</label>
             <input type="text" data-key="phone" placeholder="enter your phone number" value="${userResponse.phone}">
           </div>
         </div>
         <div class="col-lg-6 col-sm-12">
           <div class="form-group">
-            <label class="title-box">Tên đăng nhập</label>
-            <c:if test="${not empty accountResponse}">
-              <input type="text"  value="${accountResponse.userName}" readonly>
-            </c:if>
-            <c:if test="${empty accountResponse}">
-              <input type="text" placeholder="enter your password" value="Tên đăng nhập" readonly>
-            </c:if>
+            <input type="hidden" data-key="" placeholder="oke">
+            <input type="hidden" data-key="id" value="${id}">
+
           </div>
         </div>
-        <div class="col-lg-6 col-sm-12">
-          <div class="form-group">
-            <label class="title-box">Mật khẩu</label>
-            <div class="passs-group">
-              <input type="password" data-key="pass" class=" pass-input" placeholder="Thịnh kêu sang hash rồi nên không hiện mật khẩu chỗ này">
-            </div>
-          </div>
-        </div>
+
+<%--        <div class="col-lg-6 col-sm-12">--%>
+<%--          <div class="form-group">--%>
+<%--            <label class="title-box">Tên đăng nhập</label>--%>
+<%--            <c:if test="${not empty accountResponse}">--%>
+<%--              <input type="text"  value="${accountResponse.userName}" readonly>--%>
+<%--            </c:if>--%>
+<%--            <c:if test="${empty accountResponse}">--%>
+<%--              <input type="text" placeholder="enter your password" value="Tên đăng nhập" readonly>--%>
+<%--            </c:if>--%>
+<%--          </div>--%>
+<%--        </div>--%>
+<%--        <div class="col-lg-6 col-sm-12">--%>
+<%--          <div class="form-group">--%>
+<%--            <label class="title-box">Mật khẩu</label>--%>
+<%--            <div class="passs-group">--%>
+<%--              <input type="password" data-key="pass" class=" pass-input" placeholder="Thịnh kêu sang hash rồi nên không hiện mật khẩu chỗ này">--%>
+<%--            </div>--%>
+<%--          </div>--%>
+<%--        </div>--%>
         <div class="col-12">
           <div style="display: flex; justify-content: space-between; align-items: center;">
-            <a href="javascript:void(0);" class="btn btn-cancel">Tiếp tục mua sắm</a>
+            <a href="<c:url value='/danh-sach-san-pham?page=1&maxPageItem=9'/> " class="btn btn-cancel">Tiếp tục mua sắm</a>
             <a href="javascript:void(0);" class="btn btn-submit me-2">Lưu</a>
           </div>
         </div>
@@ -767,7 +767,8 @@
       });
       return;
     }
-    const passwordInput = document.querySelector('input[data-key="pass"]').value.trim() || "";
+    const passwordInput=""
+    // const passwordInput = document.querySelector('input[data-key="pass"]').value.trim() || "";
     const id = document.querySelector('input[data-key="id"]').value.trim();
     const otpModal = document.getElementById('otpModal');
     const otpError = document.getElementById('otp-error');

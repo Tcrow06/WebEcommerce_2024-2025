@@ -176,11 +176,11 @@
                                     <div class="card-body">
                                         <div class="shop__sidebar__price">
                                             <ul>
-                                                <li><a href="javascript:void(0);" onclick="selectPriceRange(0, 50)">$0.00 - $50.00</a></li>
-                                                <li><a href="javascript:void(0);" onclick="selectPriceRange(50, 100)">$50.00 - $100.00</a></li>
-                                                <li><a href="javascript:void(0);" onclick="selectPriceRange(100, 150)">$100.00 - $150.00</a></li>
-                                                <li><a href="javascript:void(0);" onclick="selectPriceRange(150, 200)">$150.00 - $200.00</a></li>
-                                                <li><a href="javascript:void(0);" onclick="selectPriceRange(200, 9999)">200.00+</a></li>
+                                                <li><a href="javascript:void(0);" onclick="selectPriceRange(0, 100000)">0.00 - 100.000</a></li>
+                                                <li><a href="javascript:void(0);" onclick="selectPriceRange(100000, 150000)">100.000 - 150.000</a></li>
+                                                <li><a href="javascript:void(0);" onclick="selectPriceRange(150000, 200000)">150.000 - 200.000</a></li>
+                                                <li><a href="javascript:void(0);" onclick="selectPriceRange(200000, 500000)">200.000 - 500.000</a></li>
+                                                <li><a href="javascript:void(0);" onclick="selectPriceRange(500000, (Number.MAX_SAFE_INTEGER))">500.000+</a></li>
                                             </ul>
                                         </div>
                                     </div>
