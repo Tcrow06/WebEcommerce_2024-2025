@@ -6,6 +6,7 @@ import com.webecommerce.dao.product.IProductVariantDAO;
 import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.entity.product.ProductVariantEntity;
 
+import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import java.util.List;
 import java.util.logging.Level;
@@ -19,8 +20,10 @@ public class ProductVariantDAO extends AbstractDAO <ProductVariantEntity> implem
         String query = "SELECT e FROM " + ProductVariantEntity.class.getSimpleName() +
                 " e WHERE e.product = :product  and e.status =: status ORDER BY e.price ASC";
 
+        EntityManager em = getEntityManager();
+
         try {
-            return entityManager.createQuery(query, ProductVariantEntity.class)
+            return em.createQuery(query, ProductVariantEntity.class)
                     .setParameter("product", productEntity)
                     .setParameter("status",EnumProductStatus.SELLING)
                     .setMaxResults(1) // Giới hạn kết quả về 1
@@ -31,6 +34,8 @@ public class ProductVariantDAO extends AbstractDAO <ProductVariantEntity> implem
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Lỗi khi lấy biến thể sản phẩm", e);
             return null;
+        } finally {
+            super.closeEntityManager(em);
         }
     }
 
