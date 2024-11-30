@@ -99,11 +99,11 @@
 
                                 <!-- Confirm and Cancel Buttons -->
                                 <div class="mt-3 d-flex justify-content-end">
-                                    <button id="cancel-button" class="btn btn-secondary">Dừng giảm giá</button>
+                                    <button type="button" id="cancel-button" class="btn btn-secondary">Dừng giảm giá</button>
                                 </div>
 
                                 <div class="mt-3 d-flex justify-content-end">
-                                    <button id="update-button" class="btn btn-primary">Cập nhật</button>
+                                    <button type="button" id="update-button" class="btn btn-primary">Cập nhật</button>
                                 </div>
 
                             </form>
@@ -359,6 +359,40 @@
                 }
             });
 
+            $('#update-button').click(function () {
+
+                if (!checkInput()) return
+
+                showConfirmationModal().then((result) => {
+                    if (!result) {
+                        console.log("User cancelled the action.");
+                        return; // Người dùng chọn "Cancel", dừng xử lý
+                    }
+
+                    const id = $('#id-product-discount').val();
+                    const name = $('#discountName').val();
+                    const productId = $('#id-productselected').val();
+                    const startDate = $('#startTime-discount').val();
+                    const endDate = $('#endTime-discount').val();
+                    const discountPercentage = $('#discountPercentage').val();
+                    const isOutstanding = $('#isOutstanding').is(':checked');
+
+                    const data = {
+                        id: id,
+                        name: name,
+                        startDate: startDate,
+                        endDate: endDate,
+                        discountPercentage: discountPercentage,
+                        isOutStanding: isOutstanding,
+                        product: {
+                            id: productId
+                        }
+                    };
+
+                    sendAPI(data, 'POST')
+                });
+            });
+
             $('#cancel-button').click(function (){
                 showConfirmationModal().then((result) => {
                     if (!result) {
@@ -422,11 +456,21 @@
                         $('#global-loader').css('display', 'flex');
                     },
                     success: function (response) {
-                        alert("Đã gửi thông tin thành công!" + response);
-                        window.location.href = 'giam-gia-cho-san-pham'
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành công',
+                            text: response.toString()
+                        }).then(() => {
+                            window.location.href = 'giam-gia-cho-san-pham'
+                        });
                     },
                     error: function (xhr, status, error) {
-                        alert("Lỗi: " + error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi',
+                            text: error
+                        });
                     },complete: function () {
                         $('#global-loader').css('display', 'none');
                     }

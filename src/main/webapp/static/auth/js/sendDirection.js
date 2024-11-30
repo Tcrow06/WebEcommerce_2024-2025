@@ -31,10 +31,3 @@
             window.location.href = newHref;
         })
     }
-    if(login){
-        login.addEventListener('click',function (event){
-            let stateParam = (JSON.stringify({"send-direction": sendDirection}))
-            let newHref = this.href + "&state=" + stateParam;
-            window.location.href = newHref;
-        })
-    }

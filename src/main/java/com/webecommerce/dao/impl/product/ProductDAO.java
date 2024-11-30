@@ -10,8 +10,10 @@ import com.webecommerce.mapper.Impl.ProductMapper;
 import com.webecommerce.paging.Pageable;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
@@ -134,10 +136,26 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
             return null;
         }
     }
+    @Override
+    public List<ProductEntity> findProductSuggestion(Long categoryId,int limit, Long productId) {
+        String query = "SELECT p FROM ProductEntity p " +
+                "WHERE p.category.id = : categoryId and p.id <> :productId and p.status = :status";
+        try {
+            return entityManager.createQuery(query, ProductEntity.class)
+                    .setParameter("categoryId", categoryId)
+                    .setParameter("productId", productId)
+                    .setParameter("status", EnumProductStatus.SELLING)
+                    .setMaxResults(limit)
+                    .getResultList();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Lỗi khi tìm kiếm sản phẩm không có discount hoặc discount đã hết hạn và bán sau 7 ngày", e);
+            return null;
+        }
+    }
 
 
     public List<ProductEntity> findProductByStatus(EnumProductStatus status) {
-        return super.findByAttribute("status", status);
+        return super.findByAttributeCustom("status", status);
     }
 
     public List<ProductEntity> findProductByCategoryOrStatusOrName(String categoryCode, EnumProductStatus status, String name) {
@@ -153,19 +171,28 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
             jpql.append(" AND LOWER(p.name) LIKE :name");
         }
 
-        TypedQuery<ProductEntity> query = entityManager.createQuery(jpql.toString(), ProductEntity.class);
+        EntityManager em = super.getEntityManager();
 
-        if (categoryCode != null) {
-            query.setParameter("category", categoryCode);
-        }
-        if (status != null) {
-            query.setParameter("status", status);
-        }
-        if (name != null) {
-            query.setParameter("name", "%" + name.toLowerCase() + "%");
-        }
+        try {
 
-        return query.getResultList();
+            TypedQuery<ProductEntity> query = em.createQuery(jpql.toString(), ProductEntity.class);
+
+            if (categoryCode != null) {
+                query.setParameter("category", categoryCode);
+            }
+            if (status != null) {
+                query.setParameter("status", status);
+            }
+            if (name != null) {
+                query.setParameter("name", "%" + name.toLowerCase() + "%");
+            }
+
+            return query.getResultList();
+        } catch (Exception e) {
+            return null;
+        } finally {
+            super.closeEntityManager(em);
+        }
     }
 
 
@@ -221,59 +248,67 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
             }
         }
 
-        TypedQuery<ProductEntity> query = entityManager.createQuery(jpql.toString(), ProductEntity.class);
+        EntityManager em = super.getEntityManager();
+        try {
 
-        String countJpql = jpql.toString().replace("SELECT DISTINCT p", "SELECT COUNT(DISTINCT p)");
-        TypedQuery<Long> countQuery = entityManager.createQuery(countJpql, Long.class);
+            TypedQuery<ProductEntity> query = em.createQuery(jpql.toString(), ProductEntity.class);
 
-        if (pageable.getFilterProduct().getFilterCategory() != -1) {
-            query.setParameter("categoryId", Long.valueOf(pageable.getFilterProduct().getFilterCategory()));
+            String countJpql = jpql.toString().replace("SELECT DISTINCT p", "SELECT COUNT(DISTINCT p)");
+            TypedQuery<Long> countQuery = em.createQuery(countJpql, Long.class);
 
-            countQuery.setParameter("categoryId", Long.valueOf(pageable.getFilterProduct().getFilterCategory()));
+            if (pageable.getFilterProduct().getFilterCategory() != -1) {
+                query.setParameter("categoryId", Long.valueOf(pageable.getFilterProduct().getFilterCategory()));
 
-        }
+                countQuery.setParameter("categoryId", Long.valueOf(pageable.getFilterProduct().getFilterCategory()));
 
-        if (pageable.getFilterProduct().getFilterBrand() != null &&
-                !pageable.getFilterProduct().getFilterBrand().isEmpty()) {
-            query.setParameter("brand", pageable.getFilterProduct().getFilterBrand());
-
-            countQuery.setParameter("brand", pageable.getFilterProduct().getFilterBrand());
-        }
-
-        if (!Double.isNaN(minPrice)) {
-            query.setParameter("minPrice", minPrice);
-
-            countQuery.setParameter("minPrice", minPrice);
-
-        }
-        if (!Double.isNaN(maxPrice)) {
-            query.setParameter("maxPrice", maxPrice);
-
-            countQuery.setParameter("maxPrice", maxPrice);
-
-        }
-
-        // Thực thi truy vấn để lấy danh sách sản phẩm
-        List<ProductEntity> productEntities = query.getResultList();
-
-        // Thực hiện sắp xếp danh sách sản phẩm sau khi truy vấn xong
-        if (pageable.getSorter().getSortBy() != null) {
-            String sortBy = pageable.getSorter().getSortBy();
-            if ("asc".equalsIgnoreCase(sortBy)) {
-                productEntities.sort(Comparator.comparing(p ->
-                        p.getProductVariants().stream().mapToDouble(v -> v.getPrice()).min().orElse(Double.MAX_VALUE)));
-            } else if ("desc".equalsIgnoreCase(sortBy)) {
-                productEntities.sort(Comparator.comparing((ProductEntity p) ->
-                        p.getProductVariants().stream().mapToDouble(v -> v.getPrice()).min().orElse(Double.MAX_VALUE)).reversed());
             }
+
+            if (pageable.getFilterProduct().getFilterBrand() != null &&
+                    !pageable.getFilterProduct().getFilterBrand().isEmpty()) {
+                query.setParameter("brand", pageable.getFilterProduct().getFilterBrand());
+
+                countQuery.setParameter("brand", pageable.getFilterProduct().getFilterBrand());
+            }
+
+            if (!Double.isNaN(minPrice)) {
+                query.setParameter("minPrice", minPrice);
+
+                countQuery.setParameter("minPrice", minPrice);
+
+            }
+            if (!Double.isNaN(maxPrice)) {
+                query.setParameter("maxPrice", maxPrice);
+
+                countQuery.setParameter("maxPrice", maxPrice);
+
+            }
+
+            // Thực thi truy vấn để lấy danh sách sản phẩm
+            List<ProductEntity> productEntities = query.getResultList();
+
+            // Thực hiện sắp xếp danh sách sản phẩm sau khi truy vấn xong
+            if (pageable.getSorter().getSortBy() != null) {
+                String sortBy = pageable.getSorter().getSortBy();
+                if ("asc".equalsIgnoreCase(sortBy)) {
+                    productEntities.sort(Comparator.comparing(p ->
+                            p.getProductVariants().stream().mapToDouble(v -> v.getPrice()).min().orElse(Double.MAX_VALUE)));
+                } else if ("desc".equalsIgnoreCase(sortBy)) {
+                    productEntities.sort(Comparator.comparing((ProductEntity p) ->
+                            p.getProductVariants().stream().mapToDouble(v -> v.getPrice()).min().orElse(Double.MAX_VALUE)).reversed());
+                }
+            }
+
+
+            totalItem = countQuery.getSingleResult();
+            // Thực hiện phân trang cho danh sách sản phẩm đã sắp xếp
+            int offset = pageable.getOffset() != null ? pageable.getOffset() : 0;
+            int limit = pageable.getLimit() != null ? pageable.getLimit() : 9;
+            return productEntities.stream().skip(offset).limit(limit).collect(Collectors.toList());
+        } catch (Exception e) {
+            return new ArrayList<>();
+        } finally {
+            super.closeEntityManager(em);
         }
-
-
-        totalItem = countQuery.getSingleResult();
-        // Thực hiện phân trang cho danh sách sản phẩm đã sắp xếp
-        int offset = pageable.getOffset() != null ? pageable.getOffset() : 0;
-        int limit = pageable.getLimit() != null ? pageable.getLimit() : 9;
-        return productEntities.stream().skip(offset).limit(limit).collect(Collectors.toList());
     }
 
 
@@ -303,7 +338,7 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
                 "ORDER BY totalSales DESC";
 
         TypedQuery<Object[]> query = entityManager.createQuery(jpql, Object[].class);
-        query.setParameter("status", EnumOrderStatus.WAITING);
+        query.setParameter("status", EnumOrderStatus.PENDING);
         query.setMaxResults(limit); // Giới hạn kết quả trả về
         return query.getResultList();
     }
@@ -320,7 +355,7 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
                 "GROUP BY p.id " +
                 "ORDER BY totalSales ASC ";
         TypedQuery<Object[]> query = entityManager.createQuery(jpql, Object[].class);
-        query.setParameter("status", EnumOrderStatus.WAITING);
+        query.setParameter("status", EnumOrderStatus.PENDING);
         query.setMaxResults(limit); // Giới hạn kết quả trả về
         return query.getResultList();
     }

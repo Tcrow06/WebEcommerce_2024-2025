@@ -43,12 +43,11 @@ public class AccountService implements IAccountService {
     @Transactional
     @Override
     public CustomerResponse save(CustomerRequest customerRequest) {
-        try {
+        if (accountDAO.existsByPhone(customerRequest.getPhone())) {
+            throw new DuplicateFieldException("phone");
+        }
             if (accountDAO.existsByEmail(customerRequest.getEmail())) {
                 throw new DuplicateFieldException("email");
-            }
-            if (accountDAO.existsByPhone(customerRequest.getPhone())) {
-                throw new DuplicateFieldException("phone");
             }
             if (accountDAO.existsByUsername(customerRequest.getUserName())) {
                 throw new DuplicateFieldException("username");
@@ -60,10 +59,6 @@ public class AccountService implements IAccountService {
             accountEntity.setCustomer(customerEntity);
             accountDAO.insert(accountEntity);
             return customerMapper.toCustomerResponse(accountEntity.getCustomer());
-        }catch (Exception e){
-            e.printStackTrace();
-            return null;
-        }
     }
 
     public AccountResponse findByCustomerId(Long idCustomer) {
@@ -72,7 +67,7 @@ public class AccountService implements IAccountService {
     }
     @Override
     public void setPassword(long id, String password) {
-        AccountEntity accountEntity = accountDAO.findById(id);
+        AccountEntity accountEntity = accountDAO.findByCustomerId(id);
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         accountEntity.setPassword(passwordEncoder.encode(password));
         accountDAO.update(accountEntity);
@@ -159,6 +154,7 @@ public class AccountService implements IAccountService {
             String otpCount = cacheService.getKey(otpCountKey);
             if (Integer.parseInt(otpCount) >= 5) {
                 int newOtp = RandomUtils.generateSixDigit();
+                System.out.println(newOtp);
                 cacheService.setKey(key, String.valueOf(newOtp), 60 * 3);
                 cacheService.setKey(otpCountKey, "0", 60 * 3);
 
@@ -174,6 +170,18 @@ public class AccountService implements IAccountService {
             }
             return Integer.parseInt(otpCount); // So lan nhap sai
         }
+    }
+
+    @Override
+    public String checkLogin(AccountRequest accountRequest) {
+        StringBuilder message = new StringBuilder();
+        if(accountRequest.getUserName()==null || accountRequest.getUserName().trim().isEmpty()){
+            message.append("username_not_null");
+        }
+        if(accountRequest.getPassword()==null || accountRequest.getPassword().trim().isEmpty()){
+            message.append("password_not_null");
+        }
+        return message.toString();
     }
 
     @Override

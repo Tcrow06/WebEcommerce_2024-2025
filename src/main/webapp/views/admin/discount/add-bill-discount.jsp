@@ -410,17 +410,30 @@
                         $('#global-loader').css('display', 'flex');
                     },
                     success: function(response) {
-                        alert(response);
-                        window.location.href = 'giam-gia-cho-don-hang'
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành công',
+                            text: response.toString()
+                        }).then(() => {
+                            window.location.href = 'giam-gia-cho-don-hang'
+                        });
                     },
                     error: function(xhr, status, error) {
+                        let notice;
+
                         if (xhr.status === 409) {
-                            alert("Lỗi: " + xhr.responseText); // Hiển thị thông báo lỗi khi mã code đã tồn tại
+                            notice = ("Lỗi: " + xhr.responseText); // Hiển thị thông báo lỗi khi mã code đã tồn tại
                         } else if (xhr.status === 400) {
-                            alert("Lỗi: Dữ liệu không hợp lệ.");
+                            notice = ("Lỗi: Dữ liệu không hợp lệ.");
                         } else {
-                            alert("Đã xảy ra lỗi: " + error);
+                            notice = ("Đã xảy ra lỗi: " + error);
                         }
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi',
+                            text: notice
+                        });
                     },
                     complete: function () {
                         $('#global-loader').css('display', 'none');

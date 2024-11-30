@@ -273,6 +273,7 @@
     <div id="productVariantsContainer" class="row mt-4">
         <br>
         <strong>Chi tiết sản phẩm </strong>
+        <div class="error-message text-danger" style="margin: 10px"></div>
 
         <c:forEach var="item" items="${model.getProductVariantColorsss()}">
             <div class="product-variant-card card mb-4">
@@ -551,9 +552,12 @@
                 $('#productBrandError').text('');
             }
 
+            let isProductVariant = false;
+
             $('#productVariantsContainer .product-variant-card').each(function(index) {
                 const color = $(this).find('.variant-color').val();
                 let hasSizeRow = false;
+                isProductVariant = true;
 
                 if (!color) {
                     $(this).find('.variant-color').next('.error-message').text('Vui lòng nhập màu.');
@@ -601,6 +605,13 @@
                 }
                 
             });
+
+            if (!isProductVariant) {
+                $('#productVariantsContainer').find('.error-message').text("Vui lòng thêm ít nhất một phân loại sản phẩm")
+                isValid = false;
+            }
+            else $('#productVariantsContainer').find('.error-message').text("")
+
             return isValid
         }
 
@@ -758,12 +769,21 @@
                     $('#global-loader').css('display', 'flex');
                 },
                 success: function(response) {
-                    alert(response);
-                    window.location.href = 'danh-sach-san-pham'
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công',
+                        text: response.toString()
+                    }).then(() => {
+                        window.location.href = 'danh-sach-san-pham'
+                    });
                 },
                 error: function(xhr, status, error) {
                     const errorMessage = xhr.responseJSON ? xhr.responseJSON.message : error;
-                    alert("Failed to add product: " + errorMessage);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi hệ thống',
+                        text: "Không thể chỉnh sửa sản phẩm: " + errorMessage
+                    });
                 },
                 complete: function () {
                     $('#global-loader').css('display', 'none');

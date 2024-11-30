@@ -94,7 +94,7 @@
                     <div class="row product-info">
                         <div class="col-md-flex">
                             <c:forEach var="img" items="${order.imgList}">
-                                <img src="${img}" alt="Product Image" class="img-thumbnail me-2" style="width: 100px; height: 100px;">
+                                <img src= "<c:url value='/api-image?path=${img}'/>" alt="Product Image" class="img-thumbnail me-2" style="width: 100px; height: 100px;">
                             </c:forEach>
                         </div>
                         <div class="col-md-flex">

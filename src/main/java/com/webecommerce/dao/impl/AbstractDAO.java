@@ -16,6 +16,15 @@ public abstract class AbstractDAO<T> implements GenericDAO<T> {
     protected static final Logger LOGGER = Logger.getLogger(AbstractDAO.class.getName());
 
     protected EntityManager entityManager = HibernateUtil.getEmFactory().createEntityManager();
+
+    protected EntityManager getEntityManager() {
+        return HibernateUtil.getEmFactory().createEntityManager();
+    }
+
+    protected void closeEntityManager(EntityManager em) {
+        em.close();
+    }
+
     private Class<T> entityClass;
 
     public AbstractDAO(Class<T> entityClass) {
@@ -25,7 +34,7 @@ public abstract class AbstractDAO<T> implements GenericDAO<T> {
     // Find object by ID
     public T findById(Long id) {
         try {
-            return entityManager.find(entityClass, id);
+            return getEntityManager().find(entityClass, id);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error finding object with ID: " + id, e);
             return null;
@@ -34,12 +43,15 @@ public abstract class AbstractDAO<T> implements GenericDAO<T> {
 
     // Find all objects
     public List<T> findAll() {
+        EntityManager em = getEntityManager();
         String query = "SELECT e FROM " + entityClass.getSimpleName() + " e";
         try {
-            return entityManager.createQuery(query, entityClass).getResultList();
+            return em.createQuery(query, entityClass).getResultList();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error retrieving all objects", e);
             return null;
+        } finally {
+            em.close();
         }
     }
 
@@ -74,6 +86,35 @@ public abstract class AbstractDAO<T> implements GenericDAO<T> {
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error finding object by attribute: " + attributeName + " with value: " + value, e);
             return null;
+        }
+    }
+
+    // Find object by attribute
+    protected List<T> findByAttributeCustom(String attributeName, Object value) {
+        // Điều chỉnh câu truy vấn dựa trên việc value có phải null hay không
+        String query = "SELECT e FROM " + entityClass.getSimpleName() + " e WHERE ";
+        if (value == null) {
+            query += "e." + attributeName + " IS NULL";
+        } else {
+            query += "e." + attributeName + " = :value";
+        }
+
+        EntityManager em = getEntityManager();
+
+        try {
+            var typedQuery = em.createQuery(query, entityClass);
+
+            // Chỉ đặt tham số nếu value không phải null
+            if (value != null) {
+                typedQuery.setParameter("value", value);
+            }
+
+            return typedQuery.getResultList();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error finding object by attribute: " + attributeName + " with value: " + value, e);
+            return null;
+        } finally {
+            closeEntityManager(em);
         }
     }
 

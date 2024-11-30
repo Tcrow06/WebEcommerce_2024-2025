@@ -361,10 +361,12 @@ public class OrderDAO extends AbstractDAO<OrderEntity> implements IOrderDAO {
         String query = "SELECT COUNT(o) " +
                 "FROM OrderEntity o " +
                 "JOIN o.orderStatuses os " +
-                "WHERE DATE(os.date) = CURRENT_DATE";
+                "WHERE DATE(os.date) = CURRENT_DATE " +
+                "AND os.status  =:status";
 
         try {
             Long count = entityManager.createQuery(query, Long.class)
+                    .setParameter("status",EnumOrderStatus.PENDING)
                     .getSingleResult();
             return count != null ? count.intValue() : 0;
         } catch (Exception e) {

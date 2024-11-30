@@ -11,6 +11,11 @@ public class FilterProduct {
         this.filterBrand = filterBrand;
         this.tag = tag;
     }
+    public FilterProduct(int filterCategory) {
+        this.filterCategory = filterCategory;
+    }
+    public FilterProduct() {
+    }
 
     public String getTag() {
         return tag;

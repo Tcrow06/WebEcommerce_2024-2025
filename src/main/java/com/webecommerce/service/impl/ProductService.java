@@ -6,6 +6,7 @@ import com.webecommerce.dao.product.ICategoryDAO;
 import com.webecommerce.dao.product.IProductDAO;
 import com.webecommerce.dao.product.IProductVariantDAO;
 import com.webecommerce.dao.review.IProductReviewDAO;
+import com.webecommerce.dto.CategoryDTO;
 import com.webecommerce.dto.ProductDTO;
 import com.webecommerce.dto.ProductReviewDTO;
 import com.webecommerce.dto.ProductVariantDTO;
@@ -281,9 +282,15 @@ public class ProductService implements IProductService {
     // dùng để lấy discout, price mà không cần lay het product variant -> load nhanh hơn
     private List <ProductDTO> getProduct (List<ProductEntity> productEntities) {
         List <ProductDTO> productDTOS = new ArrayList<ProductDTO>();
+
+        if (productEntities == null) return productDTOS;
+
         for (ProductEntity product : productEntities) {
             ProductDTO productDTO = productMapper.toDTO(product);
             //lấy discount cho từng sản phâm
+            productDTO.setCategory(new CategoryDTO(product.getCategory().getId()));
+
+
             ProductDiscountEntity productDiscountEntity = product.getProductDiscount();
             if (productDiscountEntity != null) {
                 if (productDiscountEntity.getEndDate().isAfter(LocalDateTime.now()) && productDiscountEntity.getStartDate().isBefore(LocalDateTime.now())) {
@@ -493,9 +500,16 @@ public class ProductService implements IProductService {
     public int countByStatus(EnumProductStatus status) {
         return productDAO.countByStatus(status);
     }
+
     @Override
     public RevenueDTO getRevenue() {
         return productDAO.getRevenue();
+    }
+
+    @Override
+    public List<ProductDTO> findProductSuggestion(Long categoryId,int limit, Long productId) {
+         List<ProductEntity> productEntities = productDAO.findProductSuggestion(categoryId,limit,productId) ;
+         return getProduct(productEntities);
     }
 
 }
