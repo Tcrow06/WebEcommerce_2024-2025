@@ -62,7 +62,6 @@ public class ReturnOrderDAO extends AbstractDAO<ReturnOrderEntity> implements IR
                 "JOIN o.customer c " +
                 "WHERE ro.orderDetail.id = :returnOrderId";
 
-        // Execute the JPQL query
         Object[] result = entityManager.createQuery(jpql, Object[].class)
                 .setParameter("returnOrderId", returnOrderId)
                 .getSingleResult();
@@ -132,10 +131,6 @@ public class ReturnOrderDAO extends AbstractDAO<ReturnOrderEntity> implements IR
             findOrderId.setParameter("orderDetailId", returnOrderId);
 
             Long orderId = (Long) findOrderId.getSingleResult();
-
-//            String checkStatusQuery = "SELECT COUNT(od) FROM OrderDetailEntity od " +
-//                    "WHERE od.order.id = :orderId " +
-//                    "AND od.id IN (SELECT ro.orderDetail.id FROM ReturnOrderEntity ro WHERE ro.status != 1)";
 
             String checkQuantityOrderQuery = "SELECT COUNT(od), SUM(od.quantity) FROM OrderDetailEntity od WHERE od.order.id = :orderId";
 
