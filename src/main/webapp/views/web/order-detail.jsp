@@ -597,7 +597,7 @@ function decreaseQuantity(itemId) {
     document.querySelectorAll('.cancle-order-btn').forEach(button => {
         button.addEventListener('click', function () {
             const form = document.getElementById('return-form');
-            form.action = '/trang-chu/don-hang?actionType=CANCLE'; // Đường dẫn xử lý
+            form.action = '/trang-chu/don-hang?actionType=CANCEL'; // Đường dẫn xử lý
             form.method = 'POST';
             form.submit();
         });

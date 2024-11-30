@@ -52,32 +52,11 @@
 </div>
 
 <script>
-    // document.querySelectorAll('.submitBtn').forEach(button => {
-    //     button.addEventListener('click', function () {
-    //         const orderId = this.getAttribute('data-order-id');
-    //         const confirmSubmit = confirm("Bạn có muốn submit không?");
-    //         if (confirmSubmit) {
-    //             const form = document.createElement('form');
-    //             form.method = 'POST';
-    //             form.action = '/chu-cua-hang/xac-nhan-don-hang';
-    //
-    //             const input = document.createElement('input');
-    //             input.type = 'hidden';
-    //             input.name = 'orderId';
-    //             input.value = orderId;
-    //             form.appendChild(input);
-    //
-    //             document.body.appendChild(form);
-    //             form.submit();
-    //         }
-    //     });
-    // });
-
     document.querySelectorAll('.submitBtn').forEach(button => {
         button.addEventListener('click', function () {
             const orderId = this.getAttribute('data-order-id');
 
-            // Sử dụng SweetAlert thay vì confirm()
+            // Sử dụng SweetAlert để hiển thị xác nhận
             Swal.fire({
                 text: "Bạn muốn xác nhận đơn hàng này?",
                 icon: 'warning',
@@ -86,26 +65,80 @@
                 cancelButtonText: 'Hủy'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Nếu người dùng nhấn Xác nhận
-                    const form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = '/chu-cua-hang/xac-nhan-don-hang';
+                    // Sử dụng Fetch API để gửi dữ liệu đến controller
+                    fetch('/chu-cua-hang/xac-nhan-don-hang', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: new URLSearchParams({ orderId: orderId })
+                    })
+                        .then(response => {
+                            if (response.redirected) {
+                                const url = new URL(response.url);
+                                const success = url.searchParams.get("success");
+                                const error = url.searchParams.get("error");
 
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = 'orderId';
-                    input.value = orderId;
-                    form.appendChild(input);
-
-                    document.body.appendChild(form);
-                    form.submit();
-
-                    Swal.fire({
-                        title: 'Thành công!',
-                        text: 'Đơn hàng của bạn đã được xác nhận.',
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    });
+                                if (success === "true") {
+                                    // Thành công
+                                    Swal.fire({
+                                        title: 'Thành công!',
+                                        text: 'Đơn hàng của bạn đã được xác nhận.',
+                                        icon: 'success',
+                                        confirmButtonText: 'OK'
+                                    }).then(() => {
+                                        // Tạo và gửi form tới URL
+                                        const form = document.createElement('form');
+                                        form.method = 'POST';
+                                        form.action = '/chu-cua-hang/xac-nhan-don-hang';
+                                        const input = document.createElement('input');
+                                        input.type = 'hidden';
+                                        input.name = 'orderId';
+                                        input.value = orderId;
+                                        form.appendChild(input);
+                                        document.body.appendChild(form);
+                                        form.submit();
+                                    });
+                                } else if (error === "true") {
+                                    // Thất bại
+                                    Swal.fire({
+                                        title: 'Thất bại!',
+                                        text: 'Đơn hàng này đã bị hủy bởi khách hàng.',
+                                        icon: 'error',
+                                        confirmButtonText: 'OK'
+                                    }).then(() => {
+                                        // Tạo và gửi form tới URL trong trường hợp lỗi
+                                        const form = document.createElement('form');
+                                        form.method = 'POST';
+                                        form.action = '/chu-cua-hang/xac-nhan-don-hang';
+                                        const input = document.createElement('input');
+                                        input.type = 'hidden';
+                                        input.name = 'orderId';
+                                        input.value = orderId;
+                                        form.appendChild(input);
+                                        document.body.appendChild(form);
+                                        form.submit();
+                                    });
+                                }
+                            } else {
+                                // Nếu không có redirect, coi như lỗi
+                                Swal.fire({
+                                    title: 'Lỗi!',
+                                    text: 'Không thể xác nhận đơn hàng. Vui lòng thử lại.',
+                                    icon: 'error',
+                                    confirmButtonText: 'OK'
+                                });
+                            }
+                        })
+                        .catch(() => {
+                            // Lỗi kết nối hoặc không thể gửi yêu cầu
+                            Swal.fire({
+                                title: 'Lỗi!',
+                                text: 'Không thể kết nối tới máy chủ. Vui lòng thử lại sau.',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        });
                 }
             });
         });
