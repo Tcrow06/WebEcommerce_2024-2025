@@ -43,7 +43,7 @@ public class StatisticService implements IStatisticService {
         statisticDTO.setProductDTOBestList(list);
         statisticDTO.setProductDTOLowestList(productService.findLowestSellingProducts(5));
         statisticDTO.setTotalOrdersToday(orderDAO.totalOrdersToday());
-        statisticDTO.setTotalOrders(orderDAO.totalOrdersByStatus(EnumOrderStatus.WAITING));
+        statisticDTO.setTotalOrders(orderDAO.totalOrdersByStatus(EnumOrderStatus.PENDING));
         statisticDTO.setTotalReceivedOrders(orderDAO.totalOrdersByStatus(EnumOrderStatus.RECEIVED));
         statisticDTO.setTotalCustomers(customerDAO.totalCustomers());
         statisticDTO.setTotalProducts(productService.countByStatus(EnumProductStatus.SELLING));

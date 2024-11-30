@@ -345,15 +345,15 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
 
     @Override
     public List<Object[]> findLowestSellingProducts(int limit) {
-        String jpql = "SELECT p, SUM(od.quantity) AS totalSales " +
+        String jpql = "SELECT p, COALESCE(SUM(od.quantity), 0) AS totalSales " +
                 "FROM ProductEntity p " +
-                "JOIN p.productVariants pv " +
-                "JOIN OrderDetailEntity od ON pv.id = od.productVariant.id " +
-                "JOIN od.order o " +
-                "JOIN o.orderStatuses os " +
-                "WHERE os.status = :status " +
+                "LEFT JOIN p.productVariants pv " +
+                "LEFT JOIN OrderDetailEntity od ON pv.id = od.productVariant.id " +
+                "LEFT JOIN od.order o " +
+                "LEFT JOIN o.orderStatuses os " +
+                "WHERE os.status = :status OR os.status IS NULL " +
                 "GROUP BY p.id " +
-                "ORDER BY totalSales ASC ";
+                "ORDER BY 2 ASC";
         TypedQuery<Object[]> query = entityManager.createQuery(jpql, Object[].class);
         query.setParameter("status", EnumOrderStatus.PENDING);
         query.setMaxResults(limit); // Giới hạn kết quả trả về

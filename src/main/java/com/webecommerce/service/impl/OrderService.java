@@ -103,15 +103,6 @@ public class OrderService implements IOrderService {
 
                 }
             }
-
-            if(productVariantDTO.getQuantity()<product.getQuantity()){
-                if(status==null){
-                    status="error";
-                }
-                message.append(productVariantDTO.getName() + " "
-                        + productVariantDTO.getColor() +" " + productVariantDTO.getSize()
-                        + " chỉ còn: " + productVariantDTO.getQuantity() + " sản phẩm trong kho\n ");
-            }
             if(productVariantEntity.getProduct().getStatus().equals(EnumProductStatus.STOP_SELLING)||
                     productVariantEntity.getStatus().equals(EnumProductStatus.STOP_SELLING)){
                 if(status==null){
@@ -120,7 +111,19 @@ public class OrderService implements IOrderService {
                 message.append(productVariantDTO.getName() + " "
                         + productVariantDTO.getColor() +" " + productVariantDTO.getSize()
                         + " không còn bán nữa\n ");
+            }else{
+                if(productVariantDTO.getQuantity()<product.getQuantity()){
+                    if(status==null){
+                        status="error";
+                    }
+                    message.append(productVariantDTO.getName() + " "
+                            + productVariantDTO.getColor() +" " + productVariantDTO.getSize()
+                            + " chỉ còn: " + productVariantDTO.getQuantity() + " sản phẩm trong kho\n ");
+                }
             }
+
+
+
 
             orderDetailDTOS.add(new OrderDetailDTO(product.getQuantity(),productVariantDTO, productDiscountMapper.toDTO(productVariantEntity.getProduct().getProductDiscount())));
         }

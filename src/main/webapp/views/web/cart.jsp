@@ -259,7 +259,7 @@
                         <li>Subtotal <span>$ 0</span></li>
                         <li>Total <span id="total-price">$ ${sessionScope.totalPrice}</span></li>
                     </ul>
-                    <a href="javascript:void(0);" class="primary-btn"  id="ProceedToCheckout">Proceed to checkout</a>
+                    <a href="javascript:void(0);" class="primary-btn"  id="ProceedToCheckout">Đặt hàng</a>
                 </div>
             </div>
         </div>
