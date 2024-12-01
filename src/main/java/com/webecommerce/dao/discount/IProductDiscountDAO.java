@@ -13,4 +13,12 @@ public interface IProductDiscountDAO extends GenericDAO<ProductDiscountEntity> {
     List<ProductDiscountEntity> findDiscounthaveProductByDate();
 
     int countDiscountValid();
+
+    List<ProductDiscountEntity> getAllProductDiscount();
+
+    List<ProductDiscountEntity> findProductDiscountByProductName(String productName);
+
+    List<ProductDiscountEntity> findProductDiscountByPercent(String percent);
+
+    List<ProductDiscountEntity> findProductDiscountByTime(LocalDateTime inputTime);
 }
