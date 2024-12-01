@@ -65,10 +65,21 @@
                             <tr>
                                 <td class="product__cart__item">
                                     <div class="product__cart__item__pic">
-                                        <img style="width: 100px" src="<c:url value='/api-image?path=${item.productVariant.imageUrl}'/>" alt="${item.productVariant.name}">
+                                        <c:if test="${item.productVariant.status == 'STOP_SELLING'}">
+                                            <img style="width: 100px; opacity: 0.4;" src="<c:url value='/api-image?path=${item.productVariant.imageUrl}'/>" alt="${item.productVariant.name}">
+                                        </c:if>
+                                        <c:if test="${item.productVariant.status != 'STOP_SELLING'}">
+                                            <img style="width: 100px" src="<c:url value='/api-image?path=${item.productVariant.imageUrl}'/>" alt="${item.productVariant.name}">
+                                        </c:if>
+
                                     </div>
                                     <div class="product__cart__item__text">
-                                        <h6>${item.productVariant.name}</h6>
+                                        <c:if test="${item.productVariant.status == 'STOP_SELLING'}">
+                                            <h6>${item.productVariant.name} - <span style="color: red">Ngưng kinh doanh</span></h6>
+                                        </c:if>
+                                        <c:if test="${item.productVariant.status != 'STOP_SELLING'}">
+                                            <h6>${item.productVariant.name}</h6>
+                                        </c:if>
                                         <h6>Size: ${item.productVariant.size}</h6>
                                         <h6>Color: ${item.productVariant.color}</h6>
                                         <h6>Price: ${item.productVariant.price}</h6>
@@ -76,16 +87,27 @@
                                 </td>
                                 <td class="quantity__item">
                                     <div class="quantity">
-                                        <div class="pro-qty-2">
-                                            <input type="text" value="${item.quantity}" data-product-id="${item.productVariant.id}">
-                                        </div>
+                                        <c:if test="${item.productVariant.status == 'STOP_SELLING'}">
+
+                                        </c:if>
+                                        <c:if test="${item.productVariant.status != 'STOP_SELLING'}">
+                                            <div class="pro-qty-2">
+                                                <input type="text" value="${item.quantity}" data-product-id="${item.productVariant.id}">
+                                            </div>
+                                        </c:if>
+
                                     </div>
                                 </td>
                                 <td class="cart__price">$ ${item.productVariant.price * item.quantity}</td>
                                 <td class="cart__close">
-                                    <div style="display: flex; align-items: center; justify-content: center; gap: 10px">
-                                        <input type="checkbox" data-product-id="${item.productVariant.id}" ${item.isActive == 1 ? 'checked' : ''}/>
-                                    </div>
+                                    <c:if test="${item.productVariant.status == 'STOP_SELLING'}">
+
+                                    </c:if>
+                                    <c:if test="${item.productVariant.status != 'STOP_SELLING'}">
+                                        <div style="display: flex; align-items: center; justify-content: center; gap: 10px">
+                                            <input type="checkbox" data-product-id="${item.productVariant.id}" ${item.isActive == 1 ? 'checked' : ''}/>
+                                        </div>
+                                    </c:if>
                                 </td>
                             </tr>
                         </c:forEach>
