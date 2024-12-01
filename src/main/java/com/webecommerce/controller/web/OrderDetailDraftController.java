@@ -1,6 +1,7 @@
 package com.webecommerce.controller.web;
 
 import com.webecommerce.constant.EnumOrderStatus;
+import com.webecommerce.constant.EnumProductStatus;
 import com.webecommerce.dao.order.IOrderDetailDAO;
 import com.webecommerce.dto.OrderDetailDTO;
 import com.webecommerce.dto.notinentity.DisplayOrderDetailDTO;
@@ -33,7 +34,7 @@ public class OrderDetailDraftController extends HttpServlet {
         if(orderIdStr != null) {
             Long orderId = Long.valueOf(orderIdStr);
             EnumOrderStatus status = orderDetailService.getCurrentStatus(orderId);
-            List<DisplayOrderDetailDTO> result = orderDetailService.showOrderDetail(orderId, status);
+            List<DisplayOrderDetailDTO> result = orderDetailService.showOrderDetailReview(orderId, status, EnumProductStatus.SELLING);
             request.setAttribute("customerId",JWTUtil.getIdUser(request));
             request.setAttribute("orderItemList", result);
             request.setAttribute("status", status);
