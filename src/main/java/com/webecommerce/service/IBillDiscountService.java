@@ -3,6 +3,7 @@ package com.webecommerce.service;
 import com.webecommerce.dto.discount.BillDiscountDTO;
 import com.webecommerce.entity.discount.BillDiscountEntity;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface IBillDiscountService {
@@ -27,4 +28,9 @@ public interface IBillDiscountService {
 
     BillDiscountDTO findById(Long id);
 
+    List<BillDiscountDTO> getAllBillDiscount();
+
+    List<BillDiscountDTO> findBillDiscountByPercent(String percent);
+
+    List<BillDiscountDTO> findBillDiscountByTime(LocalDateTime inputTime);
 }

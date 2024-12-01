@@ -1,7 +1,6 @@
 package com.webecommerce.service.impl;
 
 import com.webecommerce.dao.discount.IProductDiscountDAO;
-import com.webecommerce.dao.impl.discount.ProductDiscountDAO;
 import com.webecommerce.dao.impl.product.ProductVariantDAO;
 import com.webecommerce.dao.product.IProductDAO;
 import com.webecommerce.dto.ProductDTO;
@@ -94,7 +93,18 @@ public class ProductDiscountService implements IProductDiscountService {
 
         return productDiscountMapper.toDTO(productDiscountEntity);
     }
-
+    @Override
+    public List<ProductDiscountDTO> getAllProductDiscount()
+    {
+        List<ProductDiscountEntity> list = productDiscountDAO.getAllProductDiscount();
+        return productDiscountMapper.toDTOList(list);
+    }
+    @Override
+    public List<ProductDiscountDTO> findProductDiscountByProductName(String productName)
+    {
+        List<ProductDiscountEntity> list = productDiscountDAO.findProductDiscountByProductName(productName);
+        return productDiscountMapper.toDTOList(list);
+    }
     private List <ProductDiscountDTO> getProductDiscountDTOList(List<ProductDiscountEntity> productDiscountEntities) {
         List<ProductDiscountDTO> productDiscountDTOList = new ArrayList<>();
 
@@ -164,6 +174,14 @@ public class ProductDiscountService implements IProductDiscountService {
             return new ArrayList<>();
 
         return getProductDiscountDTOList(productDiscountEntities);
+    }
+    @Override
+    public List<ProductDiscountDTO> findProductDiscountByPercent(String percent) {
+        return productDiscountMapper.toDTOList(productDiscountDAO.findProductDiscountByPercent(percent));
+    }
+    @Override
+    public List<ProductDiscountDTO> findProductDiscountByTime(LocalDateTime inputTime) {
+        return productDiscountMapper.toDTOList(productDiscountDAO.findProductDiscountByTime(inputTime));
     }
 
 }
