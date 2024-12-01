@@ -724,7 +724,6 @@
                     contentType: "application/json; charset=UTF-8",
                     data: JSON.stringify(formData), // Chuyển đổi dữ liệu sang JSON
                     success: function (response) {
-                        alert("Phản hồi thành công: " + response);
                         // Ẩn form sau khi gửi thành công
                         parentSection.slideUp(300, function () {
                             // Xóa nội dung đã nhập
@@ -735,6 +734,7 @@
                         alert("Lỗi: " + xhr.responseText);
                     },
                 });
+                alert("Phản hồi thành công");
                 window.location.href = '/san-pham?id=' + $('input[name="productId"]').val();
 
             });
