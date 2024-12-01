@@ -485,7 +485,7 @@
                 else if(response.status==="error"){
                     Swal.fire({
                         icon: 'error',
-                        title: 'Lỗi hệ thống',
+                        title: 'Thất bại',
                         text: response.message,
                     });
                 }

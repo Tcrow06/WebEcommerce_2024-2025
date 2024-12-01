@@ -48,7 +48,7 @@ public class PlacedOrderController extends HttpServlet {
             if(JWTUtil.verifyToken(JWTUtil.getToken(request))==null){
                 session.setAttribute("orderNotHandler",checkOutRequestDTO);
                 jsonResponse.put("status","warning");
-                jsonResponse.put("redirectUrl", "/dang-nhap?message=not_permission&alert=error&send-direction=gio-hang");
+                jsonResponse.put("redirectUrl", "/dang-nhap?action=login&message=please-login-before-check-out&alert=danger&send-direction=gio-hang");
                 objectMapper.writeValue(response.getWriter(), jsonResponse);
                 return;
             }
