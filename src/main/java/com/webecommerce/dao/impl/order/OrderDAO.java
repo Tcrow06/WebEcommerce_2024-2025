@@ -66,8 +66,8 @@ public class OrderDAO extends AbstractDAO<OrderEntity> implements IOrderDAO {
                     .setParameter("customerId", customerId)
                     .getResultList();
 
-            //nhap
 
+            // Dùng để load lại dữ liệu cũ ở phần "Đã hủy"
             String query = """
         SELECT\s
             o.id AS orderId,
@@ -106,8 +106,6 @@ public class OrderDAO extends AbstractDAO<OrderEntity> implements IOrderDAO {
 
                 savedData.add(new Object[]{orderId, totalOrder, allQuantity});
             }
-
-            //het nhap
 
             List<DisplayOrderDTO> resultList = new ArrayList<>();
 
@@ -363,10 +361,12 @@ public class OrderDAO extends AbstractDAO<OrderEntity> implements IOrderDAO {
         String query = "SELECT COUNT(o) " +
                 "FROM OrderEntity o " +
                 "JOIN o.orderStatuses os " +
-                "WHERE DATE(os.date) = CURRENT_DATE";
+                "WHERE DATE(os.date) = CURRENT_DATE " +
+                "AND os.status  =:status";
 
         try {
             Long count = entityManager.createQuery(query, Long.class)
+                    .setParameter("status",EnumOrderStatus.PENDING)
                     .getSingleResult();
             return count != null ? count.intValue() : 0;
         } catch (Exception e) {
@@ -380,14 +380,24 @@ public class OrderDAO extends AbstractDAO<OrderEntity> implements IOrderDAO {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
-            OrderStatusEntity newOrderStatus = new OrderStatusEntity();
-            newOrderStatus.setOrder(findById(orderId));
-            newOrderStatus.setStatus(EnumOrderStatus.valueOf("DELIVERED"));
-            newOrderStatus.setDate(LocalDateTime.now());
 
-            entityManager.persist(newOrderStatus);
-            transaction.commit();
-            return true;
+            String checkStatusQuery = "SELECT COUNT(os) FROM OrderStatusEntity os WHERE os.order.id = :orderId AND os.status = :status";
+            Query checkStatus = entityManager.createQuery(checkStatusQuery);
+            checkStatus.setParameter("orderId", orderId);
+            checkStatus.setParameter("status", EnumOrderStatus.CANCELLED);
+
+            long existingStatusCount = (long) checkStatus.getSingleResult();
+
+            if (existingStatusCount == 0) {
+                OrderStatusEntity newOrderStatus = new OrderStatusEntity();
+                newOrderStatus.setOrder(findById(orderId));
+                newOrderStatus.setStatus(EnumOrderStatus.DELIVERED);
+                newOrderStatus.setDate(LocalDateTime.now());
+                entityManager.persist(newOrderStatus);
+                transaction.commit();
+                return true;
+            }
+            return false;
         } catch (Exception e) {
             transaction.rollback();
             e.printStackTrace();

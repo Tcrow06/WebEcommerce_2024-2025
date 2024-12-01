@@ -124,10 +124,11 @@ public class AccountDAO extends AbstractDAO<AccountEntity> implements IAccountDA
 
     @Override
     public UserResponse findByUserNameAndPassword(String userName, String password) {
+        EntityManager em = getEntityManager();
         UserResponse userResponse = new UserResponse();
         String jpql = "SELECT a FROM AccountEntity a WHERE a.username = :username";
 
-        List<AccountEntity> resultList = entityManager.createQuery(jpql, AccountEntity.class)
+        List<AccountEntity> resultList = em.createQuery(jpql, AccountEntity.class)
                 .setParameter("username", userName)
                 .getResultList();
 

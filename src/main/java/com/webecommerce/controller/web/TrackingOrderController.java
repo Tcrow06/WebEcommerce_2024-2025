@@ -44,7 +44,7 @@ public class TrackingOrderController extends HttpServlet {
             if ("CONFIRM".equals(actionType)) {
                 boolean updateStatusReceive = orderStatusService.changeStatus(orderDetailId, EnumOrderStatus.RECEIVED);
             }
-            else if("CANCLE".equals(actionType)) {
+            else if("CANCEL".equals(actionType)) {
                 boolean updateStatusCancle = orderStatusService.changeStatus(orderDetailId, EnumOrderStatus.CANCELLED);
             }
         }
