@@ -210,7 +210,16 @@
                     <div class="row">
                         <div class="col-lg-6 col-md-6 col-sm-6">
                             <div class="shop__product__option__left">
-                                <p>Showing ${model.totalItem} results</p>
+                                <p>
+                                    <c:choose>
+                                        <c:when test="${model.totalItem == 0}">
+                                            Không sản phẩm phù hợp
+                                        </c:when>
+                                        <c:otherwise>
+                                            Có ${model.totalItem} trùng khớp với kết quả
+                                        </c:otherwise>
+                                    </c:choose>
+                                </p>
                             </div>
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-6">
