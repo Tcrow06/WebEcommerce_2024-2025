@@ -27,33 +27,55 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
 @WebServlet(urlPatterns = {"/dang-nhap", "/dang-ky"})
 public class AuthController extends HttpServlet {
     @Inject
     private IAccountService accountService;
-    ResourceBundle resourceBundle = ResourceBundle.getBundle("message");
+//    ResourceBundle resourceBundle = ResourceBundle.getBundle("message");
+
+
 
     @Inject
     private ICartItemService cartItemService;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        ResourceBundle resourceBundle;
+        try{
+            resourceBundle = new PropertyResourceBundle(
+                    new InputStreamReader(
+                            this.getClass().getClassLoader().getResourceAsStream("message.properties"),
+                            StandardCharsets.UTF_8
+                    )
+            );
+        }catch (Exception e){
+            System.out.println("Lỗi khong lấy được message");
+            resourceBundle = ResourceBundle.getBundle("message");
+        }
+
         HttpSession session = request.getSession();
         String send_direction = request.getParameter("send-direction");
+        response.setCharacterEncoding("UTF-8");
+        request.setCharacterEncoding("UTF-8");
         if(send_direction!=null){
             session.setAttribute("send-direction",send_direction);
         }
-
 
         String action = request.getParameter("action");
         if (action != null && (action.equals("login") || (action.equals("register")))) {
             String message = request.getParameter("message");
             String alert = request.getParameter("alert");
+            String link = request.getParameter("link");
             if (message != null && alert != null) {
                 request.setAttribute("message", resourceBundle.getString(message));
                 request.setAttribute("alert", alert);
+                request.setAttribute("link", link);
             }
             request.getRequestDispatcher("/decorators/auth.jsp").forward(request, response);
         } else if (action != null && (action.equals("verify"))) {
@@ -93,7 +115,7 @@ public class AuthController extends HttpServlet {
             if(user != null) {
                 if (user.getStatus().equals(EnumAccountStatus.BLOCK)){
                     session.setAttribute("loginData", account);
-                    response.sendRedirect(request.getContextPath() + "/dang-nhap?action=login&message=username_is_block&alert=danger");
+                    response.sendRedirect(request.getContextPath() + "/dang-nhap?action=login&message=username_is_block&alert=danger&link=help");
                     return;
                 }
                 response.setContentType("application/json");

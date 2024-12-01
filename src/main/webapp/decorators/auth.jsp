@@ -12,6 +12,7 @@
             crossorigin="anonymous"
     ></script>
     <link href="<c:url value="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="<c:url value="/static/error/css/font-awesome.min.css"/>" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="<c:url value="/static/auth/style.css"/>" />
     <title>Đăng nhập và đăng ký</title>
@@ -29,6 +30,11 @@
                 <c:if test="${not empty message}">
                     <div class="alert alert-${alert}" role="alert" id="login-error-message">
                             ${message}
+                    </div>
+                </c:if>
+                <c:if test="${not empty link}">
+                    <div class="social-media">
+                        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=elevenfashionshop11@gmail.com&su=Support Needed&body=Xin chào, tôi cần hỗ trợ về..." target="_blank"><i class="fab fa-google"></i></a>
                     </div>
                 </c:if>
                 <label id="message_login" style="color: red"></label>

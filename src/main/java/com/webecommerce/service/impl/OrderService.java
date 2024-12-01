@@ -82,13 +82,13 @@ public class OrderService implements IOrderService {
             if(billDiscountDTO!=null){
                 if(billDiscountDTO.getStartDate().isAfter(LocalDateTime.now())||billDiscountDTO.getEndDate().isBefore(LocalDateTime.now())){
                     status="error";
-                    message.append(" Mã giảm giá đã hết hạn, vui lòng chọn mã giảm giá khác.\n");
+                    message.append("Xin lỗi bạn! Mã giảm giá đã hết hạn, vui lòng chọn mã giảm giá khác.\n");
                 }else{
                     orderDTO.setBillDiscount(billDiscountDTO);
                 }
             }else{
                 status="error";
-                message.append(" Mã giảm giá không hợp lệ, vui lòng chọn mã giảm giá khác.\n");
+                message.append("Xin lỗi bạn! Mã giảm giá không hợp lệ, vui lòng chọn mã giảm giá khác.\n");
             }
         }
 
@@ -108,21 +108,36 @@ public class OrderService implements IOrderService {
                 if(status==null){
                     status="error";
                 }
+                if(message.isEmpty()){
+                    message.append("Xin lỗi bạn! ");
+                }
                 message.append(productVariantDTO.getName() + " "
                         + productVariantDTO.getColor() +" " + productVariantDTO.getSize()
-                        + " không còn bán nữa\n ");
+                        + " hiện tại không còn bán nữa.\n ");
             }else{
-                if(productVariantDTO.getQuantity()<product.getQuantity()){
+                if(productVariantDTO.getQuantity()==0){
                     if(status==null){
                         status="error";
                     }
+                    if(message.isEmpty()){
+                        message.append("Xin lỗi bạn! ");
+                    }
                     message.append(productVariantDTO.getName() + " "
                             + productVariantDTO.getColor() +" " + productVariantDTO.getSize()
-                            + " chỉ còn: " + productVariantDTO.getQuantity() + " sản phẩm trong kho\n ");
+                            + " đã hết hàng!\n ");
+                }
+                else if(productVariantDTO.getQuantity()<product.getQuantity()){
+                    if(status==null){
+                        status="error";
+                    }
+                    if(message.isEmpty()){
+                        message.append("Xin lỗi bạn! ");
+                    }
+                    message.append(productVariantDTO.getName() + " "
+                            + productVariantDTO.getColor() +" " + productVariantDTO.getSize()
+                            + " chỉ còn: " + productVariantDTO.getQuantity() + " sản phẩm trong kho.\n ");
                 }
             }
-
-
 
 
             orderDetailDTOS.add(new OrderDetailDTO(product.getQuantity(),productVariantDTO, productDiscountMapper.toDTO(productVariantEntity.getProduct().getProductDiscount())));
@@ -135,6 +150,8 @@ public class OrderService implements IOrderService {
         }
         if(status==null){
             status ="success";
+        }else{
+            message.append("Cảm ơn bạn đã đồng hành với shop.");
         }
         orderDTO.setStatus(status);
         orderDTO.setMessage(message);
