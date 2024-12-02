@@ -63,13 +63,17 @@
                             <c:set var="itemId" value="${entry.key}" />
                             <c:set var="item" value="${entry.value}" />
                             <tr>
-                                <td class="product__cart__item">
+                                <td class="product__cart__item"
+                                <c:if test="${item.productVariant.status == 'STOP_SELLING'}">
+                                    style="opacity: 0.6"
+                                </c:if>
+                                >
                                     <div class="product__cart__item__pic">
                                         <c:if test="${item.productVariant.status == 'STOP_SELLING'}">
                                             <img style="width: 100px; opacity: 0.4;" src="<c:url value='/api-image?path=${item.productVariant.imageUrl}'/>" alt="${item.productVariant.name}">
                                         </c:if>
                                         <c:if test="${item.productVariant.status != 'STOP_SELLING'}">
-                                            <img style="width: 100px" src="<c:url value='/api-image?path=${item.productVariant.imageUrl}'/>" alt="${item.productVariant.name}">
+                                            <img style="width: 100px"; src="<c:url value='/api-image?path=${item.productVariant.imageUrl}'/>" alt="${item.productVariant.name}">
                                         </c:if>
 
                                     </div>

@@ -1,5 +1,6 @@
 package com.webecommerce.mapper.Impl;
 
+import com.webecommerce.constant.EnumProductStatus;
 import com.webecommerce.dao.impl.cart.CartDAO;
 import com.webecommerce.dao.impl.product.ProductVariantDAO;
 import com.webecommerce.dto.CartItemDTO;
@@ -25,6 +26,16 @@ public class CartItemMapper implements GenericMapper<CartItemDTO, CartItemEntity
         cartItemDTO.setId(cartItemEntity.getId());
         cartItemDTO.setQuantity(cartItemEntity.getQuantity());
         cartItemDTO.setProductVariant(productVariantMapper.toDTO(cartItemEntity.getProductVariant()));
+
+        // lấy status product variant chính xác
+        if (cartItemDTO.getProductVariant() != null) {
+            cartItemDTO.getProductVariant().setStatus(
+                    (cartItemEntity.getProductVariant().getProduct().getStatus() == EnumProductStatus.SELLING &&
+                            cartItemEntity.getProductVariant().getStatus() == EnumProductStatus.SELLING)
+                            ? EnumProductStatus.SELLING
+                            : EnumProductStatus.STOP_SELLING
+            );
+        }
 
         // Cập nhật lại mức giá mới (Do giá có thể thay đổi trong quá trình khách hàng lưu hàng trong giỏ)
         cartItemDTO.setTotalPrice(cartItemEntity.getQuantity() * cartItemEntity.getProductVariant().getPrice());
