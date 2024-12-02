@@ -162,45 +162,6 @@ public class CustomerDAO extends AbstractDAO<CustomerEntity> implements ICustome
     }
 
     @Override
-    public boolean updateStatusAccount(Long userId, EnumAccountStatus status) {
-        EntityTransaction transaction = entityManager.getTransaction();
-        try {
-            transaction.begin();
-
-            String queryAccount = "UPDATE AccountEntity a SET a.status = :status WHERE a.customer.id = :userId";
-            Query jpqlQueryAccount = entityManager.createQuery(queryAccount);
-            jpqlQueryAccount.setParameter("status", status);
-            jpqlQueryAccount.setParameter("userId", userId);
-
-            int updated = jpqlQueryAccount.executeUpdate();
-
-            if(updated == 0) {
-
-                String query = "UPDATE SocialAccountEntity sa SET sa.status = :status WHERE sa.customer.id = :userId";
-                Query jpqlQuerySocialAccount = entityManager.createQuery(query);
-                jpqlQuerySocialAccount.setParameter("status", status);
-                jpqlQuerySocialAccount.setParameter("userId", userId);
-
-                updated = jpqlQuerySocialAccount.executeUpdate();
-
-                if(updated == 0) {
-                    transaction.rollback();
-                    return false;
-                }
-            }
-            transaction.commit();
-            return true;
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            if(transaction.isActive()) {
-                transaction.rollback();
-            }
-            return false;
-        }
-    }
-
-    @Override
     public boolean updateLoyalPoint(double total, Long customerId) {
         EntityTransaction transaction = entityManager.getTransaction();
         try {

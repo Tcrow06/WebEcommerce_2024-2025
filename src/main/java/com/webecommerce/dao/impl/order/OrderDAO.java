@@ -376,32 +376,16 @@ public class OrderDAO extends AbstractDAO<OrderEntity> implements IOrderDAO {
     }
 
 
-    public boolean changeConfirmStatus(Long orderId) {
-        EntityTransaction transaction = entityManager.getTransaction();
+    public long changeConfirmStatus(Long orderId) {
         try {
-            transaction.begin();
-
             String checkStatusQuery = "SELECT COUNT(os) FROM OrderStatusEntity os WHERE os.order.id = :orderId AND os.status = :status";
             Query checkStatus = entityManager.createQuery(checkStatusQuery);
             checkStatus.setParameter("orderId", orderId);
             checkStatus.setParameter("status", EnumOrderStatus.CANCELLED);
-
-            long existingStatusCount = (long) checkStatus.getSingleResult();
-
-            if (existingStatusCount == 0) {
-                OrderStatusEntity newOrderStatus = new OrderStatusEntity();
-                newOrderStatus.setOrder(findById(orderId));
-                newOrderStatus.setStatus(EnumOrderStatus.DELIVERED);
-                newOrderStatus.setDate(LocalDateTime.now());
-                entityManager.persist(newOrderStatus);
-                transaction.commit();
-                return true;
-            }
-            return false;
+            return (long) checkStatus.getSingleResult();
         } catch (Exception e) {
-            transaction.rollback();
             e.printStackTrace();
-            return false;
+            return -1;
         }
     }
 

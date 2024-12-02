@@ -1,10 +1,16 @@
 package com.webecommerce.service.impl;
 
 import com.webecommerce.constant.EnumAccountStatus;
+import com.webecommerce.dao.other.IAccountDAO;
+import com.webecommerce.dao.other.ISocialAccountDAO;
 import com.webecommerce.dao.people.ICustomerDAO;
 import com.webecommerce.dto.notinentity.ManageUserDTO;
 import com.webecommerce.dto.request.people.CustomerRequest;
 import com.webecommerce.dto.response.people.CustomerResponse;
+import com.webecommerce.entity.order.OrderDetailEntity;
+import com.webecommerce.entity.order.ReturnOrderEntity;
+import com.webecommerce.entity.other.AccountEntity;
+import com.webecommerce.entity.other.SocialAccountEntity;
 import com.webecommerce.entity.people.CustomerEntity;
 import com.webecommerce.mapper.ICustomerMapper;
 import com.webecommerce.service.ICustomerService;
@@ -18,6 +24,10 @@ public class CustomerService implements ICustomerService {
     private ICustomerDAO customerDAO;
     @Inject
     private ICustomerMapper customerMapper;
+    @Inject
+    private IAccountDAO accountDAO;
+    @Inject
+    private ISocialAccountDAO socialAccountDAO;
     @Override
     public CustomerResponse save(CustomerRequest customerRequest) {
         CustomerEntity customerEntity = new CustomerEntity();
@@ -46,7 +56,25 @@ public class CustomerService implements ICustomerService {
 
     @Override
     public boolean updateStatusAccount(Long userId, EnumAccountStatus status) {
-        return customerDAO.updateStatusAccount(userId, status);
+        CustomerEntity customer = customerDAO.findById(userId);
+        if (customer != null) {
+            if (customer.getAccount() != null && customer.getAccount().getId() != null) {
+                AccountEntity account = accountDAO.findById(customer.getAccount().getId());
+                if (account != null) {
+                    account.setStatus(status);
+                    return accountDAO.update(account) != null;
+                }
+            }
+
+            if (customer.getSocialAccount() != null && customer.getSocialAccount().getId() != null) {
+                SocialAccountEntity socialAccount = socialAccountDAO.findById(customer.getSocialAccount().getId());
+                if (socialAccount != null) {
+                    socialAccount.setStatus(status);
+                    return socialAccountDAO.update(socialAccount) != null;
+                }
+            }
+        }
+        return false;
     }
 
     @Override

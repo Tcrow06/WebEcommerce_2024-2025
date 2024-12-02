@@ -12,7 +12,6 @@ public interface ICustomerDAO extends GenericDAO<CustomerEntity> {
     CustomerEntity findById(long id);
     int totalCustomers();
     List<ManageUserDTO> getInfoUser();
-    boolean updateStatusAccount(Long userId, EnumAccountStatus status);
     boolean updateLoyalPoint(double total, Long customerId);
 
 }

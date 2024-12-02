@@ -29,32 +29,18 @@ public class ReturnOrderDAO extends AbstractDAO<ReturnOrderEntity> implements IR
     }
 
     @Override
-    public List<TransferListDTO> getData() {
+    public List<Object[]> getData() {
         String jpql = "SELECT ro.orderDetail.id, ro.returnDate, ro.status, ro.quantityReturn, pv.color, p.name " +
                 "FROM ReturnOrderEntity ro " +
                 "JOIN ro.orderDetail od " +
                 "JOIN od.productVariant pv " +
                 "JOIN pv.product p";
 
-        List<Object[]> result = entityManager.createQuery(jpql, Object[].class).getResultList();
-
-        List<TransferListDTO> transferItems = new ArrayList<>();
-        for (Object[] row : result) {
-            Long id = (Long) row[0];
-            LocalDate returnDate = (LocalDate) row[1];
-            int status = (Integer) row[2];
-            Long quantityReturn = (Long) row[3];
-            String color = (String) row[4];
-            String productName = (String) row[5];
-            Long orderId = orderDAO.findOrderId(id);
-            TransferListDTO item = new TransferListDTO(id, returnDate, productName,color, quantityReturn , status, orderId);
-            transferItems.add(item);
-        }
-        return transferItems;
+        return entityManager.createQuery(jpql, Object[].class).getResultList();
     }
 
     @Override
-    public CustomerResponse getCustomerByReturnOrderId(Long returnOrderId) {
+    public Object[] getCustomerByReturnOrderId(Long returnOrderId) {
         String jpql = "SELECT c.id, c.name, c.phone, c.email " +
                 "FROM ReturnOrderEntity ro " +
                 "JOIN ro.orderDetail od " +
@@ -65,18 +51,11 @@ public class ReturnOrderDAO extends AbstractDAO<ReturnOrderEntity> implements IR
         Object[] result = entityManager.createQuery(jpql, Object[].class)
                 .setParameter("returnOrderId", returnOrderId)
                 .getSingleResult();
-
-        // Map the result to CustomerDTO
-        Long customerId = (Long) result[0];
-        String customerName = (String) result[1];
-        String phone = (String) result[2];
-        String email = (String) result[3];
-
-        return new CustomerResponse(customerId, customerName, phone, email);
+        return result;
     }
 
     @Override
-    public ProductReturnDTO getProductReturnData(Long returnOrderId) {
+    public List<Object[]> getProductReturnData(Long returnOrderId) {
         String jpql = "SELECT ro.orderDetail.id, ro.returnDate, ro.status, ro.quantityReturn, " +
                 "pv.color, pv.imageUrl, pv.size, p.name, pv.price, " +
                 "pd.discountPercentage, ro.reason " +
@@ -92,39 +71,12 @@ public class ReturnOrderDAO extends AbstractDAO<ReturnOrderEntity> implements IR
                 .setParameter("returnOrderId", returnOrderId)  // Bind the returnOrderId parameter
                 .getResultList();
 
-        ProductReturnDTO item = null;
-
-        // Iterate through results and create the DTO
-        for (Object[] row : result) {
-            Long id = (Long) row[0];
-            LocalDate returnDate = (LocalDate) row[1];
-            int status = (Integer) row[2];
-            Long quantityReturn = (Long) row[3];
-            String color = (String) row[4];
-            String imageUrl = (String) row[5];
-            String size = (String) row[6];
-            String productName = (String) row[7];
-            double price = (Double) row[8]; // Trả về giá trị kiểu double
-            Integer discountPercentage = row[9] != null ? (Integer) row[9] : 0; // If null, set default to 0.0
-            String reason = (String) row[10];
-
-            // Calculate saleProduct price directly using double values
-            double discountMultiplier = 1.0 - (discountPercentage / 100.0);
-            double saleProduct = price * discountMultiplier;
-
-            // Create ProductReturnDTO with the required fields
-            item = new ProductReturnDTO(
-                    id, returnDate, status, quantityReturn, color, imageUrl, size, productName, saleProduct, reason);
-        }
-
-        return item;
+        return result;
     }
 
     @Override
-    public boolean updateStatus(Long returnOrderId) {
-        EntityTransaction transaction = entityManager.getTransaction();
+    public long updateStatus(Long returnOrderId) {
         try {
-            transaction.begin();
             //Tim orderId
             String findOrderIdQuery = "SELECT od.order.id FROM OrderDetailEntity od WHERE od.id = :orderDetailId";
             Query findOrderId = entityManager.createQuery(findOrderIdQuery);
@@ -159,27 +111,12 @@ public class ReturnOrderDAO extends AbstractDAO<ReturnOrderEntity> implements IR
                 checkProcessedStatus.setParameter("orderId", orderId);
                 checkProcessedStatus.setParameter("status", EnumOrderStatus.valueOf("CANCELLED"));
 
-                long processedCount = (long) checkProcessedStatus.getSingleResult();
-
-                if (processedCount == 0) {
-                    OrderStatusEntity newOrderStatus = new OrderStatusEntity();
-                    newOrderStatus.setOrder(orderDAO.findById(orderId));
-                    newOrderStatus.setStatus(EnumOrderStatus.valueOf("CANCELLED"));
-                    newOrderStatus.setDate(LocalDateTime.now());
-
-                    entityManager.persist(newOrderStatus);
-
-                    transaction.commit();
-                    return true;
-                }
+                return (long) checkProcessedStatus.getSingleResult();
             }
-            transaction.commit();
-            return false;
-
+            return -1;
         } catch (Exception e) {
-            transaction.rollback();
             e.printStackTrace();
-            return false;
+            return -1;
         }
     }
 
@@ -242,39 +179,37 @@ public class ReturnOrderDAO extends AbstractDAO<ReturnOrderEntity> implements IR
         }
     }
 
+//    @Override
+//    public boolean updateStatusNoReturn(Long orderDetailId) {
+//        EntityTransaction transaction = entityManager.getTransaction();
+//        try {
+//            transaction.begin();
+//
+//            String query = "UPDATE ReturnOrderEntity ro SET ro.status = 2 WHERE ro.orderDetail.id = :orderDetailId";
+//            Query jpqlQuery = entityManager.createQuery(query);
+//            jpqlQuery.setParameter("orderDetailId", orderDetailId);
+//            int rowsUpdated = jpqlQuery.executeUpdate();
+//
+//            if (rowsUpdated == 0) {
+//                transaction.rollback();
+//                return false;
+//            }
+//
+//            transaction.commit();
+//            return true;
+//        }
+//        catch (Exception e) {
+//            if (transaction.isActive()) {
+//                transaction.rollback();
+//            }
+//            e.printStackTrace();
+//            return false;
+//        }
+//    }
+
     @Override
-    public boolean updateStatusNoReturn(Long orderDetailId) {
-        EntityTransaction transaction = entityManager.getTransaction();
+    public long updateStatusProcess(Long orderDetailId) {
         try {
-            transaction.begin();
-
-            String query = "UPDATE ReturnOrderEntity ro SET ro.status = 2 WHERE ro.orderDetail.id = :orderDetailId";
-            Query jpqlQuery = entityManager.createQuery(query);
-            jpqlQuery.setParameter("orderDetailId", orderDetailId);
-            int rowsUpdated = jpqlQuery.executeUpdate();
-
-            if (rowsUpdated == 0) {
-                transaction.rollback();
-                return false;
-            }
-
-            transaction.commit();
-            return true;
-        }
-        catch (Exception e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-            }
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    @Override
-    public boolean updateStatusProcess(Long orderDetailId) {
-        EntityTransaction transaction = entityManager.getTransaction();
-        try {
-            transaction.begin();
             //Tim orderId
             String findOrderIdQuery = "SELECT od.order.id FROM OrderDetailEntity od WHERE od.id = :orderDetailId";
             Query findOrderId = entityManager.createQuery(findOrderIdQuery);
@@ -299,27 +234,13 @@ public class ReturnOrderDAO extends AbstractDAO<ReturnOrderEntity> implements IR
                 checkProcessedStatus.setParameter("orderId", orderId);
                 checkProcessedStatus.setParameter("status", EnumOrderStatus.PROCESSED);
 
-                long processedCount = (long) checkProcessedStatus.getSingleResult();
-
-                if (processedCount == 0) {
-                    OrderStatusEntity newOrderStatus = new OrderStatusEntity();
-                    newOrderStatus.setOrder(orderDAO.findById(orderId));
-                    newOrderStatus.setStatus(EnumOrderStatus.valueOf("PROCESSED"));
-                    newOrderStatus.setDate(LocalDateTime.now());
-
-                    entityManager.persist(newOrderStatus);
-
-                    transaction.commit();
-                    return true;
-                }
+                return (long) checkProcessedStatus.getSingleResult();
             }
-            transaction.commit();
-            return false;
+            return -1;
 
         } catch (Exception e) {
-            transaction.rollback();
             e.printStackTrace();
-            return false;
+            return -1;
         }
     }
 }

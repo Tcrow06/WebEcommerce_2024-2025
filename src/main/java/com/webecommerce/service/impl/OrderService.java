@@ -6,11 +6,13 @@ import com.webecommerce.dao.discount.IBillDiscountDAO;
 import com.webecommerce.dao.discount.IProductDiscountDAO;
 import com.webecommerce.dao.order.IOrderDAO;
 import com.webecommerce.dao.order.IOrderInfoDAO;
+import com.webecommerce.dao.order.IOrderStatusDAO;
 import com.webecommerce.dao.people.ICustomerDAO;
 import com.webecommerce.dao.product.IProductDAO;
 import com.webecommerce.dao.product.IProductVariantDAO;
 import com.webecommerce.dto.OrderDTO;
 import com.webecommerce.dto.OrderDetailDTO;
+import com.webecommerce.dto.OrderStatusDTO;
 import com.webecommerce.dto.PlacedOrder.CheckOutRequestDTO;
 import com.webecommerce.dto.PlacedOrder.ProductOrderDTO;
 import com.webecommerce.dto.ProductVariantDTO;
@@ -25,10 +27,7 @@ import com.webecommerce.entity.order.OrderStatusEntity;
 import com.webecommerce.entity.people.CustomerEntity;
 import com.webecommerce.entity.product.ProductEntity;
 import com.webecommerce.entity.product.ProductVariantEntity;
-import com.webecommerce.mapper.Impl.OrderInfoMapper;
-import com.webecommerce.mapper.Impl.OrderMapper;
-import com.webecommerce.mapper.Impl.ProductDiscountMapper;
-import com.webecommerce.mapper.Impl.ProductVariantMapper;
+import com.webecommerce.mapper.Impl.*;
 import com.webecommerce.service.*;
 
 import javax.inject.Inject;
@@ -68,8 +67,10 @@ public class OrderService implements IOrderService {
 
     @Inject
     private ISendEmailService sendEmailService;
-
-
+    @Inject
+    private OrderStatusMapper orderStatusMapper;
+    @Inject
+    private IOrderStatusDAO orderStatusDAO;
 
     @Override
     public OrderDTO findInfoCheckOut(CheckOutRequestDTO checkOutRequestDTO) {
@@ -234,7 +235,19 @@ public class OrderService implements IOrderService {
 
     @Override
     public boolean changeConfirmStatus(Long orderId) {
-        return orderDAO.changeConfirmStatus(orderId);
+        long result = orderDAO.changeConfirmStatus(orderId);
+
+        if (result == 0) {
+            OrderStatusEntity newOrderStatus = new OrderStatusEntity();
+            newOrderStatus.setOrder(orderDAO.findById(orderId));
+            newOrderStatus.setStatus(EnumOrderStatus.DELIVERED);
+            newOrderStatus.setDate(LocalDateTime.now());
+
+            OrderStatusDTO dto = orderStatusMapper.toDTO(orderStatusDAO.insert(newOrderStatus));
+            return dto != null;
+        }
+
+        return false;
     }
 
     @Override

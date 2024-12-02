@@ -50,10 +50,8 @@ public class OrderStatusDAO extends AbstractDAO<OrderStatusEntity> implements IO
     }
 
     @Override
-    public boolean changeStatus(Long orderDetailId, EnumOrderStatus status) {
-        EntityTransaction transaction = entityManager.getTransaction();
+    public long changeStatus(Long orderDetailId, EnumOrderStatus status) {
         try {
-            transaction.begin();
             String findOrderIdQuery = "SELECT od.order.id FROM OrderDetailEntity od WHERE od.id = :orderDetailId";
             Query findOrderId = entityManager.createQuery(findOrderIdQuery);
             findOrderId.setParameter("orderDetailId", orderDetailId);
@@ -65,21 +63,10 @@ public class OrderStatusDAO extends AbstractDAO<OrderStatusEntity> implements IO
             checkStatus.setParameter("orderId", orderId);
             checkStatus.setParameter("status", status);
 
-            long existingStatusCount = (long) checkStatus.getSingleResult();
-            if (existingStatusCount == 0) {
-                OrderStatusEntity newOrderStatus = new OrderStatusEntity();
-                newOrderStatus.setOrder(orderDAO.findById(orderId));
-                newOrderStatus.setStatus(status);
-                newOrderStatus.setDate(LocalDateTime.now());
-
-                entityManager.persist(newOrderStatus);
-            }
-            transaction.commit();
-            return true;
+            return (long) checkStatus.getSingleResult();
         } catch (Exception e) {
-            transaction.rollback();
             e.printStackTrace();
-            return false;
+            return -1;
         }
     }
 }

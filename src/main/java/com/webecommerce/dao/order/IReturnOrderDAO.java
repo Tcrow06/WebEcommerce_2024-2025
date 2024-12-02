@@ -9,11 +9,11 @@ import com.webecommerce.entity.order.ReturnOrderEntity;
 import java.util.List;
 
 public interface IReturnOrderDAO extends GenericDAO <ReturnOrderEntity> {
-    List<TransferListDTO> getData();
-    CustomerResponse getCustomerByReturnOrderId(Long returnOrderId);
-    ProductReturnDTO getProductReturnData(Long returnOrderId);
-    boolean updateStatus(Long returnOrderId);
+    List<Object[]> getData();
+    Object[] getCustomerByReturnOrderId(Long returnOrderId);
+    List<Object[]> getProductReturnData(Long returnOrderId);
+    long updateStatus(Long returnOrderId);
     boolean updateStatusOrder(Long returnOrderId);
-    boolean updateStatusNoReturn(Long returnOrderId);
-    boolean updateStatusProcess(Long orderDetailId);
+    //boolean updateStatusNoReturn(Long returnOrderId);
+    long updateStatusProcess(Long orderDetailId);
 }

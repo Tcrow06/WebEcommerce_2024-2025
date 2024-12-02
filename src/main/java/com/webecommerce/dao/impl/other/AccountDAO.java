@@ -64,12 +64,6 @@ public class AccountDAO extends AbstractDAO<AccountEntity> implements IAccountDA
             AccountResponse accountResponse = accountMapper.toAccountResponse(accountEntity);
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-//            nhớ xóa hàm dưới. đang test
-            if(accountResponse.getRole().equals("OWNER") && password.equals(accountEntity.getPassword())) {
-                userResponse = ownerMapper.toOwnerResponse(accountEntity.getOwner());
-                return userResponse;
-            }
-
             if (passwordEncoder.matches(password, accountEntity.getPassword())) {
                 if (accountResponse.getRole().equals("CUSTOMER")) {
                     userResponse = customerMapper.toCustomerResponse(accountEntity.getCustomer());

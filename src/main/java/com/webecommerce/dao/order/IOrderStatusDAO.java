@@ -8,6 +8,6 @@ import com.webecommerce.entity.order.OrderStatusEntity;
 import java.util.List;
 
 public interface IOrderStatusDAO extends GenericDAO<OrderStatusEntity> {
-    boolean changeStatus(Long orderDetailId, EnumOrderStatus status);
+    long changeStatus(Long orderDetailId, EnumOrderStatus status);
     List<TransferListOderStatusDTO> getStatusOrders(Long idUser, EnumOrderStatus status);
 }

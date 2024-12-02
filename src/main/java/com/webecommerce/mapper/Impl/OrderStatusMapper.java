@@ -20,8 +20,12 @@ public class OrderStatusMapper implements GenericMapper<OrderStatusDTO, OrderSta
     }
 
     @Override
-    public OrderStatusEntity toEntity(OrderStatusDTO orderStatusDTO) {
-        return null;
+    public OrderStatusEntity toEntity(OrderStatusDTO dto) {
+        OrderStatusEntity entity = new OrderStatusEntity();
+        entity.setStatus(dto.getStatus());
+        entity.setId(dto.getId());
+        entity.setDate(dto.getDate());
+        return entity;
     }
 
     @Override
