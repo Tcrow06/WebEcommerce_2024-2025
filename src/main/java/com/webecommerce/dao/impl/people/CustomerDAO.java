@@ -199,4 +199,36 @@ public class CustomerDAO extends AbstractDAO<CustomerEntity> implements ICustome
             return false;
         }
     }
+
+    @Override
+    public boolean updateLoyalPoint(double total, Long customerId) {
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            double point = total / 100000;
+            if(total < 100000) {
+                point = 0;
+            }
+            String queryAccount = "UPDATE CustomerEntity c SET c.loyaltyPoint = c.loyaltyPoint + :point WHERE c.id = :customerId";
+            Query jpqlQueryAccount = entityManager.createQuery(queryAccount);
+            jpqlQueryAccount.setParameter("point", (int)point);
+            jpqlQueryAccount.setParameter("customerId", customerId);
+
+            int updated = jpqlQueryAccount.executeUpdate();
+
+            if(updated == 0) {
+                transaction.rollback();
+                return false;
+            }
+            transaction.commit();
+            return true;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            if(transaction.isActive()) {
+                transaction.rollback();
+            }
+            return false;
+        }
+    }
 }
