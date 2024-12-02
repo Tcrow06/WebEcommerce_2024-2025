@@ -20,6 +20,7 @@ import com.webecommerce.entity.product.ProductVariantEntity;
 import com.webecommerce.mapper.GenericMapper;
 import com.webecommerce.mapper.Impl.CategoryMapper;
 import com.webecommerce.paging.Pageable;
+import com.webecommerce.service.IProductReviewService;
 import com.webecommerce.service.IProductService;
 
 import javax.inject.Inject;
@@ -55,7 +56,11 @@ public class ProductService implements IProductService {
     private CategoryMapper categoryMapper;
 
     @Inject
+    private IProductReviewService productReviewService;
+
+    @Inject
     private IProductReviewDAO productReviewDAO;
+
 
     // Lây danh sách brand có trong product -> load giao diện
     public List<String> getBrands() {
@@ -200,6 +205,31 @@ public class ProductService implements IProductService {
         }
 
         // lấy số sao
+//        productDTO.setAverageStars(productReviewDAO.calculateStarByProduct(product.getId()));
+//        productDTO.setCountProductReview(productReviewDAO.countProductReviewByProduct(product.getId()));
+
+        productDTO.setProductVariants(
+                productVariantMapper.toDTOList(
+                        productVariantDAO.getProductVariantsByProduct(product)
+                )
+        );
+
+        return productDTO;
+    }
+
+    private ProductDTO getProductDetail (ProductEntity product) {
+        ProductDTO productDTO = productMapper.toDTO(product);
+        //lấy discount cho từng sản phâm
+        ProductDiscountEntity productDiscountEntity = product.getProductDiscount();
+        if (productDiscountEntity != null) {
+            if (productDiscountEntity.getEndDate().isAfter(LocalDateTime.now()) && productDiscountEntity.getStartDate().isBefore(LocalDateTime.now())) {
+                productDTO.setProductDiscount(
+                        productDiscountMapper.toDTO(productDiscountEntity)
+                );
+            }
+        }
+
+        // lấy số sao
         productDTO.setAverageStars(productReviewDAO.calculateStarByProduct(product.getId()));
         productDTO.setCountProductReview(productReviewDAO.countProductReviewByProduct(product.getId()));
 
@@ -207,6 +237,16 @@ public class ProductService implements IProductService {
                 productVariantMapper.toDTOList(
                         productVariantDAO.getProductVariantsByProduct(product)
                 )
+        );
+
+        //lấy sản phẩm các review
+        productDTO.setProductReviews(
+                productReviewService.getProductReviewByProductId(product.getId())
+        );
+
+        // lấy sản phẩm suggest
+        productDTO.setResultList(
+                findProductSuggestion(productDTO.getCategory().getId(),4,productDTO.getId())
         );
 
         return productDTO;
@@ -344,6 +384,19 @@ public class ProductService implements IProductService {
         return null;
     }
 
+    // dùng cho trang product detail
+    public ProductDTO getProductDetailById (Long id) {
+        ProductDTO productDTO;
+
+
+        ProductEntity productEntity = productDAO.findById(id);
+        if (productEntity != null) {
+            productDTO = getProductDetail(productEntity);
+            return productDTO;
+        }
+        return null;
+    }
+
     public List<String> getListColorBySize (String size, Long productId) {
         List <String> colorList = productDAO.getListColorBySize(size, productId);
         if (colorList != null)
@@ -472,10 +525,6 @@ public class ProductService implements IProductService {
             }
         }
         return productDTOS;
-//        List<ProductEntity> products = productDAO.searchProductsByName(name);
-//        return products.stream()
-//                .map(productMapper::toDTO)
-//                .collect(Collectors.toList());
     }
 
 
