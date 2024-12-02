@@ -5,6 +5,7 @@ import com.webecommerce.constant.EnumProductStatus;
 import com.webecommerce.dto.discount.ProductDiscountDTO;
 import com.webecommerce.dto.response.admin.ProductVariantColorDTO;
 import com.webecommerce.dto.response.admin.SizeVariantDTO;
+import com.webecommerce.dto.review.ProductReviewDTO;
 
 import javax.servlet.http.Part;
 import java.math.BigDecimal;
@@ -77,7 +78,7 @@ public class ProductDTO extends BaseDTO<ProductDTO> {
 
     private int countProductReview;
 
-    private List<ProductReviewDTO> productReviews;
+    private List<com.webecommerce.dto.review.ProductReviewDTO> productReviews;
 
     public LocalDateTime getIsNewProduct() {
         return isNewProduct;

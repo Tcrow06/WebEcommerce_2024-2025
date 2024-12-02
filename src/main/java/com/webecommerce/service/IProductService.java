@@ -40,6 +40,8 @@ public interface IProductService {
 
     ProductDTO getProductById(Long id);
 
+    ProductDTO getProductDetailById (Long id);
+
     List<String> getListColorBySize (String size, Long productId);
 
     List<String> getListSizeByColor (String color, Long productId);

@@ -23,9 +23,6 @@ public class ProductDetailController extends HttpServlet {
     @Inject
     private IProductService productService;
 
-    @Inject
-    private IProductReviewService productReviewService;
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Long id = null ;
@@ -35,7 +32,7 @@ public class ProductDetailController extends HttpServlet {
             e.printStackTrace();
         }
         if (id != null) {
-            ProductDTO product = productService.getProductById(id);
+            ProductDTO product = productService.getProductDetailById(id);
             if (product != null) {
 
                 String userRole = JWTUtil.getRole(request);
@@ -44,12 +41,11 @@ public class ProductDetailController extends HttpServlet {
                         request.setAttribute(ModelConstant.ROLE, userRole);
                 }
 
-                List<ProductReviewDTO> productReviewDTOList = productReviewService.getProductReviewByProductId(product.getId());
 
-                request.setAttribute(ModelConstant.REVIEW, productReviewDTOList);
                 request.setAttribute(ModelConstant.MODEL, product);
+                request.setAttribute(ModelConstant.REVIEW, product.getProductReviews());
+                request.setAttribute(ModelConstant.SUGGEST, product.getResultList());
 
-                request.setAttribute(ModelConstant.SUGGEST, productService.findProductSuggestion(product.getCategory().getId(),4,product.getId()));
                 request.getRequestDispatcher("/views/web/product-detail.jsp").forward(request, response);
                 return;
             }

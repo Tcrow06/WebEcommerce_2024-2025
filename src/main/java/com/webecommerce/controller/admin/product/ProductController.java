@@ -62,7 +62,6 @@ public class ProductController extends HttpServlet {
             throws ServletException, IOException {
 
         String type = request.getParameter("type");
-
         String category = request.getParameter("category");
         String name = request.getParameter("name");
 
