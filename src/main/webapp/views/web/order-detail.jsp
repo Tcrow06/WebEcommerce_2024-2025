@@ -429,6 +429,9 @@
                 </c:if>
 
                 <c:if test="${not empty orderItemList}">
+
+                    <c:set var="total" value="0" scope="page" />
+
                     <c:forEach var="item" items="${orderItemList}" varStatus="note">
 
                         <c:if test="${note.index == 0}">
@@ -453,6 +456,10 @@
                             <td>${item.price}</td>
                             <td>${item.color}</td>
                             <td>${item.size}</td>
+
+                            <c:set var="itemTotal" value="${item.quantity * item.price}"/>
+                            <c:set var="total" value="${total + itemTotal}"/>
+
                             <c:if test="${status == 'RECEIVED'}">
                                 <td>
                                 <%--                                data-bs-toggle="modal" data-bs-target="#exampleModalCenter"--%>
@@ -465,6 +472,8 @@
                 </c:if>
                 </tbody>
             </table>
+
+            <input type="hidden" name="totalAmount" value="${total}">
 
             <c:if test="${status == 'DELIVERED'}">
                 <div style="display: flex; justify-content: center; gap: 10px; margin-top: 20px;">

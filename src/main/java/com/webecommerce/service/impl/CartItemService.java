@@ -1,5 +1,6 @@
 package com.webecommerce.service.impl;
 
+import com.webecommerce.constant.EnumProductStatus;
 import com.webecommerce.dao.cart.ICartDAO;
 import com.webecommerce.dao.cart.ICartItemDAO;
 import com.webecommerce.dao.impl.cart.CartDAO;
@@ -21,6 +22,7 @@ import com.webecommerce.service.ICartItemService;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class CartItemService implements ICartItemService {
 
@@ -44,13 +46,23 @@ public class CartItemService implements ICartItemService {
 
     @Override
     public HashMap<Long, CartItemDTO> convertCartForSession(CartEntity cartEntity) {
-        HashMap<Long, CartItemDTO> cart = new HashMap<>();
-        for (CartItemEntity item : cartEntity.getCartItems()) {
-            CartItemDTO cartItemDTO = cartItemMapper.toDTO(item);
-            cart.put(item.getProductVariant().getId(), cartItemDTO);
+
+        List<CartItemDTO> cartItems = cartEntity.getCartItems().stream()
+                .map(cartItemMapper::toDTO).sorted((item1, item2) -> {
+                    boolean isUnavailable1 = item1.getProductVariant().getStatus() == EnumProductStatus.STOP_SELLING;
+                    boolean isUnavailable2 = item2.getProductVariant().getStatus() == EnumProductStatus.STOP_SELLING;
+                    return Boolean.compare(isUnavailable1, isUnavailable2);
+                }).toList();
+
+        // Chuyển đổi các CartItemDTO đã sắp xếp thành HashMap (LinkedHashMap giữ thứ tự)
+        HashMap<Long, CartItemDTO> cart = new LinkedHashMap<>();
+        for (CartItemDTO item : cartItems) {
+            cart.put(item.getProductVariant().getId(), item);
         }
+
         return cart;
     }
+
 
 
     @Override

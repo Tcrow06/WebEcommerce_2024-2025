@@ -2,9 +2,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
-
-
-
 <style>
     input[type="checkbox"] {
         width: 20px;
@@ -68,10 +65,21 @@
                             <tr>
                                 <td class="product__cart__item">
                                     <div class="product__cart__item__pic">
-                                        <img style="width: 100px" src="<c:url value='/api-image?path=${item.productVariant.imageUrl}'/>" alt="${item.productVariant.name}">
+                                        <c:if test="${item.productVariant.status == 'STOP_SELLING'}">
+                                            <img style="width: 100px; opacity: 0.4;" src="<c:url value='/api-image?path=${item.productVariant.imageUrl}'/>" alt="${item.productVariant.name}">
+                                        </c:if>
+                                        <c:if test="${item.productVariant.status != 'STOP_SELLING'}">
+                                            <img style="width: 100px" src="<c:url value='/api-image?path=${item.productVariant.imageUrl}'/>" alt="${item.productVariant.name}">
+                                        </c:if>
+
                                     </div>
                                     <div class="product__cart__item__text">
-                                        <h6>${item.productVariant.name}</h6>
+                                        <c:if test="${item.productVariant.status == 'STOP_SELLING'}">
+                                            <h6>${item.productVariant.name} - <span style="color: red">Ngưng kinh doanh</span></h6>
+                                        </c:if>
+                                        <c:if test="${item.productVariant.status != 'STOP_SELLING'}">
+                                            <h6>${item.productVariant.name}</h6>
+                                        </c:if>
                                         <h6>Size: ${item.productVariant.size}</h6>
                                         <h6>Color: ${item.productVariant.color}</h6>
                                         <h6>Price: ${item.productVariant.price}</h6>
@@ -79,16 +87,27 @@
                                 </td>
                                 <td class="quantity__item">
                                     <div class="quantity">
-                                        <div class="pro-qty-2">
-                                            <input type="text" value="${item.quantity}" data-product-id="${item.productVariant.id}">
-                                        </div>
+                                        <c:if test="${item.productVariant.status == 'STOP_SELLING'}">
+
+                                        </c:if>
+                                        <c:if test="${item.productVariant.status != 'STOP_SELLING'}">
+                                            <div class="pro-qty-2">
+                                                <input type="text" value="${item.quantity}" data-product-id="${item.productVariant.id}">
+                                            </div>
+                                        </c:if>
+
                                     </div>
                                 </td>
                                 <td class="cart__price">$ ${item.productVariant.price * item.quantity}</td>
                                 <td class="cart__close">
-                                    <div style="display: flex; align-items: center; justify-content: center; gap: 10px">
-                                        <input type="checkbox" data-product-id="${item.productVariant.id}" ${item.isActive == 1 ? 'checked' : ''}/>
-                                    </div>
+                                    <c:if test="${item.productVariant.status == 'STOP_SELLING'}">
+
+                                    </c:if>
+                                    <c:if test="${item.productVariant.status != 'STOP_SELLING'}">
+                                        <div style="display: flex; align-items: center; justify-content: center; gap: 10px">
+                                            <input type="checkbox" data-product-id="${item.productVariant.id}" ${item.isActive == 1 ? 'checked' : ''}/>
+                                        </div>
+                                    </c:if>
                                 </td>
                             </tr>
                         </c:forEach>
@@ -126,12 +145,17 @@
             <div class="col-lg-4">
                 <div class="cart__discount">
                     <h6 style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#form2Modal">Discount codes</h6>
-                    <form action="#">
-                        <input type="text" id="couponCode" placeholder="Coupon code">
-                        <button type="button" data-bs-toggle="modal" data-bs-target="#form2Modal">Apply</button>
+                    <form onsubmit="return false;">
+                        <input type="text" id="couponCode" placeholder="Coupon code" required>
+                        <button type="button" class="btn btn-primary"
+                                onclick="sendCouponCode()">
+                            Áp Dụng
+                        </button>
                     </form>
-
                 </div>
+
+
+                <div id="couponContent"></div>
 
 
                 <div id="discountContent" style="display: none;">
@@ -160,6 +184,24 @@
                                    readonly>
                         </div>
                     </div>
+                    <div class="row text-info d-flex align-items-center fw-bold" style="border: none; background: transparent; pointer-events: none; font-weight: bold">
+                        <div class = "col-8">
+                            <h6>• Áp dụng với đơn hàng trên: </h6>
+                        </div>
+                        <div class = "col-2 mb-1 ">
+                            <input type="text" id="minimumInvoiceAmount" style="border: none; color:#17a2b8 ;" readonly>
+                        </div>
+                        <div class = "col-2"></div>
+                    </div>
+                    <div class="row text-black d-flex align-items-center fw-bold" style="border: none; background: transparent; pointer-events: none; font-weight: bold">
+                        <div class="col-8">
+                            <h6>• Số tiền giảm tối đa: </h6>
+                        </div>
+                        <div class = "col-2 mb-1">
+                            <input type="text" id="maximumAmount" style="border: none; color:#17a2b8 ;" readonly>
+                        </div>
+                        <div class = "col-2"></div>
+                    </div>
                     <div class="row text-info d-flex align-items-center mb-5">
                         <div class="col-1">
                             <i class="fas fa-ticket"></i>
@@ -185,7 +227,7 @@
                                         <div class="card mb-3">
                                             <div class="card-body">
                                                 <div class="row ps-1">
-                                                    <h5 class="fw-bold">${o.name}</h5>
+                                                    <h5 class="fw-bold">${searchDiscount.name}</h5>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-2">
@@ -201,10 +243,13 @@
                                                 <div class="row">
                                                     <h6>• Giảm ${o.discountPercentage}%</h6>
                                                 </div>
-                                                <div id="extraContent${o.code}" class="collapse">
-                                                    <h6>• Áp dụng với đơn hàng trên ${o.minimumInvoiceAmount} VND.
-                                                    </h6>
+                                                <div id="extraContent${o.code}" class="collapse"
+                                                     data-minimum-invoice-amount="${o.minimumInvoiceAmount}"
+                                                     data-maximum-amount="${o.maximumAmount}">
+                                                    <h6>• Áp dụng với đơn hàng trên: ${o.minimumInvoiceAmount} VND.</h6>
+                                                    <h6>• Số tiền giảm tối đa: ${o.maximumAmount} VND.</h6>
                                                 </div>
+
 
                                                 <div class="row">
                                                     <div class="col-8">
@@ -219,6 +264,8 @@
                                                         <button type="button" class="btn btn-dark w-100"
                                                                 data-bs-dismiss="modal" onclick="applyCoupon(this)"
                                                                 data-code="${o.code}" data-description="${o.name}"
+                                                                data-minInvoiceAmount = "${o.minimumInvoiceAmount}"
+                                                                data-maxAmount = "${o.maximumAmount}"
                                                                 data-percentCoupon="${o.discountPercentage}">Áp dụng</button>
                                                     </div>
                                                 </div>
@@ -230,29 +277,6 @@
                         </div>
                     </div>
                 </div>
-                <script>
-                    function toggleButtonText(button) {
-                        if (button.textContent === "Xem chi tiết ⬎") {
-                            button.textContent = "Thu gọn ⬏";
-                        } else {
-                            button.textContent = "Xem chi tiết ⬎";
-                        }
-                    }
-                    function applyCoupon(button) {
-                        var couponCode = button.getAttribute("data-code");
-                        var descriptionCoupon = button.getAttribute("data-description");
-                        var percentCoupon = button.getAttribute("data-percentCoupon");
-                        document.getElementById("title").value = "Áp dụng thành công!";
-                        document.getElementById("title1").value = "Xem thêm";
-                        document.getElementById("couponCode").value = couponCode;
-                        document.getElementById("descriptionCoupon").value = descriptionCoupon + ":";
-                        document.getElementById("percentCoupon").value = "-" + percentCoupon + "%";
-                        document.getElementById("discountContent").style.display = "block";
-                    }
-
-                </script>
-                <!---->
-
                 <div class="cart__total">
                     <h6>Cart total</h6>
                     <ul>
@@ -265,11 +289,8 @@
         </div>
     </div>
 </section>
-
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-
-
     $(document).ready(function () {
         calculateTotalPrice();
         toggleDeleteButton();
@@ -290,21 +311,49 @@
             $input.val(oldValue);
 
             updateTotalPrice($input);
+            afterUseVoucher();
         });
-
 
         // Sự kiện chọn checkbox
         $('input[type="checkbox"]').on('change', function () {
             calculateTotalPrice();
             toggleDeleteButton();
         });
+        function afterUseVoucher() {
+            var totalPrice = parseFloat(document.getElementById("total-price").innerText.replace("$", "").trim());
+            var minimumInvoiceAmount = parseFloat(document.getElementById("minimumInvoiceAmount").value);
+
+            if (!isNaN(minimumInvoiceAmount)) {
+                if (totalPrice < minimumInvoiceAmount) {
+                    document.getElementById("discountContent").style.display = "none";
+                    document.getElementById("percentCoupon").value = "0";
+                    document.querySelector(".cart__total ul li span").innerText = "$ 0.00";
+                    document.getElementById("total-price").innerText = "$ " + totalPrice.toFixed(2);
+                }
+                else {
+                    var percentCoupon = parseFloat(document.getElementById("percentCoupon").value);
+                    var maximumAmount = parseFloat(document.getElementById("maximumAmount").value);
+
+
+                    var newSubtotal = (totalPrice * percentCoupon) / 100;
+
+                    if (newSubtotal > maximumAmount) {
+                        newSubtotal = maximumAmount;
+                    }
+
+                    var newTotalPrice = totalPrice - newSubtotal;
+
+                    document.querySelector(".cart__total ul li span").innerText = "$ " + newSubtotal.toFixed(2);
+                    document.getElementById("total-price").innerText = "$ " + newTotalPrice.toFixed(2);
+                }
+            }
+        }
 
         // Hiển thị/ẩn nút "Xóa"
         function toggleDeleteButton() {
             let isAnyChecked = $('input[type="checkbox"]:checked').length > 0;
             $('#delete-selected-container').toggle(isAnyChecked);
         }
-
         // Hàm cập nhật giá cho từng sản phẩm
         function updateTotalPrice(inputElement) {
             const productVariantId = $(inputElement).data('product-id');
@@ -440,20 +489,141 @@
             button.textContent = "Xem chi tiết ⬎";
         }
     }
-    function applyCoupon(button) {
-        var couponCode = button.getAttribute("data-code");
-        var descriptionCoupon = button.getAttribute("data-description");
-        var percentCoupon = button.getAttribute("data-percentCoupon");
-        document.getElementById("title").value = "Áp dụng thành công!";
-        document.getElementById("title1").value = "Xem thêm";
-        document.getElementById("couponCode").value = couponCode;
-        document.getElementById("descriptionCoupon").value = descriptionCoupon + ":";
-        document.getElementById("percentCoupon").value = "-" + percentCoupon + "%";
-        document.getElementById("discountContent").style.display = "block";
+    function sendCouponCode() {
+        var couponCode = document.getElementById("couponCode").value;
+
+        if (!couponCode) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Cảnh báo',
+                text: 'Mã giảm giá không được để trống.',
+            });
+            // alert("Mã giảm giá không được để trống.");
+            return;
+        }
+
+        fetch('/tim-kiem-ma-giam-gia', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ couponCode }),
+        })
+            .then(response => {
+                if (response.ok) return response.json();
+                throw new Error("Mã giảm giá không hợp lệ hoặc đã hết hạn.");
+            })
+            .then(data => {
+                console.log("Data received:", data); // Kiểm tra cấu trúc của dữ liệu
+
+                if (!data || !data.code || !data.name) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Cảnh báo',
+                        text: 'Dữ liệu không đầy đủ.',
+                    });
+                    // alert("Dữ liệu không đầy đủ.");
+                    return;
+                }
+
+                let code = data.code;
+                let name = data.name;
+                let percent = data.discountPercentage;
+                let minimumInvoiceAmount = data.minimumInvoiceAmount;
+                let maximumAmount = data.maximumAmount;
+
+                console.log("Data to display:", data);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thông báo',
+                    text: 'Mã giảm giá áp dụng thành công!',
+                });
+                // alert("Mã giảm giá áp dụng thành công!");
+                applyCouponAfterSearch(code, name, percent, minimumInvoiceAmount, maximumAmount);
+            })
+            .catch(error => {
+                console.error(error);
+                alert(error.message);
+            });
     }
 
 
 
+    function applyCoupon(button) {
+        var totalPrice = parseFloat(document.getElementById("total-price").innerText.replace("$", "").trim());
+        var minimumInvoiceAmount = button.getAttribute("data-minInvoiceAmount");
+        if(totalPrice > minimumInvoiceAmount)
+        {
+            var couponCode = button.getAttribute("data-code");
+            var descriptionCoupon = button.getAttribute("data-description");
+            var percentCoupon = button.getAttribute("data-percentCoupon");
+            var maximumAmount = button.getAttribute("data-maxAmount");
+
+            document.getElementById("title").value = "Áp dụng thành công!";
+            document.getElementById("title1").value = "Xem thêm";
+            document.getElementById("couponCode").value = couponCode;
+            document.getElementById("descriptionCoupon").value = descriptionCoupon + ":";
+            document.getElementById("percentCoupon").value = percentCoupon + "%";
+            document.getElementById("maximumAmount").value = maximumAmount + " VND.";
+            document.getElementById("minimumInvoiceAmount").value =minimumInvoiceAmount + " VND.";
+            document.getElementById("discountContent").style.display = "block";
+
+            var percentCoupon1 = parseFloat(document.getElementById("percentCoupon").value);
+            var maximumAmount1 = parseFloat(document.getElementById("maximumAmount").value);
+
+
+            var newSubtotal = (totalPrice * percentCoupon1) / 100;
+
+            if (newSubtotal > maximumAmount1) {
+                newSubtotal = maximumAmount1;
+            }
+
+            var newTotalPrice = totalPrice - newSubtotal;
+
+            document.querySelector(".cart__total ul li span").innerText = "$ " + newSubtotal.toFixed(2);
+            document.getElementById("total-price").innerText = "$ " + newTotalPrice.toFixed(2);
+        }
+        else
+        {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Cảnh báo',
+                text: 'Bạn không đủ điều kiện sử dụng mã giảm giá. Hãy kiểm tra lại.',
+            });
+            // alert("Bạn không đủ điều kiện sử dụng mã giảm giá. Hãy kiểm tra lại.");
+        }
+    }
+    function applyCouponAfterSearch(code, name, percent, minimumInvoiceAmount, maximumAmount) {
+        var totalPrice = parseFloat(document.getElementById("total-price").innerText.replace("$", "").trim());
+
+        if (totalPrice >= minimumInvoiceAmount) {
+            document.getElementById("title").value = "Áp dụng thành công!";
+            document.getElementById("title1").value = "Xem thêm";
+            document.getElementById("couponCode").value = code;
+            document.getElementById("descriptionCoupon").value = name + ":";
+            document.getElementById("percentCoupon").value = percent + "%";
+            document.getElementById("maximumAmount").value = maximumAmount + " VND";
+            document.getElementById("minimumInvoiceAmount").value = minimumInvoiceAmount + " VND";
+            document.getElementById("discountContent").style.display = "block";
+
+            var discountAmount = (totalPrice * percent) / 100;
+            if (discountAmount > maximumAmount) {
+                discountAmount = maximumAmount;
+            }
+
+            var newTotalPrice = totalPrice - discountAmount;
+
+            document.querySelector(".cart__total ul li span").innerText = "$ " + discountAmount.toFixed(2);
+            document.getElementById("total-price").innerText = "$ " + newTotalPrice.toFixed(2);
+        } else {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Cảnh báo',
+                text: 'Bạn không đủ điều kiện sử dụng mã giảm giá. Hãy kiểm tra lại.',
+            });
+            // alert("Bạn không đủ điều kiện sử dụng mã giảm giá. Hãy kiểm tra lại.");
+        }
+    }
 
     $('#ProceedToCheckout').click(function (event) {
 
@@ -485,7 +655,7 @@
                 else if(response.status==="error"){
                     Swal.fire({
                         icon: 'error',
-                        title: 'Lỗi hệ thống',
+                        title: 'Thất bại',
                         text: response.message,
                     });
                 }
@@ -527,5 +697,4 @@
         });
         return selectedProducts;
     }
-
 </script>

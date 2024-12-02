@@ -26,7 +26,7 @@
                     <div class="breadcrumb__text">
                         <h4>Shop</h4>
                         <div class="breadcrumb__links">
-                            <a href="<c:url value=" /trang-chu" />">Home</a>
+                            <a href="<c:url value="/trang-chu" />">Home</a>
                             <span>Shop</span>
                         </div>
                     </div>

@@ -18,5 +18,5 @@ public interface ICustomerService {
     String updateInforCustomer(String id, String name, String email, String phone);
     List<ManageUserDTO> getInfoUser();
     boolean updateStatusAccount(Long userId, EnumAccountStatus status);
-
+    boolean updateLoyalPoint(double total, Long customerId);
 }

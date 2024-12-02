@@ -45,8 +45,9 @@ public class SendEmailService implements ISendEmailService {
         // Thông tin tổng quan hóa đơn
         html.append("<p><strong>Mã hóa đơn:</strong> ").append(VNPayConfig.getRandomNumber(8)).append("</p>");
         html.append("<p><strong>Tổng tiền:</strong> ").append(orderDTO.getTotal()).append(" VND</p>");
+        html.append("<p><strong>Giảm giá:</strong> ").append(orderDTO.getMaximumDiscount()).append(" VND</p>");
         html.append("<p><strong>Phí vận chuyển:</strong> ").append(orderDTO.getShippingFee()).append(" VND</p>");
-        html.append("<p><strong>Trạng thái:</strong> ").append(orderDTO.getStatus()).append("</p>");
+        html.append("<p><strong>Trạng thái:</strong> ").append("Đang trong quá trình xác nhận").append("</p>");
 
         // Bảng danh sách sản phẩm
         html.append("<h3>Danh sách sản phẩm:</h3>");
