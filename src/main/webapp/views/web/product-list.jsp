@@ -296,6 +296,7 @@
                     <input type="hidden" name="maxPrice" id="maxPrice">
                     <input type="hidden" name="tag" id="tag">
                     <input type="hidden" name="sort" id="sort">
+                    <input type="hidden" name="ten" id="ten">
                 </form>
 
             </div>
@@ -372,6 +373,11 @@
                 document.getElementById('sort').removeAttribute('name');
             }
 
+            const previousName = sessionStorage.getItem('selectedName');
+            if (!previousName) {
+                document.getElementById('ten').removeAttribute('name');
+            }
+
             updatePageInfo();
             submitFilterForm()
         }
@@ -408,6 +414,11 @@
             const previousSort = sessionStorage.getItem('selectedSort');
             if (!previousSort) {
                 document.getElementById('sort').removeAttribute('name');
+            }
+
+            const previousName = sessionStorage.getItem('selectedName');
+            if (!previousName) {
+                document.getElementById('ten').removeAttribute('name');
             }
 
             updatePageInfo();
@@ -447,6 +458,11 @@
                 document.getElementById('sort').removeAttribute('name');
             }
 
+            const previousName = sessionStorage.getItem('selectedName');
+            if (!previousName) {
+                document.getElementById('ten').removeAttribute('name');
+            }
+
             updatePageInfo();
             submitFilterForm();
         }
@@ -482,6 +498,11 @@
             const previousSort = sessionStorage.getItem('selectedSort');
             if (!previousSort) {
                 document.getElementById('sort').removeAttribute('name');
+            }
+
+            const previousName = sessionStorage.getItem('selectedName');
+            if (!previousName) {
+                document.getElementById('ten').removeAttribute('name');
             }
 
             updatePageInfo();
@@ -524,6 +545,59 @@
                 document.getElementById('tag').removeAttribute('name');
             }
 
+            const previousName = sessionStorage.getItem('selectedName');
+            if (!previousName) {
+                document.getElementById('ten').removeAttribute('name');
+            }
+
+            updatePageInfo();
+            submitFilterForm();
+        }
+
+        function selectName(name) {
+
+            if (name) {
+                document.getElementById('ten').value = name;
+                sessionStorage.setItem('selectedName', name); // Lưu lại giá trị đã chọn
+            } else {
+                document.getElementById('ten').value = '';
+                sessionStorage.removeItem('selectedName'); // Xóa nếu không chọn gì
+            }
+
+            const previousCategory = sessionStorage.getItem('selectedCategory');
+            if (!previousCategory) {
+                document.getElementById('category').removeAttribute('name');
+            }
+
+            const previousBrand = sessionStorage.getItem('selectedBrand');
+            if (!previousBrand) {
+                document.getElementById('brand').removeAttribute('name');
+            }
+
+            const previousMin = sessionStorage.getItem('selectedMinPrice');
+            if (!previousMin) {
+                document.getElementById('minPrice').removeAttribute('name');
+            }
+            const previousMax = sessionStorage.getItem('selectedMaxPrice');
+            if (!previousMax) {
+                document.getElementById('maxPrice').removeAttribute('name');
+            }
+
+            const previousTag = sessionStorage.getItem('selectedTag');
+            if (!previousTag) {
+                document.getElementById('tag').removeAttribute('name');
+            }
+
+            const previousSort = sessionStorage.getItem('selectedSort');
+            if (!previousSort) {
+                document.getElementById('sort').removeAttribute('name');
+            }
+
+            const previousName = sessionStorage.getItem('selectedName');
+            if (!previousName) {
+                document.getElementById('ten').removeAttribute('name');
+            }
+
             updatePageInfo();
             submitFilterForm();
         }
@@ -543,6 +617,7 @@
             const storedMaxPrice = sessionStorage.getItem('selectedMaxPrice');
             const storedTag = sessionStorage.getItem('selectedTag');
             const storedSort = sessionStorage.getItem('selectedSort');
+            const storedName = sessionStorage.getItem('selectedName');
 
             if (storedCategory) {
                 document.getElementById('category').value = storedCategory;
@@ -561,6 +636,9 @@
             }
             if(storedSort) {
                 document.getElementById('sort').value = storedSort;
+            }
+            if(storedName) {
+                document.getElementById('ten').value = storedName;
             }
 
             document.getElementById('formSubmit').submit();
@@ -586,6 +664,7 @@
             document.getElementById('maxPrice').value = urlParams.get('maxPrice') || '';
             document.getElementById('tag').value = urlParams.get('tag') || '';
             document.getElementById('sort').value = urlParams.get('sort') || '';
+            document.getElementById('ten').value = urlParams.get('ten') || '';
         });
         var totalPages = ${model.totalPage};
         var currentPage = ${model.page};
@@ -659,6 +738,7 @@
         if (event.key === 'Enter') {
             event.preventDefault();
             let name = document.getElementById('search-product').value;
+            selectName(name);
             window.location.href = '/danh-sach-san-pham?page=1&maxPageItem=9&ten=' + encodeURIComponent(name);
         }
     });
@@ -668,6 +748,7 @@
     $('#btnSearch').click(function(e) {
         e.preventDefault();
         let name = document.getElementById('search-product').value;
+        selectName(name);
         window.location.href = '/danh-sach-san-pham?page=1&maxPageItem=9&ten=' + encodeURIComponent(name);
 
     });
