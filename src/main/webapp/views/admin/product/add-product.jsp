@@ -279,7 +279,7 @@
     <div id="productVariantsContainer" class="row mt-4">
         <br>
         <strong>Chi tiết sản phẩm </strong>
-        <div class="error-message text-danger" style="margin: 10px"></div>
+        <div class="error-message-variant text-danger" style="margin: 10px"></div>
     </div>
 
 
@@ -465,10 +465,10 @@
             });
 
             if (!isProductVariant) {
-                $('#productVariantsContainer').find('.error-message').text("Vui lòng thêm ít nhất một phân loại sản phẩm")
+                $('#productVariantsContainer').find('.error-message-variant').text("Vui lòng thêm ít nhất một phân loại sản phẩm")
                 isValid = false;
             }
-            else $('#productVariantsContainer').find('.error-message').text("")
+            else $('#productVariantsContainer').find('.error-message-variant').text("")
 
             return isValid
         }
