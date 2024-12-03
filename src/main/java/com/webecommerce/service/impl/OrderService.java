@@ -30,12 +30,14 @@ import com.webecommerce.mapper.Impl.OrderMapper;
 import com.webecommerce.mapper.Impl.ProductDiscountMapper;
 import com.webecommerce.mapper.Impl.ProductVariantMapper;
 import com.webecommerce.service.*;
+import com.webecommerce.utils.GHNUtils;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class OrderService implements IOrderService {
 
@@ -142,7 +144,6 @@ public class OrderService implements IOrderService {
 
             orderDetailDTOS.add(new OrderDetailDTO(product.getQuantity(),productVariantDTO, productDiscountMapper.toDTO(productVariantEntity.getProduct().getProductDiscount())));
         }
-//        orderDTO.setOrderInfoDTO(orderInfoService.findDefaultOrderInfoByIdUser(checkOutRequestDTO.getIdUser()));
         orderDTO.setOrderDetails(orderDetailDTOS);
         if(!orderDTO.calculateTotal()){
             status="error";
@@ -213,9 +214,20 @@ public class OrderService implements IOrderService {
             // Biến tạm để gán gửi email
             var orderSendEmail = orderDTO;
 
+            orderSendEmail.setShippingFee(orderEntity.getShippingFee());
+
             orderDTO = orderMapper.toDTO(orderEntity);
             status ="success";
-            message =new StringBuilder("Đặt hàng thành công");
+            message = new StringBuilder("Đặt hàng thành công");
+
+            // Chuẩn hóa thanh toán
+            if (Objects.equals(orderSendEmail.getPaymentMethod(), "cash")) {
+                orderSendEmail.setPaymentMethod("Thanh toán bằng tiền mặt");
+            } else if (Objects.equals(orderSendEmail.getPaymentMethod(), "bank")) {
+                orderSendEmail.setPaymentMethod("Thanh toán qua QR Code");
+            } else {
+                orderSendEmail.setPaymentMethod("Thanh toán bằng chuyển khoản (VNPay)");
+            }
 
             // Gửi mail sau khi đặt hàng thành công
             sendEmailService.sendEmail(orderSendEmail, idUser);
@@ -246,13 +258,8 @@ public class OrderService implements IOrderService {
     public OrderEntity  createOrder(OrderDTO orderDTO, Long idUser) {
        try {
            OrderEntity orderEntity = new OrderEntity();
-           String city = orderDTO.getOrderInfoDTO().getAddress().getCity().trim();
-           if(city.equalsIgnoreCase("Tp.Hồ Chí Minh")||city.equalsIgnoreCase("HCM")||city.equalsIgnoreCase("Hồ Chí Minh"))
-               orderEntity.setShippingFee(15);
-           else{
-               orderEntity.setShippingFee(30);
-           }
 
+           orderEntity.setShippingFee(calculateShippingFee(orderDTO));
 
            if(orderDTO.getBillDiscount()!=null){
                BillDiscountEntity billDiscountEntity = billDiscountDAO.findBillDiscountByCodeAndValid(orderDTO.getBillDiscount().getCode());
@@ -318,5 +325,10 @@ public class OrderService implements IOrderService {
     @Override
     public List<DisplayOrderDTO> getOrderDisplay(Long customerId) {
         return orderDAO.getOrderDisplay(customerId);
+    }
+
+    @Override
+    public double calculateShippingFee(OrderDTO orderDTO) throws Exception {
+        return GHNUtils.calculateShippingFee(orderDTO);
     }
 }

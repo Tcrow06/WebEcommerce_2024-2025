@@ -5,6 +5,7 @@ import com.webecommerce.dao.cart.ICartDAO;
 import com.webecommerce.dao.cart.ICartItemDAO;
 import com.webecommerce.dao.impl.cart.CartDAO;
 import com.webecommerce.dao.impl.people.CustomerDAO;
+import com.webecommerce.dao.impl.product.ProductDAO;
 import com.webecommerce.dao.product.IProductVariantDAO;
 import com.webecommerce.dto.CartItemDTO;
 import com.webecommerce.dto.PlacedOrder.CheckOutRequestDTO;
@@ -43,6 +44,9 @@ public class CartItemService implements ICartItemService {
 
     @Inject
     private ProductVariantMapper productVariantMapper;
+
+    @Inject
+    private ProductDAO productDAO;
 
     @Override
     public HashMap<Long, CartItemDTO> convertCartForSession(CartEntity cartEntity) {

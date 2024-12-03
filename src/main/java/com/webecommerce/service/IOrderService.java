@@ -14,5 +14,6 @@ public interface IOrderService {
     OrderDTO findInfoPayment(OrderDTO orderDTO, Long idUser);
     boolean changeConfirmStatus(Long orderId);
     List<DisplayOrderDTO> getListOrder();
+    double calculateShippingFee(OrderDTO orderDTO) throws Exception;
 
 }

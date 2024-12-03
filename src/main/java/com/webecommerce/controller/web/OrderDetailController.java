@@ -3,7 +3,6 @@ package com.webecommerce.controller.web;
 import com.webecommerce.constant.EnumOrderStatus;
 import com.webecommerce.constant.EnumProductStatus;
 import com.webecommerce.dao.order.IOrderDetailDAO;
-import com.webecommerce.dto.OrderDetailDTO;
 import com.webecommerce.dto.notinentity.DisplayOrderDetailDTO;
 import com.webecommerce.service.IOrderDetailService;
 import com.webecommerce.service.IOrderStatusService;
@@ -16,11 +15,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet(urlPatterns = {"/trang-chu/don-hang/danh-sach-don-hang"})
-public class OrderDetailDraftController extends HttpServlet {
+public class OrderDetailController extends HttpServlet {
     @Inject
     private IOrderDetailService orderDetailService;
 

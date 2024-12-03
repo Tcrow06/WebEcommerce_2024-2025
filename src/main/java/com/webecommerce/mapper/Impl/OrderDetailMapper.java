@@ -37,7 +37,6 @@ public class OrderDetailMapper implements GenericMapper<OrderDetailDTO, OrderDet
 
     @Override
     public List<OrderDetailDTO> toDTOList(List<OrderDetailEntity> orderDetailEntities) {
-//        return GenericMapper.super.toDTOList(orderDetailEntities);
         List<OrderDetailDTO> orderDetailDTOS = new ArrayList<>();
         for (OrderDetailEntity entity : orderDetailEntities) {
             OrderDetailDTO orderDetailDTO = toDTO(entity);
