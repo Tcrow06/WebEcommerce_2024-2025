@@ -708,7 +708,7 @@
         const searchTerm = normalizeString(searchInput.value.trim());
         suggestions.innerHTML = '';
         if(searchTerm.length > 0){
-            let matches = listNameProduct.filter(name => normalizeString(name).startsWith(searchTerm)).slice(0, 4);
+            let matches = listNameProduct.filter(name => normalizeString(name).includes(searchTerm)).slice(0, 4);
             if(matches.length > 0){
                 suggestions.style.display = 'block';
                 matches.forEach(math => {
