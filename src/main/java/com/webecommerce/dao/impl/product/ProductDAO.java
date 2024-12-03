@@ -387,16 +387,124 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
     }
 
     @Override
-    public List<ProductEntity> findAllByName(Pageable pageable, String name) {
-        List<ProductEntity> ls = findAll(pageable);
+    public List<ProductEntity> findAllName(Pageable pageable) {
+        // Truy vấn duy nhất để lấy danh sách productIds dựa trên các điều kiện lọc và giá tối thiểu
+        StringBuilder jpql = new StringBuilder(
+                "SELECT DISTINCT p FROM ProductEntity p " +
+                        "JOIN p.productVariants v " +
+                        "LEFT JOIN p.productDiscount d " +
+                        "WHERE p.status = 'SELLING'"
+        );
 
+        // Điều kiện lọc
+        if (pageable.getFilterProduct().getFilterCategory() != -1) {
+            jpql.append(" AND p.category.id = :categoryId");
+        }
+
+        if (pageable.getFilterProduct().getFilterBrand() != null &&
+                !pageable.getFilterProduct().getFilterBrand().isEmpty()) {
+            jpql.append(" AND p.brand = :brand");
+        }
+
+        jpql.append(
+                " AND v.price = (SELECT MIN(v2.price) FROM ProductVariantEntity v2 WHERE v2.product.id = p.id)"
+        );
+
+        String tag = pageable.getFilterProduct().getTag();
+        double minPrice = pageable.getFilterProductVariant().getMinPrice();
+        double maxPrice = pageable.getFilterProductVariant().getMaxPrice();
+        if (!Double.isNaN(minPrice) && !Double.isNaN(maxPrice)) {
+            jpql.append(" AND v.price BETWEEN :minPrice AND :maxPrice");
+        } else if (!Double.isNaN(minPrice)) {
+            jpql.append(" AND v.price >= :minPrice");
+        } else if (!Double.isNaN(maxPrice)) {
+            jpql.append(" AND v.price <= :maxPrice");
+        }
+
+        if (tag != null) {
+            if (tag.equals("new")) {
+                jpql.append(" AND DATEDIFF(CURRENT_DATE, p.isNew) <= 7");
+            } else if (tag.equals("sale")) {
+                jpql.append(" AND d.startDate <= CURRENT_DATE AND d.endDate >= CURRENT_DATE");
+            } else if (tag.equals("other")) {
+                jpql.append(" AND (DATEDIFF(CURRENT_DATE, p.isNew) > 7 OR p.isNew IS NULL)");
+                jpql.append(" AND (d.startDate > CURRENT_DATE OR d.endDate < CURRENT_DATE OR d.startDate IS NULL OR d.endDate IS NULL)");
+            }
+        }
+
+        EntityManager em = super.getEntityManager();
+        try {
+
+            TypedQuery<ProductEntity> query = em.createQuery(jpql.toString(), ProductEntity.class);
+
+            String countJpql = jpql.toString().replace("SELECT DISTINCT p", "SELECT COUNT(DISTINCT p)");
+            TypedQuery<Long> countQuery = em.createQuery(countJpql, Long.class);
+
+            if (pageable.getFilterProduct().getFilterCategory() != -1) {
+                query.setParameter("categoryId", Long.valueOf(pageable.getFilterProduct().getFilterCategory()));
+
+                countQuery.setParameter("categoryId", Long.valueOf(pageable.getFilterProduct().getFilterCategory()));
+
+            }
+
+            if (pageable.getFilterProduct().getFilterBrand() != null &&
+                    !pageable.getFilterProduct().getFilterBrand().isEmpty()) {
+                query.setParameter("brand", pageable.getFilterProduct().getFilterBrand());
+
+                countQuery.setParameter("brand", pageable.getFilterProduct().getFilterBrand());
+            }
+
+            if (!Double.isNaN(minPrice)) {
+                query.setParameter("minPrice", minPrice);
+
+                countQuery.setParameter("minPrice", minPrice);
+
+            }
+            if (!Double.isNaN(maxPrice)) {
+                query.setParameter("maxPrice", maxPrice);
+
+                countQuery.setParameter("maxPrice", maxPrice);
+
+            }
+
+            // Thực thi truy vấn để lấy danh sách sản phẩm
+            List<ProductEntity> productEntities = query.getResultList();
+
+            // Thực hiện sắp xếp danh sách sản phẩm sau khi truy vấn xong
+            if (pageable.getSorter().getSortBy() != null) {
+                String sortBy = pageable.getSorter().getSortBy();
+                if ("asc".equalsIgnoreCase(sortBy)) {
+                    productEntities.sort(Comparator.comparing(p ->
+                            p.getProductVariants().stream().mapToDouble(v -> v.getPrice()).min().orElse(Double.MAX_VALUE)));
+                } else if ("desc".equalsIgnoreCase(sortBy)) {
+                    productEntities.sort(Comparator.comparing((ProductEntity p) ->
+                            p.getProductVariants().stream().mapToDouble(v -> v.getPrice()).min().orElse(Double.MAX_VALUE)).reversed());
+                }
+            }
+
+
+            totalItem = countQuery.getSingleResult();
+            // Thực hiện phân trang cho danh sách sản phẩm đã sắp xếp
+            int offset = pageable.getOffset() != null ? pageable.getOffset() : 0;
+            int limit = pageable.getLimit() != null ? pageable.getLimit() : 10000;
+            return productEntities.stream().collect(Collectors.toList());
+        } catch (Exception e) {
+            return new ArrayList<>();
+        } finally {
+            super.closeEntityManager(em);
+        }
+    }
+
+    @Override
+    public List<ProductEntity> findAllByName(Pageable pageable, String name) {
+        List<ProductEntity> ls = findAllName(pageable);
         String[] keywords = name.toLowerCase().split(" ");
         List<ProductEntity> exactMatch = new ArrayList<>();
         List<ProductEntity> partialMatch = new ArrayList<>();
 
         for (ProductEntity product : ls) {
             String productName = product.getName().toLowerCase();
-
+            System.out.println("HHHHHH");
             if (productName.contains(name.toLowerCase())) exactMatch.add(product);
             else {
                 boolean contain = true;
@@ -412,7 +520,7 @@ public class ProductDAO extends AbstractDAO<ProductEntity> implements IProductDA
         List<ProductEntity> result = new ArrayList<>();
         result.addAll(exactMatch);
         result.addAll(partialMatch);
-
+        totalItem = (long)result.size();
         return result;
     }
 

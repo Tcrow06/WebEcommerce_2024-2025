@@ -340,7 +340,7 @@
         });
 
         // WebSocket kết nối tới server
-        var socket = new WebSocket('ws://localhost:8080/chat');
+        var socket = new WebSocket('ws://103.126.161.11/chat');
 
         socket.onopen = function() {
             console.log("Connected to the WebSocket server");
@@ -475,7 +475,7 @@
         const chatRoomInput = document.getElementById("chatRoomInput");
         const sendChatRoomBtn = document.getElementById("sendChatRoomBtn");
         document.getElementById('chatRoomInput').addEventListener('keydown', checkEnter);
-        let wsUrl = "ws://localhost:8080/chat-room";  // URL cơ bản của WebSocket
+        let wsUrl = "ws://103.126.161.11/chat-room";  // URL cơ bản của WebSocket
         if (token) {
             wsUrl += `?token=` + token;  // Nếu có token, thêm nó vào URL
         }
