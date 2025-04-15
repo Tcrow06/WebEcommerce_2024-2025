@@ -12,13 +12,13 @@
     <jstl.version>1.2</jstl.version>
     <servlet.api.version>3.1.0</servlet.api.version>
     <sitemesh.version>2.4.2</sitemesh.version>
-    <mysql.version>8.0.30</mysql.version>
+    <mysql.version>8.0.31</mysql.version>
     <weld.servlet.version>2.4.8.Final</weld.servlet.version>
     <fasterxml.jackson>2.17.2</fasterxml.jackson>
 
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
-    <commons-beanutils.version>1.9.3</commons-beanutils.version>
+    <commons-beanutils.version>1.9.4</commons-beanutils.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
@@ -139,12 +139,12 @@
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-core</artifactId>
-        <version>2.13.0</version> <!-- hoặc phiên bản mới hơn -->
+        <version>2.15.0</version> <!-- hoặc phiên bản mới hơn -->
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
-        <version>2.13.0</version> <!-- hoặc phiên bản mới hơn -->
+        <version>2.15.0</version> <!-- hoặc phiên bản mới hơn -->
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
@@ -171,13 +171,13 @@
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-core</artifactId>
-      <version>5.8.0</version>
+      <version>6.3.8</version>
     </dependency>
 
     <dependency>
       <groupId>commons-fileupload</groupId>
       <artifactId>commons-fileupload</artifactId>
-      <version>1.4</version>
+      <version>1.5</version>
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>
@@ -204,7 +204,7 @@
     <dependency>
       <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-jsr310</artifactId>
-      <version>2.13.0</version> <!-- Hoặc phiên bản Jackson phù hợp với dự án của bạn -->
+      <version>2.15.0</version> <!-- Hoặc phiên bản Jackson phù hợp với dự án của bạn -->
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -233,7 +233,7 @@
     <dependency>
       <groupId>redis.clients</groupId>
       <artifactId>jedis</artifactId>
-      <version>4.3.1</version>
+      <version>jedis-3.6.2</version>
     </dependency>
 
     <dependency>
@@ -258,7 +258,7 @@
     <dependency>
       <groupId>com.squareup.okhttp3</groupId>
       <artifactId>okhttp</artifactId>
-      <version>3.14.9</version>
+      <version>4.9.2</version>
     </dependency>
 
 
