@@ -149,7 +149,7 @@
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-annotations</artifactId>
-        <version>2.13.0</version> <!-- hoặc phiên bản mới hơn -->
+        <version>2.18.3</version> <!-- hoặc phiên bản mới hơn -->
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.datatype</groupId>
