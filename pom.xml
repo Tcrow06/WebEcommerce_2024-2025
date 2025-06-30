@@ -139,12 +139,12 @@
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-core</artifactId>
-        <version>2.13.0</version> <!-- hoặc phiên bản mới hơn -->
+        <version>2.15.0</version> <!-- hoặc phiên bản mới hơn -->
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
-        <version>2.13.0</version> <!-- hoặc phiên bản mới hơn -->
+        <version>2.15.0</version> <!-- hoặc phiên bản mới hơn -->
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
@@ -177,7 +177,7 @@
     <dependency>
       <groupId>commons-fileupload</groupId>
       <artifactId>commons-fileupload</artifactId>
-      <version>1.4</version>
+      <version>1.6.0</version>
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>
@@ -204,7 +204,7 @@
     <dependency>
       <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-jsr310</artifactId>
-      <version>2.13.0</version> <!-- Hoặc phiên bản Jackson phù hợp với dự án của bạn -->
+      <version>2.15.0</version> <!-- Hoặc phiên bản Jackson phù hợp với dự án của bạn -->
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
